@@ -68,7 +68,7 @@
          <div id="vueParent">
              <div id="posts" next-page-url=" {{ $a_post->nextPageUrl() }}">
              @foreach($a_post as $a_article)
- 
+              @include('A_Blog_scroll')
              <div class="card shadow mb-4">
                                  <div class="card-header py-3">
                                      <h6 class="m-0 font-weight-bold text-primary">
@@ -167,8 +167,8 @@
    </div>
  
     
-   <script type="text/javascript">
-         $(window).scroll(function () {
+   <script>
+         $(window).on('scroll',function(){
              clearTimeout(fetch);
            
              fetch = setTimeout(function () {

@@ -1,16 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>Laravel 9 load more page scroll</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
-   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-</head>
-  
 <body>
   
   
@@ -38,21 +26,21 @@
 
                                                   if($i == ($j->Id_categorie1)){
 
-                                      @endphp  
+                                    @endphp  
                                                   
                                                       <a href="{{route('A_blog_par_categorie1', ['id' => $i])}}"> <img src='{{ $j->image }}'>  </a>
-                                      @php
+                                    @php
                                                   }
                                               }
 
 
                                           }
 
-                                      @endphp   
+                                    @endphp   
 
                                       {{$a_article->titre}} 
 
-                                      @php
+                                    @php
 
                                       /* we use json_decode to make this transformation : JSON arrays become PHP numeric arrays */
 
@@ -132,9 +120,10 @@
 
 </div>
 
-   
-  <script type="text/javascript">
-        $(window).scroll(function () {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script >
+        $(window).on('scroll',function(){
             clearTimeout(fetch);
           
             fetch = setTimeout(function () {
@@ -155,5 +144,3 @@
 
 </body>
 
-
-</html>

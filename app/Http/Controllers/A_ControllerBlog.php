@@ -74,9 +74,7 @@ class A_ControllerBlog extends Controller
                     'url' => $a_post->nextPageUrl()
                     ];
             }
-        // If request is normail request then just simply return the laravel view
 
-    //  return view('A_Blog_index',['a_post' => $a_post], ['a_categorie1' => $a_categorie1], ['a_categorie2' => $a_categorie2]);
 
       return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2'))->with('user', auth()->user());
 }
@@ -93,7 +91,7 @@ public function recherche_par_cat1(Request $request, $id) {
 
 
 
-    return view('A_blog_par_categorie1', compact('a_requete1','a_result','a_categorie1','a_categorie2')) ;
+    return view('A_blog_par_categorie1', compact('a_requete1','a_result','a_categorie1','a_categorie2'))->with('user', auth()->user()) ;
    
 
 
@@ -112,7 +110,7 @@ public function recherche_par_cat2(Request $request, $id) {
 
 
 
-    return view('A_blog_par_categorie2', compact('a_requete1','a_result','a_categorie1','a_categorie2')) ;
+    return view('A_blog_par_categorie2', compact('a_requete1','a_result','a_categorie1','a_categorie2'))->with('user', auth()->user()) ;
     
 }
 

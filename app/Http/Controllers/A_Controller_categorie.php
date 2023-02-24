@@ -33,7 +33,7 @@ class A_Controller_categorie extends Controller
 
         $shop_category =   Shop_category::get() ;
        
-        return view('A_Categorie', $info, compact('shop_category'));
+        return view('A_Categorie', $info, compact('shop_category'))->with('user', auth()->user());
 
     }
 
@@ -268,7 +268,7 @@ public function  Shop_souscategorie($id){
     $article = Shop_article::get();
     $shopService =  shop_article_1::get();
     $rooms = rooms::get();
-    $users = User::get();
+    $a_user = User::all();
 
 
 
@@ -277,8 +277,7 @@ public function  Shop_souscategorie($id){
     ->join('liaison_shop_articles_shop_categories', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_shop_categories.id_shop_article')
     ->join('shop_category', 'shop_category.id_shop_category', '=', 'liaison_shop_articles_shop_categories.id_shop_category')
     ->get();
-    
-    return view('A_Shop_SousCategorie_index',compact('info','info_parent','indice','requete','info2','article','shopService','rooms','users'))->with('user', auth()->user());
+    return view('A_Shop_SousCategorie_index',compact('info','info_parent','indice','requete','info2','article','shopService','rooms','a_user'))->with('user', auth()->user());
 
 }
 
@@ -290,10 +289,10 @@ public function Handle_details($id){
     $article = Shop_article::get();
     $shopService =  shop_article_1::get();
     $rooms = rooms::get();
-    $user = User::get();
+    $a_user = User::get();
     $info =   Shop_category::get() ;
 
-    return view('Details_article',compact('indice','article','rooms','shopService','user'));
+    return view('Details_article',compact('indice','article','rooms','shopService','a_user'))->with('user', auth()->user());
 
 }
 

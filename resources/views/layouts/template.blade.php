@@ -48,7 +48,7 @@
                  <li> <a href=""> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Articles</span> </a></li>
                  <li> <a href="forms-layouts.html"> <i style="color: #0ef9de" class="fa-solid fa-pen"></i><span>Rédiger un article</span> </a></li>
                  <li> <a href="forms-editors.html"> <i style="color: #0ef9de" class="fa-sharp fa-regular fa-images"></i><span>Gérer le slider</span> </a></li>
-                 <li> <a href="forms-validation.html"><span style="margin-right: 10px; color: #0ef9de" class="fa fa-list-ol fa-fw mr-1"></span><span>Catégories</span> </a></li>
+                 <li> <a href="#"><span style="margin-right: 10px; color: #0ef9de" class="fa fa-list-ol fa-fw mr-1"></span><span>Catégories</span> </a></li>
               </ul>
            </li>
            <li class="nav-item">
@@ -62,7 +62,7 @@
               <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#"> <i style="color: #f7bac5"  class="bi bi-gem"></i><span>Boutique</span><i class="bi bi-chevron-down ms-auto"></i> </a>
               <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                  <li> <a href="{{ route('index_article') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-basket-shopping fa-fw mr-1"></span><span>Article</span> </a></li>
-                 <li> <a href="icons-remix.html"><span style="color: #f7bac5; margin-right:8px" class="fa fa-coins fa-fw mr-1"></span><span>Catégories</span> </a></li>
+                 <li> <a href="{{ route('A_Categorie') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-coins fa-fw mr-1"></span><span>Catégories</span> </a></li>
               </ul>
            </li>
            <li class="nav-item">
@@ -115,7 +115,10 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script src="//g.tutorialjinni.com/mojoaxel/bootstrap-select-country/dist/js/bootstrap-select-country.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+<script src="../r_js/jquery.nestable.js"></script>
 <script src="{{asset('assetsAdmin/js/main.js')}}"></script>
+<!-- si le js ne marche pas c'est a cause de ABBE -->
+<script src="../r_js/style.js"></script>
 
     @livewireScripts
 </body>
