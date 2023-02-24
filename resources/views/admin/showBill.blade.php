@@ -1,0 +1,160 @@
+@extends('layouts.app')
+
+@section('content')
+
+<main style="background-image: url('{{asset("/assets/images/background.png")}}')">
+
+
+<div style="background-color: white;" class="container  justify-content-center">
+    <div class="row">
+        @if (session('success'))
+                <div class="alert alert-success col-12">
+                    {{ session('success') }}
+                </div>
+        @endif
+        <div class="col-6">
+            <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
+        </div>
+        <div class="col-6" >
+            <a href="{{ route('paiement.facture') }}" class="my-custom-btn btn btn-primary my-4">Retour à la liste des factures</a>
+        </div>
+        <hr>
+        
+        <form action="{{ route('facture.updateStatus', $bill->id) }}" method="post">
+            @csrf
+            @method('PUT')
+            <div style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif" class="mb-3 row">
+              <div class="col-md-7 p-4 col-12">
+                <span style="font-weight:bold">Status : </span>
+                  <select  class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
+                    @foreach($status as $status)
+                        <option value="{{ $status->id }}" {{ $bill->status == $status->id ? 'selected' : '' }} role="option">{{ $status->status }}</option>
+                    @endforeach
+                </select>
+              </div> 
+              <div style="margin-top:25px;" class="col-md-5 p-4 col-10 d-flex justify-content-center ">
+                <button type="submit" class="btn btn-dark">Enregistrer</button>
+              </div>
+            </div>
+        </form>
+          
+          <hr>
+        </div>
+    <div class="row border border-dark m-1 mb-4 rounded">
+      <div class="col-md-4 col-12 p-3">
+        <h4>Informations Membre</h4>
+        <span style="font-weight:bold">{{ $bill->lastname }} {{ $bill->name }} (n°{{ $bill->user_id }}) </span> <br>
+        <a style="color:rgb(4, 0, 255)" class="a" href="mailto:{{ $bill->email }}">{{ $bill->email }} <br>
+        <a style="color:rgb(4, 0, 255)" class="a" href="tel:{{ $bill->phone }}">{{ $bill->phone }}</a><br>
+        {{ \Carbon\Carbon::parse($bill->birthdate)->age }} ans
+        <h5 class="mt-2">Adresse de facturation</h5>
+        {{ $bill->lastname }} {{ $bill->name }}
+            <br>
+            {{ $bill->address }} <br> {{ $bill->zip }} {{ $bill->city }} <br>{{ $bill->country }}
+      </div>
+      <div class="col-md-4 col-12 p-3">
+        <h4>Détail de la commande</h4>
+        <span style="font-weight:bold">Numéro de commande</span> : {{ $bill->id }} <br>
+        <?php
+          setlocale(LC_ALL, 'fr_FR.UTF-8');
+          
+          // Define an array of English to French translations for month and day names
+          $englishToFrench = [
+              'January' => 'janvier',
+              'February' => 'février',
+              'March' => 'mars',
+              'April' => 'avril',
+              'May' => 'mai',
+              'June' => 'juin',
+              'July' => 'juillet',
+              'August' => 'août',
+              'September' => 'septembre',
+              'October' => 'octobre',
+              'November' => 'novembre',
+              'December' => 'décembre',
+              'Monday' => 'Lundi',
+              'Tuesday' => 'Mardi',
+              'Wednesday' => 'Mercredi',
+              'Thursday' => 'Jeudi',
+              'Friday' => 'Vendredi',
+              'Saturday' => 'Samedi',
+              'Sunday' => 'Dimanche',
+          ];
+          
+          // Use the strtr function to replace the English month and day names with their French equivalents
+          $formattedDate = strtr(\Carbon\Carbon::parse($bill->date_bill)->isoFormat('dddd D MMMM YYYY à HH:mm:ss'), $englishToFrench);
+          
+          // Output the formatted date
+          echo '<span style="font-weight:bold">Date</span> '.$formattedDate;
+          ?>
+        <br>
+        <span style="font-weight:bold">Dernière mise à jour</span> : ?????????? <br>
+        <span style="font-weight:bold">Référence commande </span>: {{ $bill->ref }} <br>
+        <span style="font-weight:bold">Mode de paiement </span>: {{ $bill->payment_method }} <br>
+        Paiement en 1 fois <br>
+        <span style="font-weight:bold">Frais </span>: {{ number_format($bill->total_charges, 2, ',', ' ') }} €<br>
+        <span style="font-weight:bold">Coût TTC </span>: {{ number_format($bill->payment_total_amount, 2, ',', ' ') }} €<br>
+      </div>
+      <div class="col-md-4 col-12 p-3">
+        <h4>Détail paiement</h4>
+        <span style="font-weight:bold">Paiement</span> : €<br>
+        <span style="font-weight:bold">Echéance </span>
+      </div>
+    </div>
+
+    <div class="row border border-dark mx-2">
+      <div class="col-12 d-flex justify-content-center border-bottom -border-dark bg-secondary">
+        <h3 class="my-2">Détail Facture</h3> <hr>
+      </div>
+    </div>
+
+    <table id="" style="width: 98%; margin:0px auto !important"  class="table ">
+      <thead>
+          <th > <a>Désignation</a></th>
+          <th ><a>Quantité</a></th>
+          <th ><a >Prix</a></th>
+          <th><a >Sous-total</a></th>
+          <th><a ></a></th>
+      </thead>                            
+      <tbody>
+          @foreach ($shop as $shop)
+          <tr>
+            <form action="{{ route('facture.updateDes', $shop->id_liaison) }}" method="post">
+              @csrf
+              @method('PUT')
+              <td style="width: 800px;">
+                <div class="row ">
+                  <div class="col-md-2 col-12">
+                    <img style="height: 70px" src="{{ $shop->image }}"  alt="">
+                  </div>
+                    <div class="col-md-6 col-12">
+                      <select name="designation"  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
+                        <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
+                        @foreach($designation as $title)
+                            <option value="{{ $title }}" role="option">{{ $title }}</option>
+                        @endforeach
+                    </select>
+                    </div>
+                  <div class="col-md-2 col-12">
+                    <button type="submit" class="btn btn-sm btn-warning mt-3">Changer</button>
+                  </div>
+                </div>
+              </td>
+            </form>
+              <td>{{ $shop->quantity }} </td>
+              <td>{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
+              <td>{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
+              <td>{{ $shop->addressee   }} </td>
+            </tr>
+          @endforeach
+      
+                   
+           
+          
+      </tbody>
+  </table>
+  <div style="height: 50vh"></div>
+</div>
+</main>
+@endsection
+

@@ -1,0 +1,1 @@
+<div class="footer small text-center">Tous droits révervés - Gymnastique Concordia - 2015</div>
