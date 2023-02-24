@@ -32,9 +32,6 @@ Route::get('/test', function () {
     return view('dev2023');
 });
 
-Route::get('/t', function () {
-    return view('test2');
-});
 
 
 
