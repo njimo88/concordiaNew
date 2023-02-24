@@ -19,7 +19,7 @@ class Article_Controller extends Controller
     public function index(){
 
         $requete_article = Shop_article::paginate(30) ;
-        return view('Articles/MainPage_article',compact('requete_article')) ;
+        return view('Articles/MainPage_article',compact('requete_article'))->with('user', auth()->user()) ;
     }
 
     /* Fonction permet de generer dans le formulaire interactive creer une seance 
@@ -53,7 +53,7 @@ class Article_Controller extends Controller
 
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
-        return view('Articles/Create_article_member',compact('requete_article','requete_cate','saison_list','requete_prof')) ;
+        return view('Articles/Create_article_member',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
     }
 // Affichage du formulaire creation des produits de type produit
     public function index_create_produit(){
@@ -66,7 +66,7 @@ class Article_Controller extends Controller
 
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
-        return view('Articles/Create_article_produit',compact('requete_article','requete_cate','saison_list','requete_prof')) ;
+        return view('Articles/Create_article_produit',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
     }
 // Affichage du formulaire creation des produits de type lesson
     public function index_create_lesson(){
@@ -79,7 +79,7 @@ class Article_Controller extends Controller
 
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
-        return view('Articles/Create_article_lesson',compact('requete_article','requete_cate','saison_list','requete_prof')) ;
+        return view('Articles/Create_article_lesson',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
     }
 
 //------------------- CREATION DES DIFFERENTS TYPES D'ARTICLES-------------------------
@@ -180,7 +180,7 @@ class Article_Controller extends Controller
        $requete_member->save();
 
    
-      return redirect()->route('create_article_member')->with('success', 'article a été crée avec succès');
+      return redirect()->route('create_article_member')->with('user', auth()->user())->with('success', 'article a été crée avec succès');
        
     
 
@@ -271,7 +271,7 @@ class Article_Controller extends Controller
          $requete_produit->save();
   
      
-        return redirect()->route('create_article_produit')->with('success', 'article a été crée avec succès');
+        return redirect()->route('create_article_produit')->with('success', 'article a été crée avec succès')->with('user', auth()->user());
          
       
   

@@ -33,7 +33,7 @@ Route::get('/test', function () {
 });
 
 Route::get('/t', function () {
-    return view('test2');
+    return view('A_Blog_scroll');
 });
 
 

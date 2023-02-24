@@ -179,7 +179,7 @@
                                                         }
 
 
-                                                        foreach($user as $users){
+                                                        foreach($a_user as $users){
 
 
                                                                             foreach($Data_teacher as $t){

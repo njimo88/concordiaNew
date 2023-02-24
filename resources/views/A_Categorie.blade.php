@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Category Form</title>
-     <!-- bootstrap css -->
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-     <link rel="stylesheet" href="../r_css/bootstrap.min.css">
-      <!-- style css -->
-      <link rel="stylesheet" href="../r_css/style.css">
-    
-    </head>
-    <body>
+@extends('layouts.template')
+
+@section('content')
+<main id="main" class="main">
   
         <div class="container">
 
@@ -168,10 +157,5 @@
 
 </script>
 
-        <script src="https://code.jquery.com/jquery-3.6.3.slim.min.js" integrity="sha256-ZwqZIVdD3iXNyGHbSYdsmWP//UBokj2FHAxKuSBKDSo=" crossorigin="anonymous"></script>
-        <script src="../r_js/bootstrap.min.js"></script>
-        <script src="../r_js/popper.min.js"></script>
-        <script src="../r_js/jquery.nestable.js"></script>
-        <script src="../r_js/style.js"></script>
-    </body>
-</html>
+</main>
+@endsection

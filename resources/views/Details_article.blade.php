@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Details article</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  <link href="../Shop_CSS/css/style2.css" rel="stylesheet">
-</head>
-<body>
+@extends('layouts.app')
+
+@section('content')
+
 
 @php
                     function fetchDay($date){
@@ -100,7 +93,7 @@
 
                                                 foreach($Data_teacher as $t){
 
-                                                        foreach($user as $users){
+                                                        foreach($a_user as $users){
                                                               if($users->user_id == $t){
                                                     
                                                                       $aff = 1;
@@ -122,8 +115,10 @@
 @foreach($article as $data)
 
 @if($data->id_shop_article == $indice and $aff == 1)  
-<div class="container mt-4 mb-5">
-          <div class="d-flex">
+<main style="height: 100vh; background-image: url('{{asset("/assets/images/background.png")}}');">
+
+<div style="background-color:white;"  class="container mt-5 mb-2">
+          <div  class="d-flex">
             <div class="p-2 bg-light flex-fill">
             <div class="card">
             {{--  Affichage bloc professeur (Nom et photo) --}}
@@ -148,7 +143,7 @@
 
                                           foreach($Data_teacher as $t){
 
-                                                foreach($user as $users){
+                                                foreach($a_user as $users){
                                                   if($users->user_id == $t){
                                                         echo '<img src="../assets/images/user - Copy (Custom) (Custom).jpg">';
                                                         echo "    ".$users->name." ".$users->lastname ;
@@ -346,10 +341,30 @@
 
                                         @endif
                                       @endforeach
-
+                                      <div class="row d-flex justify-content-center">
+                                        <h1> Descriptif de l'article</h1>
+                                        <div class="card">
+                                          <div class="card-body">
+                                    
+                                            @foreach($article as $at)
+                                                    @if ($at->id_shop_article == $indice )
+                                    
+                                                    {!! $at->description !!}
+                                    
+                                                  
+                                    
+                                                    @endif
+                                    
+                                            @endforeach
+                                    
+                                          </div>
+                                        </div>
+                                      </div>
                                       
 
                                       </div>
+                                    
+
                             @endif
                             @endforeach
 
@@ -455,7 +470,25 @@
 
                                         @endif
                                       @endforeach
-
+                                      <div class="row d-flex justify-content-center">
+                                        <h1> Descriptif de l'article</h1>
+                                        <div class="card">
+                                          <div class="card-body">
+                                    
+                                            @foreach($article as $at)
+                                                    @if ($at->id_shop_article == $indice )
+                                    
+                                                    {!! $at->description !!}
+                                    
+                                                  
+                                    
+                                                    @endif
+                                    
+                                            @endforeach
+                                    
+                                          </div>
+                                        </div>
+                                      </div>
                                       
 
                                       </div>
@@ -469,27 +502,10 @@
 
 {{--  Affichage Description avec plus de details --}}
 
-<h1> Descriptif de l'article</h1>
-<div class="card">
-  <div class="card-body">
 
-  @foreach($article as $at)
-          @if ($at->id_shop_article == $indice )
-
-          {!! $at->description !!}
-
-        
-
-          @endif
-
-  @endforeach
-
-  </div>
-</div>
 
 
 
 </div>
-
-</body>
-</html>
+</main>
+@endsection
