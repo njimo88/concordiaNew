@@ -14,7 +14,8 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\BillsController;
 use App\Models\old_bills;
 use App\Http\Controllers\ProfessionnelsController;
-
+use App\Mail\UserEmail;
+use Illuminate\Support\Facades\Mail;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -147,10 +148,29 @@ Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name
 
 
 /*------------------------------ Communication ----------------------------------------- */
-Route::get('Communication', [Controller_Communication::class, 'index'])->name('index');
+Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index');
+Route::get('/Communication/sendmail', [Controller_Communication::class, 'send_mail'])->name('sendmail');
+
+Route::get('/Communication/a', [Controller_Communication::class, 'test'])->name('test');
+Route::post('Communication/envoi', [Controller_Communication::class, 'send_mail'])->name('send_mail');
+
+Route::get('/testroute', function() {
+    $name = "Funny Coder";
+
+//The email sending is done using the to method on the Mail facade
+    Mail::to('nkpericksen@gmail.com')->send(new UserEmail($name));
+});
+
+
+
+
 Route::post('Communication', [Controller_Communication::class, 'saison_choix'])->name('saison');
+
+
+
+
 
 Route::post('Communication/upload', [Controller_Communication::class, 'upload'])->name('ckeditor.upload');
 
 Route::get('Communication/envoi', [Controller_Communication::class, 'index_envoi_mail'])->name('index_mail');
-Route::post('Communication/envoi', [Controller_Communication::class, 'send_mail'])->name('send_mail');
+

@@ -13,6 +13,8 @@
 </head>
 <body>
 
+
+
     <div class="container" >
           
 
@@ -32,12 +34,8 @@
            
             </div>
 
-          
-
-
-
             </div>
-            <form action="{{route('send_mail')}}"  method="GET"  enctype="multipart/form-data">
+            <form action='{{ route("send_mail")}}' method="post"  enctype="multipart/form-data">
             @csrf
             <div class="row pt-5">
             <input type="submit" class="btn btn-primary" value="Valider">
@@ -49,16 +47,19 @@
                 
 
             </div>
-
-            
-
-
-
                 
             <div class="col-md-8">
                 <br>
 
+                @php
+
+                $mytab_user = [10,11] ;
+
+                @endphp
+
                             <input type="text" name="title" class="form-control" placeholder="Title">
+                            <input type="text" name="destinataires" class="form-control" placeholder="Title" value="" hidden>
+                           
 
                             <textarea name="editor1"  id="ckeditor" class="form-control" name="ckeditor"></textarea>
                             
@@ -72,50 +73,7 @@
 
             </div>
 
-            <div class="row">
-                <div class="col-md-2">
-
-                </div>
-         
-            <div class="col-md-8">
-
-         
-                <div style="height: 250px;  overflow: scroll; ">
-                            <table class="table">
-                            <thead>
-                                <tr>
-                                
-                                <th scope="col">Saison </th>
-                                <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            
-                                @foreach($requete_article as $data)
-
-                                <tr>
-                                
-                                <td>{{ $data->title }}</td>
-                                
-                                <td><input style="vertical-align:center;" for="catenvoi" type="checkbox" name="article[]" value="{{$data->id_shop_article}}" ></td>
-                                
-
-                                </tr>
-
-                                @endforeach
-                            
-                            </tbody>
-                            </table>
-                </div>
-         </div>
-                <div class="col-md-2">
-
-                </div>
-
-              
-          </div>
-
-
+           
 
     </div>
  
