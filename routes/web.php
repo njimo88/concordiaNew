@@ -127,6 +127,15 @@ Route::get('/Article', [Article_Controller::class, 'index'])->name('index_articl
 Route::post('/Article/edit/{id}', [Article_Controller::class, 'edit'])->name('edit_article');
 Route::get('/Article/edit/{id}', [Article_Controller::class, 'edit_index'])->name('edit_article_index');
 
+// Dupliquer un article
+Route::post('/Article/duplicate/{id}', [Article_Controller::class, 'duplicate'])->name('duplicate_article');
+Route::get('/Article/duplicate/{id}', [Article_Controller::class, 'duplicate_index'])->name('duplicate_article_index');
+
+
+
+
+
+
 Route::get('/Article/delete/{id}', [Article_Controller::class, 'delete'])->name('delete_article');
 
 
