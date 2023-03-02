@@ -36,11 +36,8 @@ class Article_Controller extends Controller
         endforeach;
 
         return '<select name="room[]">' . $var . '</select>';
-
     }
-
-
-
+    
 
     // Affichage du formulaire creation des produits de type membre
     public function index_create_member(){
@@ -180,221 +177,69 @@ class Article_Controller extends Controller
        $requete_member->save();
 
    
-      return redirect()->route('create_article_member')->with('user', auth()->user())->with('success', 'article a été crée avec succès');
+        return redirect()->route('create_article_member')->with('user', auth()->user())->with('success', 'article a été crée avec succès');
        
-    
+   
 
     }
 
 
     public function inserer_article_produit(Request $request){
-
-       
-          $article  = new Shop_article;
-   
-          $article->saison = $request->input('saison');
-          $article->title  = $request->input('title');
-          $article->image  = $request->input('image');
-          $article->ref    = $request->input('ref');
-          
-          $article->nouveaute = $request->input('nouveaute');
-          $article->startvalidity = $request->input('startvalidity');
-          $article->endvalidity = $request->input('endvalidity');
-          $article->need_member = $request->input('need_member'); 
-          
-          $article->agemin           = $request->input('agemin');
-          $article->agemax           = $request->input('agemax');
-          $article->price            = $request->input('price');
-          $article->price_indicative = $request->input('price_indicative');
-          $article->totalprice       = 10;
-          $article->stock_ini         = $request->input('stock_ini');
-          $article->stock_actuel      = $request->input('stock_actuel');
-          $article->alert_stock       = $request->input('alert_stock');
-          $article->type_article      = $request->input('type_article');
-          $article->max_per_user      = $request->input ('max_per_user');
-          $article->short_description = $request->input('short_description');
-          $article->description       = $request->input('editor1') ;
-  
-          $article->afiscale = $request->input('afiscale');
-          $article->sex_limit = $request->input('sex_limit');
-          $article->selected_limit = $request->input('strict' );
-          $article->categories =  json_encode($request->input('category'),JSON_NUMERIC_CHECK);
-  
-         $article->save();
-  
-        
-          // recupere l'id de l'article qu'on a juste cree
-          $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
-  
-  
-      //----------------------------------------- inserer les infos dans la table Produit --------------------------- //
       
-         // on appelle le modele shop_article_2
-         $requete_produit = new shop_article_2;
-         $requete_produit->id_shop_article  =  $requete_article["id_shop_article"];
-  
-        $tab_XS = [] ;
-        $tab_S  = [] ;
-        $tab_L  = [] ;
-        $tab_M  = [] ;
-
-        // taille XS
-        $tab_XS = [
-            "Stock_ini" => $request->input('stock_ini_xs'),
-            "Stock_actuel" => $request->input('stock_actu_xs')
-        ] ;
-        $tab_S = [
-            "Stock_ini" => $request->input('stock_ini_s'),
-            "Stock_actuel" => $request->input('stock_actu_s')
-        ];
-        $tab_M = [
-            "Stock_ini" => $request->input('stock_ini_m'),
-            "Stock_actuel" => $request->input('stock_actu_m')
-        ];
-        $tab_L = [
-            "Stock_ini" => $request->input('stock_ini_l'),
-            "Stock_actuel" => $request->input('stock_actu_l')
-        ];
-
-
-         $input_declinaison = [
-              "XS" => $tab_XS,
-              "S" => $tab_S,
-              "L" =>  $tab_L,
-              "M" =>  $tab_M          
-      ];
-
-    
-         $requete_produit->declinaison =  json_encode($input_declinaison,JSON_NUMERIC_CHECK);
-        
-         
-         $requete_produit->save();
-  
-     
-        return redirect()->route('create_article_produit')->with('success', 'article a été crée avec succès')->with('user', auth()->user());
-         
-      
-  
-  
-  
-      }
-
-
+        $article  = new Shop_article;
  
-      public function inserer_article_lesson(Request $request){
+        $article->saison = $request->input('saison');
+        $article->title  = $request->input('title');
+        $article->image  = $request->input('image');
+        $article->ref    = $request->input('ref');
+        
+        $article->nouveaute = $request->input('nouveaute');
+        $article->startvalidity = $request->input('startvalidity');
+        $article->endvalidity = $request->input('endvalidity');
+        $article->need_member = $request->input('need_member'); 
+        
+        $article->agemin           = $request->input('agemin');
+        $article->agemax           = $request->input('agemax');
+        $article->price            = $request->input('price');
+        $article->price_indicative = $request->input('price_indicative');
+        $article->totalprice       = 10;
+        $article->stock_ini         = $request->input('stock_ini');
+        $article->stock_actuel      = $request->input('stock_actuel');
+      
+        $article->alert_stock       = $request->input('alert_stock');
+        $article->type_article      = $request->input('type_article');
+        $article->max_per_user      = $request->input ('max_per_user');
+        $article->short_description = $request->input('short_description');
+        $article->description       = $request->input('editor1') ;
 
-        /*    
-          $validator  = $request->validate([
-              'saison' => 'required|numeric',
-              'title'  => 'required|max:255',
-              'image'  => 'required|max:255|alpha',
-              'ref'  => 'required|max:255|alpha',
-              'startvalidity' => 'date',
-              'endvalidity'   => 'date',
-              'agemin' => 'required|numeric|gt:0',
-              'agemax' => 'required|numeric|gt:0',
-              'price' => 'required|numeric',
-              'price_indicative' => 'required|numeric',
-              'totalprice' => 'required|numeric',
-              'stock_ini' => 'required|numeric',
-              'stock_actuel' => 'required|numeric',
-              'alert_stock'  => 'required|numeric',
+        $article->afiscale = $request->input('afiscale');
+        $article->sex_limit = $request->input('sex_limit');
+        $article->selected_limit = $request->input('strict' );
+        $article->categories =  json_encode($request->input('category'),JSON_NUMERIC_CHECK);
+
+       $article->save();
+
       
-              'type_article' => 'required|numeric',
-               'max_per_user'      =>  'required|numeric|gt:0',
-                'short_description'  =>'required|alpha',
-                 'description'       => 'required|alpha',
-      
-                 'prix_adhesion'  => 'required|numeric|gt:0',
-                  'prix_assurance'  =>   'required|numeric|gt:0',
-                  'prix_licence_fede' =>   'required|numeric|gt:0',
-      
-      
-             
-        ], [
-              'agemin' => 'age negative !!!',
-              'agemax' => 'age negative !!!',
-              'prix_adhesion' => 'age negative !!!',
-              'prix_assurance' => 'age negative !!!',
-              'prix_licence_fede' => 'age negative !!!',
-             
-      
-      
-          ]);
-          */
-           
-          
-         
-              $article  = new Shop_article;
+        // recupere l'id de l'article qu'on a juste cree
+        $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
+
+        $requete_produit = new shop_article_2;
+        $requete_produit->id_shop_article  =  $requete_article["id_shop_article"];
+ 
+        $requete_produit->declinaison = $request->input('Json_declinaison');
        
-              $article->saison = $request->input('saison');
-              $article->title  = $request->input('title');
-              $article->image  = $request->input('image');
-              $article->ref    = $request->input('ref');
-              
-              $article->nouveaute = $request->input('nouveaute');
-              $article->startvalidity = $request->input('startvalidity');
-              $article->endvalidity = $request->input('endvalidity');
-              $article->need_member = $request->input('need_member'); 
-              
-              $article->agemin           = $request->input('agemin');
-              $article->agemax           = $request->input('agemax');
-              $article->price            = $request->input('price');
-              $article->price_indicative = $request->input('price_indicative');
-              $article->totalprice       = 10;
-              $article->stock_ini         = $request->input('stock_ini');
-              $article->stock_actuel      = $request->input('stock_actuel');
-              $article->alert_stock       = $request->input('alert_stock');
-              $article->type_article      = $request->input('type_article');
-              $article->max_per_user      = $request->input ('max_per_user');
-              $article->short_description = $request->input('short_description');
-              $article->description       = $request->input('editor1') ;
-      
-              $article->afiscale = $request->input('afiscale');
-              $article->sex_limit = $request->input('sex_limit');
-              $article->selected_limit = $request->input('strict' );
-              $article->categories =  json_encode($request->input('category'),JSON_NUMERIC_CHECK);
-      
-             $article->save();
-      
+
+        $requete_produit->save();
+        return redirect()->route('create_article_produit')->with('user', auth()->user())->with('success', 'article a été crée avec succès');
             
-              // recupere l'id de l'article qu'on a juste cree
-              $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
-      
-      
-          //----------------------------------------- inserer les infos dans la table lesson  --------------------------- //
-          
-             // on appelle le modele shop_article_0 = member
-             $requete_lesson = new shop_article_1 ;
-             $requete_lesson->id_shop_article  =  $requete_article["id_shop_article"];
-      
-             $input_lesson = [
-                "room" => $request->input('room') ,
-                "end_date" => $request->input('enddate'),
-                "start_date" =>  $request->input('startdate')      
-        ];
 
-        $stock_ini = array((int)$request->input('stock_ini')) ;
-        $input_stock_ini = ["stock_ini" =>  $stock_ini ];
-    
-        $stock_actuel = array((int)$request->input('stock_actuel'));
-        $input_stock_actuel = ["stock_actuel" =>   $stock_actuel ];
-    
 
-             $requete_lesson->teacher           =  json_encode($request->input('prof'),JSON_NUMERIC_CHECK); 
-             $requete_lesson->lesson            =  json_encode($input_lesson,JSON_NUMERIC_CHECK); 
-             $requete_lesson ->stock_ini        =  json_encode($input_stock_ini); 
-             $requete_lesson->stock_actuel      =  json_encode($input_stock_actuel); 
-                  
-             $requete_lesson->save();
+       return "tired";
+
       
          
-            return redirect()->route('create_article_lesson')->with('success', 'article a été crée avec succès');
-             
-          
-      
-          }
-      
+        }    
+    
 // methode du get qui affiche le formualaire pre rempli en fonction de l'id de l'article et de son type
           public function duplicate_index($id){
             $id_article = $id ;
@@ -587,126 +432,34 @@ class Article_Controller extends Controller
         $Shop_article = Shop_article::where('id_shop_article', $id)->get();
         $shop_article_1 = shop_article_1::where('id_shop_article', $id)->get();
         $shop_article_0 = shop_article_0::where('id_shop_article', $id)->get();
+        $shop_article_2 = shop_article_2::where('id_shop_article', $id)->get();
         $room = rooms::get();
         
       
 
-        return view('Articles/edit_index',compact('Shop_article','shop_article_1','shop_article_0','requete_cate','saison_list','requete_prof','Id','room'));
+        return view('Articles/edit_index',compact('Shop_article','shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','Id','room'))->with('user', auth()->user());
 
     }
 
+       //Modification des articles
     public function edit(Request $request, $id){
 
-/*
-        $this->validate($request, [
-                
-        
-            'saison'        => 'required',
-            'title'         => 'required',
-            'image'         => 'required',
-            'ref'           => 'required',
-            'nouveaute'    => 'required',
-            'startvalidity'  => 'required',
-            'endvalidity'  => 'required',
-            'need_member' => 'required',
-             'agemin'       => 'required',
-             'agemax'      => 'required',
-            'price'        => 'required',
-            'price_indicative'   => 'required',
-           
-            'stock_ini'         => 'required',
-            'stock_actuel'       => 'required',
-            'alert_stock'         => 'required',
-            'type_article'        => 'required',
-            'max_per_user'        => 'required',
-            'short_description'   => 'required',
-            'description'      => 'required',
+            
+          // $article= Shop_article::where('id_shop_article', $id)->firstOrFail(); apparemment, la fonction firstorfail force a utiliser id comme primary key
+           $article= Shop_article::find($id);
 
-      
-          ]);
-
-          */
+           $article_2= shop_article_2::find($id);
+           $article_1 = shop_article_1::find($id);
+           $article_0 = shop_article_0::find($id);
        
-        Shop_article::where('id_shop_article', '=', $id)
-        ->update([
-            'saison'         => $request->saison ,
-            'title'         => $request->input('title'),
-            'image'         => $request->input('image'),
-            'ref'           => $request->input('ref'),
-            'nouveaute'     => $request->input('nouveaute'),
-            'startvalidity' => $request->input('startvalidity'),
-            'endvalidity' => $request->input('endvalidity'),
-            'need_member' => $request->input('need_member'), 
-             'agemin'       => $request->input('agemin'),
-             'agemax'     =>  $request->input('agemax'),
-            'price'        => $request->input('price'),
-        'price_indicative' => $request->input('price_indicative'),
-        'totalprice'       => 10,
-        'stock_ini'         => $request->input('stock_ini'),
-        'stock_actuel'      => $request->input('stock_actuel'),
-        'alert_stock'       => $request->input('alert_stock'),
-        'type_article'      => $request->input('type_article'),
-        'max_per_user'      => $request->input ('max_per_user'),
-        'short_description' => $request->input('short_description'),
-        'description'      => $request->input('editor1') ,
-
-        
-        'afiscale' => $request->input('afiscale'),
-        'sex_limit' => $request->input('sex_limit'),
-         'selected_limit' => $request->input('strict' ),
-        'categories' =>  json_encode($request->input('category'),JSON_NUMERIC_CHECK)
-
-        
-        
-        ]);
-
-
-/*
-        $tab_startdate = [] ;
-        $tab_enddate =  [] ;
-
-        // transformer les dates en format
-        $tab_startdate = array_push($tab_startdate,$request->input('enddate')) ;
-        $tab_enddate   = array_push($tab_enddate, $request->input('startdate')) ;
-
-
-        $input_lesson = [
-            "room" => (int)$request->input('room') ,
-            "end_date" => $request->input('enddate'),
-            "start_date" =>  $request->input('startdate')      
-    ];
-    $tab_stock_ini = array((int)$request->input('stock_ini')) ;
-    $input_stock_ini = ["stock_ini" =>  $tab_stock_ini ];
-
-$tab_stock_actuel = array((int)$request->input('stock_statut'));
-$input_stock_actuel = ["stock_actuel" =>   $tab_stock_actuel ];
-
-
-
-        shop_article_1::where('id_shop_article', '=', $id)
-        ->update([
-            'teacher'        => json_encode($request->input('prof'),JSON_NUMERIC_CHECK),
-            'lesson'         => json_encode($input_lesson),
-            'stock_ini'      => json_encode($input_stock_ini),
-           'stock_actuel'    => json_encode($input_stock_actuel)
-        ]);
-        
-        */
-
-   
-        return redirect()->route('index_article')->with('success', 'l\'article a été modifié avec succès');
-
-
-
+           $article->update($request->all());
+           $article_1->update($request->all());
+           $article_2->update($request->all());
+           $article_0->update($request->all());
+      
+           return redirect()->route('index_article')->with('success', 'l\'article a été modifié avec succès');
+            
 }
-
-
-
-
-
-
-
-
 
 
 

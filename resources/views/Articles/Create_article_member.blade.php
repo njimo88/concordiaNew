@@ -20,14 +20,11 @@
 
           
 <form  method="POST" action="{{route('create_article_member')}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
-@csrf
+        @csrf
                 <div class="row"> 
-                    <div class="col-md-11">
-                    
-                    <input class="btn btn-warning" name="modifier" type="submit" value="Valider">
-                    </div>
-                   
-                   
+                        <div class="col-md-11"> 
+                        <input class="btn btn-warning" name="modifier" type="submit" value="Valider">
+                        </div>     
                 </div>
                 <br>
                 <!-- row vert  -->
@@ -326,77 +323,9 @@
 
 </form>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
-<script type="text/javascript">
-    CKEDITOR.replace('editor1', {
-        filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
-        filebrowserBrowseUrl: "/elfinder/ckeditor",
-        filebrowserUploadMethod: 'form',
-        language: 'fr',
-        on: {
-		loaded: function() {
-			ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
-		}
-	},
-
-        toolbar: [{ name: 'document', items : [ 'Source','NewPage','Preview' ] },
-            { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat','strikethrough', 'underline', 'subscript', 'superscript', '|' ] },
-            { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-            { name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','Scayt' ] },
-            '/',
-            { name: 'heading', items : ['heading', '|' ] },
-            { name: 'alignment', items : ['alignment', '|' ] },
-            { name: 'font', items : [ 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|'] },
-            
-
-          
-            { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','todoList',] },
-            { name: 'insert', items :[ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ] },
-            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-            { name: 'tools', items : [ 'Maximize','-','About' ] }
-
-],
+<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 
 
-  
-				uiColor: '#FFDC6E'
-    });
-
-  
-
-
-</script>
-
-
-
-<script>
-    $(document).ready(function() {
-        var max_fields = 10;
-        var wrapper = $(".input_fields_wrap");
-        var add_button = $(".add_field_button");
-        var x = 1;
-        $(add_button).click(function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'GET',
-                dataType: 'html',
-                url: "{{ route('test_create_article') }}",
-                success: function(msg) {
-                    if (x < max_fields) {
-                        x++;
-                        $(wrapper).append('<br><br><div class="small-12" id="mysession">Début <input type="datetime-local" name="startdate[]"/>Fin <input type="datetime-local" name="enddate[]"/>Salle'  + msg + '<a href="#" class="remove_field">Supprimer</a></div>')
-                    }
-                }
-            });
-        });
-        $(wrapper).on("click", ".remove_field", function(e) {
-            e.preventDefault();
-            $(this).parent('div').remove();
-            x--;
-        })
-    });
-</script>
 
 </main>
 @endsection

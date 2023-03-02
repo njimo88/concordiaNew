@@ -1,6 +1,9 @@
 @extends('layouts.template')
 
+
 @section('content')
+
+
 <main id="main" class="main">
 <div class="container">
 
@@ -43,12 +46,12 @@
                             <div class="col-md-2 col-6">
                                     <label for="title">Titre</label>
                                         
-                                        <input required id="title" class="form-control" name="title" for="title" type="text" value="">
+                                        <input  id="title" class="form-control" name="title" for="title" type="text" value="">
                             </div>
                     <div class="col-md-2 col-6">
                     <label for="image">Image</label>
                     
-                    <input class="imageUpload form-control" id="image" required for="image" name="image" type="upload" placeholder="Image">
+                    <input class="imageUpload form-control" id="image" for="image" name="image" type="upload" placeholder="Image">
                     </div>
                     <div class="col-md-2 col-6">
                     <label for="ref">Référence</label>
@@ -66,12 +69,12 @@
 
                     <div class="col-md-2 col-6 ">
                 <label> Début de validité : </label>
-                        <input required type="date" class="form-control" name="startvalidity" value="">
+                        <input type="date" class="form-control" name="startvalidity" value="">
                     </div>
 
                     <div class="col-md-2 col-6">
                     <label> Fin de validité :</label>
-                        <input required type="date" class="form-control" name="endvalidity" value="">
+                        <input  type="date" class="form-control" name="endvalidity" value="">
                     </div>
 
                     <div class="col-md-2 col-6">
@@ -91,13 +94,13 @@
                     <div class="col-md-2 col-6">
 
                     
-                            <label>Age Minimal</label><input type="number" class="form-control" name="agemin" step="0.01" value="" required>
+                            <label>Age Minimal</label><input type="number" class="form-control" name="agemin" step="0.01" value="" >
 
                     </div>
 
                     <div class="col-md-2 col-6">
 
-                    <label>Age Maximal</label><input type="number" class="form-control" name="agemax" step="0.01" value="" required>
+                    <label>Age Maximal</label><input type="number" class="form-control" name="agemax" step="0.01" value="" >
 
                     </div>
 
@@ -105,7 +108,7 @@
 
                          <label> Prix TTC :</label>
                         
-                        <input step="0.01" class="form-control" name="price" for="TTC" type="number" value='' required>
+                        <input step="0.01" class="form-control" name="price" for="TTC" type="number" value=''>
 
                     </div>
 
@@ -113,7 +116,7 @@
 
                 <label> Prix indicatif :</label>
                         
-                        <input step="0.01" class="form-control" name="price_indicative" for="TTC" type="number" value='' required>
+                        <input step="0.01" class="form-control" name="price_indicative" for="TTC" type="number" value='' >
 
                 </div>
 
@@ -121,32 +124,32 @@
 
                 <label> Quantité initale:</label>
                         
-                        <input step="0.01" class="form-control" name="stock_ini" for="TTC" type="number" value='' required>
+                        <input step="0.01" class="form-control" name="stock_ini" for="TTC" type="number" value='' >
 
                 </div>
 
                 <div class="col-md-2 col-6">
 
                 <label>  Quantité restante: </label>
-                        <input step="0.01" class="form-control" name="stock_actuel" for="TTC" type="number" value='' required>
+                        <input step="0.01" class="form-control" name="stock_actuel" for="TTC" type="number" value='' >
 
                 </div>
 
                 <div class="col-md-2 col-6">
                 <label>  Quantité alerte:</label> 
-                        <input step="0.01" class="form-control" name="alert_stock" for="TTC" type="number" value='' required>
+                        <input step="0.01" class="form-control" name="alert_stock" for="TTC" type="number" value='' >
 
                 </div>
 
                 <div class="col-md-2 col-6">
                 <label> type article  :</label>
-                        <input step="1" class="form-control" name="type_article" for="" type="number" value='2' required readonly> 
+                        <input step="1" class="form-control" name="type_article" for="" type="number" value='2'  readonly> 
 
                 </div>
 
                 <div class="col-md-2 col-6">
                 <label>  Max utilisateur:</label>
-                        <input  class="form-control" name="max_per_user" for="" type="number" value='' required>
+                        <input  class="form-control" name="max_per_user" for="" type="number" value=''>
 
                 </div>
              
@@ -266,68 +269,21 @@
   <h3>Paramètres spécifiques</h3>
   <br>
 
-          <div class="row pb-3 pt-3"> 
+<div class="adp-box">
+<div class="inputWrapper">
+</div>
+<button type="button" class="addInput"><i class="fa fa-plus"></i> &nbsp; Autres Ajouts</button>
+</div>
+<div class="form-group">
+<textarea class="form-control" rows="10" id="getData" name="Json_declinaison" hidden></textarea>
+</div>
 
-              <div class="col-md-2 col-6">
-                    <label>  XS:</label>
-                            <input  class=" form-control" name="XS" for="" type="number" value='XS' placeholder="XS" readonly>
-              </div>
-              <div class="col-md-5 col-6 ">
-                    <label style="margin-left:30%"> Stock initial:</label>
-                            <input style="width: 50%; margin-left:30%"  class=" form-control" name="stock_ini_xs" for="" type="number"  required>
-              </div>
-              <div class="col-md-5 col-6">
-                    <label>  Stock actuel:</label>
-                            <input  style="width: 50%;" class=" form-control" name="stock_actu_xs" for="" type="number"  required>
-              </div>
+  </div>
 
-              <div class="col-md-2 col-6 ">
-                    <label> S:</label>
-                            <input  class="form-control" name="S" for="" type="number" value='S' placeholder="S" readonly>
-              </div>
-              <div class="col-md-5 col-6">
-              <label style="margin-left:30%">  Stock initial:</label>
-                            <input  style="width: 50%; margin-left:30%" class="form-control" name="stock_ini_s" for="" type="number"  required>
-              </div>
-              <div class="col-md-5 col-6">
-              <label >  Stock actuel:</label>
-                            <input  style="width: 50%;" class="form-control" name="stock_actu_s" for="" type="number"  required>
-              </div>
-
-
-              <div class="col-md-2 col-6">
-                    <label> M:</label>
-                            <input  class="form-control" name="M" for="" type="number" value='M' placeholder="M" readonly>
-              </div>
-              <div class="col-md-5 col-6">
-              <label style="margin-left:30%">  Stock initial:</label>
-                            <input style="width: 50%; margin-left:30%" class="form-control" name="stock_ini_m" for="" type="number"  required>
-              </div>
-              <div class="col-md-5 col-6">
-              <label>  Stock actuel:</label>
-                            <input  style="width: 50%;" class="form-control" name="stock_actu_m" for="" type="number"  required>
-              </div>
-
-
-              <div class="col-md-2 col-6">
-                    <label> L:</label>
-                            <input  class="form-control" name="L" for="" type="number" value='L' placeholder="L" readonly>
-              </div>
-              <div class="col-md-5 col-6">
-                  <label style="margin-left:30%">  Stock initial:</label>
-                            <input  style="width: 50%; margin-left:30%" class="form-control" name="stock_ini_l" for="" type="number"  required>
-              </div>
-              <div class="col-md-5 col-6">
-             <label>  Stock actuel:</label>
-                            <input  style="width: 50%;" class="form-control" name="stock_actu_l" for="" type="number"  required>
-              </div>
-              
-              
-             
-          </div>
-  
+ 
+</div>
          
-  
+  </div>
 
 <!-- row rose -->
   <div class="row" style="background-color:pink; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
@@ -337,18 +293,13 @@
           
               <div class="col-sm-12">
                         <br>
-                
-                            
+            
                 
                               <label>Résumé </label>
                                 <textarea type="text" name="short_description" class="form-control"></textarea>
                               <label>Description</label>
                                 <textarea name="editor1"  id="ckeditor" class="form-control" required></textarea>
-                                
-                             
-                
-        
-                    
+                                            
               </div>
           
           
@@ -365,76 +316,13 @@
 
 </form>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
-<script type="text/javascript">
-    CKEDITOR.replace('editor1', {
-        filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
-        filebrowserBrowseUrl: "/elfinder/ckeditor",
-        filebrowserUploadMethod: 'form',
-        language: 'fr',
-        on: {
-		loaded: function() {
-			ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
-		}
-	},
-
-        toolbar: [{ name: 'document', items : [ 'Source','NewPage','Preview' ] },
-            { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat','strikethrough', 'underline', 'subscript', 'superscript', '|' ] },
-            { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-            { name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','Scayt' ] },
-            '/',
-            { name: 'heading', items : ['heading', '|' ] },
-            { name: 'alignment', items : ['alignment', '|' ] },
-            { name: 'font', items : [ 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|'] },
-            
-
-          
-            { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','todoList',] },
-            { name: 'insert', items :[ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ] },
-            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-            { name: 'tools', items : [ 'Maximize','-','About' ] }
-
-],
-
-
-  
-				uiColor: '#FFDC6E'
-    });
-
+   
+ 
   
 
 
-</script>
+<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 
 
-
-<script>
-    $(document).ready(function() {
-        var max_fields = 10;
-        var wrapper = $(".input_fields_wrap");
-        var add_button = $(".add_field_button");
-        var x = 1;
-        $(add_button).click(function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'GET',
-                dataType: 'html',
-                url: "{{ route('test_create_article') }}",
-                success: function(msg) {
-                    if (x < max_fields) {
-                        x++;
-                        $(wrapper).append('<br><br><div class="small-12" id="mysession">Début <input type="datetime-local" name="startdate[]"/>Fin <input type="datetime-local" name="enddate[]"/>Salle'  + msg + '<a href="#" class="remove_field">Supprimer</a></div>')
-                    }
-                }
-            });
-        });
-        $(wrapper).on("click", ".remove_field", function(e) {
-            e.preventDefault();
-            $(this).parent('div').remove();
-            x--;
-        })
-    });
-</script>
 </main>
 @endsection

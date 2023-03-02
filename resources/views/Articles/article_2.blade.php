@@ -275,61 +275,48 @@
 
           <div class="row pb-3 pt-3"> 
 
-              <div class="col-md-2 col-6">
-                    <label>  XS:</label>
-                            <input  class=" form-control" name="XS" for="" type="number" value='XS' placeholder="XS" readonly>
-              </div>
-              <div class="col-md-5 col-6 ">
-                    <label style="margin-left:30%"> Stock initial:</label>
-                            <input style="width: 50%; margin-left:30%"  class=" form-control" name="stock_ini_xs" for="" type="number"  required>
-              </div>
-              <div class="col-md-5 col-6">
-                    <label>  Stock actuel:</label>
-                            <input  style="width: 50%;" class=" form-control" name="stock_actu_xs" for="" type="number"  required>
-              </div>
+              
+          <div class="panel panel-default">
+ 
+ <div id="education_fields">
+         
+       </div>
+      <div class="col-sm-3 nopadding">
+ <div class="form-group">
+   <input type="text" class="form-control" id="Schoolname" name="libelle[]" value="" placeholder="libelle">
+ </div>
+</div>
+<div class="col-sm-3 nopadding">
+ <div class="form-group">
+   <input type="number" class="form-control" id="Major" name="stock_ini[]" value="" placeholder="">
+ </div>
+</div>
+<div class="col-sm-3 nopadding">
+ <div class="form-group">
+   <input type="number" class="form-control" id="Degree" name="stock_actu[]" value="" placeholder="">
+ </div>
+</div>
 
-              <div class="col-md-2 col-6 ">
-                    <label> S:</label>
-                            <input  class="form-control" name="S" for="" type="number" value='S' placeholder="S" readonly>
-              </div>
-              <div class="col-md-5 col-6">
-              <label style="margin-left:30%">  Stock initial:</label>
-                            <input  style="width: 50%; margin-left:30%" class="form-control" name="stock_ini_s" for="" type="number"  required>
-              </div>
-              <div class="col-md-5 col-6">
-              <label >  Stock actuel:</label>
-                            <input  style="width: 50%;" class="form-control" name="stock_actu_s" for="" type="number"  required>
-              </div>
-
-
-              <div class="col-md-2 col-6">
-                    <label> M:</label>
-                            <input  class="form-control" name="M" for="" type="number" value='M' placeholder="M" readonly>
-              </div>
-              <div class="col-md-5 col-6">
-              <label style="margin-left:30%">  Stock initial:</label>
-                            <input style="width: 50%; margin-left:30%" class="form-control" name="stock_ini_m" for="" type="number"  required>
-              </div>
-              <div class="col-md-5 col-6">
-              <label>  Stock actuel:</label>
-                            <input  style="width: 50%;" class="form-control" name="stock_actu_m" for="" type="number"  required>
-              </div>
+<div class="col-sm-3 nopadding">
+ <div class="form-group">
+   <div class="input-group">
+   
+     <div class="input-group-btn">
+       <button class="btn btn-success" type="button"  onclick="education_fields();"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+     </div>
+   </div>
+ </div>
+</div>
+<div class="clear"></div>
+ 
+ </div>
 
 
-              <div class="col-md-2 col-6">
-                    <label> L:</label>
-                            <input  class="form-control" name="L" for="" type="number" value='L' placeholder="L" readonly>
-              </div>
-              <div class="col-md-5 col-6">
-                  <label style="margin-left:30%">  Stock initial:</label>
-                            <input  style="width: 50%; margin-left:30%" class="form-control" name="stock_ini_l" for="" type="number"  required>
-              </div>
-              <div class="col-md-5 col-6">
-             <label>  Stock actuel:</label>
-                            <input  style="width: 50%;" class="form-control" name="stock_actu_l" for="" type="number"  required>
-              </div>
               
               
+
+              
+             
              
           </div>
   
@@ -372,49 +359,8 @@
 
 </form>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
-<script type="text/javascript">
-    CKEDITOR.replace('editor1', {
-        filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
-        filebrowserBrowseUrl: "/elfinder/ckeditor",
-        filebrowserUploadMethod: 'form',
-        language: 'fr',
-        on: {
-		loaded: function() {
-			ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
-		}
-	},
 
-        toolbar: [{ name: 'document', items : [ 'Source','NewPage','Preview' ] },
-            { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat','strikethrough', 'underline', 'subscript', 'superscript', '|' ] },
-            { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-            { name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','Scayt' ] },
-            '/',
-            { name: 'heading', items : ['heading', '|' ] },
-            { name: 'alignment', items : ['alignment', '|' ] },
-            { name: 'font', items : [ 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|'] },
-            
-
-          
-            { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','todoList',] },
-            { name: 'insert', items :[ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ] },
-            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-            { name: 'tools', items : [ 'Maximize','-','About' ] }
-
-],
-
-
-  
-				uiColor: '#FFDC6E'
-    });
-
-  
-
-
-</script>
-
-
+<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 
 <script>
     $(document).ready(function() {
@@ -427,7 +373,7 @@
             $.ajax({
                 type: 'GET',
                 dataType: 'html',
-                url: "{{ route('test_create_article') }}",
+                url: "{{ route('generate_form') }}",
                 success: function(msg) {
                     if (x < max_fields) {
                         x++;
@@ -443,5 +389,7 @@
         })
     });
 </script>
+
+
 </main>
 @endsection

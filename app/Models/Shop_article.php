@@ -10,12 +10,12 @@ class Shop_article extends Model
     use HasFactory;
 
     protected $table = 'shop_article';
-    protected $primarykey = 'id_shop_article';
-    
+    protected $primaryKey = 'id_shop_article';
+    public $incrementing = false;
     
 
     protected $fillable = [
-       
+        'id_shop_article',
             'title',
             'ref',
            

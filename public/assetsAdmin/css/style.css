@@ -1617,3 +1617,37 @@ text-align: left !important;
     cursor: pointer;
     transform: scale(1.2);
   }
+
+
+
+
+/* Dynamically create fields */
+.adp-box{
+  width:45%;
+  margin:3rem auto;
+  background:#fff;
+  padding:20px;
+}
+.heading{
+  color:#fff;
+  text-align:center;
+  text-shadow:0 0 4px rgba(0,0,0,0.25);
+}
+.input-group{
+  margin-bottom:1rem;
+  cursor:pointer;
+}
+.removeSlide {
+  position: absolute;
+  top: 45%;
+  cursor: pointer;
+}
+@media(max-width:746px){
+  .adp-box{
+      width:80%;
+  }
+  .removeSlide {
+      position: unset;
+      float: right;
+  }
+}

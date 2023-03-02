@@ -264,7 +264,7 @@
 
 
 <!-- row beige  -->
-fgsdsdfg
+
 @foreach($shop_article_0 as $data)
   <div class="row" style="background-color: beige;border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
 
@@ -335,14 +335,8 @@ fgsdsdfg
 
 </form>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
+<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 
-
-
-
-<script>
-   
-</script>
 
 </main>
 @endsection

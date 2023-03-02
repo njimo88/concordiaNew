@@ -124,15 +124,13 @@ Route::get('/details_article/{id}', [A_Controller_categorie::class, 'Handle_deta
 
 Route::get('/Article', [Article_Controller::class, 'index'])->name('index_article');
 
+
 Route::post('/Article/edit/{id}', [Article_Controller::class, 'edit'])->name('edit_article');
 Route::get('/Article/edit/{id}', [Article_Controller::class, 'edit_index'])->name('edit_article_index');
 
 // Dupliquer un article
 Route::post('/Article/duplicate/{id}', [Article_Controller::class, 'duplicate'])->name('duplicate_article');
 Route::get('/Article/duplicate/{id}', [Article_Controller::class, 'duplicate_index'])->name('duplicate_article_index');
-
-
-
 
 
 
@@ -154,6 +152,9 @@ Route::get('/Article/create/lesson', [Article_Controller::class, 'index_create_l
 
 // route pour afficher le formulaire de facon dynamique sur la date des cours , declencher avec le boutons ajouter une seance
 Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name('test_create_article');
+
+
+
 
 
 /*------------------------------ Communication ----------------------------------------- */
