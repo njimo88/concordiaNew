@@ -2,17 +2,14 @@
 
 @section('content')
 <main id="main" class="main">
-
-
 <div class="container">
-
 @if(session()->has('success'))
                 <div class="alert alert-success">
                     {{ session()->get('success') }}
                 </div>
             @endif
 
-<div class="row pt-5">
+            <div class="row pt-5">
                     <div class="col-md-10">
                         
                     </div>
@@ -23,14 +20,11 @@
 
           
 <form  method="POST" action="{{route('create_article_lesson')}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
-@csrf
+        @csrf
                 <div class="row"> 
-                    <div class="col-md-11">
-                    
-                    <input class="btn btn-warning" name="modifier" type="submit" value="Valider">
-                    </div>
-                   
-                   
+                        <div class="col-md-11"> 
+                        <input class="btn btn-warning" name="modifier" type="submit" value="Valider">
+                        </div>     
                 </div>
                 <br>
                 <!-- row vert  -->
@@ -65,7 +59,7 @@
                     </div>
                     <div class="col-md-2 col-6">
                     <label for="attestation">Nouveauté</label>
-                <input type="checkbox"  for="id_shop_article" value='1' name="nouveaute">
+                <input type="checkbox"  for="id_shop_article" value=1 name="nouveaute">
                     </div>
 
                     <div class="col-md-2 col-6 ">
@@ -144,7 +138,7 @@
 
                 <div class="col-md-2 col-6">
                 <label> type article  :</label>
-                        <input step="1" class="form-control" name="type_article" for="" type="number" value='1' required readonly>
+                        <input step="1" class="form-control" name="type_article" for="" type="number" value='0' required readonly>
 
                 </div>
 
@@ -164,6 +158,7 @@
                         <tr>
                     
                         <td><input style="vertical-align:center;" for="" type="checkbox" name="strict" value=1 ></td>
+                        
 
                         </tr>
                        
@@ -178,8 +173,8 @@
                         <table class="table">
 
                                 <tr>
-                                <input type="hidden" name="afiscale" value="0" />
-                                <td><input type="checkbox"  for="" value='1' name="afiscale"></td>
+                           
+                                <td><input type="checkbox"  value="1"  name="afiscale"></td>
 
                                 </tr>
                             
@@ -245,15 +240,7 @@
 </div>
     </div>
 
-
-
-
-
-
-
-
-
-                </div>
+ </div>
 
 
 </div>
@@ -352,4 +339,36 @@
 
 </form>
 <script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script>
+
+        $(document).ready(function() {
+          var max_fields = 10;
+          var wrapper = $(".input_fields_wrap");
+          var add_button = $(".add_field_button");
+          var x = 1;
+          $(add_button).click(function(e) {
+              e.preventDefault();
+              $.ajax({
+                  type: 'GET',
+                  dataType: 'html',
+                  url: "{{ route('test_create_article') }}",
+                  success: function(msg) {
+                      if (x < max_fields) {
+                          x++;
+                          $(wrapper).append('<div class="small-12" id="mysession">Début <input type="datetime-local" name="startdate[]"/>Fin <input type="datetime-local" name="enddate[]"/>Salle'  + msg + '<a href="#" class="remove_field">Supprimer</a></div>')
+                      }
+                  }
+              });
+          });
+          $(wrapper).on("click", ".remove_field", function(e) {
+              e.preventDefault();
+              $(this).parent('div').remove();
+              x--;
+          })
+        });
+
+
+
+</script>
 </main>

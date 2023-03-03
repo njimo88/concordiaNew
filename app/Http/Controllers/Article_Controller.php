@@ -203,6 +203,135 @@ class Article_Controller extends Controller
 
     }
 
+    public function inserer_article_lesson(Request $request){
+      
+        $article  = new Shop_article;
+ 
+        $article->saison = $request->input('saison');
+        $article->title  = $request->input('title');
+        $article->image  = $request->input('image');
+        $article->ref    = $request->input('ref');
+        
+        
+        $article->startvalidity = $request->input('startvalidity');
+        $article->endvalidity = $request->input('endvalidity');
+        $article->need_member = $request->input('need_member'); 
+        
+        $article->agemin           = $request->input('agemin');
+        $article->agemax           = $request->input('agemax');
+        $article->price            = $request->input('price');
+        $article->price_indicative = $request->input('price_indicative');
+        $article->totalprice        = 10;
+        $article->stock_ini         = $request->input('stock_ini');
+        $article->stock_actuel      = $request->input('stock_actuel');
+      
+        $article->alert_stock       = $request->input('alert_stock');
+        $article->type_article      = 1;
+        $article->max_per_user      = $request->input ('max_per_user');
+        $article->short_description = $request->input('short_description');
+        $article->description       = $request->input('editor1') ;
+
+       
+        if($request->has('nouveaute')){
+            $article->nouveaute = $request->input('nouveaute');
+        }else{
+            $article->nouveaute = 0 ;
+        }
+
+        if($request->has('afiscale')){
+            $article->afiscale = $request->input('afiscale');
+        }else{
+            $article->afiscale = 0 ;
+        }
+        
+        if($request->has('strict')){
+            $article->sex_limit = $request->input('strict');
+        }else{
+            $article->sex_limit = 0 ;
+        }
+        if($request->has('strict')){
+            $article->selected_limit = $request->input('strict' );
+        }else{
+            $article->selected_limit = 0 ;
+        }
+    
+        $article->categories =  json_encode($request->input('category'),JSON_NUMERIC_CHECK);
+
+        $article->save();
+
+      
+        // recupere l'id de l'article qu'on a juste cree
+        $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
+
+        $requete_lesson = new shop_article_1;
+        $requete_lesson->id_shop_article  =  $requete_article["id_shop_article"];
+ 
+        // recuperation des input du formulaire et encodage en json avec json_encode
+        $stock_ini_tab    = json_encode( array("stock_ini" => (array)(int)$request->input('stock_ini')) );
+        $stock_actuel_tab = json_encode( array("stock_actuel" => (array)(int)$request->input('stock_actuel')) );
+        $teacher_tab      = json_encode( $request->input('prof'),JSON_NUMERIC_CHECK );
+
+        $lesson_tab       = json_encode( array( 
+            
+            "room" => $request->input('room'), 
+            "start_date" =>  $request->input('startdate'), 
+            "end_date" =>   $request->input('enddate')
+        
+        ),JSON_NUMERIC_CHECK);
+
+        //insertion des donnees dans les champs de la BD
+        $requete_lesson->stock_ini    =    $stock_ini_tab;
+        $requete_lesson->stock_actuel =    $stock_actuel_tab ;
+        $requete_lesson->teacher      =    $teacher_tab ;
+        $requete_lesson->lesson       =    $lesson_tab ; 
+
+        $requete_lesson->save();
+
+        return redirect()->route('create_article_lesson')->with('user', auth()->user())->with('success', 'article a été crée avec succès');
+            
+         
+        }    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public function inserer_article_produit(Request $request){
       
@@ -635,7 +764,7 @@ class Article_Controller extends Controller
                 }
 
                 if($request->has('sex_limit')){
-                    $article->sex_limit = 1;
+                    $article->sex_limit = $request->input('sex_limit');
                     $article->save();
                 }else{
                     $article->selected_limit = 0 ;
