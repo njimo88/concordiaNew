@@ -71,6 +71,7 @@
             @if (Route::has('register'))
               <li><a  href="{{ route('register') }}">Inscrivez-vous</a></li>
             @endif 
+
           </ul>
         </nav><!-- .navbar -->
   
@@ -149,6 +150,7 @@
                 </form>
               </ul>
             </li>
+            <li><a href="{{ route('panier',auth()->user()->user_id) }}"><i style="color:white;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier</a></li>
           </ul>
         </nav><!-- .navbar -->
   

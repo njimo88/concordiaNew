@@ -1,15 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+
     <link href="../Shop_CSS/css/style2.css" rel="stylesheet">
-    
-</head>
-<body>
+
+    <div class="modal fade " id="commanderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-notify modal-info" role="document">
+            <!--Content-->
+            <div class="modal-content text-center" id="commanderModalContainer">
+                
+            </div>
+            <!--/.Content-->
+          </div>
+    </div>
+
             @php
            
             function printValues($arr) {
@@ -33,7 +36,7 @@
                                                $values[] = $value;
                                                $count++;
 
-                                                 break;
+                                                 k;
                                                     }
                                                                                            
                                                         }
@@ -80,30 +83,16 @@
 
 
 <br>
-<div class="row mt">
+<div class="container">
 
-       <div class="row mt">
-            <div class="container mt-5 mb-5">
-                 <div class="d-flex justify-content-center row">
-                 <div class="col-md-10">
-                
-           @foreach($requete as $data)
-         
-         
+
+        @foreach($requete as $data)
             @if($data->id_shop_category == $indice)
-
-            <div class="row p-2 bg-white border rounded mt-2">
-
-                    
-                                <div class="col-md-6 mt-1">
-                                    <h3 style="color:blue">  {{ $data->title}} </h3>
-                                    <hr>
-                                    <div class="d-flex flex-row">
-                                        
-                                    </div>
-                                   
-                                    <p class="text-justify text-truncate para mb-0">
-                                    
+                <div class="row p-2 col-12 bg-white border border-dark  d-flex justify-content-center">
+                    <div class="col-md-6 mt-1">
+                        <a style="font-weight: bold;" class="a2" cl href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}">{{ $data->title}}</a>
+                        <p class="text-justify text-truncate para mb-0">
+                        
                                 @if ($data->short_description  == 'sans')
 
                                             @foreach($shopService as $data1)
@@ -134,12 +123,12 @@
                                                         */
 
                                                         $norepeat = TRUE ; // eviter de repeter les redondances d'informations a l'affichage
-                                                    foreach($Data_lesson['start_date'] as $dt){
+                                                        foreach($Data_lesson['start_date'] as $dt){
                                                         $date = new DateTime($dt);
                                                        
 
                                                         echo"</p>";
-
+                                                        echo"<b>Jour: </b>";
                                                         echo "Cette séance est dispensée le ".fetchDay($dt)." ".$date->format('G:i');
                                                        
                                                     };
@@ -165,11 +154,12 @@
                                                             foreach($Data_lesson['room'] as $r){
 
                                                                 if($r == $room->id_room and $norepeat == TRUE){
-                                                                        echo"</p>";
-                                                                        echo " <b>lieu: </b>".$room->name.' '.$room->address ;
+                                                                        echo"<br>";
+                                                                        echo " <b>Lieu: </b> <a class='a' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a>";
+                                                                        
                                                                         $norepeat = FALSE ;
                                                                         echo"</br>";
-
+                                                                        echo"</p>";
 
                                                                       }
 
@@ -179,29 +169,7 @@
                                                         }
 
 
-                                                        foreach($a_user as $users){
-
-
-                                                                            foreach($Data_teacher as $t){
-                                                                               
-                                                                            if($t == $users->user_id){
-                                                                                echo"<p>";  echo " <b>  Professeur </b>";
-                                                                                echo " ".$users->name." ".$users->lastname;
-                                                                                echo"</p>";
-
-                                                                                echo"<p>";
-
-                                                        @endphp                    
-                                                       
-                                                        
-                                                                               
-                                                        @php                   
-
-                                                                            }
-
-                                                                                };
-
-                                                                            }
+                                                      
 
                                     
                                                        @endphp
@@ -212,7 +180,6 @@
 
                                             @endforeach    
 
-                                                    Tous les détails sur la fiche descriptive
 
                                     @else
 
@@ -220,20 +187,99 @@
                                         
 
                                 @endif
-                                        <br><br></p>
+                        </p>
+                            <div class="d-flex flex-wrap justify-content-start align-items-center">
+                              @foreach($shopService as $data1)
+                                @if ($data->id_shop_article == $data1->id_shop_article)
+                                  @php
+                                    $aff = 0;
+                                    $Data_lesson = (array) json_decode($data1->lesson, true);
+                                    $Data_teacher = json_decode($data1->teacher, true);
+                                    $Data_stock_actuel = json_decode($data1->stock_actuel, true);
+                                    $Data_stock_ini = json_decode($data1->stock_ini, true);
+                                  @endphp
+                                  @foreach($Data_teacher as $t)
+                                    @foreach($a_user as $users)
+                                      @if($users->user_id == $t)
+                                        <div class="d-flex flex-column align-items-center">
+                                          <img id="prof" class="mx-auto" style="max-height: 90px;" src="{{ $users->image }}">
+                                          <label  style="margin-top:-4px !important; font-size: 10px !important" for="prof" class="text-center">{{ $users->lastname }} {{ $users->name }}</label>
+                                        </div>
+                                        @php $aff = 1; @endphp
+                                      @endif
+                                    @endforeach
+                                  @endforeach
+                                @endif
+                              @endforeach
+                            </div>
+                          
+                    
                                     
                          </div>
-                         <div class="col-md-3 mt-1">
-                        <img class="img-fluid img-responsive rounded product-image" src="{{ $data->image }}">
-                    </div>
+                        
+                        
                      
-                       <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                           <div class="d-flex flex-row align-items-center">
-                               <h1 class="mr-1">{{$data->totalprice}}€</h1><span class="strike-text"></span>
-                           </div>
-                           <h4 style="color: green;">Disponible</h4>
-                           <div class="d-flex flex-column mt-4">  <a href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}"><button class="button button2" type="button">Details</button> </a><button class="button button3" type="button">Commander</button></div> <h3>Saison: {{$data->saison}}</h3>
-                       </div>
+                         <div class="col-md-3 row my-3">
+                            <div style="background-color: #ededed; position: relative;" class="col-12 border border-dark p-3">
+                              <h3 style="font-size: 1.25rem !important" class="card-title mb-3">Prix :</h3>
+                              @if ($data->nouveaute == 1)
+                                <img style="max-height:40px;position: absolute; top: 10px; right: 30px;" src="{{ asset("/assets/images/nouveau.webp") }}" alt="">
+                              @endif
+                              <span style="font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
+                              <div style="position: absolute; bottom: 5px; right: 2px;">
+                                <span style="font-size: medium; text-decoration: underline;">Saison:</span> <span style="font-size: small">{{$data->saison}}/{{$data->saison+1}}</span> 
+                              </div>
+                            </div>
+                          </div>
+                          
+                          
+
+                          <div class="col-md-3 row my-3">
+                                <div style="position: relative;" class="col-12">
+                                <div class="row justify-content-end">
+                                    <div class="col-5 d-flex justify-content-end p-0">
+                                        @if ($data->stock_actuel > $data->alert_stock)
+                                            <button data-shop-id="{{ $data->id_shop_article }}" style="background-color: #28a745 !important;" class="commanderModal btn  btn-success col-12" type="button">S'inscrire</button>
+                                        @elseif ($data->stock_actuel > 0 && $data->stock_actuel <= $data->alert_stock)
+                                            <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn  btn-warning col-12" type="button">S'inscrire</button>
+                                        @endif
+                                        </div>
+                                    <div class="col-5 d-flex justify-content-end p-0">
+                                        <a href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}" class="btn  btn-primary col-11" type="button">Details</a>
+                                        </div>
+                                </div>
+                                <br> &nbsp; <br>
+                                <div class="col-12" style="position: absolute; bottom: 5px; left: 20px;">
+                                    @if ($data->stock_actuel > $data->alert_stock)
+                                    @if ($data->type_article == 0)
+                                        <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponibles</span>
+                                    @elseif ($data->type_article == 1)
+                                        <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponibles</span>
+                                    @elseif ($data->type_article == 2)
+                                        <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Disponibles</span>
+                                    @endif
+                                    @elseif ($data->stock_actuel > 0 && $data->stock_actuel <= $data->alert_stock)
+                                    @if ($data->type_article == 0)
+                                        <span style="color:orange;"><i class="fas fa-exclamation-triangle" style="color:orange;"></i> Il reste {{$data->stock_actuel}} disponibilités</span>
+                                    @elseif ($data->type_article == 1)
+                                        <span style="color:orange;"><i class="fas fa-exclamation-triangle" style="color:orange;"></i> Il reste {{$data->stock_actuel}} places</span>
+                                    @elseif ($data->type_article == 2)
+                                        <span style="color:orange;"><i class="fas fa-exclamation-triangle" style="color:orange;"></i> Il reste {{$data->stock_actuel}} disponibilités</span>
+                                    @endif
+                                    @elseif ($data->stock_actuel <= 0)
+                                    @if ($data->type_article == 0)
+                                        <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
+                                    @elseif ($data->type_article == 1)
+                                        <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Séance complète</span>
+                                    @elseif ($data->type_article == 2)
+                                        <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
+                                    @endif
+                                    @endif
+                                </div>
+                                </div>
+                          </div>
+                        
+                        
     
                    
             </div> 
@@ -243,20 +289,4 @@
            @endforeach
 
           
-       </div>
-   </div>
 </div>
-
-         <!-- col-lg-4 -->
-      
-                 
-         <!-- col-lg-4 -->
-       </div>
-
-
-
-       </div>
-       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
-</body>
-</html>
-        

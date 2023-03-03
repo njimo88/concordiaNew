@@ -59,6 +59,9 @@ Route::get('/users/factures-devis', [App\Http\Controllers\UsersController::class
 Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
 Route::get('/users/factures-devis/showBill/{id}', [App\Http\Controllers\UsersController::class, 'showBill'])->name('user.showBill');
 
+Route::get('/panier/{id}', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
+
+
 
 
 /*-----------Admin----------*/
@@ -118,6 +121,8 @@ Route::get('category-subcategory/remove/{id_shop_category}', [A_Controller_categ
 Route::get('/Categorie_front', [A_Controller_categorie::class, 'MainShop'])->name('index_categorie');
 Route::get('/SubCategorie_front/{id}', [A_Controller_categorie::class, 'Shop_souscategorie'])->name('sous_categorie');
 Route::get('/details_article/{id}', [A_Controller_categorie::class, 'Handle_details'])->name('details_article');
+Route::put('/commander_article/{id}', [A_Controller_categorie::class, 'commander_article'])->name('commander_article');
+Route::get('/commanderModal/{shop_id}', [A_Controller_categorie::class, 'commanderModal']);
 
 //Route::get('/test', [A_Controller_categorie::class, 'JsonProcess2']);
 

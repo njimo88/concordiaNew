@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Traits\HasPermissions;
 use App\Models\Role;
+use App\Models\Basket;
 
 
 
@@ -52,6 +53,11 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsTo(Role::class, 'role');
+    }
+
+    public function paniers()
+    {
+        return $this->hasMany(Basket::class, 'user_id');
     }
     
 

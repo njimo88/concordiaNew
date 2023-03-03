@@ -1,40 +1,30 @@
 @extends('layouts.app')
 
 @section('content')
+<main id="main" class="main" class="mt-0" style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height: 100vh;">
+  
 
+  <div class="container">
+    @if (session('success'))
+    <div class="alert alert-success col-12">
+        {{ session('success') }}
+    </div>
+@endif
 
-
-  <section id="container">
-
-    <!-- **********************************************************************************************************************************************************
-        MAIN CONTENT
-        *********************************************************************************************************************************************************** -->
-    <!--main content start-->
-    <section id="main-content">
-
-
-@php $memory = 0 ; @endphp 
-
-      <nav aria-label="breadcrumb">
+    
+<section style="padding-top:40px !important" id="portfolio" class="border border-dark portfolio sections-bg row ">
+      <div class=" container" data-aos="fade-up">
+        @php $memory = 0 ; @endphp 
+    <nav aria-label="breadcrumb">
 
           <ol class="breadcrumb">
             <li class="breadcrumb-item" aria-current="page"><a href="{{route('index_categorie')}}">..</a></li>
 
             @php  
-                 
-/*  
- - on recupere l'indice c'est a dire l'id de la category et on la convertit en string dans $memory
- - on recupere ensuite dans les variables rest les lettres(caracteres) de 0 a 1, de 0 a 3 et de 0 a 4  
-
-*/
-
-                 $memory = strval($indice) ; 
-                 $rest1 = substr($memory,0,1);
-                 $rest2 = substr($memory,0,3);
-                 $rest3 = substr($memory,0,4);
-
-                 
-                 
+              $memory = strval($indice) ; 
+              $rest1 = substr($memory,0,1);
+              $rest2 = substr($memory,0,3);
+              $rest3 = substr($memory,0,4);
             @endphp
 
 {{--
@@ -70,11 +60,7 @@
           </ol>
           
       </nav>
-
-    
-<section id="portfolio" class="portfolio sections-bg">
-      <div class="container" data-aos="fade-up">
-
+      <hr>
         <div class="section-header">
           <h2> {{$info2->name}}</h2>
           <p>{!!$info2->description!!}</p>
@@ -115,10 +101,6 @@
     </section><!-- End Portfolio Section -->
 
     @if( $display_product == TRUE )
-                
-                <h3><i class="fa fa-angle-right"></i> Produits</h3>
-           
-           <hr>
                          <p>  @include('A_Shop_Affichage_Article') </p>
                           
                     @endif
@@ -127,26 +109,8 @@
     </section>
     
   </section>
-    <!--footer start-->
-    
-        <div class="credits">
-          <!--
-            You are NOT allowed to delete the credit link to TemplateMag with free version.
-            You can delete the credit link only if you bought the pro version.
-            Buy the pro version with working PHP/AJAX contact form: https://templatemag.com/dashio-bootstrap-admin-template/
-            Licensing information: https://templatemag.com/license/
-          -->
-          Created with Dashio template by <a href="https://templatemag.com/">TemplateMag</a>
-        </div>
-       
-     
-  </section>
 
-
-  <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-
-</body>
-
-</html>
+      </div>
+    </main>
 
 @endsection
