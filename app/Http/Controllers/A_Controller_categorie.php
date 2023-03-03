@@ -15,6 +15,11 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\TryCatch;
+use App\Models\Basket;
+use Illuminate\Support\Facades\Auth;
+
+require_once(app_path().'/fonction.php');
+
 
 class A_Controller_categorie extends Controller
 {
@@ -35,6 +40,28 @@ class A_Controller_categorie extends Controller
        
         return view('A_Categorie', $info, compact('shop_category'))->with('user', auth()->user());
 
+    }
+
+    public function commander_article($id)
+    {
+        $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
+        $addcommand = new Basket();
+        $addcommand->user_id = auth()->user()->user_id;
+        $addcommand->family_id = auth()->user()->family_id;
+        $addcommand->pour_user_id = auth()->user()->user_id;
+        $addcommand->ref = $shop->id_shop_article;
+        $addcommand->qte = 1;
+        $addcommand->save();
+
+        
+        return redirect()->back()->with('success', 'Article ajouté au panier');
+        
+    }
+
+    public function commanderModal($shop_id)
+    {
+        $shop = Shop_article::where('id_shop_article', $shop_id)->firstOrFail();
+        return view('Articles.modal.commanderModal', compact('shop'));
     }
 
     public function saveNestedCategories(Request $request){
@@ -273,28 +300,43 @@ public function  Shop_souscategorie($id){
 
 
     // jointure des tables shop_article, liaison_shop_articles_shop_categories et shop categorie pour l'affichage des categories et de leur descentantes(categories)
-    $requete = DB::table('shop_article')
-    ->join('liaison_shop_articles_shop_categories', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_shop_categories.id_shop_article')
-    ->join('shop_category', 'shop_category.id_shop_category', '=', 'liaison_shop_articles_shop_categories.id_shop_category')
-    ->get();
+    $saison_active = saison_active();
+
+    $n_var = DB::table('shop_article')
+        ->join('liaison_shop_articles_shop_categories', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_shop_categories.id_shop_article')
+        ->join('shop_category', 'shop_category.id_shop_category', '=', 'liaison_shop_articles_shop_categories.id_shop_category')
+        ->select('shop_article.*','shop_category.*',  'shop_article.image as image')
+        ->where('shop_article.saison', '=', $saison_active)
+        ->get();
+
+        
+    $n_var = filterArticlesByValidityDate($n_var);
+    $requete = getFilteredArticles($n_var); 
+    
+
     return view('A_Shop_SousCategorie_index',compact('info','info_parent','indice','requete','info2','article','shopService','rooms','a_user'))->with('user', auth()->user());
 
 }
 
 
-
 public function Handle_details($id){
 
-    $indice =$id ;
+    $articl= Shop_article::where('id_shop_article', $id)->firstOrFail();
+    $indice = $id;
     $article = Shop_article::get();
     $shopService =  shop_article_1::get();
     $rooms = rooms::get();
     $a_user = User::get();
-    $info =   Shop_category::get() ;
+    $info =   Shop_category::get();
+    $selectedUsers = array();
 
-    return view('Details_article',compact('indice','article','rooms','shopService','a_user'))->with('user', auth()->user());
-
+    // Convertir la chaîne JSON en tableau PHP
+    if (Auth::check()) {
+        $selectedUsers = getArticleUsers($articl);
+    }
+    return view('Details_article', compact('indice', 'article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user());
 }
+
 
 /* methode pour qui creer un JSON  et remplit le champ teacher de la table shop_article_1  */
    

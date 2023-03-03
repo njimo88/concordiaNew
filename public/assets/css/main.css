@@ -2714,10 +2714,6 @@ section {
   gap : 10px !important;
 }
 .sign-up-form {
-  margin: 40px auto;
-  max-width: 900px;
-  display: flex;
-  flex-direction: column;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.36), 0 4px 6px -4px rgb(0 0 0 / 0.15);
   border-radius: 12px;
   background-color: #fff;
@@ -2725,23 +2721,14 @@ section {
   ;
 }
 
-.sign-up-formrelogin{
-  max-width: 800px;
-  ;
-}
+
 
 .form-image {
   display: none;
 }
 
 /* Form Content */
-.form-content {
-  padding-top: 0!important;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 32px;
-}
+
 
 /* From Heading */
 
@@ -2774,7 +2761,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 48px;
-  width: 100%;
+  align-self: center;
 }
 
 .input {
@@ -3094,3 +3081,60 @@ button:hover {
   background: linear-gradient(to right bottom, #172982, #2441ce)
   }
 /*------------------------------------------------End family page ----------------------------------------------------------------*/
+/*------------------------------------------------Article page ----------------------------------------------------------------*/
+.widget-title {
+  padding: 15px 10px;
+  border-bottom: 2px solid #00C7ED;
+  color: #008CBA !important;
+  font-weight: bold;
+  margin-bottom: 20px !important;
+  font-size: 16px !important;
+}
+.card{
+  min-height: 180px;
+  
+
+}
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ededed;
+}
+
+.card-boddy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 0px solid #00C7ED !important;
+}
+
+.card-title {
+  align-self: flex-start !important;
+  font-size: 16px !important;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.card-text {
+  font-size: 14px !important;
+}
+
+.a{
+  color: #008CBA !important;
+}
+.a:hover {
+  color: red !important;
+  cursor: pointer;
+  }
+
+  .a2{
+    color: blue !important;
+  }
+  .a2:hover {
+    color: #008CBA !important;
+    cursor: pointer;
+    }
+/*------------------------------------------------End Article page ----------------------------------------------------------------*/

@@ -8,6 +8,7 @@ use App\Http\Requests\AddUserform;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+require_once(app_path().'/fonction.php');
 
 
 

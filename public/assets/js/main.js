@@ -290,7 +290,27 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+/*achat page------------------------------------------------------------------*/
+$('.commanderModal').click(function() {
+  $('#commanderModal').modal('show');
 
+  // Get the bill ID from the clicked element
+  var shop_id = $(this).data('shop-id');
+  
+
+   // Make an AJAX request to retrieve the old bills
+   $.ajax({
+      
+   url: '/commanderModal/' + shop_id,
+   success: function(data) {
+      // Insert the old bills data into the modal body
+      console.log(data);
+      $('#commanderModalContainer').html(data);
+   }
+   });
+   });
+
+/*End achat page------------------------------------------------------------------*/
 /*my table Sort-------------------------------------------------------------------*/
 $('#myTable').DataTable({
   pageLength: 100,
@@ -413,3 +433,5 @@ $('.detailsUser').click(function() {
     reader.readAsDataURL(file);
   });
 /*End familyy page-------------------------------------------------------------------*/
+
+

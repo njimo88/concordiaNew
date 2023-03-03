@@ -8,12 +8,32 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
     protected $redirectTo = '/';
+    public function showLoginForm()
+{
+    // Store the previous URL in the session
+    session(['url.intended' => url()->previous()]);
+
+    return view('auth.login');
+}
+
+protected function sendLoginResponse(Request $request)
+{
+    $request->session()->regenerate();
+
+    // Get the intended URL, or the URL to redirect to if there is no intended URL
+    $redirectTo = session('url.intended', $this->redirectPath());
+
+    return redirect()->intended($redirectTo);
+}
+
+
 
     public function __construct()
     {
@@ -46,9 +66,16 @@ class LoginController extends Controller
         }
     }
     
+    
 
     // If both checks fail, return a failed login response
     return $this->sendFailedLoginResponse($request);
 }
-
+public function logout()
+    {
+        // log the user out
+        Auth::logout();
+        // redirect the user to the previous page
+        return Redirect::back();
+    }
 }

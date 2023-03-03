@@ -44,6 +44,22 @@ public function editdata(){
     dd('done');
 }
 
+public function panier($id)
+{
+    // Récupérer l'utilisateur correspondant à l'id
+    $users = User::find($id);
+    
+    // Récupérer tous les paniers associés à l'utilisateur avec les informations de l'article correspondant
+    $paniers = DB::table('basket')
+                ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+                ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff')
+                ->get();
+    // Retourner la vue avec les données récupérées
+    return view('users.panier', compact('paniers','users'))->with('user', auth()->user());
+}
+
+
+
     
 
     /*Update users*/
