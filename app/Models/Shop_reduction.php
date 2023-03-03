@@ -12,6 +12,7 @@ class Shop_reduction extends Model
 
     protected $table = 'shop_reduction';
     protected $primarykey = 'id_shop_reduction';
+    public $incrementing = false;
 
     protected $fillable = [
         'code',

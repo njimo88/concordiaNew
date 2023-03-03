@@ -59,7 +59,7 @@
                     </div>
                     <div class="col-md-2 col-6">
                     <label for="attestation">Nouveauté</label>
-                <input type="checkbox"  for="id_shop_article" value='1' name="nouveaute">
+                <input type="checkbox"  for="id_shop_article" value=1 name="nouveaute">
                     </div>
 
                     <div class="col-md-2 col-6 ">
@@ -158,6 +158,7 @@
                         <tr>
                     
                         <td><input style="vertical-align:center;" for="" type="checkbox" name="strict" value=1 ></td>
+                        
 
                         </tr>
                        
@@ -172,8 +173,8 @@
                         <table class="table">
 
                                 <tr>
-                                <input type="hidden" name="afiscale" value="0" />
-                                <td><input type="checkbox"  for="" value='1' name="afiscale"></td>
+                           
+                                <td><input type="checkbox"  for=""  name="afiscale"></td>
 
                                 </tr>
                             
@@ -265,15 +266,15 @@
 
                 <div class="col-md-4 col-6">
                       <label>  Prix d'adhésion:</label>
-                              <input  class="form-control" name="prix_adhesion" for="" type="number" value='' required>
+                              <input  class="form-control" name="prix_adhesion" for="" type="number"  required>
                 </div>
                 <div class="col-md-4 col-6">
                       <label>  Prix d'assurance:</label>
-                              <input  class="form-control" name="prix_assurance" for="" type="number" value='' required>
+                              <input  class="form-control" name="prix_assurance" for="" type="number"  required>
                 </div>
                 <div class="col-md-4 col-6">
                       <label>  Prix de la licence de fédération:</label>
-                              <input  class="form-control" name="prix_licence_fede" for="" type="number" value='' required>
+                              <input  class="form-control" name="prix_licence_fede" for="" type="number" required>
                 </div>
                
                

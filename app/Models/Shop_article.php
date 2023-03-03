@@ -15,7 +15,7 @@ class Shop_article extends Model
     
 
     protected $fillable = [
-        'id_shop_article',
+       
             'title',
             'ref',
            

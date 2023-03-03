@@ -9,26 +9,21 @@ class shop_article_1 extends Model
 {
     use HasFactory;
 
-
-
     protected $table = 'shop_article_1';
-    protected $primarykey = 'id_shop_article';
+    protected $primaryKey = 'id_shop_article';
+    public $incrementing = false;
+    
 
-    protected $fillable = [
-        'id_shop_article',
-        'stock_ini',
-        'stock_actuel',
-        'teacher',
-        'lesson',
-        'updated_at',
-        'created_at'
-
+    protected $fillable = [  
+            'stock_ini',
+            'stock_actuel',
+            'teacher',
+            'lesson',
+            'created_at',
+            'updated_at'
     ];
 
-
-
-
-
+   
 
 
 

@@ -194,8 +194,8 @@ foreach($Shop_article as $value1){
                                                     <table class="table">
 
                                                             <tr>
-                                                            <input type="hidden" name="afiscale" value="0" />
-                                                            <td><input type="checkbox"  for=""  name="afiscale" value="{{$value1->afiscale}}" {{ $value1->afiscale == 1 ? 'checked' : 0 }} ></td>
+                                                           
+                                                            <td><input type="checkbox"  value=1 name="afiscale" value="{{$value1->afiscale}}" {{ $value1->afiscale == 1 ? 'checked' : 0 }} ></td>
 
                                                             </tr>
                                                         
@@ -264,14 +264,6 @@ foreach($Shop_article as $value1){
                             </table>
                             </div>
                                 </div>
-
-
-
-
-
-
-
-
 
                                             </div>
 
@@ -503,7 +495,7 @@ foreach($Shop_article as $value1){
 
                                             <div class="col-md-2 col-6">
                                             <label> type article  :</label>
-                                                    <input step="1" class="form-control" name="type_article" for="" type="number" value='0' required readonly>
+                                                    <input step="1" class="form-control" name="type_article" for="" type="number" value='{{$value1->type_article }}' required readonly>
 
                                             </div>
 
@@ -522,7 +514,7 @@ foreach($Shop_article as $value1){
 
                                                     <tr>
                                                 
-                                                    <td><input style="vertical-align:center;" for="" type="checkbox" name="strict" value="{{$value1->selected_limit}}" {{ $value1->selected_limit == 1 ? 'checked' : 0 }} ></td>
+                                                    <td><input style="vertical-align:center;" for="" type="checkbox" name="strict"  value=1 value="{{$value1->selected_limit}}" {{ $value1->selected_limit == 1 ? 'checked' : 0 }} ></td>
 
                                                     </tr>
                                                 
@@ -533,19 +525,16 @@ foreach($Shop_article as $value1){
                                             <div class="col-md-4 col-6">
 
                                             <label>  Attestation fiscale :</label>
+                                            <table class="table">
 
-                                                    <table class="table">
+                                            <tr>
 
-                                                            <tr>
-                                                            <input type="hidden" name="afiscale" value="0" />
-                                                            <td><input type="checkbox"  for=""  name="afiscale" value="{{$value1->afiscale}}" {{ $value1->afiscale == 1 ? 'checked' : 0 }} ></td>
+                                            <td><input type="checkbox"  value=1 name="afiscale" value="{{$value1->afiscale}}" {{ $value1->afiscale == 1 ? 'checked' : 0 }} ></td>
 
-                                                            </tr>
-                                                        
-                                                    </table>
+                                            </tr>
 
-                                        
-                                        
+                                            </table>
+                                                                                    
 
                                             </div>
                                             <div class="col-md-4 col-6 pb-5">
@@ -610,12 +599,6 @@ foreach($Shop_article as $value1){
 
 
 
-
-
-
-
-
-
                                             </div>
 
 
@@ -628,7 +611,7 @@ foreach($Shop_article as $value1){
 
                             <!-- row beige  -->
                             <div class="row" style="background-color: beige;border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
-
+                            <i style="color: red;">Si vous voulez modifier réécrivez les anciennes données à converser et ajouter les nouvelles à la suite ; dans le cas où vous voulez remplacer complètement les données remplissez le formulaire avec les nouvelles données (les anciennes données seront perdues) </i>
                             <h3>Paramètres spécifiques</h3>
                             <br>
                            
@@ -636,7 +619,11 @@ foreach($Shop_article as $value1){
                                     <div class="inputWrapper">
                                     </div>
                                     <button type="button" class="addInput"><i class="fa fa-plus"></i> &nbsp; Autres Ajouts</button>
+                            </div>
+                                    <div class="form-group">
+                                            <textarea class="form-control" rows="10" id="getData" name="Json_declinaison" hidden></textarea>
                                     </div>
+
                                     <div class="form-group">
                                   
                                     @php
@@ -664,27 +651,16 @@ foreach($Shop_article as $value1){
                                                 @php
                                     
 
-
-
-
-
                                             }
 
 
                                         }
 
-                                      
-
 
                                      }
                                     
-
-                                 
-
-
                                     @endphp
 
-                                
                                     </div>
                                    
                             
@@ -702,18 +678,12 @@ foreach($Shop_article as $value1){
                                     
                                         <div class="col-sm-12">
                                                     <br>
-                                            
-                                                        
-                                            
+                                        
                                                         <label>Résumé </label>
                                                             <textarea type="text" name="short_description" class="form-control" > {{$value1->short_description}}</textarea>
                                                         <label>Description</label>
                                                             <textarea name="editor1"  id="ckeditor" class="form-control" required> {{$value1->description}}</textarea>
                                                             
-                                                        
-                                            
-                                    
-                                                
                                         </div>
                                     
                                     
@@ -768,16 +738,13 @@ foreach($Shop_article as $value1){
 
 ],
 
-
   
 				uiColor: '#FFDC6E'
     });
 
-  
 
 
 </script>
-
 
 
 <script>

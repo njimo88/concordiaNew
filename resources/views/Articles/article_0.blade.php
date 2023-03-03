@@ -44,7 +44,7 @@
                             <div class="col-md-2 col-6">
                                     <label for="title">Titre</label>
                                         
-                                        <input required id="title" class="form-control" name="title" for="title" type="text" value="{{$value1->title}}">
+                                        <input required id="title" class="form-control" name="title" for="title" type="text" value="new-{{$value1->title}}">
                             </div>
                     <div class="col-md-2 col-6">
                     <label for="image">Image</label>
@@ -54,7 +54,7 @@
                     <div class="col-md-2 col-6">
                     <label for="ref">Référence</label>
                     
-                            <input id="ref" class="form-control" for="ref" name="ref" type="text" placeholder="Référence" value="{{$value1->ref}}">
+                            <input id="ref" class="form-control" for="ref" name="ref" type="text" placeholder="Référence" value="new-{{$value1->ref}}">
                     </div>
                     <div class="col-md-2 col-6">
                     <label for="img">Couleur</label>

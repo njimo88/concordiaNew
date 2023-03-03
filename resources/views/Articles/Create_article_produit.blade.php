@@ -69,12 +69,12 @@
 
                     <div class="col-md-2 col-6 ">
                 <label> Début de validité : </label>
-                        <input type="date" class="form-control" name="startvalidity" value="">
+                        <input type="date" class="form-control" name="startvalidity" >
                     </div>
 
                     <div class="col-md-2 col-6">
                     <label> Fin de validité :</label>
-                        <input  type="date" class="form-control" name="endvalidity" value="">
+                        <input  type="date" class="form-control" name="endvalidity">
                     </div>
 
                     <div class="col-md-2 col-6">
@@ -94,13 +94,13 @@
                     <div class="col-md-2 col-6">
 
                     
-                            <label>Age Minimal</label><input type="number" class="form-control" name="agemin" step="0.01" value="" >
+                            <label>Age Minimal</label><input type="number" class="form-control" name="agemin" step="0.01"  >
 
                     </div>
 
                     <div class="col-md-2 col-6">
 
-                    <label>Age Maximal</label><input type="number" class="form-control" name="agemax" step="0.01" value="" >
+                    <label>Age Maximal</label><input type="number" class="form-control" name="agemax" step="0.01" >
 
                     </div>
 
@@ -108,7 +108,7 @@
 
                          <label> Prix TTC :</label>
                         
-                        <input step="0.01" class="form-control" name="price" for="TTC" type="number" value=''>
+                        <input step="0.01" class="form-control" name="price" for="TTC" type="number" >
 
                     </div>
 
@@ -116,7 +116,7 @@
 
                 <label> Prix indicatif :</label>
                         
-                        <input step="0.01" class="form-control" name="price_indicative" for="TTC" type="number" value='' >
+                        <input step="0.01" class="form-control" name="price_indicative" for="TTC" type="number"  >
 
                 </div>
 
@@ -124,32 +124,32 @@
 
                 <label> Quantité initale:</label>
                         
-                        <input step="0.01" class="form-control" name="stock_ini" for="TTC" type="number" value='' >
+                        <input step="0.01" class="form-control" name="stock_ini" for="TTC" type="number"  >
 
                 </div>
 
                 <div class="col-md-2 col-6">
 
                 <label>  Quantité restante: </label>
-                        <input step="0.01" class="form-control" name="stock_actuel" for="TTC" type="number" value='' >
+                        <input step="0.01" class="form-control" name="stock_actuel" for="TTC" type="number" >
 
                 </div>
 
                 <div class="col-md-2 col-6">
                 <label>  Quantité alerte:</label> 
-                        <input step="0.01" class="form-control" name="alert_stock" for="TTC" type="number" value='' >
+                        <input step="0.01" class="form-control" name="alert_stock" for="TTC" type="number" >
 
                 </div>
 
                 <div class="col-md-2 col-6">
                 <label> type article  :</label>
-                        <input step="1" class="form-control" name="type_article" for="" type="number" value='2'  readonly> 
+                        <input step="1" class="form-control" name="type_article"  type="number" value="2"  readonly> 
 
                 </div>
 
                 <div class="col-md-2 col-6">
                 <label>  Max utilisateur:</label>
-                        <input  class="form-control" name="max_per_user" for="" type="number" value=''>
+                        <input  class="form-control" name="max_per_user" for="" type="number" >
 
                 </div>
              
@@ -162,7 +162,7 @@
 
                         <tr>
                     
-                        <td><input style="vertical-align:center;" for="" type="checkbox" name="strict" value=1 ></td>
+                        <td><input style="vertical-align:center;" for="" type="checkbox" name="strict" value="1" ></td>
 
                         </tr>
                        
