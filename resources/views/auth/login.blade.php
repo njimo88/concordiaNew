@@ -64,10 +64,16 @@
           
         </div>
         @if (Route::has('password.request'))
-        <div class="d-flex justify-content-center my-4">
+        <div class="d-flex justify-content-center my-2">
           <a  href="{{ route('password.request') }}">
             Vous avez oublié votre mot de passe ?
-          </a>
+          </a> <br>
+          
+        </div>
+        <div class="d-flex justify-content-center my-2">
+          <span>Pas encore de compte ?  <a  href="{{ route('register') }}">
+            Créer un compte ici
+          </a> </span>
         </div>
         
     @endif
