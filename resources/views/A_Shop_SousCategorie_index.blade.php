@@ -70,7 +70,7 @@
 
 
 
-          <div class="row gy-4 portfolio-container">
+          <div class="row justify-content-center">
 
           @php  $display_product = TRUE ; @endphp
 
@@ -78,12 +78,12 @@
                @if($data->id_shop_category_parent == $indice)
 
                         @php      $display_product = FALSE ;   @endphp
-            <div class="col-xl-4 col-md-4 portfolio-item filter-app">
+            <div class=" col-md-2 mt-2 portfolio-item filter-app ">
               <div class="portfolio-wrap">
              
-                <a href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="../Shop_CSS/img/portfolio/port04.jpg" class="img-fluid" alt=""></a>
-                <div class="portfolio-info">
-                  <h4><a href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" title="More Details"> {{ $data->name}}</a></h4>
+                <a href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" ><img style="width: 100% !important;" src="{{ $data->image }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info d-flex justify-content-center">
+                  <h5 class="d-flex justify-content-center"><a style="text-align:center !important" href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" title="More Details"> {{ $data->name}}</a></h5>
                 
                 </div>
               </div>

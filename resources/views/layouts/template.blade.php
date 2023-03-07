@@ -85,7 +85,7 @@
             <a class="nav-link collapsed" data-bs-target="#pro-nav" data-bs-toggle="collapse" href="#"><span style="color: #00f900; margin-right:10px" class="fa fa-id-card-clip fa-fw mr-2 gc-lime"></span><span>Professionnels</span><i class="bi bi-chevron-down ms-auto"></i> </a>
             <ul id="pro-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                <li> <a href="{{ route('Professionnels.gestion') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-user-tie fa-fw mr-1"></span><span>Gestion</span> </a></li>
-               <li> <a href="pro-apexclub.html"><span style="color: #00f900; margin-right:10px" class="fa fa-euro-sign fa-fw mr-1"></span><span>Calcul des salaires</span> </a></li>
+               <li> <a href="{{ route('proffesional.calculSalary') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-euro-sign fa-fw mr-1"></span><span>Calcul des salaires</span> </a></li>
                <li> <a href="club-apexclub.html"><span style="color: #00f900; margin-right:10px" class="fa fa-stamp fa-fw mr-1"></span><span>Valider les heures</span> </a></li>
             </ul>
            </li>

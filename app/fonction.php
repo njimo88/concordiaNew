@@ -130,5 +130,9 @@ function getArticleUsers($article) {
 
 
 
+ function findFamilyIdByUserId($id_user) {
+    return DB::table('users')->where('user_id', $id_user)->value('family_id');
+}
+
 
 

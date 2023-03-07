@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Mockery\Generator\StringManipulation\Pass\Pass;
 use PhpParser\Node\Stmt\Else_;
+use App\Models\Shop_category;
 
 class A_ControllerBlog extends Controller
 { 
@@ -62,7 +63,7 @@ class A_ControllerBlog extends Controller
           */
 
     public function a_fetchPost(Request $request){
-
+        
         $a_post = A_Blog_Post::latest('date_post')->paginate(3);
         $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
         $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
@@ -79,7 +80,12 @@ class A_ControllerBlog extends Controller
       return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2'))->with('user', auth()->user());
 }
 
-
+public function Simple_Post($id){
+    $a_post = A_Blog_Post::find($id);
+    $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
+    $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
+    return view('club.Simple_Post',compact('a_post','a_categorie1','a_categorie2'))->with('user', auth()->user());
+}
 public function recherche_par_cat1(Request $request, $id) {
 
     // $a_requete1 = A_Blog_Post::latest('date_post')->paginate(5);

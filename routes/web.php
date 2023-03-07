@@ -30,10 +30,9 @@ use Illuminate\Support\Facades\Mail;
 
 /*---------------------------------Njimo------------------------------------------*/
 Route::get('/test', function () {
-    return view('dev2023');
+    return view('DEV2023')->with('user', Auth::user());
+
 });
-
-
 
 
 
@@ -84,6 +83,9 @@ Route::middleware(['auth', 'role:90'])->group(function () {
     Route::put('/admin/Professionnels/gestion/addPro/{user_id}',  [ProfessionnelsController::class, 'addPro'])->name('Professionnels.addPro');
     Route::get('/admin/Professionnels/gestion/declarationList/{id_user}',  [ProfessionnelsController::class, 'declarationList']);
     Route::get('/admin/Professionnels/gestion/declarationHeures/{id}',  [ProfessionnelsController::class, 'declarationHeures'])->name('Professionnels.declarationHeures');
+    Route::get('/admin/Professionnels/gestion/calculSalary',  [ProfessionnelsController::class, 'calculSalary'])->name('proffesional.calculSalary');
+    Route::post('/admin/Professionnels/gestion/modifySM',  [ProfessionnelsController::class, 'modifySM'])->name('proffesional.modifySM');
+    Route::post('/admin/Professionnels/gestion/simuleSalary',  [ProfessionnelsController::class, 'simuleSalary'])->name('proffesional.simuleSalary');
     Route::put('/admin/members/mdpUniversel/{user_id}', [n_AdminController::class, 'mdpUniversel'])->name('admin.mdpUniversel');
     Route::get('/admin/members/mdpUniverselmodal/{user_id}', [n_AdminController::class, 'mdpUniverselmodal']);
     Route::get('/admin/members/familleMembers/{user_id}', [n_AdminController::class, 'familleMembers']);
@@ -97,6 +99,7 @@ Route::middleware(['auth', 'role:90'])->group(function () {
 
 /*---------------------------------ABBé------------------------------------------*/
 Route::get('/', [A_ControllerBlog::class, 'a_fetchPost'])->name('A_blog');
+Route::get('/Simple_Post/{id}', [A_ControllerBlog::class, 'Simple_Post'])->name('Simple_Post');
 Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_par_cat1'])->name('A_blog_par_categorie1');
 Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_par_cat2'])->name('A_blog_par_categorie2');
 

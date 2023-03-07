@@ -97,8 +97,9 @@
                                              }
  
                                          @endphp   
- 
-                                         {{$a_article->titre}} 
+                                        <a href="{{ route('Simple_Post',$a_article->id_blog_post_primaire) }}">{{$a_article->titre}}</a>
+
+                                         
  
                                          @php
  

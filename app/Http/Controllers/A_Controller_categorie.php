@@ -18,6 +18,9 @@ use PhpParser\Node\Stmt\TryCatch;
 use App\Models\Basket;
 use Illuminate\Support\Facades\Auth;
 
+
+
+
 require_once(app_path().'/fonction.php');
 
 
