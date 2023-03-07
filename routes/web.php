@@ -111,7 +111,10 @@ Route::post('/Categorie/save', [A_Controller_categorie::class, 'saveNestedCatego
 Route::post('category-subcategory/create', [A_Controller_categorie::class, 'create'])->name('create-categories');
 
 Route::post('category-subcategory/save', [A_Controller_categorie::class, 'store'])->name('category-subcategory.store');
-Route::get('category-subcategory/edit/{id_shop_category}', [A_Controller_categorie::class, 'edit'])->name('category-edit');
+Route::get('category-subcategory/edit/{id_shop_category}', [A_Controller_categorie::class, 'edit_index'])->name('category-edit');
+Route::post('category-subcategory/edit/{id_shop_category}', [A_Controller_categorie::class, 'edit'])->name('edit');
+
+
 Route::get('category-subcategory/remove/{id_shop_category}', [A_Controller_categorie::class, 'remove'])->name('category-remove');
 
 
@@ -162,11 +165,12 @@ Route::get('/Article/create/lesson', [Article_Controller::class, 'index_create_l
 Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name('test_create_article');
 
 
-
-
-
 /*------------------------------ Communication ----------------------------------------- */
 Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index');
+Route::post('/Communication', [Controller_Communication::class, 'saison_choix'])->name('saison');
+
+
+/*
 Route::get('/Communication/sendmail', [Controller_Communication::class, 'send_mail'])->name('sendmail');
 
 Route::get('/Communication/a', [Controller_Communication::class, 'test'])->name('test');
@@ -175,14 +179,14 @@ Route::post('Communication/envoi', [Controller_Communication::class, 'send_mail'
 Route::get('/testroute', function() {
     $name = "Funny Coder";
 
-//The email sending is done using the to method on the Mail facade
+*/
+
+/*The email sending is done using the to method on the Mail facade
     Mail::to('nkpericksen@gmail.com')->send(new UserEmail($name));
 });
+*/
 
 
-
-
-Route::post('Communication', [Controller_Communication::class, 'saison_choix'])->name('saison');
 
 
 

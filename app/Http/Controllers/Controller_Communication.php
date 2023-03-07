@@ -7,15 +7,21 @@ use Illuminate\Http\Request;
 
 
 use App\Models\Shop_article;
+
+use App\Models\LiaisonShopArticlesBill;
 use App\Models\User;
 use App\Models\Shop_category;
 use App\Models\Shop_service;
 use App\Mail\UserEmail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
+
+require_once('../app/fonction.php');
+
 
 class Controller_Communication extends Controller
 {
-    //
+    /*
     public function index()
     {
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
@@ -39,17 +45,7 @@ class Controller_Communication extends Controller
 
 
 
-    public function saison_choix(Request $request)
-    {
-       
-        $saison_choisie = $request->saison ;
-        $saison_list = Shop_article::select('saison')->distinct('name')->get();
-        $requete_article = Shop_article::select('*')->where('saison',$saison_choisie)->get();
-        
-        return view('Communication/envoi_mail',compact('requete_article','saison_list'));
-       
-    }
-
+ 
 
 /*
     public function upload(Request $request)
@@ -74,11 +70,6 @@ class Controller_Communication extends Controller
         }
 
 }
-
-*/
-
-
-
 
 
 public function Send_mail(Request $request){
@@ -105,11 +96,7 @@ public function Send_mail(Request $request){
     }
 
 
-
-
-
-
-
+*/
 
  /*   
 $title =  $request->title ;
@@ -126,10 +113,6 @@ $title =  $request->title ;
    // return redirect()->route('index_mail')->with('success', ' email envoyé avec succès');
        
 }
-
-*/
-
-//---------------------------- email---------------------------------
 
 
 
@@ -151,19 +134,49 @@ public function sendmail(Request $get)
         Mail::to($mail)->send(new UserEmail($subject, $message) );
 }
     
+*/
+public function saison_choix(Request $request )
+{
+   
+    $saison_choisie = $request->saison ;
+    $saison_list = Shop_article::select('saison')->distinct('name')->get();
+    $requete_article = Shop_article::select('*')->where('saison',$saison_choisie)->get();
 
+   //return redirect()->route('', ['saison_choisie' =>  $saison_choisie])->with($saison_choisie);
+  //return  View::make('index')->with(compact('saison_choisie'));
+ // return redirect()->back()->with(['saison_choisie', $saison_choisie]);
+  // return redirect()->route('index_email',['saison_choisie' =>  $saison_choisie]);
+   
+   if(Auth::check())
+    {
+        $userId =  Auth::user()->id ;
+        return  retourner_shop_article_dun_teacher($userId, $saison_choisie);
 
-
-
-
-
-
-
-
-
+    } 
+   //
+   
+  
 
 }
 
 
+
+public function index()
+{
+    
+    $shop_article = Shop_article::where('saison','=','$saison_pick')->get();
+    $saison_list = Shop_article::select('saison')->distinct('name')->get();
+
+    // return  retourner_shop_article_dun_user(149,2022);
+  // return retourner_buyers_dun_shop_article(165) ;
+
+    return view('Communication/email_communication',compact('saison_list','shop_article'))->with('user', auth()->user());
+   
 }
+
+
+}
+
+
+
 
