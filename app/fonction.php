@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\shop_article;
-
-
+use App\Models\shop_article_1;
+use App\Models\LiaisonShopArticlesBill;
+use App\Models\Shop_category;
 
 //fonction pour afficher la famille en fonction de l'id de la famille
 function getUsersByFamilyId($family_id)
@@ -128,7 +130,82 @@ function getArticleUsers($article) {
 
 }
 
+// recuperer l'ID de user et la saison et restituer les produits dont il est teacher en fonction de la saison
+function retourner_shop_article_dun_teacher($user_id, $saison) {
+
+    $selectedArticles = [];
+    $selectedArticles_byuser = [];
+    //recupere le role du user 
+    $user_role = User::where("user_id",$user_id)->pluck('role')->first();
+   
+   
+    if ($user_role >= 30 and $user_role<90) {
+
+   
+        $shop_article_saison = Shop_article_1::get();
+
+        // recupere les shops article de type lesson
+        $shop_article_lesson =   DB::table('shop_article')->where('saison',$saison)
+       ->join('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')->get()->toArray();
+
+       foreach($shop_article_lesson as $data1){
+
+        $Data_teacher = json_decode($data1->teacher,true);
+
+            foreach($Data_teacher as $data2){
+                        if($user_id == $data2){
+                            $selectedArticles_byuser[] = $data1->id_shop_article;
+                        }
+            }
+
+       }
+
+       return  $selectedArticles_byuser ;
+
+
+        //recupere l'ensemble des teachers et l'id article(tableau with id)
+       $shop_article_l =   DB::table('shop_article')->where('saison',$saison)
+       ->join('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')->pluck('shop_article_1.id_shop_article','teacher')->toArray();
+      
+
+    }elseif($user_role>=90){
+        $shop_article = shop_article::where('saison',$saison)->get()->toArray();
+        $selectedArticles = $shop_article;
+        return $selectedArticles ;
+    }
+        
+    
+
+}
+
+// recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
+
+function retourner_buyers_dun_shop_article($id_shop_article) {
+
+    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->toArray();
+
+    return $requete_liaison_shop_article_bills ;
+
+}
 
 
 
+//fonctions pour afficher les dates
+function fetchDay($date){
+    $lejour = ( new DateTime($date) )->format('l');
 
+  $jour_semaine = array(
+"lundi" => "Monday",
+"Mardi" => "Tuesday",
+"Mercredi" => "Wednesday",
+"Jeudi" => "Thursday",
+"Vendredi" => "Friday",
+"Samedi" => "Saturday",
+"Dimanche" => "Sunday"
+
+  );
+
+}
+
+
+  

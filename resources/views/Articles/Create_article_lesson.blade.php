@@ -138,7 +138,7 @@
 
                 <div class="col-md-2 col-6">
                 <label> type article  :</label>
-                        <input step="1" class="form-control" name="type_article" for="" type="number" value='0' required readonly>
+                        <input step="1" class="form-control" name="type_article" for="" type="number" value='1' required readonly>
 
                 </div>
 

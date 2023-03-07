@@ -20,130 +20,133 @@
   
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
 
-
-
-
   <link href="../css/styleCom.css" rel="stylesheet">
 </head>
 <body>
 
+
+<main id="main" class="main">
 <div class="container">
-  <div class="row">
-    <form action="{{route('test')}}" method="GET">
-      @csrf
- <br> 
-      <label> Selectionner les users</label>
-      
-      <div id="someScrollingDiv">
-             <select class="form-select" id="multiple-select-field" data-placeholder="Choix des users" name="user[]" multiple>
-     </div>
-      @foreach($user as $data)
-        <option value="{{$data->user_id}}">{{$data->name}} {{$data->lastname}}</option>
-      @endforeach
-        
-      </select>
-  </div>
-  <br>
-  <button class="btn-primary" type="submit"> valider  </button>
-  <div class="row">
-  <div class="table-responsive">
+@if(session()->has('success'))
+                <div class="alert alert-success">
+                    {{ session()->get('success') }}
+                </div>
+            @endif
 
-      
-                
-<table id="mytable" class="table table-bordred table-striped">
-     
-<thead>
-        <tr>
-            <th>Nom</th>
-            <th>Prenom</th>
-            <th>email</th>
-            <th>adresse</th>
+            <div class="row pt-5">
+                    <div class="col-md-10">
+                        
+                    </div>
+                    <div class="col-md-2">
+                           <a href=""><button class="btn btn-warning"> retour</button></a>
+                    </div>
+            </div>
+
           
-        </tr>
-    </thead>
-<tbody>
-@foreach($user2 as $data)
-        <tr>
+<form  method="POST" action="{{route('saison')}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
+        @csrf
+              
+                <br>
+                <!-- row vert  -->
+      <div class="row" style="background-color: #c6ffc1; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
+                <h3>Paramètres Généraux</h3>  
+                        <div class="col-md-2 col-6">
+                            <label for="saison">Saison</label>
+                                <select id="saison" class="form-control" name="saison">
+                                    @foreach($saison_list as $data)
+                                    <option value="{{$data->saison}}">{{$data->saison}} - {{$data->saison + 1 }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="row"> 
+                        <div class="col-md-11"> 
+                        <input class="btn btn-warning"  name="SubmitButton" type="submit" value="Valider">
+                        </div>     
+                </div>
+      </div>
+    
+    
        
-            <td>{{$data->name}}</td>
-            <td>{{$data->lastname}}</td>
-            <td>{{$data->email}}</td>
-            <td>{{$data->address}}</td>
-            
-           
-            
-        </tr>
-@endforeach
 
+<!-- row rose -->
+  <div class="row" style="background-color:pink; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
 
-
-</tbody>
-
-</table>
-
-<div class="clearfix"></div>
-<div class="d-flex justify-content-center">
-{!! $user2->links() !!}
-</div>          
-</div>
- 
+          
+          <div class="row">
+          
+              <div class="col-sm-12">
+                        <br>
+                
+                              <label>Résumé </label>
+                                <textarea type="text" name="short_description" class="form-control"></textarea>
+                              <label>Description</label>
+                                <textarea name="editor1"  id="ckeditor" class="form-control" required></textarea>
+    
+          
+              </div>
+          
+          
+          
+          </div>
+    
+          
   </div>
 
+
+</div>
+           
 </div>
 
+</form>
+
+
+<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 <script>
+ CKEDITOR.replace('editor1', {
+        filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
+        filebrowserBrowseUrl: "/elfinder/ckeditor",
+        filebrowserUploadMethod: 'form',
+        language: 'fr',
+        on: {
+		loaded: function() {
+			ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
+		}
+	},
+
+        toolbar: [{ name: 'document', items : [ 'Source','NewPage','Preview' ] },
+            { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat','strikethrough', 'underline', 'subscript', 'superscript', '|' ] },
+            { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+            { name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','Scayt' ] },
+            '/',
+            { name: 'heading', items : ['heading', '|' ] },
+            { name: 'alignment', items : ['alignment', '|' ] },
+            { name: 'font', items : [ 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|'] },
+            
+
+          
+            { name: 'styles', items : [ 'Styles','Format' ] },
+            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','todoList',] },
+            { name: 'insert', items :[ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ] },
+            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
+            { name: 'tools', items : [ 'Maximize','-','About' ] }
+
+],
 
 
-$( '#multiple-select-field' ).select2( {
-    theme: "bootstrap-5",
-    width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
-    placeholder: $( this ).data( 'placeholder' ),
-    closeOnSelect: false,
-} );
+  
+				uiColor: '#FFDC6E'
+    });
+
+
+
+
+
 
 
 </script>
-
-<script type="text/javascript">  
-            function selects(){  
-                var ele=document.getElementsByName('chk');  
-                for(var i=0; i<ele.length; i++){  
-                    if(ele[i].type=='checkbox')  
-                        ele[i].checked=true;  
-                }  
-            }  
-            function deSelect(){  
-                var ele=document.getElementsByName('chk');  
-                for(var i=0; i<ele.length; i++){  
-                    if(ele[i].type=='checkbox')  
-                        ele[i].checked=false;  
-                      
-                }  
-            }             
-        </script>  
-
-          <script>
-
-                $('#someScrollingDiv').on('scroll', function() {
-                    let div = $(this).get(0);
-                    if(div.scrollTop + div.clientHeight >= div.scrollHeight) {
-                        // do the lazy loading here
-
-
-                    }
-                });
-
-
-
-
-          </script>
-        
-
-
-
+</main>
 
 
 </body>
-</html>
 
-   
+

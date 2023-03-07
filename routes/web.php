@@ -159,11 +159,12 @@ Route::get('/Article/create/lesson', [Article_Controller::class, 'index_create_l
 Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name('test_create_article');
 
 
-
-
-
 /*------------------------------ Communication ----------------------------------------- */
 Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index');
+Route::post('/Communication', [Controller_Communication::class, 'saison_choix'])->name('saison');
+
+
+/*
 Route::get('/Communication/sendmail', [Controller_Communication::class, 'send_mail'])->name('sendmail');
 
 Route::get('/Communication/a', [Controller_Communication::class, 'test'])->name('test');
@@ -172,14 +173,14 @@ Route::post('Communication/envoi', [Controller_Communication::class, 'send_mail'
 Route::get('/testroute', function() {
     $name = "Funny Coder";
 
-//The email sending is done using the to method on the Mail facade
+*/
+
+/*The email sending is done using the to method on the Mail facade
     Mail::to('nkpericksen@gmail.com')->send(new UserEmail($name));
 });
+*/
 
 
-
-
-Route::post('Communication', [Controller_Communication::class, 'saison_choix'])->name('saison');
 
 
 

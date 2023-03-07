@@ -293,46 +293,6 @@ class Article_Controller extends Controller
         }    
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function inserer_article_produit(Request $request){
       
         $article  = new Shop_article;
@@ -411,7 +371,8 @@ class Article_Controller extends Controller
           public function duplicate_index($id){
             $id_article = $id ;
             $Id = $id;
-
+            $requete_prof = User::select("*")->where('role','>', 29)->get();
+            $rooms = rooms::get();
             $requete_cate = Shop_category::get() ;
             $saison_list = Shop_article::select('saison')->distinct('name')->get();
             $requete_prof = User::select("*")->where('role','>', 29)->get();
@@ -427,7 +388,7 @@ class Article_Controller extends Controller
            if ($shop_article_0 ->count() == 1 ){
                 return view('Articles/article_0',compact('Shop_article','saison_list','shop_article_0','requete_cate','requete_prof','id_article'))->with('user', auth()->user()) ;
            }elseif($shop_article_1->count() == 1 ){
-                return view('Articles/article_1',compact('Shop_article','saison_list','shop_article_1','requete_cate','requete_prof','id_article'))->with('user', auth()->user()) ;
+                return view('Articles/article_1',compact('Shop_article','saison_list','shop_article_1','requete_cate','requete_prof','id_article','rooms'))->with('user', auth()->user()) ;
            }
            elseif($shop_article_2->count() == 1 ){
             
@@ -442,6 +403,9 @@ class Article_Controller extends Controller
             $requete_cate = Shop_category::get() ;
             $saison_list = Shop_article::select('saison')->distinct('name')->get();
             $requete_prof = User::select("*")->where('role','>', 29)->get();
+           
+            $rooms = rooms::get();
+    
 
             // recupere l'id de l'article qu'on a juste cree
             $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
@@ -457,9 +421,9 @@ class Article_Controller extends Controller
             $article  = new Shop_article;
             $article->id_shop_article =  $requete_article["id_shop_article"] + 1 ;
             $article->saison = $request->input('saison');
-            $article->title  = "new-".$request->input('title');
+            $article->title  = $request->input('title');
             $article->image  = $request->input('image');
-            $article->ref    = "new-".$request->input('ref');
+            $article->ref    = $request->input('ref');
             
             $article->nouveaute = $request->input('nouveaute');
             $article->startvalidity = $request->input('startvalidity');
@@ -487,65 +451,92 @@ class Article_Controller extends Controller
            $article->save();
 
            if ($shop_article_0 ->count() == 1 ){
-  //----------------------------------------- inserer les infos dans la table member  --------------------------- //
-    
-       
-    // recupere l'id de l'article qu'on a juste cree
-        $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
-      
-           // on appelle le modele shop_article_0 = member 
-        $requete_member = new shop_article_0 ;
+                        //----------------------------------------- inserer les infos dans la table member  --------------------------- //
+                            
+                            
+                            // recupere l'id de l'article qu'on a juste cree
+                                $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
+                            
+                                // on appelle le modele shop_article_0 = member 
+                                $requete_member = new shop_article_0 ;
 
-       $requete_member->id_shop_article        = $requete_article["id_shop_article"];
+                            $requete_member->id_shop_article        = $requete_article["id_shop_article"];
 
-       $requete_member->prix_adhesion         =  $request->input('prix_adhesion'); 
-       $requete_member->prix_assurance        =  $request->input('prix_assurance'); 
-       $requete_member->prix_licence_fede     =  $request->input('prix_licence_fede'); 
-            
-       $requete_member->save();
+                            $requete_member->prix_adhesion         =  $request->input('prix_adhesion'); 
+                            $requete_member->prix_assurance        =  $request->input('prix_assurance'); 
+                            $requete_member->prix_licence_fede     =  $request->input('prix_licence_fede'); 
+                                    
+                            $requete_member->save();
 
 
-   
-      return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
-       
-                
+                        
+                            return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+                            
+                                        
 
            }elseif($shop_article_1->count() == 1 ){
 
+                          // recupere l'id de l'article qu'on a juste cree
+                          $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
+                          //----------------------------------------- inserer les infos dans la table lesson  --------------------------- //
+                          
+                    
+                            $requete_lesson =  new shop_article_1 ;
+
+                            if(isset($request->room) and isset($request->enddate) and  isset($request->startdate)){
+                                $lesson_tab  = json_encode( array( 
+                                
+                                    "room" => $request->input('room'), 
+                                    "start_date" =>  $request->input('startdate'), 
+                                    "end_date" =>   $request->input('enddate')
+                                
+                                ),JSON_NUMERIC_CHECK);
+
+                                $requete_lesson->save();
+
+                            }
+                        
     
-            // recupere l'id de l'article qu'on a juste cree
-              $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
-          //----------------------------------------- inserer les infos dans la table lesson  --------------------------- //
-          
-             // on appelle le modele shop_article_0 = member
-             $requete_lesson = new shop_article_1 ;
-             $requete_lesson->id_shop_article  =  $requete_article["id_shop_article"];
-      
-             $input_lesson = [
-                "room" => $request->input('room') ,
-                "end_date" => $request->input('enddate'),
-                "start_date" =>  $request->input('startdate')      
-        ];
 
-        $stock_ini = array((int)$request->input('stock_ini')) ;
-        $input_stock_ini = ["stock_ini" =>  $stock_ini ];
-    
-        $stock_actuel = array((int)$request->input('stock_actuel'));
-        $input_stock_actuel = ["stock_actuel" =>   $stock_actuel ];
-    
+                            $stock_ini_tab = json_encode( array("stock_ini" => (array)(int)$request->input('stock_ini')) );
+                            $stock_actuel_tab = json_encode( array("stock_actuel" => (array)(int)$request->input('stock_actuel')) );
+                            $lesson_tab  = json_encode( array( 
+                            
+                                "room" => $request->input('room'), 
+                                "start_date" =>  $request->input('startdate'), 
+                                "end_date" =>   $request->input('enddate')
+                            
+                            ),JSON_NUMERIC_CHECK);
+                    
+                           
 
-             $requete_lesson->teacher           =  json_encode($request->input('prof'),JSON_NUMERIC_CHECK); 
-             $requete_lesson->lesson            =  json_encode($input_lesson,JSON_NUMERIC_CHECK); 
-             $requete_lesson ->stock_ini        =  json_encode($input_stock_ini); 
-             $requete_lesson->stock_actuel      =  json_encode($input_stock_actuel); 
-                  
-             $requete_lesson->save();
+
+                            $teacher_tab =  json_encode( $request->input('prof'),JSON_NUMERIC_CHECK );
+                         
+                     
 
 
 
-            return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+                            $requete_lesson->id_shop_article  =  $requete_article["id_shop_article"];
 
-              
+
+                            $requete_lesson->stock_ini           =   $stock_ini_tab ;
+                            $requete_lesson->stock_actuel        =    $stock_actuel_tab;
+                            $requete_lesson->teacher             =    $teacher_tab ;
+                            $requete_lesson->lesson              =  $request->input('json') ;
+
+                            $requete_lesson->save();
+
+
+
+
+                        
+             return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+
+                           
+                              
+                
+                            
            }
            elseif($shop_article_2->count() == 1 ){
 
@@ -576,9 +567,8 @@ class Article_Controller extends Controller
 
 
             return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+
           
-        
-        
         
         }
 
@@ -600,7 +590,8 @@ class Article_Controller extends Controller
         $shop_article_0 = shop_article_0::where('id_shop_article', $id)->delete();
         $shop_article_2 = shop_article_2::where('id_shop_article', $id)->delete();
       
-        return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
+      //  return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
+      return redirect()->back()->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
 
     }
 
@@ -614,6 +605,7 @@ class Article_Controller extends Controller
         $requete_cate = Shop_category::get() ;
 
         $requete_prof = User::select("*")->where('role','>', 29)->get();
+        $rooms = rooms::get();
 
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
@@ -621,10 +613,10 @@ class Article_Controller extends Controller
         $shop_article_1 = shop_article_1::where('id_shop_article', $id)->get();
         $shop_article_0 = shop_article_0::where('id_shop_article', $id)->get();
         $shop_article_2 = shop_article_2::where('id_shop_article', $id)->get();
-        $room = rooms::get();
+     
         
     
-        return view('Articles/edit_index',compact('Shop_article','shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','Id','room'))->with('user', auth()->user());
+        return view('Articles/edit_index',compact('Shop_article','shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','Id','rooms'))->with('user', auth()->user());
 
     }
 
@@ -687,102 +679,156 @@ class Article_Controller extends Controller
 
            }elseif($type_article == 1){
 
-            if(isset($request->editor1)){
+                                if(isset($request->editor1)){
 
-                $article->description = $request->editor1;
-                $article->save();
-            }
-            if($request->has('nouveaute')){
-                $article->nouveaute = 1;
-                $article->save();
-            }else{
-                $article->nouveaute = 0 ;
-                $article->save();
-            }
-    
-            if($request->has('strict')){
-                $article->selected_limit = 1;
-                $article->save();
-            }else{
-                $article->selected_limit = 0 ;
-                $article->save();
-            }
+                                    $article->description = $request->editor1;
+                                    $article->save();
+                                }
+                                if($request->has('nouveaute')){
+                                    $article->nouveaute = 1;
+                                    $article->save();
+                                }else{
+                                    $article->nouveaute = 0 ;
+                                    $article->save();
+                                }
+                        
+                                if($request->has('strict')){
+                                    $article->selected_limit = 1;
+                                    $article->save();
+                                }else{
+                                    $article->selected_limit = 0 ;
+                                    $article->save();
+                                }
 
-            if($request->has('afiscale')){
-                $article->afiscale = 1;
-            }else{
-                $article->afiscale = 0 ;
-                $article->save();
-            }
+                                if($request->has('afiscale')){
+                                    $article->afiscale = 1;
+                                }else{
+                                    $article->afiscale = 0 ;
+                                    $article->save();
+                                }
 
-            if(isset($request->category)){
-             
-                $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
-               
-                $article->save();  
-            }
-           $article_1->update($request->all());
-                         
+                                if(isset($request->category)){
+                                
+                                    $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
+                                
+                                    $article->save();  
+                                }
+
+
+                                if(isset($request->prof)){
+
+                                       $teacher_tab             =    json_encode( $request->input('prof'),JSON_NUMERIC_CHECK );
+                                
+                                       $article_1->teacher      =    $teacher_tab ;
+                                
+                                       $article_1->save();  
+                                      
+                                }
+
+                                if(isset($request->room) and isset($request->enddate) and  isset($request->startdate)){
+                                    $lesson_tab  = json_encode( array( 
+                                    
+                                        "room" => $request->input('room'), 
+                                        "start_date" =>  $request->input('startdate'), 
+                                        "end_date" =>   $request->input('enddate')
+                                    
+                                    ),JSON_NUMERIC_CHECK);
+                            
+                                
+                                    $article_1->lesson       = $lesson_tab ; 
+                                    $article_1->stock_ini    = json_encode( array("stock_ini" => (array)(int)$request->input('stock_ini')) );
+                                    $article_1->stock_actuel = json_encode( array("stock_actuel" => (array)(int)$request->input('stock_actuel')) );
+                                    
+
+                                    $article_1->save();
+                            
+                                   
+                             }
+
+                             
+
+
+                                
+                                $article_1->update($request->all());
+                                            
 
 
 
              }elseif($type_article ==2){
                             
-                if(isset($request->editor1)){
+                                    if(isset($request->editor1)){
 
-                    $article->description = $request->editor1;
-                    $article->save();
-                }
-                if($request->has('nouveaute')){
-                    $article->nouveaute = 1;
-                    $article->save();
-                }else{
-                    $article->nouveaute = 0 ;
-                    $article->save();
-                }
-        
-                if($request->has('strict')){
-                    $article->selected_limit = 1;
-                    $article->save();
-                }else{
-                    $article->selected_limit = 0 ;
-                    $article->save();
-                }
+                                        $article->description = $request->editor1;
+                                        $article->save();
+                                    }
+                                    if($request->has('nouveaute')){
+                                        $article->nouveaute = 1;
+                                        $article->save();
+                                    }else{
+                                        $article->nouveaute = 0 ;
+                                        $article->save();
+                                    }
+                            
+                                    if($request->has('strict')){
+                                        $article->selected_limit = 1;
+                                        $article->save();
+                                    }else{
+                                        $article->selected_limit = 0 ;
+                                        $article->save();
+                                    }
 
-                if($request->has('afiscale')){
-                    $article->afiscale = 1;
-                }else{
-                    $article->afiscale = 0 ;
-                    $article->save();
-                }
+                                    if($request->has('afiscale')){
+                                        $article->afiscale = 1;
+                                    }else{
+                                        $article->afiscale = 0 ;
+                                        $article->save();
+                                    }
 
-                if(isset($request->category)){
-                 
-                    $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
-                   
-                    $article->save();  
-                }
+                                    if(isset($request->category)){
+                                    
+                                        $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
+                                    
+                                        $article->save();  
+                                    }
 
-                if($request->has('sex_limit')){
-                    $article->sex_limit = $request->input('sex_limit');
-                    $article->save();
-                }else{
-                    $article->selected_limit = 0 ;
-                    $article->save();
-                }
-
-
+                                    if($request->has('sex_limit')){
+                                        $article->sex_limit = $request->input('sex_limit');
+                                        $article->save();
+                                    }else{
+                                        $article->selected_limit = 0 ;
+                                        $article->save();
+                                    }
 
 
-                        
-                $article_2->update($request->all());
+
+
+                                            
+                                    $article_2->update($request->all());
                             
 
            }
             
-         return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'l\'article a été modifié avec succès');
+       
+        return   redirect()->back()->with('user', auth()->user())->with('success', 'l\'article a été modifié avec succès');
+
         
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // TRAITEMENT DE LA BASE DE DONNEES CREATION DU CHAMP CATEGORIES EN JSON DANS SHOP_ARTICLE 
     public function  JsonProcess(){

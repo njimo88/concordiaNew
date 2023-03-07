@@ -39,14 +39,16 @@
                                      <!-- row vert  -->
                          <div class="row" style="background-color: #c6ffc1; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
                                      <h3>Paramètres Généraux</h3>  
-                                             <div class="col-md-2 col-6">
-                                                 <label for="saison">Saison</label>
-                                                     <select id="saison" class="form-control" name="saison">
-                                                         @foreach($saison_list as $data)
-                                                         <option value="{{$data->saison}}">{{$data->saison}} - {{$data->saison + 1 }}</option>
-                                                         @endforeach
-                                                     </select>
-                                                 </div>
+                                     <div class="col-md-2 col-6">
+                                                        <label for="saison">Saison</label>
+                                                            <select id="saison" class="form-control" name="saison">
+                                                                @foreach($saison_list as $data)
+                                                               
+                                                                <option value="{{$data->saison}}" {{ $value1->saison == $data->saison ? 'selected' : '' }}> {{$data->saison}} - {{$data->saison + 1 }}</option>
+                                                                
+                                                                @endforeach
+                                                            </select>
+                   </div>
                                                  <div class="col-md-2 col-6">
                                                          <label for="title">Titre</label>
                                                              

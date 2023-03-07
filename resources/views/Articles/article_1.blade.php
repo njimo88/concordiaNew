@@ -1,6 +1,40 @@
 @extends('layouts.template')
 
 @section('content')
+@php
+function fetchDay($date)
+                 {
+
+    $lejour = ( new DateTime($date) )->format('l');
+
+     $jour_semaine = array(
+
+                     "lundi" => "Monday",
+                    "Mardi" => "Tuesday",
+                    "Mercredi" => "Wednesday",
+                    "Jeudi" => "Thursday",
+                    "Vendredi" => "Friday",
+                    "Samedi" => "Saturday",
+                    "Dimanche" => "Sunday"
+
+                                         );
+                                                                                                        
+
+                               foreach($jour_semaine as $key=>$j){
+
+                                 if ($j == $lejour){
+                                 return $key ;
+                                                }
+                                   }
+
+                                }
+
+@endphp
+ 
+
+
+
+
 <main id="main" class="main">
 <div class="container">
 @if(session()->has('success'))
@@ -18,8 +52,7 @@
                     </div>
 </div>
 
-          
-<form  method="POST" action="{{route('create_article_member')}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
+<form  method="POST" action="{{route('duplicate_article',['id'=>$id_article]) }}" enctype="multipart/form-data" formnovalidate="formnovalidate">
 @csrf
                 <div class="row"> 
                     <div class="col-md-11">
@@ -34,14 +67,16 @@
      @foreach($Shop_article as $value1)         
       <div class="row" style="background-color: #c6ffc1; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
                 <h3>Paramètres Généraux</h3>  
-                        <div class="col-md-2 col-6">
-                            <label for="saison">Saison</label>
-                                <select id="saison" class="form-control" name="saison">
-                                    @foreach($saison_list as $data)
-                                    <option value="{{$value1->saison}}">{{$data->saison}} - {{$data->saison + 1 }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                <div class="col-md-2 col-6">
+                                                        <label for="saison">Saison</label>
+                                                            <select id="saison" class="form-control" name="saison">
+                                                                @foreach($saison_list as $data)
+                                                               
+                                                                <option value="{{$data->saison}}" {{ $value1->saison == $data->saison ? 'selected' : '' }}> {{$data->saison}} - {{$data->saison + 1 }}</option>
+                                                                
+                                                                @endforeach
+                                                            </select>
+                   </div>
                             <div class="col-md-2 col-6">
                                     <label for="title">Titre</label>
                                         
@@ -142,7 +177,7 @@
 
                 <div class="col-md-2 col-6">
                 <label> type article  :</label>
-                        <input step="1" class="form-control" name="type_article" for="" type="number" value='0' required readonly>
+                        <input step="1" class="form-control" name="type_article" for="" type="number" value='1' required readonly>
 
                 </div>
 
@@ -213,7 +248,7 @@
                 </div>
                 <div class="col-md-12">
     <div style="height: 250px;  overflow: scroll; ">
-<table class="table">
+    <table class="table">
   <thead>
     <tr>
       
@@ -264,58 +299,160 @@
 <br> 
 
 
-<!-- row beige  -->
-  <div class="row" style="background-color: beige;border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
 
-  <h3>Paramètres spécifiques</h3>
-  
-    <div class="col-md-8">
-    <div style="height: 250px;  overflow: scroll; ">
-<table class="table">
-  <thead>
-    <tr>
-      
-      <th scope="col">Choix des professeurs :</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-  
-  @foreach($requete_prof as $data)
+                    <!-- row beige  -->
+                    <div class="row" style="background-color: beige;border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
+                    <i style="color: red;">Si vous voulez modifier réécrivez les anciennes données à converser et ajouter les nouvelles à la suite ; dans le cas où vous voulez remplacer complètement les données remplissez le formulaire avec les nouvelles données (les anciennes données seront perdues) </i>
+                    <h3>Paramètres spécifiques</h3>
 
-    <tr>
-    
-      <td>{{$data->name}}  {{$data->lastname }}</td>
-     
-      <td><input style="vertical-align:center;" for="" type="checkbox" name="prof[]" value="{{$data->user_id}}"></td>
-     
+                    <div class="col-md-12">
+                    <div style="height: 250px;  overflow: scroll; ">
+                    <table class="table">
+                    <thead>
+                    <tr>
+                        
+                        <th scope="col">Choix des professeurs :</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @php
+                        $json_teacher = '' ;           
+                        foreach($shop_article_1 as $val){
+                            $json_teacher = json_decode($val->teacher) ;  
+                        }
+                       
+                         
+                     @endphp
+                    @foreach($requete_prof as $data)
 
-    </tr>
+                    <tr>
+                    
+                        <td>{{$data->name}}  {{$data->lastname }}</td>
+                  
+                        <td><input style="vertical-align:center;" for="" type="checkbox" name="prof[]"  value="{{$data->user_id}}" {{ in_array($data->user_id, $json_teacher) ? 'checked ': " "}}></td>
+                         
 
-    @endforeach
-   
-  </tbody>
-</table>
-</div>
-    </div>
+                    </tr>
 
-    <div class="col-md-4">
-  
-        <div class="row-md-2 col-6">
-        <div class="col-lg-12">
-                    <div class="input_fields_wrap">
+                    @endforeach
+                    
+                    </tbody>
+                    </table>
                     </div>
-                    <br><button class="add_field_button btn btn-info">Ajouter des séances</button>
-                </div>
-        
-        </div>
-    </div>
+                    </div>
 
-  </div>
+                    <div class="col-md-12">
 
-  <br> 
+                  
 
 
+                    
+                   
+                 <b>Lieu: </b>
+                 <br>
+                    @foreach($shop_article_1 as $data1)
+                            @php
+                            $norepeat = TRUE ; // eviter de repeter les redondances d'informations a l'affichage
+                            $Data_lesson = (array) json_decode($data1->lesson,true);
+
+                                 foreach($rooms as $room){
+
+                                  
+                                    foreach($Data_lesson['room'] as $r){
+
+                                        if($r == $room->id_room and $norepeat == TRUE){
+                                               
+                                                echo "  <a class='a' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a>";
+                                                echo"</p>";
+
+                                            }
+
+
+                                        };
+
+                                    }
+
+                     @endphp
+                    @endforeach
+
+                    <b>Horaire Respectif: </b>
+                    <br>
+                    @foreach($shop_article_1 as $data1)
+                            @php
+
+                            
+                            $norepeat = TRUE ; // eviter de repeter les redondances d'informations a l'affichage
+                                                        foreach($Data_lesson['start_date'] as $dt){
+                                                        $date = new DateTime($dt);
+                                                       
+
+                                                        echo "Cette séance est dispensée le ".fetchDay($dt)." ".$date->format('G:i');
+                                                        foreach($Data_lesson['end_date'] as $dt){
+
+                                                                                                                        
+                                                                $date = new DateTime($dt);
+
+
+                                                                echo " à ".$date->format('G:i');
+
+                                                               break;
+
+                                                                };
+
+                                                        echo"<br>" ;
+                                                   
+                                                   
+                                                    };
+
+                                                
+                           
+                     @endphp
+                    @endforeach
+
+                            @foreach($shop_article_1 as $data1)  
+
+                    @php
+                        
+                    
+                         $Data_lesson = $data1->lesson;
+                    
+                    @endphp
+
+
+                           @endforeach
+                           {{ $Data_lesson }}
+
+                    <input name="json" value= "{{ $Data_lesson }}" hidden>
+                    
+
+
+                     <div class="row">
+                     
+                        <div class="col-lg-4">
+                                   
+                                     
+                        </div>
+                    </div>
+                  
+                     </div>
+
+                        <div class="row-md-2 col-12">
+                        <div class="col-lg-12">
+                                    <div class="input_fields_wrap">
+                                    </div>
+                                    <br><button class="add_field_button btn btn-info">Ajouter des séances</button>
+                          </div>
+                        
+                        </div>
+                    </div>
+
+                    </div>
+
+                    <br> 
+
+
+@foreach($Shop_article as $data)
 <!-- row rose -->
   <div class="row" style="background-color:pink; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
 
@@ -328,9 +465,9 @@
                             
                 
                               <label>Résumé </label>
-                                <textarea type="text" name="short_description" class="form-control"></textarea>
+                                <textarea type="text" name="short_description" class="form-control">{{$data->short_description}}</textarea>
                               <label>Description</label>
-                                <textarea name="editor1"  id="ckeditor" class="form-control" required></textarea>
+                                <textarea name="editor1"  id="ckeditor" class="form-control" required> {{$data->description}}</textarea>
                                 
                              
                 
@@ -344,6 +481,7 @@
     
           
   </div>
+  @endforeach
 
 
 </div>
@@ -352,75 +490,8 @@
 
 </form>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
-<script type="text/javascript">
-    CKEDITOR.replace('editor1', {
-        filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
-        filebrowserBrowseUrl: "/elfinder/ckeditor",
-        filebrowserUploadMethod: 'form',
-        language: 'fr',
-        on: {
-		loaded: function() {
-			ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
-		}
-	},
-
-        toolbar: [{ name: 'document', items : [ 'Source','NewPage','Preview' ] },
-            { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat','strikethrough', 'underline', 'subscript', 'superscript', '|' ] },
-            { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-            { name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','Scayt' ] },
-            '/',
-            { name: 'heading', items : ['heading', '|' ] },
-            { name: 'alignment', items : ['alignment', '|' ] },
-            { name: 'font', items : [ 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|'] },
-            
-
-          
-            { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','todoList',] },
-            { name: 'insert', items :[ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ] },
-            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-            { name: 'tools', items : [ 'Maximize','-','About' ] }
-
-],
+<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 
 
-  
-				uiColor: '#FFDC6E'
-    });
-
-  
-
-
-</script>
-
-
-
-<script>
-    $(document).ready(function() {
-        var max_fields = 10;
-        var wrapper = $(".input_fields_wrap");
-        var add_button = $(".add_field_button");
-        var x = 1;
-        $(add_button).click(function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'GET',
-                dataType: 'html',
-                url: "{{ route('test_create_article') }}",
-                success: function(msg) {
-                    if (x < max_fields) {
-                        x++;
-                        $(wrapper).append('<br><br><div class="small-12" id="mysession">Début <input type="datetime-local" name="startdate[]"/>Fin <input type="datetime-local" name="enddate[]"/>Salle'  + msg + '<a href="#" class="remove_field">Supprimer</a></div>')
-                    }
-                }
-            });
-        });
-        $(wrapper).on("click", ".remove_field", function(e) {
-            e.preventDefault();
-            $(this).parent('div').remove();
-            x--;
-        })
-    });
-</script>
 </main>
+@endsection

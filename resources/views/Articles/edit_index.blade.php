@@ -11,6 +11,35 @@ foreach($Shop_article as $value1){
     $type_article = $value1->type_article ;
 }
 
+
+
+function fetchDay($date)
+                 {
+
+    $lejour = ( new DateTime($date) )->format('l');
+
+     $jour_semaine = array(
+
+                     "lundi" => "Monday",
+                    "Mardi" => "Tuesday",
+                    "Mercredi" => "Wednesday",
+                    "Jeudi" => "Thursday",
+                    "Vendredi" => "Friday",
+                    "Samedi" => "Saturday",
+                    "Dimanche" => "Sunday"
+
+                                         );
+                                                                                                        
+
+                               foreach($jour_semaine as $key=>$j){
+
+                                 if ($j == $lejour){
+                                 return $key ;
+                                                }
+                                   }
+
+                                }
+
 @endphp
  
 
@@ -969,10 +998,10 @@ foreach($Shop_article as $value1){
 
                     <!-- row beige  -->
                     <div class="row" style="background-color: beige;border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
-
+                    <i style="color: red;">Si vous voulez modifier réécrivez les anciennes données à converser et ajouter les nouvelles à la suite ; dans le cas où vous voulez remplacer complètement les données remplissez le formulaire avec les nouvelles données (les anciennes données seront perdues) </i>
                     <h3>Paramètres spécifiques</h3>
 
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                     <div style="height: 250px;  overflow: scroll; ">
                     <table class="table">
                     <thead>
@@ -1010,43 +1039,93 @@ foreach($Shop_article as $value1){
                     </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-12">
 
                   
 
 
+                    
+                   
+                 <b>Lieu: </b>
+                 <br>
+                    @foreach($shop_article_1 as $data1)
+                            @php
+                            $norepeat = TRUE ; // eviter de repeter les redondances d'informations a l'affichage
+                            $Data_lesson = (array) json_decode($data1->lesson,true);
+
+                                 foreach($rooms as $room){
+
+                                  
+                                    foreach($Data_lesson['room'] as $r){
+
+                                        if($r == $room->id_room and $norepeat == TRUE){
+                                               
+                                                echo "  <a class='a' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a>";
+                                                echo"</p>";
+
+                                            }
+
+
+                                        };
+
+                                    }
+
+                     @endphp
+                    @endforeach
+
+                    <b>Horaire Respectif: </b>
+                    <br>
+                    @foreach($shop_article_1 as $data1)
+                            @php
+
+                            
+                            $norepeat = TRUE ; // eviter de repeter les redondances d'informations a l'affichage
+                                                        foreach($Data_lesson['start_date'] as $dt){
+                                                        $date = new DateTime($dt);
+                                                       
+
+                                                        echo "Cette séance est dispensée le ".fetchDay($dt)." ".$date->format('G:i');
+                                                        foreach($Data_lesson['end_date'] as $dt){
+
+                                                                                                                        
+                                                                $date = new DateTime($dt);
+
+
+                                                                echo " à ".$date->format('G:i');
+
+                                                               break;
+
+                                                                };
+
+                                                        echo"<br>" ;
+                                                   
+                                                   
+                                                    };
+
+                                                   
+
+                                                    
+
+
+                           
+                     @endphp
+                    @endforeach
+
+
+
+
 
                      <div class="row">
-                        <div class="col-lg-4">
-                                  
-                                    <div class="card" style="width: 10rem;">
-                                                    <div class="card-body">
-                                                             <h5 class="card-title">gfhdf</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                             <h5 class="card-title">gfhdf</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                             <h5 class="card-title">gfhdf</h5>
-                                                    </div>
-                                    </div>
-                        </div>
+                     
                         <div class="col-lg-4">
                                    
-                                    <div class="card" style="width: 10rem;">
-                                                    
-                                    </div>
+                                     
                         </div>
-                        <div class="col-lg-4">
-                                    
-                                    <div class="card" style="width: 10rem;">
-                                                    
-                                    </div>
-                        </div>
-                        
+                    </div>
+                  
                      </div>
 
-                        <div class="row-md-2 col-6">
+                        <div class="row-md-2 col-12">
                         <div class="col-lg-12">
                                     <div class="input_fields_wrap">
                                     </div>
