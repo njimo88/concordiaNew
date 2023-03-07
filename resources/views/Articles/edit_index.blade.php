@@ -56,10 +56,10 @@ function fetchDay($date)
                                         @endif
 
                                         <div class="row pt-5">
-                                                <div class="col-md-10">
+                                                <div class="col-md-2">
                                                     
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-12">
                                                     <a href="{{route('index_article')}}"><button class="btn btn-warning"> retour</button></a>
                                                 </div>
                             </div>
@@ -68,7 +68,7 @@ function fetchDay($date)
                             <form  method="POST" action="{{route('edit_article',$Id)}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
                             @csrf
                                             <div class="row"> 
-                                                <div class="col-md-11">
+                                                <div class="col-md-4">
                                                 
                                                 <input class="btn btn-warning" name="modifier" type="submit" value="Valider">
                                                 </div>
@@ -392,10 +392,10 @@ function fetchDay($date)
                                         @endif
 
                                         <div class="row pt-5">
-                                                <div class="col-md-10">
+                                                <div class="col-md-2">
                                                     
                                                 </div>
-                                                <div class="col-md-2">
+                                                <div class="col-md-12">
                                                     <a href="{{route('index_article')}}"><button class="btn btn-warning"> retour</button></a>
                                                 </div>
                             </div>
@@ -404,7 +404,7 @@ function fetchDay($date)
                             <form  method="POST" action="{{route('edit_article',$Id)}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
                             @csrf
                                             <div class="row"> 
-                                                <div class="col-md-11">
+                                                <div class="col-md-4">
                                                 
                                                 <input class="btn btn-warning" name="modifier" type="submit" value="Valider">
                                                 </div>
@@ -748,10 +748,10 @@ function fetchDay($date)
                                  @endif
 
                                  <div class="row pt-5">
-                                         <div class="col-md-10">
-                                             
-                                         </div>
-                                         <div class="col-md-2">
+                                                    <div class="col-md-2">
+                                                    
+                                                    </div>
+                                        <div class="col-md-12">
                                              <a href="{{route('index_article')}}"><button class="btn btn-warning"> retour</button></a>
                                          </div>
                      </div>
@@ -760,7 +760,7 @@ function fetchDay($date)
                      <form  method="POST" action="{{route('edit_article',$Id)}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
                      @csrf
                                      <div class="row"> 
-                                         <div class="col-md-11">
+                                         <div class="col-md-4">
                                          
                                          <input class="btn btn-warning" name="modifier" type="submit" value="Valider">
                                          </div>
@@ -975,8 +975,6 @@ function fetchDay($date)
                          
                          <td><input style="vertical-align:center;" for="catenvoi" type="checkbox" name="category[]"  value="{{$data->id_shop_category}}" {{ in_array($data->id_shop_category,$json_cate) ? 'checked ': " "}}></td>
                          
-                     
-
                          </tr>
 
                          @endforeach
@@ -1041,11 +1039,6 @@ function fetchDay($date)
 
                     <div class="col-md-12">
 
-                  
-
-
-                    
-                   
                  <b>Lieu: </b>
                  <br>
                     @foreach($shop_article_1 as $data1)
@@ -1084,7 +1077,7 @@ function fetchDay($date)
                                                         $date = new DateTime($dt);
                                                        
 
-                                                        echo "Cette séance est dispensée le ".fetchDay($dt)." ".$date->format('G:i');
+                                                        echo "Cette séance est dispensée le ".fetchDay($dt)." ".$date->format('d')."  De ".$date->format('G:i');
                                                         foreach($Data_lesson['end_date'] as $dt){
 
                                                                                                                         
@@ -1093,6 +1086,7 @@ function fetchDay($date)
 
                                                                 echo " à ".$date->format('G:i');
 
+                                                               
                                                                break;
 
                                                                 };
@@ -1101,12 +1095,6 @@ function fetchDay($date)
                                                    
                                                    
                                                     };
-
-                                                   
-
-                                                    
-
-
                            
                      @endphp
                     @endforeach
@@ -1175,20 +1163,6 @@ function fetchDay($date)
 
 
       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

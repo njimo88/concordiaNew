@@ -10,10 +10,10 @@
             @endif
 
             <div class="row pt-5">
-                    <div class="col-md-10">
+                    <div class="col-md-2">
                         
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-12">
                            <a href="{{route('index_article')}}"><button class="btn btn-warning"> retour</button></a>
                     </div>
 </div>
@@ -22,7 +22,7 @@
 <form  method="POST" action="{{route('create_article_member')}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
         @csrf
                 <div class="row"> 
-                        <div class="col-md-11"> 
+                        <div class="col-md-4"> 
                         <input class="btn btn-warning" name="modifier" type="submit" value="Valider">
                         </div>     
                 </div>
@@ -30,7 +30,7 @@
                 <!-- row vert  -->
       <div class="row" style="background-color: #c6ffc1; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
                 <h3>Paramètres Généraux</h3>  
-                        <div class="col-md-2 col-6">
+                        <div class="col-md-2 col-6 pt-3">
                             <label for="saison">Saison</label>
                                 <select id="saison" class="form-control" name="saison">
                                     @foreach($saison_list as $data)
@@ -72,7 +72,7 @@
                         <input required type="date" class="form-control" name="endvalidity" value="">
                     </div>
 
-                    <div class="col-md-2 col-6">
+                    <div class="col-md-2 col-6 pt-3">
 
                         <label>  Statut :   </label> 
                             
@@ -174,7 +174,7 @@
 
                                 <tr>
                            
-                                <td><input type="checkbox"  for=""  name="afiscale"></td>
+                                <td><input type="checkbox"  value=1  name="afiscale"></td>
 
                                 </tr>
                             
@@ -240,20 +240,11 @@
 </div>
     </div>
 
-
-
-
-
-
-
-
-
-                </div>
+    </div>
 
 
 </div>
 <br> 
-
 
 <!-- row beige  -->
   <div class="row" style="background-color: beige;border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">

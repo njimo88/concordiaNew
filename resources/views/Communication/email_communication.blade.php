@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Bootstrap 4 Website Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.template')
+
+@section('content')
  
   <!-- Styles -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
@@ -100,6 +97,8 @@
 </form>
 
 
+
+
 <script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 <script>
  CKEDITOR.replace('editor1', {
@@ -148,5 +147,7 @@
 
 
 </body>
+
+@endsection
 
 

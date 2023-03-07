@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 
 
 use App\Models\Shop_article;
-use App\Http\Controllers\Auth;
+
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\User;
 use App\Models\Shop_category;
 use App\Models\Shop_service;
 use App\Mail\UserEmail;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 
 require_once('../app/fonction.php');
 
@@ -134,7 +135,7 @@ public function sendmail(Request $get)
 }
     
 */
-public function saison_choix(Request $request)
+public function saison_choix(Request $request )
 {
    
     $saison_choisie = $request->saison ;
@@ -144,42 +145,32 @@ public function saison_choix(Request $request)
    //return redirect()->route('', ['saison_choisie' =>  $saison_choisie])->with($saison_choisie);
   //return  View::make('index')->with(compact('saison_choisie'));
  // return redirect()->back()->with(['saison_choisie', $saison_choisie]);
-  return redirect()->route('index',['saison_choisie' =>  $saison_choisie]);
+  // return redirect()->route('index_email',['saison_choisie' =>  $saison_choisie]);
+   
+   if(Auth::check())
+    {
+        $userId =  Auth::user()->id ;
+        return  retourner_shop_article_dun_teacher($userId, $saison_choisie);
+
+    } 
+   //
+   
+  
 
 }
 
 
 
-
-
-
-
-
-
-
-
-
-public function index(Request $request)
+public function index()
 {
-    /*
-    $saison_list = Shop_article::select('saison')->distinct('name')->get();
-    $requete_article = Shop_article::select('*')->where('saison',2016)->get();
     
-    $user = User::select('user_id','name','lastname')->get();
-    $user2 = User::paginate(20);
-
-    */
-
-    $saison_pick = $request->get('saison');
-
     $shop_article = Shop_article::where('saison','=','$saison_pick')->get();
-
     $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
     // return  retourner_shop_article_dun_user(149,2022);
-   return retourner_buyers_dun_shop_article(165) ;
+  // return retourner_buyers_dun_shop_article(165) ;
 
-   // return view('Communication/email_communication',compact('saison_list','shop_article'))->with('user', auth()->user());
+    return view('Communication/email_communication',compact('saison_list','shop_article'))->with('user', auth()->user());
    
 }
 

@@ -256,7 +256,7 @@
 
   <h3>Paramètres spécifiques</h3>
   
-    <div class="col-md-8">
+    <div class="col-md-6">
     <div style="height: 250px;  overflow: scroll; ">
 <table class="table">
   <thead>
@@ -286,7 +286,7 @@
 </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-6">
   
         <div class="row-md-2 col-6">
         <div class="col-lg-12">

@@ -85,46 +85,45 @@ class Article_Controller extends Controller
 
     public function inserer_article_member(Request $request){
 
-  /*    
-    $validator  = $request->validate([
-        'saison' => 'required|numeric',
-        'title'  => 'required|max:255',
-        'image'  => 'required|max:255|alpha',
-        'ref'  => 'required|max:255|alpha',
-        'startvalidity' => 'date',
-        'endvalidity'   => 'date',
-        'agemin' => 'required|numeric|gt:0',
-        'agemax' => 'required|numeric|gt:0',
-        'price' => 'required|numeric',
-        'price_indicative' => 'required|numeric',
-        'totalprice' => 'required|numeric',
-        'stock_ini' => 'required|numeric',
-        'stock_actuel' => 'required|numeric',
-        'alert_stock'  => 'required|numeric',
+        $validatedData = $request->validate( [
+            'saison' => 'required|numeric',
+            'title'  =>  ['required', 'alpha', 'max:255'],
+            'image'  =>  ['required', 'alpha', 'max:255'],
+             'ref'  =>  ['required', 'alpha', 'max:255'],
+            'startvalidity' => 'required|date',
+            'endvalidity'   => 'required|date',
+            'agemin' => 'required|numeric|gt:0',
+            'agemax' => 'required|numeric|gt:0',
+            'price' => 'required|numeric',
+            'price_indicative' => 'required|numeric',
+            'totalprice' => 'required|numeric',
+            'stock_ini'  =>    'required|numeric',
+            'stock_actuel' => 'required|numeric',
+            'alert_stock'  => 'required|numeric',
 
-        'type_article' => 'required|numeric',
-         'max_per_user'      =>  'required|numeric|gt:0',
-          'short_description'  =>'required|alpha',
-           'description'       => 'required|alpha',
+            'max_per_user'      =>  'required|numeric|gt:0',
+            'short_description'  => ['required', 'alpha', 'max:255'],
+            'editor1'       =>  ['required', 'alpha', 'max:255'],
 
-           'prix_adhesion'  => 'required|numeric|gt:0',
+            'prix_adhesion'  =>    'required|numeric|gt:0',
             'prix_assurance'  =>   'required|numeric|gt:0',
-            'prix_licence_fede' =>   'required|numeric|gt:0',
+            'prix_licence_fede' =>  'required|numeric|gt:0',
 
+         
+           
+    
+        ], $messages = [
+            'title.required' => "Le champ titre est requis.",
+            'title.max' => "Le titre ne doit pas dépasser 255 caractères.",
+            'image.required' => "Le champ image est requis.",
+            'image.alpha' => "l'image doit être une chaîne de caractères.",
+            'ref.required' => "Le champ ref est requis.",
+            'ref.alpha' => "ref doit être une chaîne de caractères.",
+            'agemin.required' => 'age minimum est requis.',
+            'agemax.required' => 'age maximum est requis.',
 
-       
-  ], [
-        'agemin' => 'age negative !!!',
-        'agemax' => 'age negative !!!',
-        'prix_adhesion' => 'age negative !!!',
-        'prix_assurance' => 'age negative !!!',
-        'prix_licence_fede' => 'age negative !!!',
-       
-
-
-    ]);
-    */
-     
+        ]);
+    
     
    
         $article  = new Shop_article;
@@ -204,6 +203,59 @@ class Article_Controller extends Controller
     }
 
     public function inserer_article_lesson(Request $request){
+
+        $validatedData = $request->validate( [
+            'saison' => 'required|numeric',
+            'title'  =>  ['required', 'alpha', 'max:255'],
+            'image'  =>  ['required', 'alpha', 'max:255'],
+             'ref'  =>  ['required', 'alpha', 'max:255'],
+            'startvalidity' => 'required|date',
+            'endvalidity'   => 'required|date',
+            'agemin' => 'required|numeric|gt:0',
+            'agemax' => 'required|numeric|gt:0',
+            'price' => 'required|numeric',
+            'price_indicative' => 'required|numeric',
+            'totalprice' => 'required|numeric',
+            'stock_ini'  =>    'required|numeric',
+            'stock_actuel' => 'required|numeric',
+            'alert_stock'  => 'required|numeric',
+
+            'max_per_user'      =>  'required|numeric|gt:0',
+            'short_description'  => ['required', 'alpha', 'max:255'],
+            'editor1'       =>  ['required', 'alpha', 'max:255'],
+
+           
+         
+           
+    
+        ], $messages = [
+            'title.required' => "Le champ titre est requis.",
+            'title.max' => "Le titre ne doit pas dépasser 255 caractères.",
+            'image.required' => "Le champ image est requis.",
+            'image.alpha' => "l'image doit être une chaîne de caractères.",
+            'ref.required' => "Le champ ref est requis.",
+            'ref.alpha' => "ref doit être une chaîne de caractères.",
+            'agemin.required' => 'age minimum est requis.',
+            'agemax.required' => 'age maximum est requis.',
+
+        ]);
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       
         $article  = new Shop_article;
  
@@ -294,6 +346,51 @@ class Article_Controller extends Controller
 
 
     public function inserer_article_produit(Request $request){
+
+        $validatedData = $request->validate( [
+            'saison' => 'required|numeric',
+            'title'  =>  ['required', 'alpha', 'max:255'],
+            'image'  =>  ['required', 'alpha', 'max:255'],
+             'ref'  =>  ['required', 'alpha', 'max:255'],
+            'startvalidity' => 'required|date',
+            'endvalidity'   => 'required|date',
+            'agemin' => 'required|numeric|gt:0',
+            'agemax' => 'required|numeric|gt:0',
+            'price' => 'required|numeric',
+            'price_indicative' => 'required|numeric',
+            'totalprice' => 'required|numeric',
+            'stock_ini'  =>    'required|numeric',
+            'stock_actuel' => 'required|numeric',
+            'alert_stock'  => 'required|numeric',
+
+            'max_per_user'      =>  'required|numeric|gt:0',
+            'short_description'  => ['required', 'alpha', 'max:255'],
+            'editor1'       =>  ['required', 'alpha', 'max:255'],
+
+           
+         
+           
+    
+        ], $messages = [
+            'title.required' => "Le champ titre est requis.",
+            'title.max' => "Le titre ne doit pas dépasser 255 caractères.",
+            'image.required' => "Le champ image est requis.",
+            'image.alpha' => "l'image doit être une chaîne de caractères.",
+            'ref.required' => "Le champ ref est requis.",
+            'ref.alpha' => "ref doit être une chaîne de caractères.",
+            'agemin.required' => 'age minimum est requis.',
+            'agemax.required' => 'age maximum est requis.',
+
+        ]);
+    
+
+
+
+
+
+
+
+
       
         $article  = new Shop_article;
  

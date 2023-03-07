@@ -421,7 +421,7 @@ function fetchDay($date)
 
 
                            @endforeach
-                           {{ $Data_lesson }}
+                        
 
                     <input name="json" value= "{{ $Data_lesson }}" hidden>
                     

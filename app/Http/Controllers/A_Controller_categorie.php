@@ -208,14 +208,13 @@ class A_Controller_categorie extends Controller
 
 
 
-    public function edit(Request $request, $id){
+    public function edit_index(Request $request, $id){
 
         
             //'categories' => Shop_category::orderBy('name', 'ASC')->get(),
             $info = Shop_category::where('id_shop_category', $id)->firstOrFail();
-        
 
-        return  $info ;
+            return view('Category_modify',compact('saison_list','shop_article'))->with('user', auth()->user());
     }
 
 
