@@ -18,6 +18,9 @@ use PhpParser\Node\Stmt\TryCatch;
 use App\Models\Basket;
 use Illuminate\Support\Facades\Auth;
 
+
+
+
 require_once(app_path().'/fonction.php');
 
 
@@ -42,26 +45,27 @@ class A_Controller_categorie extends Controller
 
     }
 
-    public function commander_article($id)
+    public function commander_article($id, Request $request)
     {
         $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
         $addcommand = new Basket();
         $addcommand->user_id = auth()->user()->user_id;
         $addcommand->family_id = auth()->user()->family_id;
-        $addcommand->pour_user_id = auth()->user()->user_id;
+        $addcommand->pour_user_id = $request->selected_user_id;
         $addcommand->ref = $shop->id_shop_article;
         $addcommand->qte = 1;
         $addcommand->save();
-
+        
         
         return redirect()->back()->with('success', 'Article ajouté au panier');
         
     }
 
-    public function commanderModal($shop_id)
+    public function commanderModal($shop_id,$user_id)
     {
+        $selected_user = $user_id;
         $shop = Shop_article::where('id_shop_article', $shop_id)->firstOrFail();
-        return view('Articles.modal.commanderModal', compact('shop'));
+        return view('Articles.modal.commanderModal', compact('shop','user_id'))->with('user', auth()->user());
     }
 
     public function saveNestedCategories(Request $request){

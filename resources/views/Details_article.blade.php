@@ -1,33 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-
+<div class="modal fade " id="commanderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-info" role="document">
+      <!--Content-->
+      <div class="modal-content text-center" id="commanderModalContainer">
+          
+      </div>
+      <!--/.Content-->
+    </div>
+</div>
 
 @php
-                    function fetchDay($date){
-
-                               $lejour = ( new DateTime($date) )->format('l');
-
-                                     $jour_semaine = array(
-                                            "lundi" => "Monday",
-                                            "Mardi" => "Tuesday",
-                                            "Mercredi" => "Wednesday",
-                                            "Jeudi" => "Thursday",
-                                            "Vendredi" => "Friday",
-                                            "Samedi" => "Saturday",
-                                            "Dimanche" => "Sunday"
-
-                                         );
-                                                                                                        
-
-                               foreach($jour_semaine as $key=>$j){
-
-                                        if ($j == $lejour){
-                                        return $key ;
-                                      }
-                                }                                                                        
-                                                                                      
-                       }
+                    
 
 
                        function fetchMonth($date) {
@@ -231,7 +216,7 @@
                                         
   
                                         echo "<p style='align-self: flex-start !important;'>" ;
-                                        echo fetchDay($dt)." ".fetchjour($dt)." ".fetchMonth($dt)." ".fetchan($dt);
+                                        echo fetchDayy($dt)." ".fetchjour($dt)." ".fetchMonth($dt)." ".fetchan($dt);
                                         echo "</p>" ;
                                         echo "\n";
                                     
@@ -266,7 +251,7 @@
 
                            
                             $date = new DateTime($dt);
-                            echo "<p style='align-self: flex-start !important; font-weight:bold;'>" ; echo fetchDay($dt)." ".$date->format('G:i'); 
+                            echo "<p style='align-self: flex-start !important; font-weight:bold;'>" ; echo fetchDayy($dt)." ".$date->format('G:i'); 
                          
 
                            $dt1 = $Data_lesson['end_date'][$aff_heure] ;
@@ -291,7 +276,7 @@
                                  
                                   $date = new DateTime($dt); // recupere date timestamp de la database
                                 
-                                  echo "<p style='align-self: flex-start !important; font-weight:bold;'>" ; echo fetchDay($dt)." ".$date->format('G:i') ; // use method format pour afficher les heures sans les secondes
+                                  echo "<p style='align-self: flex-start !important; font-weight:bold;'>" ; echo fetchDayy($dt)." ".$date->format('G:i') ; // use method format pour afficher les heures sans les secondes
 
                                   echo " à ";
                                   foreach($Data_lesson['end_date'] as $dt){
@@ -347,15 +332,13 @@
                         <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
                     @endif
                   @else
-                    <form  method="POST" action="">
                       @csrf
                       <select class="border mb-4 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
                         @foreach ($selectedUsers as $user)
-                            <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
+                            <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }} {{ $user->user_id }}</option>
                           @endforeach
                       </select>
-                      <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </form>
+                      <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
                   @endif
                   </span>
                 </div>

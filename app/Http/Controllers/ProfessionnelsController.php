@@ -7,6 +7,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cart;
+use App\Models\CalculSalaire;
+use App\Models\BasketAn;
+require_once(app_path().'/fonction.php');
+
+
 
 class ProfessionnelsController extends Controller
 {
@@ -24,7 +29,142 @@ class ProfessionnelsController extends Controller
         return view('admin.professionnels.gestion',compact('pro','users'))->with('user', auth()->user());
     }
 
+   
+
+    public function simuleSalary(Request $request)
+{
+    $volumeHebdo = $request->input('volHebdo');
+    $groupe = $request->input('groupe');
+    $embauche = $request->input('embauche');
+
+    $result = DB::table('divers')->select('SMC', 'SMIC')->first();
+    $SMC = $result->SMC;
+    $SMIC = $result->SMIC;
+
+    $calculSalaire = new CalculSalaire();
+    $salaireMin = number_format($calculSalaire->CalculSalaireCCNS($volumeHebdo, $groupe, $embauche, $SMC, $SMIC), 2, ',', '');
+    $primeAnciennete = number_format($calculSalaire->CalculPrimeCCNS($volumeHebdo, $groupe, $embauche, $SMC, $SMIC), 2, ',', '');
+
+    $data['simuleSalary'] = $salaireMin;
+    $data['simulePrime'] = $primeAnciennete;
+
+    $arrayProfessionals = DB::table('users')
+        ->join('professionals', 'users.id', '=', 'professionals.id_user')
+        ->select('users.lastname', 'users.firstname', 'professionals.Salaire', 'professionals.Prime')
+        ->get();
+
+    $resultSalary = DB::table('divers')->select('SMC', 'SMIC')->first();
+    $data['SMIC'] = $resultSalary->SMIC;
+    $data['SMC'] = $resultSalary->SMC;
+
+    $resultatrenvoye = array();
+
+    foreach ($arrayProfessionals as $professional) {
+        $calculSalaire = app()->make(CalculSalaire::class);
+        $salarie = $calculSalaire->AfficheSalarie($professional->id_user);
+
+        $salarie['professional'] = $professional->lastname . ' ' . $professional->firstname;
+        $salarie['salaireActuel'] = $professional->Salaire;
+        $salarie['primeActuel'] = $professional->Prime;
+
+        $resultatrenvoye[] = $salarie;
+    }
+
+    $data['resultatrenvoye'] = $resultatrenvoye;
+
+    return view('admin.professionnels.calculSalary', compact('data'))->with('user', auth()->user());
+
+}
+
+
+    public function calculSalary()
+    {
+        $array_professionals = $this->getProfessionals();
+        $result_salary = $this->getSalaireMinimum();
+        $data['SMIC'] = $result_salary[0]->SMIC;
+        $data['SMC'] = $result_salary[0]->SMC;
     
+        $resultatrenvoye = [];
+    
+        foreach ($array_professionals as $professional) {
+            $calculSalaire = app()->make(CalculSalaire::class);
+            $resultat = $calculSalaire->AfficheSalarie($professional->id_user);
+            $resultatrenvoye[] = [
+                'resultat' => $resultat,
+                'professional' => $professional->lastname . ' ' . $professional->firstname,
+                'salaireActuel' => $professional->Salaire,
+                'anciennete' => $resultat['anciennete'],
+                'salaireMin' => $resultat['salaireMin'],
+                'primeAnciennete' => $resultat['primeAnciennete'],
+                'primeActuel' => $professional->Prime,
+                'Groupe' => $professional->Groupe,
+                'id_user' => $professional->id_user,
+            ];
+        }
+    
+        $data['resultatrenvoye'] = $resultatrenvoye;
+        $basketAn = app()->make(BasketAn::class);
+        $data['totalItems'] = count($basketAn->get_cart());
+    
+        return view('admin.professionnels.calculSalary', compact('data'))->with('user', auth()->user());
+    }
+
+    public function modifySM(Request $request)
+{
+    $smic = $request->input('smic');
+    $smc = $request->input('smc');
+
+    DB::table('divers')->update([
+        'SMIC' => $smic,
+        'SMC' => $smc,
+    ]);
+
+    $array_professionals = $this->getProfessionals();
+    $result_salary = $this->getSalaireMinimum();
+
+    $data['SMIC'] = $result_salary[0]['SMIC'];
+    $data['SMC'] = $result_salary[0]['SMC'];
+
+    $i = 0;
+    $resultatrenvoye = [];
+
+    foreach ($array_professionals as $professional) {
+        $calculSalaire = app()->make(CalculSalaire::class);
+            
+        $resultatrenvoye[$i] = $resultat = $calculSalaire->AfficheSalarie($professional->id_user);
+
+        $resultatrenvoye[$i]['professional'] = $professional['lastname'] . " " . $professional['firstname'];
+        $resultatrenvoye[$i]['salaireActuel'] = $professional['Salaire'];
+        $resultatrenvoye[$i]['primeActuel'] = $professional['Prime'];
+        $i++;
+    }
+
+    $data['resultatrenvoye'] = $resultatrenvoye;
+    $basketAn = app()->make(BasketAn::class);
+    $data['totalItems'] = count($basketAn->get_cart());
+    return view('admin.professionnels.calculSalary', compact('data'))->with('user', auth()->user());
+}
+
+    
+
+    public function getProfessionals($id_user = null)
+{
+    if ($id_user == null) {
+        $array_professionals = DB::table('users_professionals')->get()->toArray();
+    } else {
+        $array_professionals = DB::table('users_professionals')->where('id_user', $id_user)->get()->toArray();
+    }
+
+    return $array_professionals;
+}
+
+public function getSalaireMinimum()
+{
+    $result_salary = DB::table('divers')->get()->toArray();
+
+    return $result_salary;
+}
+
 
     public function  editPro(Request $request, $user_id)
     {

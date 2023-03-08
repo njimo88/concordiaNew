@@ -8,6 +8,7 @@
         <form action="{{ route("commander_article", $shop->id_shop_article) }}" method="post">
             @csrf
             @method('PUT')
+            <input type="hidden" name="selected_user_id" id="selected_user_id" value="{{ $user_id }}">
             <button type="submit" class="mx-1 btn btn-success">Continuer mes achats</button>
         </form>
             <button type="button" class="mx-1 btn btn-warning">Passer au paiement</button>

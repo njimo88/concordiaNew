@@ -248,8 +248,8 @@ $JourSemaine = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"
 	}
 	$TotalMensueldu = $VolumeMensueldu * $NbMoisPeriode;
 
-	$fichier_csv = '1-sauvegarde/' . $user_id . '-' . $annee . '-' . $mois . '.csv';
-	$fichier_demande_csv = public_path('employee_documents/3-validation/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
+	$fichier_csv = public_path('employee_documents/1-sauvegarde/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
+	$fichier_demande_csv = public_path('employee_documents/2-demande/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
 
 	if (file_exists($fichier_demande_csv)) {
 		$current = file_get_contents($fichier_demande_csv);
@@ -279,7 +279,7 @@ $JourSemaine = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"
 	};
 
 
-	$resultatrenvoye .= '<form action="affichheures.php" method="post">';
+	$resultatrenvoye .= '<form action="/affichheures.php" method="post">';
 
 	$resultatrenvoye .= '<input type="hidden" name="mois" value="' . $mois . '">';
 	$resultatrenvoye .= '<input type="hidden" name="annee" value="' . $annee . '">';
@@ -287,7 +287,7 @@ $JourSemaine = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"
 	//$resultatrenvoye .= '<input type="hidden" name="idemploye" value="'.$idemploye.'">' ;
 	$resultatrenvoye .= '<input type="hidden" name="email" value="' . $EmailEmploye . '">';
 
-	$fichier_csv = '../Gym-Concordia/Documents/Employes/3-validation/' . $user_id . '-' . $annee . '-' . $mois . '.csv';
+	$fichier_csv = public_path('employee_documents/3-validation/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
 
 	$resultatrenvoye .= '<div align="center"><table border="5px" width="80%><tbody align="left"><tr><td>';
 	$resultatrenvoye .= '<table align="center">';
@@ -412,7 +412,7 @@ $VolumeHebdo = $VariableBDD[3];
 	}
 	$TotalMensueldu = $VolumeMensueldu * $NbMoisPeriode;
 
-	$fichier_csv = '1-sauvegarde/' . $user_id . '-' . $annee . '-' . $mois . '.csv';
+	$fichier_csv = public_path('employee_documents/1-sauvegarde/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
 	$fichier_demande_csv = public_path('employee_documents/3-validation/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
 
 
@@ -592,7 +592,7 @@ $VolumeHebdo = $VariableBDD[3];
 	}
 	$TotalMensueldu = $VolumeMensueldu * $NbMoisPeriode;
 
-	$fichier_csv = '1-sauvegarde/' . $user_id . '-' . $annee . '-' . $mois . '.csv';
+	$fichier_csv = public_path('employee_documents/1-sauvegarde/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
 	$fichier_demande_csv = public_path('employee_documents/3-validation/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
 
 
@@ -697,17 +697,6 @@ function Sauvegarde($mois, $annee, $user_id, $info)
 
 	$stockage .= ';' . $info['HeuresTotal'] . ';' . $info['JoursCongesPris'] . ';' . $info['JoursCongesRestant'];
 	$stockage .= ';' . $info['JoursMaladiePris'] . ';' . $info['TotalHeuresMaladiePrises'];
-
-	/*	for ($i=1;$i<=$maxdaymois;$i++)
-		{
-      if(isset($info['Maladie'][$i]))
-      {if ($info['Conges'][$i] == "on") { $info['Conges'][$i] = "TRUE" ; }
-		    else $info['Conges'][$i] = "FALSE" ;
-		  if ($info['Maladie'][$i] == "on") { $info['Maladie'][$i] = "TRUE" ; }
-		    else $info['Maladie'][$i] = "FALSE" ;
-		  $stockage .= ';'.$info['Heures'][$i].';'.$info['Conges'][$i].';'.$info['Maladie'][$i].';'.$info['Remarque'][$i] ;
-    }
-  }*/
 
 
 	for ($i = 1; $i <= $maxdaymois; $i++) {

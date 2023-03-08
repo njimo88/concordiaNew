@@ -451,8 +451,8 @@ function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
 					$colorchecked = 'transparent' ;
 					if (JourFerie(mktime(0,0,0,$mois,$i,$annee))) { $readonly = ' readonly ' ; $colorchecked ='#FF4500' ; } ;
 
-					$congeschecked = '<img src="../assets/imgs/icon/case-vide.png" width="16">' ; if ($NbCongesextrait[$i] == "TRUE") { $congeschecked = '<img src="../assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#77B5FE' ; } ;
-					$maladiechecked = '<img src="../assets/imgs/icon/case-vide.png" width="16">' ; if ($NbMaladieextrait[$i] == "TRUE") { $maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#FD6C9E' ; } ;
+					$congeschecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-vide.png" width="16">' ; if ($NbCongesextrait[$i] == "TRUE") { $congeschecked = '<img src="../assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#77B5FE' ; } ;
+					$maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-vide.png" width="16">' ; if ($NbMaladieextrait[$i] == "TRUE") { $maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#FD6C9E' ; } ;
 
 					$resultatpdfrenvoye .= '
 					<tr bgcolor="'.ColorFont(mktime(0,0,0,$mois,$i,$annee)).'"  height="20px">
@@ -538,8 +538,8 @@ function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
 					$colorchecked = 'transparent' ;
 					if (JourFerie(mktime(0,0,0,$mois,$i,$annee))) { $readonly = ' readonly ' ; $colorchecked ='#FF4500' ; } ;
 
-					$congeschecked = '<img src="../assets/imgs/icon/case-vide.png" width="16">' ; if ($NbCongesextrait[$i] == "TRUE") { $congeschecked = '<img src="../assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#77B5FE' ; } ;
-					$maladiechecked = '<img src="../assets/imgs/icon/case-vide.png" width="16">' ; if ($NbMaladieextrait[$i] == "TRUE") { $maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#FD6C9E' ; } ;
+					$congeschecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-vide.png" width="16">' ; if ($NbCongesextrait[$i] == "TRUE") { $congeschecked = '<img src="../assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#77B5FE' ; } ;
+					$maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-vide.png" width="16">' ; if ($NbMaladieextrait[$i] == "TRUE") { $maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#FD6C9E' ; } ;
 
 					$resultatrenvoye .= '
 					<tr bgcolor="'.ColorFont(mktime(0,0,0,$mois,$i,$annee)).'"  height="20px">

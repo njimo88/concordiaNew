@@ -3,7 +3,7 @@
 @section('content')
 
 
-  <section id="container" class="p-0">
+  <section id="container" class="p-0" >
 
     <!-- **********************************************************************************************************************************************************
         MAIN CONTENT
@@ -12,24 +12,24 @@
   
 
   <!-- ======= Portfolio Section ======= -->
-  <section id="portfolio" class="portfolio sections-bg">
-      <div class="container" data-aos="fade-up">
+  <section id="portfolio" class="portfolio sections-bg" style="background-image: url('{{asset("/assets/images/background.png")}}') !important;">
+      <div class="container border rounded p-5" data-aos="fade-up" style="background-color:#f2f2f2 !important">
 
         <div class="section-header">
           <h2>Nos catégories</h2>
           <p></p>
         </div>
 
-        <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
+        <div class=" d-flex justify-content-center" >
 
-          <div class="row gy-4 portfolio-container">
+          <div class="row gy-4 portfolio-container justify-content-center">
           @foreach($info as $data)
-            <div class="col-xl-4 col-md-4 portfolio-item filter-app">
-              <div class="portfolio-wrap">
+            <div class=" col-md-3   ">
+              <div style="background-color:white !important;" class="portfolio-wrap">
              
-                <a href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" data-gallery="portfolio-gallery-app" class="glightbox"><img src="../Shop_CSS/img/portfolio/port04.jpg" class="img-fluid" alt=""></a>
-                <div class="portfolio-info">
-                  <h4><a href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" title="More Details"> {{ $data->name}}</a></h4>
+                <a href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}"  class=" d-flex justify-content-center"><img src="{{ $data->image }}" class="img-fluid" alt=""></a>
+                <div class="portfolio-info d-flex justify-content-center">
+                  <h5 class="d-flex justify-content-center"><a style="text-align:center !important"  href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" title="More Details"> {{ $data->name}}</a></h5>
                 
                 </div>
               </div>

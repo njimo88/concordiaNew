@@ -13,7 +13,7 @@ foreach($Shop_article as $value1){
 
 
 
-function fetchDay($date)
+function fetchDayy($date)
                  {
 
     $lejour = ( new DateTime($date) )->format('l');
@@ -1077,7 +1077,7 @@ function fetchDay($date)
                                                         $date = new DateTime($dt);
                                                        
 
-                                                        echo "Cette séance est dispensée le ".fetchDay($dt)." ".$date->format('d')."  De ".$date->format('G:i');
+                                                        echo "Cette séance est dispensée le ".fetchDayy($dt)." ".$date->format('d')."  De ".$date->format('G:i');
                                                         foreach($Data_lesson['end_date'] as $dt){
 
                                                                                                                         
