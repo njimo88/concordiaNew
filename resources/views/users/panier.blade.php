@@ -37,7 +37,7 @@
 <input type="hidden" name="1[rowid]" value="05b0d08555ab87e2c1da0bbb1012f23d">
                                         <tr style="background-color: #eee">
                         <td width="20%">
-                            <i class="left"><b>&nbsp;&nbsp;&nbsp;{{ $users->lastname }} {{ $users->name }}</b></i>                             <br>
+                            <i class="left"><b>&nbsp;&nbsp;&nbsp;{{ $paniers->lastname }} {{ $paniers->name }}</b></i>                             <br>
                             <br>
                         </td>
                         <!-- <td width="5%" style="text-align: center">

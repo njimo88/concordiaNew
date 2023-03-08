@@ -126,7 +126,7 @@ Route::get('/Categorie_front', [A_Controller_categorie::class, 'MainShop'])->nam
 Route::get('/SubCategorie_front/{id}', [A_Controller_categorie::class, 'Shop_souscategorie'])->name('sous_categorie');
 Route::get('/details_article/{id}', [A_Controller_categorie::class, 'Handle_details'])->name('details_article');
 Route::put('/commander_article/{id}', [A_Controller_categorie::class, 'commander_article'])->name('commander_article');
-Route::get('/commanderModal/{shop_id}', [A_Controller_categorie::class, 'commanderModal']);
+Route::get('/commanderModal/{shop_id}/{user_id}', [A_Controller_categorie::class, 'commanderModal']);
 
 //Route::get('/test', [A_Controller_categorie::class, 'JsonProcess2']);
 

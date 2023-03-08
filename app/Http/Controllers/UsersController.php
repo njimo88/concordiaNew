@@ -10,6 +10,7 @@ use App\models\bills;
 use App\Models\old_bills;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+require_once(app_path().'/fonction.php');
 
 
 
@@ -46,16 +47,18 @@ public function editdata(){
 
 public function panier($id)
 {
-    // Récupérer l'utilisateur correspondant à l'id
-    $users = User::find($id);
-    
     // Récupérer tous les paniers associés à l'utilisateur avec les informations de l'article correspondant
     $paniers = DB::table('basket')
-                ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-                ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff')
-                ->get();
+            ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+            ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+            ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
+            ->get();
+
+            
+            $var = isUserMember(140);
+            dd($var);
     // Retourner la vue avec les données récupérées
-    return view('users.panier', compact('paniers','users'))->with('user', auth()->user());
+    return view('users.panier', compact('paniers'))->with('user', auth()->user());
 }
 
 

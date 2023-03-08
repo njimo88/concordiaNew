@@ -195,7 +195,7 @@ function retourner_buyers_dun_shop_article($id_shop_article) {
 
 
 //fonctions pour afficher les dates
-function fetchDay($date){
+function fetchDayy($date){
     $lejour = ( new DateTime($date) )->format('l');
 
   $jour_semaine = array(
@@ -208,6 +208,88 @@ function fetchDay($date){
 "Dimanche" => "Sunday"
 
   );
+
+}
+
+
+// recuperer l'ID de user et la saison et restituer les shop articles achetes
+function Donne_articles_Paye_d_un_user_aucours_d_une_saison($user_id, $saison) {
+
+    
+    $selectedArticles_buy = [];
+  
+    $shop_article_with_status = DB::table('bills')->where('status','>',60)->Where('id_user',$user_id)
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')->pluck('id_shop_article')->unique()->toArray();
+
+    $shop_article_saison_actuelle = DB::table('shop_article')->where('saison',$saison)->pluck('id_shop_article')->unique()->toArray() ;
+
+    foreach ($shop_article_with_status as $value) {
+
+       if(in_array($value,$shop_article_saison_actuelle)){
+        $selectedArticles_buy[] = $value ;
+       }
+
+
+    }
+
+
+    return $selectedArticles_buy;
+
+}
+
+function isUserMember($user_id)
+{
+    $saison = saison_active();
+
+    // Récupérer tous les articles achetés par l'utilisateur au cours de la saison active
+    $articles = Donne_articles_Paye_d_un_user_aucours_d_une_saison($user_id, $saison);
+
+    // Récupérer tous les articles de la table shop_article_0
+    $article_0 = $n_var = DB::table('shop_article')
+    ->select('shop_article.id_shop_article', 'shop_article.totalprice')
+    ->where('shop_article.saison', '=', $saison)
+    ->where('shop_article.type_article', '=', '0')
+    ->get();
+
+    // Vérifier s'il y a une intersection entre les deux variables
+    $intersect = array_intersect($articles, $article_0->pluck('id_shop_article')->toArray());
+
+    if (count($intersect) == 1) {
+        // S'il n'y a qu'une seule correspondance, retourner l'ID de l'article
+        return array_values($intersect)[0];
+    } else if (count($intersect) > 1) {
+        // S'il y a plusieurs correspondances, retourner l'ID de l'article le plus cher
+        $maxPrice = 0;
+        $maxPriceArticle = 0;
+        foreach($article_0 as $article) {
+            if(in_array($article->id_shop_article, $intersect) && $article->totalprice > $maxPrice) {
+                $maxPrice = $article->totalprice;
+                $maxPriceArticle = $article->id_shop_article;
+            }
+        }
+        return $maxPriceArticle;
+    } else {
+        // S'il n'y a pas de correspondance, retourner 0
+        return 0;
+    }
+}
+
+function MiseAuPanier($user_id, $id_article)
+{
+    $article = ShopArticle::findOrFail($id_article);
+    $need_member = $article->need_member;
+
+    // Vérifier si l'article nécessite une adhésion
+    if ($need_member != 0) {
+        // Vérifier si l'utilisateur est membre
+        $is_member = isUserMember($user_id);
+        if (isUserMember($user_id) == 0) {
+            return $need_member ;
+        } elseif (isUserMember($user_id) != $need_member) {
+            //comparer les prix des deux articles si larticle.ttlprice est plus grand que celui de need_member on fait rien 
+            //sinon on calcule la difference et on la met dans le panier
+        }
+    }
 
 }
 

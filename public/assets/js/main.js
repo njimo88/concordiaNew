@@ -294,21 +294,24 @@ document.addEventListener('DOMContentLoaded', () => {
 $('.commanderModal').click(function() {
   $('#commanderModal').modal('show');
 
-  // Get the bill ID from the clicked element
+  // Get the shop ID from the clicked element
   var shop_id = $(this).data('shop-id');
-  
 
-   // Make an AJAX request to retrieve the old bills
-   $.ajax({
-      
-   url: '/commanderModal/' + shop_id,
-   success: function(data) {
+  // Get the selected user ID from the dropdown
+  var selected_user_id = $('#buyers').val();
+
+  // Make an AJAX request to retrieve the old bills
+  $.ajax({
+    url: '/commanderModal/' + shop_id + '/' + selected_user_id,
+     // add the selected user ID to the data object
+    success: function(data) {
       // Insert the old bills data into the modal body
       console.log(data);
       $('#commanderModalContainer').html(data);
-   }
-   });
-   });
+    }
+  });
+});
+
 
 /*End achat page------------------------------------------------------------------*/
 /*my table Sort-------------------------------------------------------------------*/

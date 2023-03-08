@@ -3,15 +3,7 @@
 
     <link href="../Shop_CSS/css/style2.css" rel="stylesheet">
 
-    <div class="modal fade " id="commanderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-notify modal-info" role="document">
-            <!--Content-->
-            <div class="modal-content text-center" id="commanderModalContainer">
-                
-            </div>
-            <!--/.Content-->
-          </div>
-    </div>
+    
 
             @php
            
@@ -46,36 +38,7 @@
                                                                 }
 
 
-                                function fetchDay($date)
-                                                            {
-
-                                                    $lejour = ( new DateTime($date) )->format('l');
-
-                                                              $jour_semaine = array(
-                                                         "lundi" => "Monday",
-                                                         "Mardi" => "Tuesday",
-                                                     "Mercredi" => "Wednesday",
-                                                         "Jeudi" => "Thursday",
-                                                         "Vendredi" => "Friday",
-                                                         "Samedi" => "Saturday",
-                                                         "Dimanche" => "Sunday"
-
-                                         );
-                                                                                                        
-
-                               foreach($jour_semaine as $key=>$j){
-
-                                 if ($j == $lejour){
-                                 return $key ;
-                                                }
-                                   }
-                                                                                                        
-                                                                                        
-
-                                                                    
-                                                                                        
-                                                                              
-        }
+                        
            
                 @endphp
 
@@ -129,7 +92,7 @@
 
                                                         echo"</p>";
                                                         echo"<b>Jour: </b>";
-                                                        echo "Cette séance est dispensée le ".fetchDay($dt)." ".$date->format('G:i');
+                                                        echo "Cette séance est dispensée le ".fetchDayy($dt)." ".$date->format('G:i');
                                                        
                                                     };
 
@@ -239,9 +202,9 @@
                                 <div class="row justify-content-end">
                                     <div class="col-5 d-flex justify-content-end p-0">
                                         @if ($data->stock_actuel > $data->alert_stock)
-                                            <button data-shop-id="{{ $data->id_shop_article }}" style="background-color: #28a745 !important;" class="commanderModal btn  btn-success col-12" type="button">S'inscrire</button>
+                                            <a href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}" style="background-color: #28a745 !important;" class="btn  btn-success col-12" type="button">S'inscrire</a>
                                         @elseif ($data->stock_actuel > 0 && $data->stock_actuel <= $data->alert_stock)
-                                            <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn  btn-warning col-12" type="button">S'inscrire</button>
+                                            <a href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}" class="btn  btn-warning col-12" type="button">S'inscrire</a>
                                         @endif
                                         </div>
                                     <div class="col-5 d-flex justify-content-end p-0">
