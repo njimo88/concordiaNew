@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\n_AdminController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\BillsController;
+use App\Http\Controllers\Blog_backoffice;
 use App\Models\old_bills;
 use App\Http\Controllers\ProfessionnelsController;
 use App\Mail\UserEmail;
@@ -192,4 +193,10 @@ Route::get('/testroute', function() {
 Route::post('Communication/upload', [Controller_Communication::class, 'upload'])->name('ckeditor.upload');
 
 Route::get('Communication/envoi', [Controller_Communication::class, 'index_envoi_mail'])->name('index_mail');
+
+//********************************** Blog back office ********************************************** */
+
+Route::get('Blog_backoffice/index_article_blog_', [Blog_backoffice::class, ' index_article_blog'])->name('index');
+Route::get('Blog_backoffice/index_rediger_article_blog', [Blog_backoffice::class, 'index_categorie_article_blog'])->name('index');
+
 

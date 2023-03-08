@@ -178,6 +178,84 @@ function retourner_shop_article_dun_teacher($user_id, $saison) {
 
 }
 
+
+// recuperer l'ID de user et la saison et restituer les shop articles achetes
+function Donne_articles_Paye_d_un_user_aucours_d_une_saison($user_id, $saison) {
+
+    
+    $selectedArticles_buy = [];
+  
+    $shop_article_with_status = DB::table('bills')->where('status','>',60)->Where('id_user',$user_id)
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')->pluck('id_shop_article')->unique()->toArray();
+
+    $shop_article_saison_actuelle = DB::table('shop_article')->where('saison',$saison)->pluck('id_shop_article')->unique()->toArray() ;
+
+    foreach ($shop_article_with_status as $value) {
+
+       if(in_array($value,$shop_article_saison_actuelle)){
+        $selectedArticles_buy[] = $value ;
+       }
+
+
+    }
+
+
+    return $selectedArticles_buy;
+
+}
+
+// recuperer l'ID d'un shop articles et ramene tous les users qui l'ont achetees
+function Donne_User_article_Paye($id_shop_article) {
+
+    $shop_article_with_status = DB::table('bills')->where('status','>',60)->Where('id_shop_article',$id_shop_article)
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')->pluck('id_user')->unique()->toArray();
+
+    return   $shop_article_with_status;
+
+}
+// recuperer l'ID d'un shop articles et ramene tous les users 
+function Donne_User_article($id_shop_article) {
+
+    $shop_article_with_status = DB::table('bills')->Where('id_shop_article',$id_shop_article)
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')->pluck('id_user')->unique()->toArray();
+
+    return   $shop_article_with_status;
+
+}
+
+
+// recuperer l'ID d'un shop articles et retourne les USERS qui ont achete le produit a une date anterieure
+function Donne_User_article_Date($id_shop_article,$date1) {
+
+    $shop_article_with_date = DB::table('bills')->where('status','>',60)->Where('id_shop_article',$id_shop_article)->whereDate('date_bill', '<', $date1)
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')->pluck('id_user')->unique()->toArray();
+
+    return  $shop_article_with_date;
+   
+  
+}
+
+
+
+function Inscrits_Saison_Date($sasion, $date1){
+
+}
+
+
+
+function Inscrits_Saison_Final($saison){
+
+}
+
+
+
+
+
+
+
+
+
+
 // recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
 
 function retourner_buyers_dun_shop_article($id_shop_article) {
@@ -190,7 +268,8 @@ function retourner_buyers_dun_shop_article($id_shop_article) {
 
 
 
-//fonctions pour afficher les dates
+
+//fonctions pour afficher les dates en Anglais
 function fetchDay($date){
     $lejour = ( new DateTime($date) )->format('l');
 

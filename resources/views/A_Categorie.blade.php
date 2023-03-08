@@ -63,7 +63,10 @@
                         <input type="text" id="lname" name="image" placeholder="le chemin de l'image..">
 
                         <label for="lname">Description</label>
-                        <input type="text" id="lname" name="description" placeholder="la description..">
+                      
+                        <div class="form-outline">
+                        <textarea class="form-control" id="textAreaExample1" rows="4" name="description" placeholder="la description.."></textarea>
+                        </div>
 
 
                         <label for="">Action</label>

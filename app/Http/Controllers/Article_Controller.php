@@ -12,7 +12,7 @@ use App\Models\shop_article_0;
 use App\Models\shop_article_1;
 use App\Models\shop_article_2;
 use Illuminate\Http\Request;
-
+require_once('../app/fonction.php');
 class Article_Controller extends Controller
 {
     // Page d'affichages de la data table d'articles
@@ -77,6 +77,9 @@ class Article_Controller extends Controller
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
         return view('Articles/Create_article_lesson',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
+
+        //return Donne_User_article_Paye(870);
+       // return Donne_User_article_Date(870,"2020-08-17 00:00:00");
     }
 
 //------------------- CREATION DES DIFFERENTS TYPES D'ARTICLES-------------------------

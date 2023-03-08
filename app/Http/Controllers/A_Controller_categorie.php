@@ -210,12 +210,30 @@ class A_Controller_categorie extends Controller
 
     public function edit_index(Request $request, $id){
 
-        
+            $Id = $id ;
             //'categories' => Shop_category::orderBy('name', 'ASC')->get(),
-            $info = Shop_category::where('id_shop_category', $id)->firstOrFail();
+            $info = Shop_category::where('id_shop_category', $id)->get();
+            $shop_category =   Shop_category::get() ;
 
-            return view('Category_modify',compact('saison_list','shop_article'))->with('user', auth()->user());
+            return view('Category_modify',compact('info','shop_category','Id'))->with('user', auth()->user());
+
+            
     }
+
+    
+    public function edit(Request $request,$id){
+
+       
+        $article= Shop_category::find($id);
+
+        $article->update($request->all());
+
+       // return view('Category_modify',compact('info','shop_category','Id'))->with('user', auth()->user());
+
+       return $id ;
+
+        
+}
 
 
 

@@ -1,132 +1,93 @@
-@extends('layouts.template')
 
-@section('content')
-<main id="main" class="main">
-  
-        <div class="container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    
+</body>
+</html>
+<body>
 
-          
 
-            @if(session()->has('success'))
-                <div class="alert alert-success">
-                    {{ session()->get('success') }}
+@foreach($info as $value1)
+<div class="d-flex justify-content-center">
+
+
+<form class="form-horizontal pt-5" action="{{route('edit',$Id)}}" method="POST">
+   
+    @csrf
+
+           
+            
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Nom</label>
+                <div class="col-sm-12">
+                <input class="form-control" id="focusedInput" type="text" name="nom" placeholder="le nom de la catégorie.." value="{{$value1->name}}">
                 </div>
-            @endif
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Image</label>
+                <div class="col-sm-12">
+                <input class="form-control" id="focusedInput" type="text"   name="image" placeholder="le chemin de l'image.." value="{{$value1->image}}">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Description</label>
+                <div class="col-sm-12">
+            
+                <div class="form-outline">
+                        <textarea class="form-control" id="textAreaExample1" rows="4" name="description" placeholder="la description..">    {!! $value1->description !!} </textarea>
+                        </div>
+                </div>
+            </div>
+
+         
+
         
 
-            <h4> Catégories </h4>
-<br>
-    
+            <br>
+            <div class="form-group">
+            <div class="col-sm-12">
+                    <select class="form-select" aria-label="Default select example"  name="action">
+                                <option value="new_cat">Créer une nouvelle catégorie</option>
 
-            <div class="divo">
+                                @foreach($shop_category as $dt)
 
-                    <form action="{{ route('create-categories') }}" method="POST">
-                                   
-                                    {{csrf_field()}}
-                         
-                        <label for="fname">ID de la catégorie</label>
-                        <input type="text" id="fname" name="id" placeholder="ID de la catégorie..">
-                                    
-                        <label for="fname">Nom</label>
-                        <input type="text" id="fname" name="nom" placeholder="le nom de la catégorie..">
+                                <option value="{{$dt->id_shop_category}}" {{$value1->id_shop_category == $dt->id_shop_category ? "selected":" " }} >{{ $dt->id_shop_category}} -   {{ $dt->name }}</option>
+                              
+                                @endforeach
 
-                        <label for="lname">Image</label>
-                        <input type="text" id="lname" name="image" placeholder="le chemin de l'image..">
-
-                        <label for="lname">Description</label>
-                        <input type="text" id="lname" name="description" placeholder="la description..">
-
-
-                        <label for="">Action</label>
-                        <select id="" name="action">
-                        
-
-                        <option value="new_cat">Créer une nouvelle catégorie</option>
-
-                        @foreach($shop_category as $dt)
-                        
-                         <option value="{{ $dt->id_shop_category }}">{{ $dt->id_shop_category}} -
-                            {{ $dt->name }}</option>
-                         
-                       
-                         
-                        @endforeach
-
-                        </select>
-                        
-                        <input class="form-check-input" type="checkbox" value="{{1}}"  name="active" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
+                    </select>
+           </div>
+            </div>
+                                 
+            <br>           <label class="form-check-label" for="flexCheckDefault">
                             Active ?
+                            <input class="form-check-input" type="checkbox" value="{{$value1->active}}" {{ $value1->active == 1 ? 'checked' : 0 }}  name="active" id="flexCheckDefault">
+                           
                         </label>
                        
+                       <br>
+                       <br>
+                       
+                       
+                        
+                        <input class="btn btn-primary"type="submit" value="Valider">
                     
-                        <input type="submit" value="Valider">
                     </form>
-            </div>
 
 
-
-            </div>
-
-        
+</div>
 
 
-
-        </div>
-        
-<!-- 
-
-<input type="hidden" name="_method" value="PUT">
-    <input type="hidden" name="_token" value="{{ csrf_token() }}">
--->
-
-<!--  VERY IMPORTANT (GERE TOUTE LA PARTIE JS pour le Drag and Drop) 
-
-<input type="hidden" name="_method" value="PUT">
-    <input type="hidden" name="_token" value="{{ csrf_token() }}">
--->
-
-<script>
-        $(document).ready(function()
-{
-
-    var updateOutput = function(e)
-    {
-        var list   = e.length ? e : $(e.target),
-            output = list.data('output');
-        if (window.JSON) {
-            output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));
-        } else {
-            output.val('JSON browser support required for this demo.');
-        }
-    };
-
-    // activate Nestable for list 1
-    $('#nestable-wrapper').nestable({
-        group: 1,
-        maxDepth : 10,
-    })
-    .on('change', updateOutput);
-
-    // output initial serialised data
-    updateOutput($('#nestable-wrapper').data('output', $('#nestable-output')));
-    
-    $('#nestable-menu').on('click', function(e)
-    {
-        var target = $(e.target),
-            action = target.data('action');
-        if (action === 'expand-all') {
-            $('.dd').nestable('expandAll');
-        }
-        if (action === 'collapse-all') {
-            $('.dd').nestable('collapseAll');
-        }
-    });
-
-    
-});
-
-</script>
-
-</main>
-@endsection
+@endforeach
+</body>
