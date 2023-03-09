@@ -74,7 +74,7 @@ function isUserMember($user_id)
 
 function MiseAuPanier($user_id, $id_article)
 {
-    $article = ShopArticle::findOrFail($id_article);
+    $article = Shop_Article::findOrFail($id_article);
     $need_member = $article->need_member;
 
     // Vérifier si l'article nécessite une adhésion

@@ -216,9 +216,11 @@ class A_Controller_categorie extends Controller
 
         
             //'categories' => Shop_category::orderBy('name', 'ASC')->get(),
-            $info = Shop_category::where('id_shop_category', $id)->firstOrFail();
+            $info = Shop_category::where('id_shop_category', $id)->get();
+            $shop_category = Shop_category::where('id_shop_category', $id)->get();
+            $shop_article = Shop_article::get();
 
-            return view('Category_modify',compact('saison_list','shop_article'))->with('user', auth()->user());
+            return view('Category_modify',compact('shop_article','info','shop_category'))->with('user', auth()->user());
     }
 
 

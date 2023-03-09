@@ -9,17 +9,26 @@ class A_Categorie2 extends Model
 {
     use HasFactory;
 
-    
     protected $table = 'categorie2';
-    protected $primarykey = 'Id_categorie2';
+    protected $primaryKey = 'Id_categorie2';
+    public $incrementing = false;
+    
 
     protected $fillable = [
-    'Id_categorie2 ',
-    'nom_categorie',
-   'description',
-    'categorie_URL',
-    'image',
+       
+        'nom_categorie',
+        'description',
+         'categorie_URL',
+         'image',
+        'updated_at'
     ];
+
+   
+
+
+
+
+
 
 
 }

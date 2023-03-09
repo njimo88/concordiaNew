@@ -3,6 +3,7 @@
 use App\Http\Controllers\A_ControllerBlog;
 use App\Http\Controllers\A_Controller_categorie;
 use App\Http\Controllers\A_ControllerAdmin;
+use App\Http\Controllers\BlogArticle_Controller;
 use App\Models\A_Blog_Post;
 use App\Http\Controllers;
 use App\Http\Controllers\Article_Controller;
@@ -168,6 +169,28 @@ Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name
 /*------------------------------ Communication ----------------------------------------- */
 Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index');
 Route::post('/Communication', [Controller_Communication::class, 'saison_choix'])->name('saison');
+
+/*------------------------------ BLOG BACK OFFICE ----------------------------------------- */
+Route::get('/BlogArticle_index', [BlogArticle_Controller::class, 'index'])->name('index');
+Route::get('/BlogArticle_creation_cate/{type_cate}', [BlogArticle_Controller::class, 'index_creation_cate'])->name('index_creation_cate');
+Route::post('/BlogArticle_creation_cate/{cate}', [BlogArticle_Controller::class, 'create_cate'])->name('create_cate');
+
+
+Route::get('/BlogArticle_redaction', [BlogArticle_Controller::class, 'index_article_redaction'])->name('index_article_redaction');
+
+Route::get('/BlogArticle_category', [BlogArticle_Controller::class, 'index_article_category'])->name('index_article_category');
+
+//delete categories
+Route::get('/BlogArticle_category/delete/{id}', [BlogArticle_Controller::class, 'delete'])->name('delete_cate');
+
+//edit categories
+Route::get('/BlogArticle_category/edit/{id}', [BlogArticle_Controller::class, 'edit_index'])->name('edit_index');
+Route::post('/BlogArticle_category/edit/{id}',[BlogArticle_Controller::class, 'edit_cate'])->name('edit_cate');
+
+
+
+
+
 
 
 /*
