@@ -3,8 +3,8 @@
 @section('content')
 <main style="background-image: url('{{asset("/assets/images/background.png")}}');min-height:100vh;" id="main" class="main">
 
-<div class="row" id="corps-pricipal" style="margin: 0 auto; padding:16px; justify-content:center">
-    <div class="col-lg-10 border border-dark" style="background-color: white; padding:16px; border-radius:10px">
+<div class="row" id="corps-pricipal" style=" padding:16px; justify-content:center">
+    <div class="col-lg-10 border border-dark" style="background-color: white; padding:16px; border-radius:10px;margin-top:80px;">
         <div class="row">
             <div class="col-lg-6">
         <h3 style="
@@ -16,13 +16,15 @@
   text-transform: uppercase;
   font-weight: Bold;">Votre panier :</h3>
         </div>
+    @if (count($paniers) > 0)
+
         <div class="col-lg-6" style="text-align: right">
                                                                 <p><a href="#" data-toggle="modal" data-target="#genDevisModal" style="background-color: #000dff" class="btn btn-primary">Générer un devis</a></p>
                                     
         </div>
     </div>
     @foreach ($paniers as $paniers)
-    @if (!empty($paniers))
+    
         <div style="width: 100%;max-height: 500px; overflow-y: scroll; border-top: solid 1px;" class="border border-dark mb-2">
             <table width="100%">
                 <tbody><tr>
@@ -59,15 +61,11 @@
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         </tr>
                                                 </tbody></table>
         </div>
-        @else
-            <div class="alert alert-info" role="alert">
-                Votre panier est vide !
-            </div>
-        @endif
+        
         @endforeach
                 <table width="100%" style="border-radius: 20px">
                                 <tbody><tr><td class="right "><strong><span style="font-weight: bold;  margin-left: 10px; font-size: 16px;">
-                                Prix Total : ?? € TTC</span></strong></td>
+                                Prix Total : {{ $total }} € TTC</span></strong></td>
                 </tr>
                 </tbody></table>
                 <hr>
@@ -76,10 +74,15 @@
                     <div class="col-lg-10">
                     </div>
                     <div class="col-lg-2" style="text-align: right;">
-                        <input  type="submit" class="btn btn-danger m-2 col-9"  value="Vider le panier">
-                        <input  class="btn btn-success m-2 col-9"  type="submit  " value="Payez">
+                            <a href="{{ route('Vider_panier',auth()->user()->user_id) }}"  class="btn btn-danger m-2 col-9"  >Vider le panier</a>
+                            <a href="{{ route('payer_article') }}"  class="btn btn-success m-2 col-9"  >Payer</a>
                     </div>
                 </div>
+                @else
+            <div class=" alert alert-info " role="alert">
+                Votre panier est vide !
+            </div></div>
+        @endif
 
     </div>
 </div>

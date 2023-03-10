@@ -45,21 +45,48 @@ public function editdata(){
     dd('done');
 }
 
-public function panier($id)
-{
-    // Récupérer tous les paniers associés à l'utilisateur avec les informations de l'article correspondant
+    public function panier($id)
+    {
+        // Récupérer tous les paniers associés à l'utilisateur avec les informations de l'article correspondant
+        $paniers = DB::table('basket')
+                ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+                ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+                ->select('basket.user_id','basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
+                ->where('basket.user_id', $id)
+                ->get();
+
+                
+        $total = 0;
+        foreach ($paniers as $panier) {
+            $total += $panier->qte * $panier->price;
+        }
+
+        // Retourner la vue avec les données récupérées
+        return view('users.panier', compact('paniers','total'))->with('user', auth()->user());
+    }
+
+    public function Vider_panier($id){
+        DB::table('basket')->where('user_id', $id)->delete();
+        return redirect()->route('panier', $id);
+    }
+
+  public function payer_article(){
+    $Mpaiement = DB::table('bills_payment_method')->get();
+    $user_id = auth()->user()->user_id;
+    $adresse = DB::table('users')
+            ->select('address', 'zip', 'city', 'country')
+            ->where('user_id', $user_id)
+            ->first();
+
     $paniers = DB::table('basket')
             ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
             ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
             ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
             ->get();
-
+    
             
-            $var = isUserMember(140);
-            dd($var);
-    // Retourner la vue avec les données récupérées
-    return view('users.panier', compact('paniers'))->with('user', auth()->user());
-}
+    return view('users.payer_article', compact('paniers', 'total','adresse','Mpaiement'))->with('user', auth()->user());
+  }
 
 
 

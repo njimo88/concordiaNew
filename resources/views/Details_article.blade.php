@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+<script src="./src/bootstrap-input-spinner.js"></script>
+
 <div class="modal fade " id="commanderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-notify modal-info" role="document">
       <!--Content-->
@@ -99,6 +101,17 @@
 
 <main id="main" class="main" style="padding : 88px 0; background-image: url('{{asset("/assets/images/background.png")}}');">
 <div style="background-color:white;"  class="container rounded" >
+  @if (session('success'))
+    <div class="alert alert-success m-3">
+        {{ session('success') }}
+    </div>
+@endif
+@if (session('error'))
+    <div class="alert alert-danger m-3">
+        {{ session('error') }}
+    </div>
+@endif
+
           <div  class="row">
             <div class="widget-title col-12 d-flex justify-content-between align-items-center">
               <span>{{ $data->title }}</span>
@@ -382,139 +395,180 @@
                             {{--premier affichage concernant les produits sans professeur --}}
 
 <br>
+</main>
 
 @foreach($article as $data)
 
 @if($data->id_shop_article == $indice and $aff == 0) 
 
-<div class="container mt-4 mb-5">
-          <div class="d-flex">
-            <div class="col-md-2">
-            {{--  Affichage bloc produits (image) --}}
-            <div class="card">
-          
-                      <div class="card-body"  >
-                        <h4 class="card-title">produits</h4>
-                        
-                        
-                            @foreach($shopService as $data1)
-
-                                @if ($data->id_shop_article == $data1->id_shop_article)
-
-                                    @php
-                                          $aff = 0 ;
-                                          $Data_lesson = (array) json_decode($data1->lesson,true);
-
-                                          $Data_teacher = json_decode($data1->teacher,true);
-
-                                          $Data_stock_actuel = json_decode($data1->stock_actuel,true);
-
-                                          $Data_stock_ini = json_decode($data1->stock_ini,true);
-
-
-                                         
-
-                                          
-                                    @endphp
-                                    {{ $data->image }}
-                                              
-                                  
-
-                      
-                      </div>
-          
-                      </div>
-          
-
-                            
-
-
-
-
-
-            </div>
-
-            {{--  Affichage bloc prix  --}}
-            <div class="col-md-2" >
-
-            <div class="card" >
-                      <div class="card-body "style="height: 10rem;">
-                        <h4 class="card-title">Le prix</h4>
-                        
-                        <p class="card-text"><h6> {{$data->totalprice}}€</h6></p>
-                      
-                      </div>
-
-            </div>
-
-
-
-            </div>
-
-            {{--  Affichage bloc inscription  --}}
-            <div class="p-2 bg-secondary flex-fill" style="width:11rem;">
-
-          <div class="card"  >
-          <div class="card-body">
-            <h4 class="card-title">Inscription</h4>
-            <p class="card-text">Se connecter pour s'inscrire</p>
-            <a href="#" class="card-link"><button type="button" class="btn btn-primary">Se connecter</button></a>
-            
-          </div>
-
-                </div>
-
-
-
-          </div>
-            <div class="p-2 flex-fill"> 
-              
-                                            
-          
-          
-          </div>
-          </div>
-
+<main id="main" class="main" style="min-height:100vh;padding : 88px 0; background-image: url('{{asset("/assets/images/background.png")}}');">
+  <div style="background-color:white;"  class="container rounded" >
+    @if (session('success'))
+      <div class="alert alert-success m-3">
+          {{ session('success') }}
+      </div>
+  @endif
+  @if (session('error'))
+      <div class="alert alert-danger m-3">
+          {{ session('error') }}
+      </div>
+  @endif
   
-
-                                        @endif
-                                      @endforeach
-                                      <div class="row d-flex justify-content-center">
-                                        <h1> Descriptif de l'article</h1>
-                                        <div class="card">
-                                          <div class="card-body">
+            <div  class="row">
+              <div class="widget-title col-12 d-flex justify-content-between align-items-center">
+                <span>{{ $data->title }}</span>
+                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
+                  <i class="fas fa-angle-left mr-2"></i> Retour
+                </a>
+              </div>
+              <div class="col-md-2">
+              <div class="card">
+              {{--  Affichage bloc professeur (Nom et photo) --}}
+                        <div class="card-body"  >
+                          <h4 class="card-title mb-2-5">Produit :</h4>
+                          <img style="max-height: 120px" src="{{ $data->image }}" alt="">
+                              @foreach($shopService as $data1)
+  
+                                  @if ($data->id_shop_article == $data1->id_shop_article)
+  
+                                      
                                     
-                                            @foreach($article as $at)
-                                                    @if ($at->id_shop_article == $indice )
-                                    
-                                                    {!! $at->description !!}
-                                    
-                                                  
-                                    
-                                                    @endif
-                                    
-                                            @endforeach
-                                    
+  
+                        
+                        </div>
+            
+                        </div>
+            
+  
+                              
+  
+  
+  
+  
+  
+              </div>
+              <div class="col-md-2" >
+              {{--  Affichage bloc prix  --}}
+              <div class="card" style="border:0px; box-shadow: none;" >
+                <div class="card-body"  style="background-color: white;     display: flow-root !important;  " >
+                  <h4 class="card-title">Prix :</h4>
+                  <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €
+                  </span>
+                  @if ($data->nouveaute == 1)
+                    <img style="position: absolute;
+                    top: 20;
+                    right: 0;max-height:40px;" src="{{ asset("/assets/images/New_Admin.png") }}" alt="">
+                  @endif
+                  <br>
+                  @if ($data->stock_actuel > $data->alert_stock)
+                                  @if ($data->type_article == 0)
+                                      <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponibles</span>
+                                  @elseif ($data->type_article == 1)
+                                      <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponibles</span>
+                                  @elseif ($data->type_article == 2)
+                                      <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Disponibles</span>
+                                  @endif
+                              @elseif ($data->stock_actuel > 0 && $data->stock_actuel <= $data->alert_stock)
+                                  @if ($data->type_article == 0)
+                                      <span style="color:orange;"><i class="fas fa-exclamation-triangle" style="color:orange;"></i> Il reste {{$data->stock_actuel}} disponibilités</span>
+                                  @elseif ($data->type_article == 1)
+                                      <span style="color:orange;"><i class="fas fa-exclamation-triangle" style="color:orange;"></i> Il reste {{$data->stock_actuel}} places</span>
+                                  @elseif ($data->type_article == 2)
+                                      <span style="color:orange;"><i class="fas fa-exclamation-triangle" style="color:orange;"></i> Il reste {{$data->stock_actuel}} disponibilités</span>
+                                  @endif
+                              @elseif ($data->stock_actuel <= 0)
+                                  @if ($data->type_article == 0)
+                                      <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
+                                  @elseif ($data->type_article == 1)
+                                      <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Séance complète</span>
+                                  @elseif ($data->type_article == 2)
+                                      <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
+                                  @endif
+                              @endif
+                </div>
+  
+              </div>
+  
+  
+  
+              </div>
+  
+              
+  
+                <div class=" col-md-5">
+  
+                </div>
+  
+                    
+  
+              <div class="col-md-3" >
+                {{--  Affichage bloc prix  --}}
+                <div class="card" >
+                  <div class="card-body"   style="display: block !important;">
+                    <h4 class="card-title">Inscrire</h4>
+                    @if ($data->stock_actuel <= 0)
+                      @if ($data->type_article == 0)
+                          <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
+                      @elseif ($data->type_article == 1)
+                          <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Séance complète</span>
+                      @elseif ($data->type_article == 2)
+                          <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
+                      @endif
+                    @else
+                        <div class="row col-6 m-1">
+                          <label class=" form-label" for="typeNumber" >Quantité</label>
+                          <input type="number"/>
+                        </div>
+                        <select class="border mb-4 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
+                          @foreach ($selectedUsers as $user)
+                              <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                        <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
+                    @endif
+                    </span>
+                  </div>
+    
+                </div>
+                </div>
+            </div>
+       
+  
+                                          @endif
+                                        @endforeach
+                                        <div class="row d-flex justify-content-center">
+                                          <h1> Descriptif de l'article</h1>
+                                          <div class="card">
+                                            <div class="card-body">
+                                      
+                                              @foreach($article as $at)
+                                                      @if ($at->id_shop_article == $indice )
+                                      
+                                                      {!! $at->description !!}
+                                      
+                                                    
+                                      
+                                                      @endif
+                                      
+                                              @endforeach
+                                      
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
+                                        
+  
+                                        </div>
                                       
-
-                                      </div>
-                            @endif
-                            @endforeach
-
-
-<br>
-
-
-
-{{--  Affichage Description avec plus de details --}}
-
+  
+                              @endif
+                              @endforeach
+  
+  
+      
+                              {{--premier affichage concernant les produits sans professeur --}}
+  
+  <br>
+  </main>
 
 
-
-
-</div>
-</main>
 @endsection

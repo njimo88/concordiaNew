@@ -57,7 +57,11 @@ Route::get('/users/factures-devis', [App\Http\Controllers\UsersController::class
 Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
 Route::get('/users/factures-devis/showBill/{id}', [App\Http\Controllers\UsersController::class, 'showBill'])->name('user.showBill');
 
+/*-----------Panier----------*/
+
 Route::get('/panier/{id}', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
+Route::get('/payer_article', [App\Http\Controllers\UsersController::class, 'payer_article'])->name('payer_article');
+Route::get('/Vider_panier/{id}', [App\Http\Controllers\UsersController::class, 'Vider_panier'])->name('Vider_panier');
 
 
 
@@ -127,6 +131,7 @@ Route::get('/Categorie_front', [A_Controller_categorie::class, 'MainShop'])->nam
 Route::get('/SubCategorie_front/{id}', [A_Controller_categorie::class, 'Shop_souscategorie'])->name('sous_categorie');
 Route::get('/details_article/{id}', [A_Controller_categorie::class, 'Handle_details'])->name('details_article');
 Route::put('/commander_article/{id}', [A_Controller_categorie::class, 'commander_article'])->name('commander_article');
+Route::put('/Passer_au_paiement/{id}', [A_Controller_categorie::class, 'Passer_au_paiement'])->name('Passer_au_paiement');
 Route::get('/commanderModal/{shop_id}/{user_id}', [A_Controller_categorie::class, 'commanderModal']);
 
 //Route::get('/test', [A_Controller_categorie::class, 'JsonProcess2']);

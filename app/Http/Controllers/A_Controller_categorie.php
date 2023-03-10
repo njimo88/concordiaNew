@@ -45,9 +45,75 @@ class A_Controller_categorie extends Controller
 
     }
 
-    public function commander_article($id, Request $request)
+    //boutton Payer
+    public function Passer_au_paiement($id, Request $request)
     {
+        // Récupérer tous les paniers associés à l'utilisateur avec les informations de l'article correspondant
+    
+        $user_id = auth()->user()->user_id;
         $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
+        $id_article = $shop->id_shop_article;
+        $need_member = $shop->need_member;
+        $user_id = $request->selected_user_id;
+        
+            $addcommand = new Basket();
+            $addcommand->user_id = auth()->user()->user_id;
+            $addcommand->family_id = auth()->user()->family_id;
+            $addcommand->pour_user_id = $request->selected_user_id;
+            $addcommand->ref = $shop->id_shop_article;
+            $addcommand->qte = 1;
+            $addcommand->save();
+    
+        if ($need_member != 0) {
+                $result = MiseAuPanier($user_id, $id_article);
+    
+                if ($result == 0) {
+                    $paniers = DB::table('basket')
+                        ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+                        ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+                        ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
+                        ->get();
+                    return view('users.panier', compact('paniers'))->with('user', auth()->user());}
+                elseif ($result == $need_member) {
+                $addcommand = new Basket();
+                $addcommand->user_id = auth()->user()->user_id;
+                $addcommand->family_id = auth()->user()->family_id;
+                $addcommand->pour_user_id = $request->selected_user_id;
+                $addcommand->ref = $need_member;
+                $addcommand->qte = 1;
+                $addcommand->save();
+
+                $paniers = DB::table('basket')
+                    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+                    ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+                    ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
+                    ->get();
+                    return view('users.panier', compact('paniers'))->with('user', auth()->user());
+            } else {
+                dd($result);
+            }
+        }
+
+        $paniers = DB::table('basket')
+    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+    ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+    ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
+    ->get();
+    
+    return view('users.panier', compact('paniers'))->with('user', auth()->user());
+    }
+    
+//boutton commander
+    public function commander_article($id, Request $request)
+{
+    $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
+    $id_article = $shop->id_shop_article;
+    $need_member = $shop->need_member;
+    $selected_user_id = $request->selected_user_id;
+    if(countArticle($selected_user_id,$id_article) < $shop->max_per_user){
+    
+    
+    
         $addcommand = new Basket();
         $addcommand->user_id = auth()->user()->user_id;
         $addcommand->family_id = auth()->user()->family_id;
@@ -55,11 +121,33 @@ class A_Controller_categorie extends Controller
         $addcommand->ref = $shop->id_shop_article;
         $addcommand->qte = 1;
         $addcommand->save();
-        
-        
-        return redirect()->back()->with('success', 'Article ajouté au panier');
-        
+
+    if ($need_member != 0) {
+            $result = MiseAuPanier($selected_user_id, $id_article);
+
+            if ($result == 0) {
+                return redirect()->back()->with('success', 'Article ajouté au panier');}
+            elseif ($result == $need_member) {
+            $addcommand = new Basket();
+            $addcommand->user_id = auth()->user()->user_id;
+            $addcommand->family_id = auth()->user()->family_id;
+            $addcommand->pour_user_id = $request->selected_user_id;
+            $addcommand->ref = $need_member;
+            $addcommand->qte = 1;
+            $addcommand->save();
+            return redirect()->back()->with('success', 'Article ajouté au panier');
+        } else {
+            dd($result);
+        }
     }
+
+    return redirect()->back()->with('success', 'Article ajouté au panier');
+}
+    else{
+        return redirect()->back()->with('error', 'Vous avez atteint la limite d\'achat de cet article');
+    }
+}
+
 
     public function commanderModal($shop_id,$user_id)
     {

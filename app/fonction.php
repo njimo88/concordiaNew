@@ -329,50 +329,55 @@ function Inscrits_Saison_Date($sasion, $date1){
 
 }
 
+function MiseAuPanier($user_id, $id_article)
+{
 
+    $article = Shop_article::findOrFail($id_article);
+    $need_member = $article->need_member;
 
-function Inscrits_Saison_Final($saison){
+        $is_member = isUserMember($user_id);
+        if ($is_member == 0) {
+            return $need_member;
+        } elseif ($is_member != $need_member) {
 
-}
-
-
-
-
-
-
-
-
-
-
-// recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
-
-function retourner_buyers_dun_shop_article($id_shop_article) {
-
-    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->toArray();
-
-    return $requete_liaison_shop_article_bills ;
-
-}
-
-
-
-
-//fonctions pour afficher les dates en Anglais
-function fetchDay($date){
-    $lejour = ( new DateTime($date) )->format('l');
-
-  $jour_semaine = array(
-"lundi" => "Monday",
-"Mardi" => "Tuesday",
-"Mercredi" => "Wednesday",
-"Jeudi" => "Thursday",
-"Vendredi" => "Friday",
-"Samedi" => "Saturday",
-"Dimanche" => "Sunday"
-
-  );
+            // Récupérer les informations de l'article besoin membre
+            $need_member_article = Shop_article::where('id_shop_article', $need_member)
+                ->first();
+            // Comparer les prix des deux articles
+            if ($article->totalprice > $need_member_article->totalprice) {
+                return 0;
+            } else {
+                // Calculer la différence entre le prix de l'article besoin membre et le prix de l'article ajouté au panier
+                $diff_price = $need_member_article->totalprice - $article->totalprice;
+                return $diff_price;
+            }
+        }
+    
 
 }
+
+//fonction qui prend un $idArticle en paramètre et compte le nombre de fois qu'il est présent dans 
+//le tableau renvoyé par Donne_articles_Paye_d_un_user_aucours_d_une_saison()
+
+function countArticle($user_id, $idArticle)
+{
+    $saison = saison_active();
+    // Récupérer tous les articles achetés par l'utilisateur au cours de la saison active
+    $articles = Donne_articles_Paye_d_un_user_aucours_d_une_saison($user_id, $saison);
+
+    // Initialiser le compteur à 0
+    $count = 0;
+    // Parcourir les articles pour compter le nombre de fois où l'idArticle apparaît
+    foreach ($articles as $article) {
+        if ($article == $idArticle) {
+            $count++;
+        }
+    }
+
+    // Retourner le nombre de fois que l'idArticle a été trouvé
+    return $count;
+}
+
 
 
   
