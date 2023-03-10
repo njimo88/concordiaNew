@@ -76,6 +76,8 @@ Creer une catégorie
      <th>Image</th>
       <th>Name</th>
        <th>Description</th>
+       <th>Modifié</th>
+      <th>supprimé</th>
        
        
          
@@ -129,6 +131,8 @@ Creer une catégorie
      <th>Image</th>
       <th>Name</th>
        <th>Description</th>
+       <th>Modifié</th>
+      <th>supprimé</th>
        
        
          
