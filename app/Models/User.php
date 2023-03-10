@@ -45,6 +45,7 @@ class User extends Authenticatable
         'image',
         'role',
         'family_level',
+        'color',
         'created_at',
         'updated_at',
         'licenceFFGYM',

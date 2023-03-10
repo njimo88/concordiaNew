@@ -346,7 +346,39 @@
       .draw();
   });
   
-  $('#myTable').on('click', 'thead th', function() {
+  $('#myTableabb').on('click', 'thead th', function() {
+    var colIndex = $(this).index();
+    var isAsc = $(this).hasClass('asc');
+    table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
+  });   $('#myTableabb').DataTable({
+    drawCallback: function(settings) {
+      var api = this.api();
+      api.column(0, {
+        order: 'applied'
+      }).nodes();
+    },
+    columnDefs: [
+      {
+        targets: 3,
+        type: 'datetime-dd-mm-yyyy'
+      }
+    ]
+  });
+  
+  $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
+      var b = d.split(/\D/);
+      return new Date(b[2], b[1] - 1, b[0], b[3], b[4], b[5]);
+  };
+  
+  // Apply the search
+  $('#myTableabb thead input').on('keyup change', function() {
+    table
+      .column($(this).parent().index() + ':visible')
+      .search(this.value)
+      .draw();
+  });
+  
+  $('#myTableabb').on('click', 'thead th', function() {
     var colIndex = $(this).index();
     var isAsc = $(this).hasClass('asc');
     table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();

@@ -45,10 +45,10 @@
            <li class="nav-item">
               <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#"> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Blog</span><i class="bi bi-chevron-down ms-auto"></i></a>
               <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                 <li> <a href=""> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Articles</span> </a></li>
-                 <li> <a href="forms-layouts.html"> <i style="color: #0ef9de" class="fa-solid fa-pen"></i><span>Rédiger un article</span> </a></li>
+                 <li> <a href="{{route('index')}}"> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Articles</span> </a></li>
+                 <li> <a href="{{route('index_article_redaction')}}"> <i style="color: #0ef9de" class="fa-solid fa-pen"></i><span>Rédiger un article</span> </a></li>
                  <li> <a href="forms-editors.html"> <i style="color: #0ef9de" class="fa-sharp fa-regular fa-images"></i><span>Gérer le slider</span> </a></li>
-                 <li> <a href="#"><span style="margin-right: 10px; color: #0ef9de" class="fa fa-list-ol fa-fw mr-1"></span><span>Catégories</span> </a></li>
+                 <li> <a href="{{route('index_article_category')}}"><span style="margin-right: 10px; color: #0ef9de" class="fa fa-list-ol fa-fw mr-1"></span><span>Catégories</span> </a></li>
               </ul>
            </li>
            <li class="nav-item">

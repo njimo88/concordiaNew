@@ -17,20 +17,155 @@ class BlogArticle_Controller extends Controller
 
     function index()
     {
-        $requete_article = Shop_article::paginate(30) ;
-        $requete_blog  =   A_Blog_Post::paginate(30) ;
+        $requete_article = Shop_article::paginate(50) ;
+        $requete_blog  =   A_Blog_Post::paginate(50) ;
         //$requete_user  =   User::select('user_id','name')->get();
          $requete_user = DB::table('users')
-        ->join('blog_posts', 'blog_posts.id_user', '=', 'users.user_id')->paginate(30);
+        ->join('blog_posts', 'blog_posts.id_user', '=', 'users.user_id')->paginate(50);
 
         return view('BlogArticle_Backoffice/BlogArticle_index',compact('requete_blog','requete_article','requete_user'))->with('user', auth()->user()) ;
 
     }
 
+
+
+    function edit_blog_index($id){
+        $Id = $id ;
+        $blog  =  A_Blog_Post::where('id_blog_post_primaire', $id)->get();
+        $Categorie1 = A_Categorie1::get() ;
+        $Categorie2 = A_Categorie2::get() ;
+
+        return view('BlogArticle_Backoffice/BlogArticle_edit_blog',compact('blog','Categorie2','Categorie1','Id'))->with('user', auth()->user()) ;
+
+    }
+
+    function edit_blog($id, Request $request){
+
+        $blog = A_Blog_Post::find($id); 
+
+        if(isset($request->category1)){
+                                 
+            $blog->categorie1 =  json_encode($request->category1,JSON_NUMERIC_CHECK);
+           
+            $blog->save();  
+        }
+        
+        if(isset($request->category2)){
+                                 
+            $blog->categorie2 =  json_encode($request->category2,JSON_NUMERIC_CHECK);
+           
+            $blog->save();  
+        }
+
+        if(isset($request->date_post)){
+                                 
+            $blog->date_post = $request->date_post;
+           
+            $blog->save();  
+        }
+
+        if(isset($request->editor1)){
+                                 
+            $blog->contenu = $request->editor1;
+           
+            $blog->save();  
+        }
+
+        
+        switch($request->valider) {
+
+         
+            case 'Brouillon': 
+                $blog->status = "Brouillon" ;
+                $blog->save();  
+                break;
+
+            case 'publier': 
+               
+                    $blog->status = "Publié" ;
+                    $blog->save();  
+                    break;
+                    
+        }
+
+
+
+
+
+
+
+        $blog->update($request->all());
+        return redirect()->back()->with('user', auth()->user())->with('success', 'le billet de blog modifié a été avec succès');
+
+       
+
+    }
+
+
+
+    function delete_blog($id)
+    {
+        
+        $blog  =  A_Blog_Post::where('id_blog_post_primaire', $id)->delete();
+  
+      //  return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
+         return redirect()->back()->with('user', auth()->user())->with('success', 'le billet de blog a été supprimé avec succès');
+
+    }
+
+
+
     function index_article_redaction()
     {
-        return 'a';
+        $Categorie1 = A_Categorie1::get() ;
+        $Categorie2 = A_Categorie2::get() ;
+
+        return view('BlogArticle_Backoffice/BlogArticle_redaction_blog',compact('Categorie1','Categorie2'))->with('user', auth()->user()) ;
+
     }
+
+    function creation_article_blog(Request $request){
+
+    
+        $Blog  = new A_Blog_Post() ;
+
+        $Blog->id_user = auth()->user()->user_id;
+        $Blog->id_last_editor = auth()->user()->user_id;
+        $Blog->date_post = $request->input('date_post');
+        $Blog->titre = $request->input('titre');
+        $Blog->contenu = $request->input('editor1');
+        $Blog->categorie1 = json_encode($request->input('category1'),JSON_NUMERIC_CHECK);
+        $Blog->categorie2 = json_encode($request->input('category2'),JSON_NUMERIC_CHECK);
+
+        
+
+        switch($request->valider) {
+
+         
+            case 'Brouillon': 
+                $Blog->status = "Brouillon" ;
+                
+                break;
+
+            case 'publier': 
+               
+                    $Blog->status = "Publié" ;
+                    break;
+                    
+        }
+
+        $Blog->save();
+        return redirect()->back()->with('user', auth()->user())->with('success', ' le nouvel article de blog a été creé avec succès');
+
+    }
+
+   
+
+
+
+   
+
+
 
     function index_article_category(){
 
@@ -44,10 +179,11 @@ class BlogArticle_Controller extends Controller
     function index_creation_cate($type_cate){
 
         $cate = $type_cate ;
-       
-       
-     return view('BlogArticle_Backoffice/BlogArticle_creation_categorie',compact('cate'))->with('user', auth()->user())  ;
-        }
+    
+        return view('BlogArticle_Backoffice/BlogArticle_creation_categorie',compact('cate'))->with('user', auth()->user())  ;
+
+
+    }
        
        
     

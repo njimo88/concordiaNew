@@ -18,7 +18,7 @@ class Article_Controller extends Controller
     // Page d'affichages de la data table d'articles
     public function index(){
 
-        $requete_article = Shop_article::paginate(30) ;
+        $requete_article = Shop_article::paginate(50) ;
         return view('Articles/MainPage_article',compact('requete_article'))->with('user', auth()->user()) ;
     }
 
