@@ -152,7 +152,9 @@
                                 @endif
                         </p>
                             <div class="d-flex flex-wrap justify-content-start align-items-center">
+                              <img style="max-height: 120px" src="{{ $data->image }}" alt="">
                               @foreach($shopService as $data1)
+                              
                                 @if ($data->id_shop_article == $data1->id_shop_article)
                                   @php
                                     $aff = 0;

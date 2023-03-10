@@ -5,11 +5,7 @@
   
 
   <div class="container">
-    @if (session('success'))
-    <div class="alert alert-success col-12">
-        {{ session('success') }}
-    </div>
-@endif
+    
 
     
 <section style="padding-top:40px !important" id="portfolio" class="border border-dark portfolio sections-bg row ">
