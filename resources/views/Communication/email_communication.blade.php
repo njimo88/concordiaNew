@@ -14,10 +14,19 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
 
-  
+<script src="/path/to/cdn/jquery.min.js"></script>
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
 
   <link href="../css/styleCom.css" rel="stylesheet">
+
+
+
+
+
+
+
+
+
 </head>
 <body>
 
@@ -39,30 +48,40 @@
                     </div>
             </div>
 
-          
-<form  method="POST" action="{{route('saison')}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
+        
+
+<form  method="POST" action="{{route('traitement')}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
         @csrf
               
                 <br>
                 <!-- row vert  -->
-      <div class="row" style="background-color: #c6ffc1; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
-                <h3>Paramètres Généraux</h3>  
-                        <div class="col-md-2 col-6">
-                            <label for="saison">Saison</label>
-                                <select id="saison" class="form-control" name="saison">
-                                    @foreach($saison_list as $data)
-                                    <option value="{{$data->saison}}">{{$data->saison}} - {{$data->saison + 1 }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="row"> 
-                        <div class="col-md-11"> 
-                        <input class="btn btn-warning"  name="SubmitButton" type="submit" value="Valider">
-                        </div>     
-                </div>
-      </div>
-    
-    
+   <div class="row">
+   <div style="height: 250px;  overflow: scroll; ">
+              <select multiple data-placeholder="Choix des articles"  id="article" name="article[]" onchange="func(this.value)" >
+                @foreach($shop_article as $value)
+                <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
+               @endforeach
+              </select>
+              <div class="row pt-5">
+         
+   </div>
+  </div>
+  <br>
+  
+            <br>
+
+            <div class="row pt-5">
+                    <div class="col-md-10">
+                        
+                    </div>
+                    <div class="col-md-2">
+                           <button type="submit" class="btn btn-warning" >Valider</button>
+                    </div>
+            </div>
+
+            <br>
+
+
        
 
 <!-- row rose -->
@@ -87,62 +106,196 @@
           </div>
     
           
-  </div>
+      </div>
 
 
-</div>
-           
-</div>
+    </div>
+              
+    </div>
 
 </form>
 
+<div class="col-md-2">
+                           <button  onclick="test()">test</button>
+                    </div>
 
 
-
-<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 <script>
- CKEDITOR.replace('editor1', {
-        filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
-        filebrowserBrowseUrl: "/elfinder/ckeditor",
-        filebrowserUploadMethod: 'form',
-        language: 'fr',
-        on: {
-		loaded: function() {
-			ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
-		}
-	},
-
-        toolbar: [{ name: 'document', items : [ 'Source','NewPage','Preview' ] },
-            { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat','strikethrough', 'underline', 'subscript', 'superscript', '|' ] },
-            { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-            { name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','Scayt' ] },
-            '/',
-            { name: 'heading', items : ['heading', '|' ] },
-            { name: 'alignment', items : ['alignment', '|' ] },
-            { name: 'font', items : [ 'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor', '|'] },
-            
-
-          
-            { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','todoList',] },
-            { name: 'insert', items :[ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ] },
-            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-            { name: 'tools', items : [ 'Maximize','-','About' ] }
-
-],
 
 
-  
-				uiColor: '#FFDC6E'
-    });
+function test(){
+
+var Tab_articles = document.getElementById('article').selectedOptions;
+
+var filter_tab =  heroes.filter(function(hero) {
+    return hero.franchise == “Marvel”;
+});
 
 
 
+console.log(Tab_articles);
 
+}
 
 
 
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+function func(selectedValue) {
+
+  $( "select" )
+  .change(function () {
+    var str = "";
+    $( value="{{$value->id_shop_article}}" ).each(function() {
+      str += $( this ).text() + " ";
+    });
+    $( "div" ).text( str );
+  })
+  .change();
+  
+  //make the ajax call
+  $.ajax({
+        url: 'Communication/get_info/'+article, 
+        type: 'GET',
+        data: 'JSON',
+        success: function() {
+            console.log("Data sent!");
+        }
+    });
+}
+</script>
+
+<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
+<script>
+$(document).ready(function () {
+
+var select = $('select[multiple]');
+var options = select.find('option');
+
+var div = $('<div />').addClass('selectMultiple');
+var active = $('<div />');
+var list = $('<ul />');
+var placeholder = select.data('placeholder');
+
+var span = $('<span />').text(placeholder).appendTo(active);
+
+options.each(function () {
+  var text = $(this).text();
+  if ($(this).is(':selected')) {
+    active.append($('<a />').html('<em>' + text + '</em><i></i>'));
+    span.addClass('hide');
+  } else {
+    list.append($('<li />').html(text));
+  }
+});
+
+active.append($('<div />').addClass('arrow'));
+div.append(active).append(list);
+
+select.wrap(div);
+
+$(document).on('click', '.selectMultiple ul li', function (e) {
+  var select = $(this).parent().parent();
+  var li = $(this);
+  if (!select.hasClass('clicked')) {
+    select.addClass('clicked');
+    li.prev().addClass('beforeRemove');
+    li.next().addClass('afterRemove');
+    li.addClass('remove');
+    var a = $('<a />').addClass('notShown').html('<em>' + li.text() + '</em><i></i>').hide().appendTo(select.children('div'));
+    a.slideDown(400, function () {
+      setTimeout(function () {
+        a.addClass('shown');
+        select.children('div').children('span').addClass('hide');
+        select.find('option:contains(' + li.text() + ')').prop('selected', true);
+      }, 500);
+    });
+    setTimeout(function () {
+      if (li.prev().is(':last-child')) {
+        li.prev().removeClass('beforeRemove');
+      }
+      if (li.next().is(':first-child')) {
+        li.next().removeClass('afterRemove');
+      }
+      setTimeout(function () {
+        li.prev().removeClass('beforeRemove');
+        li.next().removeClass('afterRemove');
+      }, 200);
+
+      li.slideUp(400, function () {
+        li.remove();
+        select.removeClass('clicked');
+      });
+    }, 600);
+  }
+});
+
+$(document).on('click', '.selectMultiple > div a', function (e) {
+  var select = $(this).parent().parent();
+  var self = $(this);
+  self.removeClass().addClass('remove');
+  select.addClass('open');
+  setTimeout(function () {
+    self.addClass('disappear');
+    setTimeout(function () {
+      self.animate({
+        width: 0,
+        height: 0,
+        padding: 0,
+        margin: 0
+      }, 300, function () {
+        var li = $('<li />').text(self.children('em').text()).addClass('notShown').appendTo(select.find('ul'));
+        li.slideDown(400, function () {
+          li.addClass('show');
+          setTimeout(function () {
+            select.find('option:contains(' + self.children('em').text() + ')').prop('selected', false);
+            if (!select.find('option:selected').length) {
+              select.children('div').children('span').removeClass('hide');
+            }
+            li.removeClass();
+          }, 400);
+        });
+        self.remove();
+      })
+    }, 300);
+  }, 400);
+});
+
+$(document).on('click', '.selectMultiple > div .arrow, .selectMultiple > div span', function (e) {
+  $(this).parent().parent().toggleClass('open');
+});
+
+});
+  </script>
+
+
 </main>
 
 

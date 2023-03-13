@@ -1,115 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <title>Bootstrap 4 Website Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.ckeditor.com/4.20.1/standard/ckeditor.js"></script>
-  <link href="../css/styleCom.css" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Laravel Send Email to Multiple Users - ItSolutionStuff.com</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 </head>
 <body>
-
-
-
-    <div class="container" >
-          
-
-                 
-            <div class="row"  style="background-color:lightblue;" >
-           
-
-            <div class="col-md-4" style="background-color:lightblue;">
-            <br>
-                    <h1> Envoi de mails</h1>
-                    <a href="{{route('index')}}"> <button class="btn btn-primary"> retour </button> </a>
-            <br>
-
-            </div>
-            <div class="col-md-8" style="background-color:light-blue;">
-            <br>
-           
-            </div>
-
-            </div>
-            <form action='{{ route("send_mail")}}' method="post"  enctype="multipart/form-data">
-            @csrf
-            <div class="row pt-5">
-            <input type="submit" class="btn btn-primary" value="Valider">
-            </div>
-           
-            <div class="row">
-
-            <div class="col-md-2">
-                
-
-            </div>
-                
-            <div class="col-md-8">
-                <br>
-
-                @php
-
-                $mytab_user = [10,11] ;
-
-                @endphp
-
-                            <input type="text" name="title" class="form-control" placeholder="Title">
-                            <input type="text" name="destinataires" class="form-control" placeholder="Title" value="" hidden>
-                           
-
-                            <textarea name="editor1"  id="ckeditor" class="form-control" name="ckeditor"></textarea>
-                            
-            </div>
-                <div class="col-md-2">
-                
-
-                </div>
-
-
-
-            </div>
-
-           
-
-    </div>
- 
-<script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
-<script type="text/javascript">
-    CKEDITOR.replace('editor1', {
-        filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
-        filebrowserBrowseUrl: "/elfinder/ckeditor",
-        filebrowserUploadMethod: 'form',
-        language: 'fr',
-        on: {
-		loaded: function() {
-			ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
-		}
-	},
-
-        toolbar: [{ name: 'document', items : [ 'Source','NewPage','Preview' ] },
-            { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat' ] },
-            { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-            { name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','Scayt' ] },
-            '/',
-            { name: 'styles', items : [ 'Styles','Format' ] },
-            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
-            { name: 'insert', items :[ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ] },
-            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-            { name: 'tools', items : [ 'Maximize','-','About' ] }
-],
-				uiColor: '#FFDC6E'
-    });
-
   
-
-
+<div class="container">
+    <h1>Laravel Send Email to Multiple Users - ItSolutionStuff.com</h1>
+  
+    <button class="btn btn-success send-email">Send Email</button>
+  
+    <table class="table table-bordered data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>No</th>
+                <th>Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($user as $data)
+                <tr>
+                    <td><input type="checkbox" class="user-checkbox" name="users[]" value="{{ $data->user_id }}"></td>
+                    <td>{{ $data->user_id }}</td>
+                    <td>{{ $data->email }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+  
+    {{ $user->links() }}
+</div>
+  
+<script type="text/javascript">
+  
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+      
+    $(".send-email").click(function(){
+        var selectRowsCount = $("input[class='user-checkbox']:checked").length;
+  
+        if (selectRowsCount > 0) {
+  
+            var ids = $.map($("input[class='user-checkbox']:checked"), function(c){return c.value; });
+  
+            $.ajax({
+               type:'POST',
+               url:"{{ route('ajax.send.email') }}",
+               data:{ids:ids},
+               success:function(data){
+                  alert(data.success);
+               }
+            });
+  
+        }else{
+            alert("Please select at least one user from list.");
+        }
+        console.log(selectRowsCount);
+    });
+  
 </script>
-
-</form>
-
+  
 </body>
 </html>

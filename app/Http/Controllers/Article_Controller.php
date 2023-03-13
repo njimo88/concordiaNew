@@ -12,15 +12,44 @@ use App\Models\shop_article_0;
 use App\Models\shop_article_1;
 use App\Models\shop_article_2;
 use Illuminate\Http\Request;
-
+require_once('../app/fonction.php');
 class Article_Controller extends Controller
+
 {
     // Page d'affichages de la data table d'articles
     public function index(){
+        $S_active = saison_active();
+       
+;        $saison_list = Shop_article::select('saison')->distinct('name')->get();
+        $requete_article = Shop_article::where('saison',$S_active)->paginate(50) ;
+      
 
-        $requete_article = Shop_article::paginate(50) ;
-        return view('Articles/MainPage_article',compact('requete_article'))->with('user', auth()->user()) ;
+        return view('Articles/MainPage_article',compact('requete_article','saison_list'))->with('user', auth()->user()) ;
     }
+
+
+    public function TESTSAISON(Request $request){
+
+        $requete_article= Shop_article::select('*')->where('saison',$request->saison)->paginate(30);
+        
+        //=  $requete_article = Shop_article::paginate(50) ;
+        $saison_list = Shop_article::select('saison')->distinct('name')->get();
+        $html = " ";
+       // $data = view('TESTSAISON',compact('requete_article'))->render();
+     //   echo view('TESTSAISON')->with(['requete_article' => $requete_article, 'saison_list' => $saison_list])->with('user', auth()->user());
+        return view('TESTSAISON', compact('requete_article','saison_list'))->with('user', auth()->user()) ;
+       // return response()->json(['html' => $data]);
+    
+
+    }
+
+
+
+
+
+
+
+
 
     /* Fonction permet de generer dans le formulaire interactive creer une seance 
        la liste deroule des differentes salles 
@@ -142,7 +171,7 @@ class Article_Controller extends Controller
         $article->agemax           = $request->input('agemax');
         $article->price            = $request->input('price');
         $article->price_indicative = $request->input('price_indicative');
-        $article->totalprice       = 10;
+        $article->totalprice       = $request->input('price');
         $article->stock_ini         = $request->input('stock_ini');
         $article->stock_actuel      = $request->input('stock_actuel');
         $article->alert_stock       = $request->input('alert_stock');
@@ -383,7 +412,6 @@ class Article_Controller extends Controller
 
         ]);
     
-
 
 
 
@@ -911,12 +939,30 @@ class Article_Controller extends Controller
         
     }
 
+// CKEDITOR 
 
 
 
 
-
-
+public function upload(Request $request)
+ {
+     if($request->hasFile('upload')) {
+         $originName = $request->file('upload')->getClientOriginalName();
+         $fileName = pathinfo($originName, PATHINFO_FILENAME);
+         $extension = $request->file('upload')->getClientOriginalExtension();
+         $fileName = $fileName.'_'.time().'.'.$extension;
+        
+         $request->file('upload')->move(public_path('images'), $fileName);
+   
+         $CKEditorFuncNum = $request->input('CKEditorFuncNum');
+         $url = asset('images/'.$fileName); 
+         $msg = 'Image uploaded successfully'; 
+         $response = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
+               
+         @header('Content-type: text/html; charset=utf-8'); 
+         echo $response;
+     }
+}
 
 
 

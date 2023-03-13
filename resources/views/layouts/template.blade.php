@@ -119,6 +119,7 @@
 <script src="../r_js/jquery.nestable.js"></script>
 
 <script src="{{asset('assetsAdmin/js/main.js')}}"></script>
+
 <script src="../r_js/style.js"></script>
 
     @livewireScripts

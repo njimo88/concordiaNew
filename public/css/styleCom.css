@@ -1,222 +1,299 @@
-/*! 
- *  Multiple select dropdown with filter jQuery plugin.
- *  Copyright (C) 2022  Andrew Wagner  github.com/andreww1011
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- * 
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *  Lesser General Public License for more details.
- * 
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
- *  USA
- */
- :root {
-    --fms-badge-text-color: white;
-    --fms-badge-color: var(--primary)
-}
 
-.filter-multi-select.dropup, .filter-multi-select.dropdown {
+
+.selectMultiple {
+    width: 800px;
     position: relative;
-}
-
-.filter-multi-select .dropdown-toggle::after {
-    all: unset;
-}
-
-.filter-multi-select .dropdown-toggle:empty::after {
-    all: unset;
-}
-
-.filter-multi-select > .dropdown-toggle::before {
-    display: inline-block;
-    margin-right: 0.255em;
-    vertical-align: middle;
-    content: "";
-    border-top: 0.3em solid;
-    border-right: 0.3em solid transparent;
-    border-bottom: 0;
-    border-left: 0.3em solid transparent;
-}
-
-.filter-multi-select > .dropdown-toggle:empty::before {
-    margin-right: 0.255em;
-}
-
-.filter-multi-select > .viewbar {
-    white-space: normal;
-    font-size: 0.875rem;
-    font-weight: 400;
-    height: auto;
-    cursor: pointer;
-}
-
-.filter-multi-select > .viewbar > .selected-items > .item {
-    margin: .125rem .25rem .125rem 0;
-    padding: 0px 0px 0px .5em;
-    display: inline-flex;
-    height: 1.875em;
-    color: var(--fms-badge-text-color);
-    background-color: var(--fms-badge-color);
-    border-radius: 1.1em;
-    align-items: center;
-    vertical-align: baseline;
-}
-
-.filter-multi-select > .viewbar > .selected-items > .item > button {
-    background-color: transparent;
-    color: var(--fms-badge-text-color);
-    border: 0;
-    font-weight: 900;
-    cursor: pointer;
-}
-
-.filter-multi-select > .viewbar > .selected-items > .item > button:hover {
-    filter: contrast(50%);
-}
-
-.filter-multi-select > .viewbar > .selected-items > .item.disabled {
-    display: inline-flex;
-    padding: 0px .5em 0px .5em;
-    filter: grayscale(80%) brightness(150%);
-}
-
-.filter-multi-select > .viewbar > .selected-items > .item.disabled > button {
+    scroll-behavior: auto;
+  }
+  .selectMultiple select {
     display: none;
-}
-
-.filter-multi-select > .dropdown-menu {
+  }
+  .selectMultiple > div {
+    position: relative;
+    z-index: 2;
+    padding: 8px 12px 2px 12px;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 14px;
+    min-height: 44px;
+    box-shadow: 0 4px 16px 0 rgba(22, 42, 90, 0.12);
+    transition: box-shadow 0.3s ease;
+  }
+  .selectMultiple > div:hover {
+    box-shadow: 0 4px 24px -1px rgba(22, 42, 90, 0.16);
+  }
+  .selectMultiple > div .arrow {
+    right: 1px;
+    top: 0;
+    bottom: 0;
+    cursor: pointer;
+    width: 28px;
+    position: absolute;
+  }
+  .selectMultiple > div .arrow:before, .selectMultiple > div .arrow:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 2px;
+    height: 8px;
+    border-bottom: 8px solid #99A3BA;
+    top: 43%;
+    transition: all 0.3s ease;
+  }
+  .selectMultiple > div .arrow:before {
+    right: 12px;
+    transform: rotate(-130deg);
+  }
+  .selectMultiple > div .arrow:after {
+    left: 9px;
+    transform: rotate(130deg);
+  }
+  .selectMultiple > div span {
+    color: #99A3BA;
+    display: block;
+    position: absolute;
+    left: 12px;
+    cursor: pointer;
+    top: 8px;
+    line-height: 28px;
+    transition: all 0.3s ease;
+  }
+  .selectMultiple > div span.hide {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-4px, 0);
+  }
+  .selectMultiple > div a {
+    position: relative;
+    padding: 0 24px 6px 8px;
+    line-height: 28px;
+    color: #1E2330;
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 6px 0 0;
+  }
+  .selectMultiple > div a em {
+    font-style: normal;
+    display: block;
+    white-space: nowrap;
+  }
+  .selectMultiple > div a:before {
+    content: "";
+    left: 0;
+    top: 0;
+    bottom: 6px;
+    width: 100%;
+    position: absolute;
+    display: block;
+    background: rgba(228, 236, 250, 0.7);
+    z-index: -1;
+    border-radius: 4px;
+  }
+  .selectMultiple > div a i {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 24px;
+    height: 28px;
+    display: block;
+  }
+  .selectMultiple > div a i:before, .selectMultiple > div a i:after {
+    content: "";
+    display: block;
+    width: 2px;
+    height: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: #4D18FF;
+    border-radius: 1px;
+  }
+  .selectMultiple > div a i:before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  .selectMultiple > div a i:after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+  .selectMultiple > div a.notShown {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .selectMultiple > div a.notShown:before {
+    width: 28px;
+    transition: width 0.45s cubic-bezier(0.87, -0.41, 0.19, 1.44) 0.2s;
+  }
+  .selectMultiple > div a.notShown i {
+    opacity: 0;
+    transition: all 0.3s ease 0.3s;
+  }
+  .selectMultiple > div a.notShown em {
+    opacity: 0;
+    transform: translate(-6px, 0);
+    transition: all 0.4s ease 0.3s;
+  }
+  .selectMultiple > div a.notShown.shown {
+    opacity: 1;
+  }
+  .selectMultiple > div a.notShown.shown:before {
+    width: 100%;
+  }
+  .selectMultiple > div a.notShown.shown i {
+    opacity: 1;
+  }
+  .selectMultiple > div a.notShown.shown em {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  .selectMultiple > div a.remove:before {
+    width: 28px;
+    transition: width 0.4s cubic-bezier(0.87, -0.41, 0.19, 1.44) 0s;
+  }
+  .selectMultiple > div a.remove i {
+    opacity: 0;
+    transition: all 0.3s ease 0s;
+  }
+  .selectMultiple > div a.remove em {
+    opacity: 0;
+    transform: translate(-12px, 0);
+    transition: all 0.4s ease 0s;
+  }
+  .selectMultiple > div a.remove.disappear {
+    opacity: 0;
+    transition: opacity 0.5s ease 0s;
+  }
+  .selectMultiple > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 16px;
+    z-index: 1;
     position: absolute;
     top: 100%;
-    left: 0%;
-    z-index: 1000;
-    display: none;
-    float: left;
-    max-height: 50vh;
-    min-width: 10rem;
-    overflow-y: auto;
-    padding: 0.5rem 0;
-    margin: 0.125rem 0 0;
-    font-size: 0.875rem;
-    text-align: left;
-    list-style: none;
-    background-color: #FFFFFF;
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    border-radius: 0.25rem;
-}
-
-.filter-multi-select > .dropdown-menu.show {
-    display: block;
-}
-
-.filter-multi-select > .dropdown-menu > .filter > input {
-    font-size: 0.875rem;
-}
-
-.filter-multi-select > .dropdown-menu > .filter > button {
-    position: absolute;
-    border: 0;
-    background-color: transparent;
-    font-weight: 900;
-    color: #ccc;
-    right: 2rem;
-    top: 1rem;
-}
-
-.filter-multi-select > .dropdown-menu > .filter > button:hover {
-    color: #aaa;
-}
-
-.filter-multi-select .dropdown-item {
-    display: block;
-    width: 100%;
-    padding: 0.25rem 1.5rem;
-    clear: both;
-    font-weight: 400;
-    color: #212529;
-    text-align: inherit;
-    white-space: nowrap;
-    background-color: transparent;
-    border: 0;
-}
-
-.filter-multi-select .dropdown-item.disabled, .filter-multi-select .dropdown-item:disabled {
-    color: #6c757d;
-    pointer-events: none;
-    background-color: transparent;
-}
-
-.filter-multi-select .dropdown-item:hover, .filter-multi-select .dropdown-item:focus  {
-    background-color: inherit;
-}
-
-.filter-multi-select .dropdown-item.active, .filter-multi-select .dropdown-item:active {
-    color: inherit;
-}
-
-.filter-multi-select .dropdown-item .custom-control-input {
-    position: absolute;
-    z-index: -1;
+    left: 0;
+    right: 0;
+    visibility: hidden;
     opacity: 0;
-}
-
-.filter-multi-select .dropdown-item .custom-control-label {
+    border-radius: 8px;
+    transform: translate(0, 20px) scale(0.8);
+    transform-origin: 0 0;
+    filter: drop-shadow(0 12px 20px rgba(22, 42, 90, 0.08));
+    transition: all 0.4s ease, transform 0.4s cubic-bezier(0.87, -0.41, 0.19, 1.44), filter 0.3s ease 0.2s;
+  }
+  .selectMultiple > ul li {
+    color: #1E2330;
+    background: #fff;
+    padding: 12px 16px;
+    cursor: pointer;
+    overflow: hidden;
     position: relative;
-    margin-bottom: 0;
-    vertical-align: top;
-    display: inline-block;   
-}
-
-.filter-multi-select .dropdown-item .custom-control-label::before {
-    border-radius: 0.25rem;
-    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    position: absolute;
-    top: 0.15625rem;
-    left: -1.5rem;
-    display: block;
-    width: 1rem;
-    height: 1rem;
-    pointer-events: none;
+    transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease 0.3s, opacity 0.5s ease 0.3s, border-radius 0.3s ease 0.3s;
+  }
+  .selectMultiple > ul li:first-child {
+    border-radius: 8px 8px 0 0;
+  }
+  .selectMultiple > ul li:first-child:last-child {
+    border-radius: 8px;
+  }
+  .selectMultiple > ul li:last-child {
+    border-radius: 0 0 8px 8px;
+  }
+  .selectMultiple > ul li:last-child:first-child {
+    border-radius: 8px;
+  }
+  .selectMultiple > ul li:hover {
+    background: #4D18FF;
+    color: #fff;
+  }
+  .selectMultiple > ul li:after {
     content: "";
-    background-color: #FFFFFF;
-    border: #adb5bd solid 1px
-}
-
-.filter-multi-select .dropdown-item .custom-control-label::after {
     position: absolute;
-    top: 0.15625rem;
-    left: -1.5rem;
-    display: block;
-    width: 1rem;
-    height: 1rem;
-    content: "";
-    background: no-repeat 50% / 50% 50%;
-}
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%, -50%);
+    transform-origin: 50% 50%;
+  }
+  .selectMultiple > ul li.beforeRemove {
+    border-radius: 0 0 8px 8px;
+  }
+  .selectMultiple > ul li.beforeRemove:first-child {
+    border-radius: 8px;
+  }
+  .selectMultiple > ul li.afterRemove {
+    border-radius: 8px 8px 0 0;
+  }
+  .selectMultiple > ul li.afterRemove:last-child {
+    border-radius: 8px;
+  }
+  .selectMultiple > ul li.remove {
+    transform: scale(0);
+    opacity: 0;
+  }
+  .selectMultiple > ul li.remove:after {
+    -webkit-animation: ripple 0.4s ease-out;
+            animation: ripple 0.4s ease-out;
+  }
+  .selectMultiple > ul li.notShown {
+    display: none;
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.35s ease, opacity 0.4s ease;
+  }
+  .selectMultiple > ul li.notShown.show {
+    transform: scale(1);
+    opacity: 1;
+  }
+  .selectMultiple.open > div {
+    box-shadow: 0 4px 20px -1px rgba(22, 42, 90, 0.12);
+  }
+  .selectMultiple.open > div .arrow:before {
+    transform: rotate(-50deg);
+  }
+  .selectMultiple.open > div .arrow:after {
+    transform: rotate(50deg);
+  }
+  .selectMultiple.open > ul {
+    transform: translate(0, 12px) scale(1);
+    opacity: 1;
+    visibility: visible;
+    filter: drop-shadow(0 16px 24px rgba(22, 42, 90, 0.16));
+  }
+  
+  @-webkit-keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 1;
+    }
+    25% {
+      transform: scale(30, 30);
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(50, 50);
+    }
+  }
+  
+  @keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 1;
+    }
+    25% {
+      transform: scale(30, 30);
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(50, 50);
+    }
+  }
 
-.filter-multi-select .dropdown-item .custom-checkbox:checked ~ .custom-control-label::before,
-.filter-multi-select .dropdown-item .custom-checkbox:indeterminate ~ .custom-control-label::before {
-    border-color: var(--fms-badge-color);
-    background-color: var(--fms-badge-color);
-}
 
-.filter-multi-select .dropdown-item .custom-checkbox:checked:disabled ~ .custom-control-label::before,
-.filter-multi-select .dropdown-item .custom-checkbox:indeterminate:disabled ~ .custom-control-label::before {
-    border-color: var(--fms-badge-color);
-    background-color: var(--fms-badge-color);
-    filter: grayscale(80%) brightness(150%);
-}
 
-.filter-multi-select .dropdown-item .custom-checkbox:checked ~ .custom-control-label::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23FFFFFF' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
-}
-
-.filter-multi-select .dropdown-item .custom-checkbox:indeterminate ~ .custom-control-label::after {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3e%3cpath stroke='%23FFFFFF' d='M0 2h4'/%3e%3c/svg%3e");
-}
+  

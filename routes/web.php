@@ -140,6 +140,11 @@ Route::get('/Article', [Article_Controller::class, 'index'])->name('index_articl
 Route::post('/Article/edit/{id}', [Article_Controller::class, 'edit'])->name('edit_article');
 Route::get('/Article/edit/{id}', [Article_Controller::class, 'edit_index'])->name('edit_article_index');
 
+
+Route::post('images/upload', 'ImageController@upload')->name('ckeditor.upload');
+
+
+
 // Dupliquer un article
 Route::post('/Article/duplicate/{id}', [Article_Controller::class, 'duplicate'])->name('duplicate_article');
 Route::get('/Article/duplicate/{id}', [Article_Controller::class, 'duplicate_index'])->name('duplicate_article_index');
@@ -166,9 +171,6 @@ Route::get('/Article/create/lesson', [Article_Controller::class, 'index_create_l
 Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name('test_create_article');
 
 
-/*------------------------------ Communication ----------------------------------------- */
-Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index');
-Route::post('/Communication', [Controller_Communication::class, 'saison_choix'])->name('saison');
 
 /*------------------------------ BLOG BACK OFFICE ----------------------------------------- */
 Route::get('/BlogArticle_index', [BlogArticle_Controller::class, 'index'])->name('index');
@@ -227,8 +229,18 @@ Route::get('/testroute', function() {
 
 
 
+/*------------------------------ Communication ----------------------------------------- */
+Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index_communication');
+Route::get('/Communication/get_info/{article_id}', [Controller_Communication::class, 'get_info'])->name('get_communication');
 
-Route::post('Communication/upload', [Controller_Communication::class, 'upload'])->name('ckeditor.upload');
+Route::post('/Communication/traitement', [Controller_Communication::class, 'traitement'])->name('traitement');
 
-Route::get('Communication/envoi', [Controller_Communication::class, 'index_envoi_mail'])->name('index_mail');
+/*------------------------ tuto send email ---------------------------- */
+Route::get('/users', [Controller_Communication::class, 'index_u'])->name('users.index');
+Route::post('/users-send-email', [Controller_Communication::class, 'sendEmail_u'])->name('ajax.send.email');
 
+
+/*------------------------ learn AJAX---------------------------- */
+
+
+Route::get('/TESTSAISON', [Article_Controller::class, 'TESTSAISON'])->name('TESTSAISON');
