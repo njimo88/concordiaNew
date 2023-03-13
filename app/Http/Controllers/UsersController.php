@@ -10,6 +10,7 @@ use App\models\bills;
 use App\Models\old_bills;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Models\Shop_article;
 require_once(app_path().'/fonction.php');
 
 
@@ -47,11 +48,12 @@ public function editdata(){
 
     public function panier($id)
     {
+        
         // Récupérer tous les paniers associés à l'utilisateur avec les informations de l'article correspondant
         $paniers = DB::table('basket')
                 ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
                 ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-                ->select('basket.user_id','basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
+                ->select('basket.user_id','basket.ref','basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
                 ->where('basket.user_id', $id)
                 ->get();
 
@@ -60,7 +62,6 @@ public function editdata(){
         foreach ($paniers as $panier) {
             $total += $panier->qte * $panier->price;
         }
-
         // Retourner la vue avec les données récupérées
         return view('users.panier', compact('paniers','total'))->with('user', auth()->user());
     }
@@ -71,6 +72,7 @@ public function editdata(){
     }
 
   public function payer_article(){
+
     $Mpaiement = DB::table('bills_payment_method')->get();
     $user_id = auth()->user()->user_id;
     $adresse = DB::table('users')
@@ -79,14 +81,52 @@ public function editdata(){
             ->first();
 
     $paniers = DB::table('basket')
+    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+    ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+    ->select('basket.qte', 'basket.ref', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
+    ->get();
+
+
+    MiseAjourArticlePanier($paniers);
+
+    $paniers = DB::table('basket')
             ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
             ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-            ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
+            ->select('basket.qte','shop_article.title', 'basket.ref', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
             ->get();
-    
+
+    $total = 0;
+
+    foreach ($paniers as $panier) {
+        $total += $panier->qte * $panier->price;
+    }
+
+
+    $can_purchase = true;
+    $unavailable_articles = [];
+
+    foreach ($paniers as $panier) {
+        $shop = Shop_article::find($panier->ref); 
+        if
+        $quantite = 1;
+
+        if (!verifierStockUnArticle($shop, $quantite)) {
+            $can_purchase = false;
+            $unavailable_articles[] = $shop->title;
+        }
+    }
+
+    if (!$can_purchase) {
+        $error_msg = "Les articles suivants ne peuvent pas être achetés: " . implode(', ', $unavailable_articles);
+        return redirect()->back()->withErrors([$error_msg]);
+    }else{
+        return view('users.payer_article', compact('paniers','total','adresse','Mpaiement'))->with('user', auth()->user());
+    }
+
+
+    }
             
-    return view('users.payer_article', compact('paniers', 'total','adresse','Mpaiement'))->with('user', auth()->user());
-  }
+  
 
 
 

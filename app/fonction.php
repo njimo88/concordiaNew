@@ -323,6 +323,83 @@ function countArticle($user_id, $idArticle)
     return $count;
 }
 
+ function MiseAjourStock()
+{
+   // Step 1: Retrieve the id_shop_article of the current season that have bills.status > 9
+   $id_shop_articles = DB::table('shop_article')
+   ->join('liaison_shop_articles_bills', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+   ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+   ->where('shop_article.saison', '=', saison_active())
+   ->where('bills.status', '>', 9)
+   ->distinct('shop_article.id_shop_article')
+   ->pluck('shop_article.id_shop_article');
+
+
+   // Step 2: Count the occurrence of each id_shop_article multiplied by quantity in the liaison_shop_articles_bills table
+    $liaison_counts = DB::table('liaison_shop_articles_bills')
+    ->whereIn('id_shop_article', $id_shop_articles)
+    ->select('id_shop_article', DB::raw('sum(quantity) as count'))
+    ->groupBy('id_shop_article')
+    ->pluck('count', 'id_shop_article');
+
+
+    // Step 3: Update the stock_actuel for each article
+    foreach ($id_shop_articles as $id_shop_article) {
+        $shop_article = Shop_article::find($id_shop_article);
+        $stock_ini = $shop_article->stock_ini;
+        $count = $liaison_counts->get($id_shop_article, 0);
+        $stock_actuel = $stock_ini - $count;
+        $shop_article->stock_actuel = $stock_actuel;
+        $shop_article->save();
+    }
+}
+
+
+
+function MiseAjourArticlePanier($articles){
+
+    $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->whereIn('id_shop_article', $articles->pluck('ref'))
+        ->select('id_shop_article', DB::raw('sum(quantity) as count'))
+        ->groupBy('id_shop_article')
+        ->pluck('count', 'id_shop_article');
+
+    foreach ($articles as $article) {
+        $article_db = Shop_article::find($article->ref);
+        $stock_ini = $article_db->stock_ini;
+        $count = $liaison_counts->get($article->ref, 0);
+        $stock_actuel = $stock_ini - $count;
+        $article_db->stock_actuel = $stock_actuel;
+        $article_db->save();
+    }
+}
+
+
+function MiseAjourArticle($article){
+
+    $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->where('id_shop_article', $article->id_shop_article)
+        ->select(DB::raw('sum(quantity) as count'))
+        ->value('count');
+
+    $stock_ini = $article->stock_ini;
+    $count = $liaison_counts ?? 0;
+    $stock_actuel = $stock_ini - $count;
+    $article->stock_actuel = $stock_actuel;
+    $article->save();
+}
+
+
+function verifierStockUnArticle($article, $quantite){
+    $stockActuel = $article->stock_actuel;
+    if($quantite <= $stockActuel){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
 
 
   

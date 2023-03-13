@@ -106,6 +106,8 @@ Route::get('/', [A_ControllerBlog::class, 'a_fetchPost'])->name('A_blog');
 Route::get('/Simple_Post/{id}', [A_ControllerBlog::class, 'Simple_Post'])->name('Simple_Post');
 Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_par_cat1'])->name('A_blog_par_categorie1');
 Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_par_cat2'])->name('A_blog_par_categorie2');
+Route::get('/questionnaire', [A_ControllerBlog::class, 'questionnaire'])->name('questionnaire');
+Route::get('/determinesection/count', [A_ControllerBlog::class, 'countdeterminesection'])->name('countdeterminesection');
 
 
 /*---------------------------------Shop en backoffice------------------------------------------*/

@@ -11,12 +11,9 @@
         <div  class="row ">
             <div class="widget-title col-12 d-flex justify-content-between align-items-center">
                 <span><h5 style="font-weight:bold"  class="text-dark font-weight-bold">Récapitulatif :&nbsp;</h5> Total : {{ number_format($total, 2, ',', ' ') }} € TTC</span>
-                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
-                <i class="fas fa-angle-left mr-2"></i> Retour
-                </a>
             </div>
             <div class="row d-flex justify-content-center">
-                <div style="min-height: 300px; background-color:#edeeef;" class="col-md-6 mx-3 border border-dark">
+                <div style="background-color:#edeeef;" class="col-md-6 mx-3 border border-dark">
                     <h4 class="p-3">Produits Achetés :</h4>
                     <div class="row">
                         @foreach ($paniers as $article)
