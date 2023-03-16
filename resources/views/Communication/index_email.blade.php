@@ -43,7 +43,7 @@
 
    
 
-    <select id="framework" name="framework[]" multiple class="form-control"  onchange="myFunction()">
+    <select id="framework" name="framework[]" multiple class="form-control" >
     @foreach($shop_article as $value)
                 <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
                @endforeach
@@ -84,11 +84,12 @@
             <td> <input type="checkbox"> </td>
                 <td>{{$data->name}}</td>
                 <td>{{$data->email}}</td>
-                <td id='myTdElement'>{{$data->id_shop_article}}</td>
+                <td>{{$data->id_shop_article}}</td>
                 
             </tr>
        @endforeach
-      
+       
+    
     </tbody>
 
 </table>
@@ -109,12 +110,23 @@ $(document).ready(function(){
   nonSelectedText: 'Select Framework',
   enableFiltering: true,
   enableCaseInsensitiveFiltering: true,
-  buttonWidth:'600px'
+  buttonWidth:'400px'
  });
  
 });
 
+
+
 </script>
+
+<script>
+
+
+</script>
+
+
+
+
 
 
 <script>
@@ -134,55 +146,6 @@ $(document).ready(function(){
 
 
 </script>
-
-
-<script>
-
-function myFunction(value) {
-
-  var selectElement = document.querySelector('select');
-  var selectedValues = [];
-  const table = $('#example').DataTable();
-
-  // loop through all the selected options and add their values to an array
-  for (var i = 0; i < selectElement.options.length; i++) {
-    if (selectElement.options[i].selected) {
-      selectedValues.push(selectElement.options[i].value);
-    }
-  }
-
-  // do something with the selected values
-    console.log(selectedValues);
-    
-
-/*
-
- // select the row with index 2
-var selectedRow = table.row(9);
-
-// retrieve the data for the selected row
-var rowData = selectedRow.data();
-
-// log the data to the console
- // console.log(rowData);
-// get the td element
-var searchValue = '125';
-
-// get the column index of the column to filter by
-var columnIndex = table.column('id article:id_shop_article').index();
-
-console.log(columnIndex);
-
-// perform the search/filter
-table.column(columnIndex).search(searchValue).draw();
-  //table.clear().rows.add(filteredData).draw();
-
-}
-
-*/
-}
-</script>
-
 
 
 

@@ -196,26 +196,8 @@ function showCustomer(str) {
 
 
 
-
-
-
-
-
-
-
-
-
 </main>
     
-
-
-
-
-
-
-
-
-
 
 
 

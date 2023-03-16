@@ -325,6 +325,9 @@ function Donne_User_article_Date($id_shop_article,$date1) {
 
 
 
+
+
+
 function Inscrits_Saison_Date($sasion, $date1){
 
 }
@@ -349,10 +352,70 @@ function Inscrits_Saison_Final($saison){
 function retourner_buyers_dun_shop_article($id_shop_article) {
 
     $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->toArray();
+    
 
     return $requete_liaison_shop_article_bills ;
 
 }
+
+
+// fonction pour determiner les destinataires des mails
+
+function destinataires_du_mail($user_id){
+    
+    $tab = [] ;
+    $tab1 = [] ;
+   
+    //recupere le famiily level pour verifier si l'user est un child ou un parent
+    $requete_user_family_level = DB::table('users')->where('user_id',$user_id)->value('family_level');
+  //recupere l'email du user
+    $requete_user_email = DB::table('users')->where('user_id',$user_id)->value('email');
+
+    if ($requete_user_family_level == "parent"){
+        $tab[] = $user_id ;
+
+        return $tab ;
+
+    }else if ( ($requete_user_family_level == "child") and (( !isset($requete_user_email)) or ($requete_user_email == NULL) )){
+        
+        $requete_user_family_id = DB::table('users')->where('user_id',$user_id)->value('family_id');
+        $tab = DB::table('users')->where('family_id', $requete_user_family_id) ->where('family_level','parent')->pluck('user_id')->toArray();
+
+        foreach($tab as $t){
+            if ($t != $user_id){
+              $tab1[] = $t ;      
+            }
+        }
+        return $tab1 ;
+
+
+
+    }else if (($requete_user_family_level == "child") and (isset($requete_user_email)) ){
+
+        $requete_user_family_id = DB::table('users')->where('user_id',$user_id)->value('family_id');
+        $tab = DB::table('users')->where('family_id', $requete_user_family_id) ->where('family_level','parent')->pluck('user_id')->toArray();
+      
+        return $tab ;
+
+
+    }
+  
+ 
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

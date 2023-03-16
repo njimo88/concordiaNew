@@ -12,6 +12,7 @@ use App\Models\Shop_service;
 use App\Mail\UserEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 require_once('../app/fonction.php');
 
@@ -20,10 +21,21 @@ class Controller_Communication extends Controller
 {
    function index(){
 
-        $shop_article = Shop_article::paginate(10);
 
-        return view('Communication/email_communication',compact('shop_article'))->with('user', auth()->user()) ;
-       
+    /*
+    $users = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+    ->get();
+    */
+    $users = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+    ->paginate(10);
+
+
+        $shop_article = Shop_article::paginate(50);
+        $uuser =  $users ;
+      //  return view('Communication/form_email',compact('shop_article','uuser'))->with('user', auth()->user()) ;
+     return destinataires_du_mail(312);
 
    }
 
@@ -69,8 +81,7 @@ class Controller_Communication extends Controller
         $tab = array(
             $d =>  $mytab
         ) ;
-        $final_tab[] = $tab ;
-
+       
     }
 
     return view('Communication/userEmail',compact('final_tab')) ;
