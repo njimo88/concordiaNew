@@ -172,6 +172,11 @@ Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name
 
 
 
+
+
+
+
+
 /*------------------------------ BLOG BACK OFFICE ----------------------------------------- */
 Route::get('/BlogArticle_index', [BlogArticle_Controller::class, 'index'])->name('index');
 

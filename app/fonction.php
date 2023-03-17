@@ -8,6 +8,8 @@ use App\Models\shop_article;
 use App\Models\shop_article_1;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
+use Illuminate\Support\Facades\Mail;
+
 
 
 
@@ -324,10 +326,6 @@ function Donne_User_article_Date($id_shop_article,$date1) {
 }
 
 
-
-
-
-
 function Inscrits_Saison_Date($sasion, $date1){
 
 }
@@ -337,14 +335,6 @@ function Inscrits_Saison_Date($sasion, $date1){
 function Inscrits_Saison_Final($saison){
 
 }
-
-
-
-
-
-
-
-
 
 
 // recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
@@ -400,11 +390,36 @@ function destinataires_du_mail($user_id){
 
     }
   
- 
-
 
 }
 
+
+
+
+
+function sendEmailToUser($user_id, $message1,$data) {
+
+  $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
+  $email = $user->email; // Get the user's email address
+
+  Mail::to($email)->send(new UserEmail($message1,$data)); // Send the email using Laravel's Mail facade
+
+}
+
+class UserEmail extends \Illuminate\Mail\Mailable {
+    
+  public $message1; // Define a public property to store the message
+  public $data;
+ 
+  public function __construct($message1, $data) {
+    $this->message1 = $message1; // Assign the message to the public property
+    $this->data = $data ;
+  }
+  public function build() {
+    return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1, 'data' => $this->data]); // Define the email's view
+  }
+
+}
 
 
 

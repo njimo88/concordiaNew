@@ -21,7 +21,7 @@ class Article_Controller extends Controller
         $S_active = saison_active();
        
 ;        $saison_list = Shop_article::select('saison')->distinct('name')->get();
-        $requete_article = Shop_article::where('saison',$S_active)->paginate(50) ;
+         $requete_article = Shop_article::where('saison',$S_active)->paginate(50) ;
       
 
         return view('Articles/MainPage_article',compact('requete_article','saison_list'))->with('user', auth()->user()) ;
@@ -29,19 +29,20 @@ class Article_Controller extends Controller
 
 
     public function TESTSAISON(Request $request){
-
-        $requete_article= Shop_article::select('*')->where('saison',$request->saison)->paginate(30);
+        $la_saison =  $request->saison ;
+        $requete_article= Shop_article::select('*')->where('saison',$request->saison)->paginate(50);
         
         //=  $requete_article = Shop_article::paginate(50) ;
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
         $html = " ";
        // $data = view('TESTSAISON',compact('requete_article'))->render();
-     //   echo view('TESTSAISON')->with(['requete_article' => $requete_article, 'saison_list' => $saison_list])->with('user', auth()->user());
-        return view('TESTSAISON', compact('requete_article','saison_list'))->with('user', auth()->user()) ;
+       echo view('TESTSAISON')->with(['requete_article' => $requete_article, 'saison_list' => $saison_list, 'la_saison' => $la_saison])->with('user', auth()->user());
+       // return view('TESTSAISON', compact('requete_article','saison_list'))->with('user', auth()->user()) ;
        // return response()->json(['html' => $data]);
     
 
     }
+
 
 
 

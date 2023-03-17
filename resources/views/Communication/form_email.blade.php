@@ -27,7 +27,6 @@
 
 <script src="/path/to/cdn/jquery.min.js"></script>
 
-
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
 
 <link href="../css/styleCom.css" rel="stylesheet">
@@ -44,9 +43,9 @@
    
 
     <select id="framework" name="framework[]" multiple class="form-control"  onchange="myFunction()">
-    @foreach($shop_article as $value)
-                <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
-               @endforeach
+      @foreach($shop_article as $value)
+                  <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
+                @endforeach
      </select>
    
 
@@ -68,6 +67,7 @@
     <thead>
                 <tr>
                     <th><input type="checkbox"></th>
+                    <th hidden>Id user</th>
                     <th>Nom</th>
                     <th>email</th>
                     <th>id article</th>
@@ -82,24 +82,34 @@
        @foreach($uuser as $data)
             <tr>
             <td> <input type="checkbox"> </td>
-                <td>{{$data->name}}</td>
-                <td>{{$data->email}}</td>
+               <td hidden> {{$data->user_id}} </td>
+                <td> {{$data->name}} </td>
+                <td> {{$data->email}} </td>
                 <td id='myTdElement'>{{$data->id_shop_article}}</td>
                 
             </tr>
        @endforeach
-      
+  
     </tbody>
 
 </table>
 <button id="button">test</button>
 </div>
 
-
-
-
-
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <script>
@@ -125,10 +135,37 @@ $(document).ready(function(){
  
     $('#example tbody').on( 'click', 'tr', function () {
         $(this).toggleClass('selected');
+
+
+
+
+
     } );
  
     $('#button').click( function () {
         alert( table.rows('.selected').data().length +' row(s) selected' );
+        const selectedData = table.rows('.selected').data();
+        const selectedRows = [];
+        const tab_selected_users = [] ;
+
+        if (selectedData.length > 0) {
+        const selectedCellValue = table.cell('.selected', 3).data();
+        console.log(selectedCellValue);
+    }
+
+          $.each(selectedData, function(index, value) {
+              selectedRows.push(value);
+          });
+          console.log(selectedRows);
+
+           for (let index = 0; index < table.rows('.selected').data().length; index++) {
+           
+            tab_selected_users.push(selectedRows[index][1]) ;
+            
+           }
+
+          console.log( tab_selected_users);
+
     } );
 } );
 
@@ -136,6 +173,8 @@ $(document).ready(function(){
 </script>
 
 
+
+<!-- Script JS qui permet de trier dynamiquement en fonction des shop articles, les users qui les ont achetes   -->
 <script>
 
 function myFunction(value) {
@@ -153,33 +192,17 @@ function myFunction(value) {
 
   // do something with the selected values
     console.log(selectedValues);
+    const columnData = table.column(3).data();
+    console.log(columnData);
+
+    const filteredData = columnData.filter(value => selectedValues.includes(value));
+    console.log(filteredData);
     
+    table.column(3).data(filteredData);
+    // Redraw the filtered column
+    table.column(3).search(filteredData.join('|'), true, false).draw();
 
-/*
 
- // select the row with index 2
-var selectedRow = table.row(9);
-
-// retrieve the data for the selected row
-var rowData = selectedRow.data();
-
-// log the data to the console
- // console.log(rowData);
-// get the td element
-var searchValue = '125';
-
-// get the column index of the column to filter by
-var columnIndex = table.column('id article:id_shop_article').index();
-
-console.log(columnIndex);
-
-// perform the search/filter
-table.column(columnIndex).search(searchValue).draw();
-  //table.clear().rows.add(filteredData).draw();
-
-}
-
-*/
 }
 </script>
 

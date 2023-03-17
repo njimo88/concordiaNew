@@ -34,8 +34,7 @@ Créer un article
       
         </div>
         <div class="col-md-2 pt-4">
-          <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST"> 
-            @CSRF
+          
         <select class="form-control" name="saison" id="saison" onchange="showCustomer(this.value)">
                    
                     @foreach($saison_list as $data)
@@ -44,19 +43,7 @@ Créer un article
                      @endforeach
                 </select>
         </div>
-        <div class="col-md-4">
-        
-        <button type="submit" class="btn btn-primary" name="find" value="Find">valider </button>
-        </form>
-        </div>
-  @php
-        if($request->method() == 'POST'){
-
-            echo "fine" ;
-
-      }
-
-              @endphp
+      
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -150,25 +137,22 @@ Créer un article
     {!! $requete_article->links() !!}
 </div> 
             
-        </div>
-	</div>
+   
 
   <!--  AFFICHAGE DE LA VUE APRES LA REQUETE D'AJAX -->
-
-<div id="txtHint">
-
-
-</div>
 
 <!--  AFFICHAGE DE LA VUE APRES LA REQUETE D'AJAX -->
 
             </div>
 </div>
 
-<div class="clearfix"></div>
-<div class="d-flex justify-content-center">
-    {!! $requete_article->links() !!}
+
+<div id="txtHint">
+
+
 </div>
+
+
 
 <script>
 function showCustomer(str) {
@@ -178,13 +162,8 @@ function showCustomer(str) {
   }
   const xhttp = new XMLHttpRequest();
   xhttp.onload = function() {
-    if (str == "2015") {
-      $('#maTable').hide();
-    }else{
-      $('#maTable').show();
-    }
-
     document.getElementById("txtHint").innerHTML = this.responseText;
+  
   }
   xhttp.open("GET", "{{ route('TESTSAISON') }}?saison=" + str);
   xhttp.send();
