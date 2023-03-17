@@ -100,14 +100,14 @@
 @if($data->id_shop_article == $indice and $aff == 1)  
 
 <main id="main" class="main" style="padding : 88px 0; background-image: url('{{asset("/assets/images/background.png")}}');">
-<div style="background-color:white;"  class="container rounded" >
+<div style="background-color:white;"  class="container rounded px-2" >
   @if (session('success'))
-    <div class="alert alert-success m-3">
+    <div style="display: -webkit-inline-box !important;" class="alert alert-success mt-3 col-12">
         {{ session('success') }}
     </div>
 @endif
 @if (session('error'))
-    <div class="alert alert-danger m-3">
+    <div style="    display: -webkit-inline-box;" class="alert alert-danger mt-3">
         {{ session('error') }}
     </div>
 @endif
@@ -331,7 +331,7 @@
                     </div>
             </div>    
 
-            <div class="col-md-3" >
+            <div class="col-md-2" >
               {{--  Affichage bloc prix  --}}
               <div class="card" >
                 <div class="card-body"   style="display: block !important;">
@@ -414,14 +414,14 @@
       </div>
   @endif
   
-            <div  class="row">
+            <div  class="row ">
               <div class="widget-title col-12 d-flex justify-content-between align-items-center">
                 <span>{{ $data->title }}</span>
                 <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
                   <i class="fas fa-angle-left mr-2"></i> Retour
                 </a>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-3">
               <div class="card">
               {{--  Affichage bloc professeur (Nom et photo) --}}
                         <div class="card-body"  >
@@ -495,17 +495,10 @@
   
               
   
-                <div class=" col-md-5">
-  
-                </div>
-  
-                    
-  
-              <div class="col-md-3" >
-                {{--  Affichage bloc prix  --}}
-                <div class="card" >
-                  <div class="card-body"   style="display: block !important;">
-                    <h4 class="card-title">Inscrire</h4>
+                <div class=" col-md-3">
+                  <div class="card" >
+                    <div class="card-body"   style="display: block !important;">
+                  <h4 class="card-title">Choix</h4>
                     @if ($data->stock_actuel <= 0)
                       @if ($data->type_article == 0)
                           <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
@@ -515,22 +508,74 @@
                           <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
                       @endif
                     @else
-                        <div class="row col-6 m-1">
-                          <label class=" form-label" for="typeNumber" >Quantité</label>
-                          <input type="number"/>
+                    @if ($data->type_article == 2)
+                      <div class="form-group mb-1">
+                        <label for="typeNumber">Quantité</label>
+                        <input class="border border-dark col-3 select-form p-1  my-1" type="number" id="qte" name="qte" value="1"/>
+                      </div>
+                    @endif
+                    @if ($data->type_article == 2 && !empty($declinaisons))
+                        <div class="form-group col-10  mb-3">
+                            <label class=" form-label" for="declinaison">Déclinaison :</label>
+                            <select class="p-1"  id="declinaison" name="declinaison">
+                                @foreach ($declinaisons as $index => $declinaison)
+                                    @foreach ($declinaison as $id => $info)
+                                          @if ($info['stock_actuel_d'] > 0)
+                                            <option style=" font-size:15px;" class="text-dark p-2" value="{{ $id }}">{{ $info['libelle'] }} </option>
+                                        @else
+                                            <option style="font-size:15px;" class="text-muted p-2"  value="{{ $id }}" disabled>{{ $info['libelle'] }} </option>
+                                        @endif
+                                    @endforeach
+                                @endforeach
+                            </select>
                         </div>
-                        <select class="border mb-4 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
+                    @endif
+                </div></div></div>
+  
+                    
+              @guest
+                <div class="col-md-4" >
+                  {{--  Affichage bloc prix  --}}
+                  <div class="card" >
+                    <div class="card-body"   style="display: block !important;">
+                      @if ($data->type_article == 2)
+                        <h4 class="card-title">Commander</h4>
+                      @else
+                        <h4 class="card-title">Inscrire</h4>
+                      @endif
+                          <p>Se connecter pour commander</p>
+                          <a  href="{{ route('login') }}" class="btn btn-primary">Se connecter</a>
+                      </span>
+                    </div>
+      
+                  </div>
+                  </div>
+              @else
+                <div class="col-md-4" >
+                {{--  Affichage bloc prix  --}}
+                <div class="card" >
+                  <div class="card-body"   style="display: block !important;">
+                    @if ($data->type_article == 2)
+                      <h4 class="card-title">Commander</h4>
+                    @else
+                      <h4 class="card-title">Inscrire</h4>
+                    @endif
+                        <select class="border mb-4 col-12 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
                           @foreach ($selectedUsers as $user)
                               <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
                             @endforeach
                         </select>
-                        <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
+                        <button  data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
                     @endif
                     </span>
                   </div>
     
                 </div>
                 </div>
+              @endguest
+              
+
+
             </div>
        
   

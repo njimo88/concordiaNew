@@ -58,11 +58,12 @@ Route::get('/users/factures-devis/showBill/{id}', [App\Http\Controllers\UsersCon
 
 /*-----------Panier----------*/
 
-Route::get('/panier/{id}', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
+Route::get('/panier', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
 Route::get('/payer_article', [App\Http\Controllers\UsersController::class, 'payer_article'])->name('payer_article');
 Route::get('/Vider_panier/{id}', [App\Http\Controllers\UsersController::class, 'Vider_panier'])->name('Vider_panier');
 
-
+/*-----------Paiement----------*/
+Route::get('/detail_paiement/{id}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
 
 
 /*-----------Admin----------*/

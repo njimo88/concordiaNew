@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-
 <main style="background-image: url('{{asset("/assets/images/background.png")}}')">
 
 

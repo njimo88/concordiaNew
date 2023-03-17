@@ -7,6 +7,7 @@ use App\Http\Requests\AddUserform;
 use App\Http\Requests\AddEnfantform;
 use Illuminate\Support\Facades\Auth;
 use App\models\bills;
+use App\models\liaison_shop_articles_bills;
 use App\Models\old_bills;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -46,29 +47,141 @@ public function editdata(){
     dd('done');
 }
 
-    public function panier($id)
-    {
-        
-        // Récupérer tous les paniers associés à l'utilisateur avec les informations de l'article correspondant
-        $paniers = DB::table('basket')
-                ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-                ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-                ->select('basket.user_id','basket.ref','basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
-                ->where('basket.user_id', $id)
-                ->get();
 
-                
+    public function panier()
+    {
+    if (Auth::check()){
+
+        $paniers = DB::table('basket')
+        ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+        ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+        ->leftJoin('shop_article_2', 'shop_article_2.id_shop_article', '=', 'basket.ref')
+        ->where('basket.user_id', '=',auth()->user()->user_id)
+        ->groupBy('basket.pour_user_id','shop_article_2.declinaison','basket.declinaison',
+         'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price',
+          'shop_article.ref', 'users.name', 'users.lastname')
+        ->orderBy('basket.pour_user_id')
+        ->orderBy('basket.ref')
+        ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title',
+         'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname', 
+         DB::raw('SUM(basket.qte) as total_qte'),
+        DB::raw("JSON_UNQUOTE(JSON_EXTRACT(shop_article_2.declinaison, CONCAT('$[', basket.declinaison-1, '].', basket.declinaison, '.libelle'))) 
+        as declinaison_libelle")
+        )
+        ->get();
+    
         $total = 0;
         foreach ($paniers as $panier) {
-            $total += $panier->qte * $panier->price;
+            $total += $panier->total_qte * $panier->price;
         }
         // Retourner la vue avec les données récupérées
         return view('users.panier', compact('paniers','total'))->with('user', auth()->user());
+    }else{
+        return redirect()->route('login');
+    }
+}
+
+public function detail_paiement($id)
+{
+    $paniers = DB::table('basket')
+    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+    ->where('basket.user_id', '=',auth()->user()->user_id)
+    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref', 'users.name', 'users.lastname')
+    ->orderBy('basket.pour_user_id')
+    ->orderBy('basket.ref')
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->get();
+
+
+    MiseAjourArticlePanier($paniers);
+    $can_purchase = true;
+    $unavailable_articles = [];
+
+    foreach ($paniers as $panier) {
+        $shop = Shop_article::find($panier->ref); 
+        $quantite = $panier->total_qte;
+        if (!verifierStockUnArticlePanier($shop, $quantite)) {
+            $can_purchase = false;
+            $unavailable_articles[] = $shop->title;
+        }
     }
 
-    public function Vider_panier($id){
-        DB::table('basket')->where('user_id', $id)->delete();
-        return redirect()->route('panier', $id);
+    if (!$can_purchase) {
+        $error_msg = "Les articles suivants ne peuvent pas être achetés: " . implode(', ', $unavailable_articles);
+        return redirect()->back()->withErrors([$error_msg]);
+    }else{
+        $paniers = DB::table('basket')
+        ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+        ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+        ->leftJoin('shop_article_2', 'shop_article_2.id_shop_article', '=', 'basket.ref')
+        ->where('basket.user_id', '=',auth()->user()->user_id)
+        ->groupBy('basket.pour_user_id','shop_article_2.declinaison','basket.declinaison',
+         'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price',
+          'shop_article.ref', 'users.name', 'users.lastname')
+        ->orderBy('basket.pour_user_id')
+        ->orderBy('basket.ref')
+        ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title',
+         'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname', 
+         DB::raw('SUM(basket.qte) as total_qte'),
+        DB::raw("JSON_UNQUOTE(JSON_EXTRACT(shop_article_2.declinaison, CONCAT('$[', basket.declinaison-1, '].', basket.declinaison, '.libelle'))) 
+        as declinaison_libelle")
+        )
+        ->get();
+        
+    $total = 0;
+    foreach ($paniers as $panier) {
+        $total += $panier->qte * $panier->price;
+    }
+        MiseAjourArticlePanier($paniers);
+    // ajouter une bill 
+    $bill = new bills;
+    $bill->user_id = auth()->user()->user_id;
+    $bill->date_bill = date('Y-m-d H:i:s');
+    $bill->type = "facture";
+    $bill->payment_method = $id;
+    if ($id == 3){
+        $bill->status = 32;
+    }elseif ($id == 2){
+        $bill->status = 38;
+    }elseif($id == 4){
+        $bill->status = 30;
+    }elseif ($id == 5){
+        $bill->status = 34;
+    }elseif ($id == 6){
+        $bill->status = 36;
+    }    
+    $bill->ref = "FAC".date('YmdHis');
+    $bill->payment_total_amount = $total;
+    $bill->family_id = auth()->user()->family_id;
+    $bill->save();
+    // Ajouter des lignes dans la table de liaison
+    foreach ($paniers as $panier) {
+        $liaison = new liaison_shop_articles_bills;
+        $liaison->bill_id = $bill->id;
+        $liaison->href_product = $panier->reff;
+        $liaison->quantity = $panier->qte;
+        $liaison->ttc = round($panier->price, 2);
+        $liaison->addressee = auth()->user()->address;
+        $liaison->sub_total = round($panier->qte * $panier->price, 2);
+        $liaison->designation = $panier->title;
+        $liaison->id_shop_article = $panier->ref;
+        $liaison->declinaison = $panier->declinaison;
+        $liaison->id_user = $panier->user_id;
+        $liaison->save();
+    }
+
+    DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
+    MiseAjourStock();
+
+    return view('users.detail_paiement', compact('paniers','total'))->with('user', auth()->user());
+    }
+    
+}
+
+    public function Vider_panier(){
+        DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
+        return redirect()->route('panier');
     }
 
   public function payer_article(){
@@ -90,10 +203,14 @@ public function editdata(){
     MiseAjourArticlePanier($paniers);
 
     $paniers = DB::table('basket')
-            ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-            ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-            ->select('basket.qte','shop_article.title', 'basket.ref', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
-            ->get();
+    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+    ->where('basket.user_id', '=',auth()->user()->user_id)
+    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref', 'users.name', 'users.lastname')
+    ->orderBy('basket.pour_user_id')
+    ->orderBy('basket.ref')
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->get();
 
     $total = 0;
 
@@ -107,10 +224,8 @@ public function editdata(){
 
     foreach ($paniers as $panier) {
         $shop = Shop_article::find($panier->ref); 
-        if
-        $quantite = 1;
-
-        if (!verifierStockUnArticle($shop, $quantite)) {
+        $quantite = $panier->total_qte;
+        if (!verifierStockUnArticlePanier($shop, $quantite)) {
             $can_purchase = false;
             $unavailable_articles[] = $shop->title;
         }
@@ -122,7 +237,6 @@ public function editdata(){
     }else{
         return view('users.payer_article', compact('paniers','total','adresse','Mpaiement'))->with('user', auth()->user());
     }
-
 
     }
             
@@ -340,3 +454,4 @@ public function showBill($id){
     }
     return view('users.showBill',compact('bill'))->with('user', auth()->user());}
 }
+
