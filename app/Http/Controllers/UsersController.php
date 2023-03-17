@@ -107,7 +107,7 @@ public function detail_paiement($id)
         }
     }
 
-    if (!$can_purchase) {
+    if (!$can_purchase && $paniers->count() > 0) {
         $error_msg = "Les articles suivants ne peuvent pas être achetés: " . implode(', ', $unavailable_articles);
         return redirect()->back()->withErrors([$error_msg]);
     }else{
