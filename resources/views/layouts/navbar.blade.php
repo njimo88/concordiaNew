@@ -84,46 +84,140 @@ use App\Models\Shop_category;
 
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
       @guest
-        <a href="{{ route('A_blog') }}" class="logo d-flex align-items-center">
-          <!-- Uncomment the line below if you also wish to use an image logo -->
-          <!-- <img src="assets/img/logo.png" alt=""> -->
-          <h1>Gym<span>Concordia</span></h1>
-        </a>
-        <nav id="navbar" class="navbar">
-          <ul>
-            <li><a href="{{ route('A_blog') }}">Acceuil</a></li>
-            <li class="dropdown"><a href="#"><span>Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
-              <ul>
-                <li class="dropdown">
-                  <a href="#"><span>Comité Directeur</span></a>
-                </li>
-                <li class="dropdown">
-                  <a href="#"><span>Partenaires</span></a>
-                </li>
-                <li class="dropdown">
-                  <a href="#"><span>Communication</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
-                  <ul>
-                    <li><a href="#">Facebook</a></li>
-                    <li><a href="#">Instagram</a></li>
-                    <li><a href="#">Youtube</a></li>
-                    <li><a href="#">Videos</a></li>
-                    <li><a href="#">Presse</a></li>
-                  </ul>
-                </li>
-                <li class="dropdown">
-                  <a href="#"><span>Mentions Légales</span></a>
-                </li>
-                <li class="dropdown">
-                  <a href="#" class="liens"  data-toggle="modal" data-target="#contactModal"><span>Prendre contact</span></a>
-                </li>
+      <a href="{{ route('A_blog') }}" class="logo d-flex align-items-center">
+        <img style="max-width: 140px !important" src="{{ asset('assets\images\logoc.png') }}" alt="">
+      </a>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="{{ route('A_blog') }}"><span><img src="{{ asset("/assets/images/Accueil.png") }}" width="24">&nbsp;Acceuil</span></a></li>
+          <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Club.png") }}" width="24">&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+            <ul>
+              <li class="dropdown">
+                <a href="{{ route('Simple_Post',13000) }}"><span><img src="{{ asset("/assets/images/Comite.png") }}" width="24">&nbsp;Comité Directeur</span></a>
+              </li>
+              <li class="dropdown">
+                <a href="{{ route('Simple_Post',13002) }}"><span><img src="{{ asset("/assets/images/Partenaires.png") }}" width="24">&nbsp;Partenaires</span></a>
+              </li>
+              <li class="dropdown">
+                <a href="#"><span><img src="{{ asset("/assets/images/Communication.png") }}" width="24">&nbsp;Communication</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+                <ul>
+                  <li><a target="_blank" href="https://www.facebook.com/GymConcordia"><span><i class="bi bi-facebook"></i>&nbsp;&nbsp;Facebook</span></a></li>
+                  <li><a target="_blank" href="https://www.instagram.com/gym_concordia"><span><i class="bi bi-instagram"></i>&nbsp;&nbsp;Instagram</span></a></li>
+                  <li><a target="_blank" href="https://www.youtube.com/user/GymConcordia"><span><i class="bi bi-youtube"></i>&nbsp;&nbsp;Youtube</span></a></li>
+                  <li><a target="_blank" href="#"><span><i class="bi bi-camera-video"></i>&nbsp;&nbsp;Videos</span></a></li>
+                  <li><a target="_blank" href="#"><span><i class="bi bi-newspaper"></i>&nbsp;&nbsp;Presse</span></a></li>
+                </ul>
                 
-              </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#"><span><img src="{{ asset("/assets/images/Reglements.png") }}" width="24">&nbsp;Mentions Légales</span></a>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="liens"  data-toggle="modal" data-target="#contactModal"><span><img src="{{ asset("/assets/images/message.png") }}" width="24">&nbsp;Prendre contact</span></a>
+              </li>
+              
+            </ul>
+          </li>
+          <li class="dropdown">
+                <a href="{{ route('index_categorie') }}">
+                    <span><img src="{{ asset("/assets/images/Inscriptions.png") }}" width="24">&nbsp;Achats</span>
+                    @if($categories->filter(function ($category) {
+                            return strlen($category->id_shop_category) === 1;
+                        })->count() > 0)
+                        <i class="bi bi-chevron-down dropdown-indicator"></i>
+                    @endif
+                </a>
+                <ul>
+                    <!-- First level dropdown: categories with one digit id -->
+                    @foreach($categories->filter(function ($category) {
+                        return strlen($category->id_shop_category) === 1;
+                    }) as $category)
+                    <li class="dropdown">
+                        <a href="{{ route('sous_categorie', ['id' =>  $category->id_shop_category]) }}">
+                            <span><img src="{{ $category->image }}" width="24">&nbsp;{{ $category->name }}</span>
+                            @if($categories->filter(function ($subCategory) use ($category) {
+                                    return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
+                                })->count() > 0)
+                                <i class="bi bi-chevron-down dropdown-indicator"></i>
+                            @endif
+                        </a>
+                        <!-- Second level dropdown: categories with three digits id -->
+                        <ul>
+                            @foreach($categories->filter(function ($subCategory) use ($category) {
+                                return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
+                            }) as $subCategory)
+                            <li class="dropdown">
+                                <a href="{{ route('sous_categorie', ['id' =>  $subCategory->id_shop_category]) }}">
+                                    <span><img src="{{ $subCategory->image }}" width="24">&nbsp;{{ $subCategory->name }}</span>
+                                    @if($categories->filter(function ($subSubCategory) use ($subCategory) {
+                                            return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
+                                        })->count() > 0)
+                                        <i class="bi bi-chevron-down dropdown-indicator"></i>
+                                    @endif
+                                </a>
+                                <!-- Third level dropdown: categories with four digits id -->
+                                <ul>
+                                    @foreach($categories->filter(function ($subSubCategory) use ($subCategory) {
+                                        return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
+                                    }) as $subSubCategory)
+                                    <li>
+                                        <a href="{{ route('sous_categorie', ['id' =>  $subSubCategory->id_shop_category]) }}">
+                                            <span><img src="{{ $subSubCategory->image }}" width="24">&nbsp;{{ $subSubCategory->name }}</span>
+                                        </a>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </li>
+                    @endforeach
+                </ul>
             </li>
-            <li class="dropdown"><a href="{{ route('index_categorie') }}"><span>Achats</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
-           
-            </li>
-            
-            <li><a href="#contact">Recherche</a></li>
+        
+          <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Informations.png") }}" width="24">&nbsp;Nos Activités</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+            <ul>
+              <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Sections.png") }}" width="24">&nbsp;Nos Sections&nbsp;<i class="bi bi-chevron-down dropdown-indicator"></i></span></a>
+                  <!-- First level dropdown: categories with one digit id -->
+                  @php
+                      $category = Shop_category::select('id_shop_category', 'name', 'image')
+                                ->where('id_shop_category', 1)
+                                ->first();
+                  @endphp
+                    <ul>
+                        @foreach($categories->filter(function ($subCategory) use ($category) {
+                            return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
+                        }) as $subCategory)
+                        <li class="dropdown">
+                            <a href="{{ route('sous_categorie', ['id' =>  $subCategory->id_shop_category]) }}">
+                                <span><img src="{{ $subCategory->image }}" width="24">&nbsp;{{ $subCategory->name }}</span>
+                                @if($categories->filter(function ($subSubCategory) use ($subCategory) {
+                                        return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
+                                    })->count() > 0)
+                                    <i class="bi bi-chevron-down dropdown-indicator"></i>
+                                @endif
+                            </a>
+                            <!-- Third level dropdown: categories with four digits id -->
+                            <ul>
+                                @foreach($categories->filter(function ($subSubCategory) use ($subCategory) {
+                                    return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
+                                }) as $subSubCategory)
+                                <li>
+                                    <a href="{{ route('sous_categorie', ['id' =>  $subSubCategory->id_shop_category]) }}">
+                                        <span><img src="{{ $subSubCategory->image }}" width="24">&nbsp;{{ $subSubCategory->name }}</span>
+                                    </a>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                        @endforeach
+                    </ul>
+              </li>
+              <li><a href="#"><span><img src="{{ asset("/assets/images/sport-etudes.png") }}" width="24">&nbsp;Sport-Etudes</span></a>
+              <li><a href="#"><span><img src="{{ asset("/assets/images/HorairesBureau.png") }}" width="24">&nbsp;Horaires Bureau</span></a>
+            </ul>
+          </li>
+          <li><a href="#"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
             @if (Route::has('login'))
               <li><a href="{{ route('login') }}">Connectez-vous<i style="color: white; font-size:19px !important;" class='bx bxs-user'></i></a></li>
             @endif

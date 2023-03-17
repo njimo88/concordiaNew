@@ -13,54 +13,60 @@ use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Mockery\Generator\StringManipulation\Pass\Pass;
 use PhpParser\Node\Stmt\Else_;
-use App\Models\Shop_category;
+use Illuminate\Support\Facades\DB;
+
+
 
 class A_ControllerBlog extends Controller
 { 
-   /* 
-       public function Afficher(){
-        $data = [
-            'productOne' => 'iphone',
-            'productTwo' => 'Samsung',
-        ] ;
+   public function questionnaire(){
+    $param = DB::table('parametre')->where('activate', 1)->get()->toArray();
 
-        $letitre = A_Blog_Post::select('titre')->get();
+    $scoreQ1 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 1)->get()->toArray();
+    $scoreQ2 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 2)->get()->toArray();
+    $scoreQ3 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 3)->get()->toArray();
+    $scoreQ4 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 4)->get()->toArray();
+    $scoreQ5 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 5)->get()->toArray();
+    $scoreQ6 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 6)->get()->toArray();
+    $scoreQ7 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 7)->get()->toArray();
+    $scoreQ8 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 8)->get()->toArray();
+    $scoreQ9 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 9)->get()->toArray();
+    $scoreQ10 = DB::table('sectionjeunereponses')->select('GAM', 'GAF', 'GAc', 'GR', 'AER', 'CrossTraining', 'Parkour')->where('id_q', 10)->get()->toArray();
 
-       
+    $quadall = DB::table('sectionadultesquestions')->get()->toArray();
+    $quad = DB::table('sectionadultesquestions')->where('id_q', '<>', 1)->get()->toArray();
 
-        $Nom = "cool";
-        $a_infoblog = A_Blog_Post::get();
-
-        return view('Blog_singlepage', compact('a_infoblog'));
-        
-        //return view('Blog_singlepage')->with('data',$data) ; // with the "wih method" the key and the $variable must be identical
-    }
-   
-   
-
-   public function a_Afficher_PagePrincipal(){
-
-
-        $a_infoblog = A_Blog_Post::latest('date_post')->paginate(25,['*'],'A_Blog_index'); //there are also SortBy it will be Asc order 	->sortBy('code');
-        $a_contenu = A_Blog_Post::select('contenu')->get();
-
-       //$a_categorie1 = A_Blog_Post::select('categorie1')->get();
-       $a_categorie1= A_Blog_Post::first()->get('categorie1');
-
-     //   $a_contenu = A_ControllerBlog::htmlToPlainText($a_contenu) ;
+    foreach ($quadall as $quadall) {
+        $ididid = $quadall->id_q;
+        $basename = "scoread" . $quadall->id_q;
+        $data["{$basename}"] = DB::select("SELECT * FROM sectionadultesreponses WHERE id_q = ?", [$ididid]);
     
-        return view("A_Blog_index",[
-            'a_infoblog' => $a_infoblog,
-            'a_contenu' => $a_contenu,
-            'a_categorie1' => $a_categorie1
-        ]);
     }
-             $a_post = A_Blog_Post::latest('date_post')->paginate(5);
-          $a_post = A_Blog_Post::paginate(5);
+    
+    $adQgen = DB::select("SELECT * FROM sectionadultesreponses WHERE id_q != 1 ORDER BY id_rep ASC");
+    $adQgenmax = DB::select("SELECT * FROM sectionadultesquestions WHERE id_q != 1 ORDER BY id_q desc LIMIT 1");
+    $idmax = $adQgenmax[0]->id_q;
+    
+    foreach ($quad as $quadratique) {
+        $idq = $quadratique->id_q;
+    };
+    
+    $adcat = DB::select("SELECT * FROM sectionadultecat");
+    
+    return view('questionnaire', compact('param', 'quad', 'adQgen', 'adQgenmax', 'idmax', 'adcat', 'scoreQ1', 'scoreQ2', 'scoreQ3', 'scoreQ4', 'scoreQ5', 'scoreQ6', 'scoreQ7', 'scoreQ8', 'scoreQ9', 'scoreQ10','quadall','quad', 'data', 'idq', 'ididid', 'basename'))->with('user', auth()->user());
 
-          return view('Blog_test',compact('a_post'));
-          
-          */
+   }
+
+
+
+
+
+
+   public function countdeterminesection(Request $request)
+{
+    $count = $request->input('count');
+    DB::table('parametre')->where('activate', 1)->increment('determinesection', 1);
+}
 
     public function a_fetchPost(Request $request){
         
@@ -76,7 +82,7 @@ class A_ControllerBlog extends Controller
                     ];
             }
 
-
+            
       return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2'))->with('user', auth()->user());
 }
 

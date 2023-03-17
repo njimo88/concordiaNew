@@ -10,13 +10,16 @@ use App\Models\Shop_article;
 use App\Models\Shop_category;
 use App\Models\shop_article_1;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\TryCatch;
 use App\Models\Basket;
-use Illuminate\Support\Facades\Auth;
+use App\Models\shop_article_2;
+
+
 
 
 
@@ -48,85 +51,55 @@ class A_Controller_categorie extends Controller
     //boutton Payer
     public function Passer_au_paiement($id, Request $request)
     {
-        // Récupérer tous les paniers associés à l'utilisateur avec les informations de l'article correspondant
-    
-        $user_id = auth()->user()->user_id;
-        $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
-        $id_article = $shop->id_shop_article;
-        $need_member = $shop->need_member;
-        $user_id = $request->selected_user_id;
+
         
+        
+    $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
+    //step 1 : Mise à jour de stock de l'article
+    MiseAjourArticle($shop);
+
+    $id_article = $shop->id_shop_article;
+    $need_member = $shop->need_member;
+    $selected_user_id = $request->selected_user_id;
+    $quantite = $request->qte;
+    $declinaison = $request->declinaison;
+    //verifier si l'article est en stock et les conditions d'achat
+    //$quantite = $request->quantite;
+    
+    if(verifierStockUnArticle($shop, $quantite) && countArticle($selected_user_id,$id_article) < $shop->max_per_user){
+    
+    
+    
+        
+        // Vérifier si le produit est déjà dans le panier pour ce user
+        $panier = Basket::where([
+            ['user_id', auth()->user()->user_id],
+            ['pour_user_id', $selected_user_id],
+            ['ref', $id_article],
+            ['declinaison', $declinaison],
+        ])->first();
+
+        if ($panier) {
+            // Si le produit est déjà dans le panier, mettre à jour la quantité
+            $panier->qte += $quantite;
+            $panier->save();
+        } else {
+            // Ajouter une nouvelle ligne pour le produit
             $addcommand = new Basket();
             $addcommand->user_id = auth()->user()->user_id;
             $addcommand->family_id = auth()->user()->family_id;
             $addcommand->pour_user_id = $request->selected_user_id;
             $addcommand->ref = $shop->id_shop_article;
-            $addcommand->qte = 1;
+            $addcommand->qte = $quantite;
+            $addcommand->declinaison = $declinaison;
             $addcommand->save();
-    
-        if ($need_member != 0) {
-                $result = MiseAuPanier($user_id, $id_article);
-    
-                if ($result == 0) {
-                    $paniers = DB::table('basket')
-                        ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-                        ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-                        ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
-                        ->get();
-                    return view('users.panier', compact('paniers'))->with('user', auth()->user());}
-                elseif ($result == $need_member) {
-                $addcommand = new Basket();
-                $addcommand->user_id = auth()->user()->user_id;
-                $addcommand->family_id = auth()->user()->family_id;
-                $addcommand->pour_user_id = $request->selected_user_id;
-                $addcommand->ref = $need_member;
-                $addcommand->qte = 1;
-                $addcommand->save();
-
-                $paniers = DB::table('basket')
-                    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-                    ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-                    ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
-                    ->get();
-                    return view('users.panier', compact('paniers'))->with('user', auth()->user());
-            } else {
-                dd($result);
-            }
         }
+        
 
-        $paniers = DB::table('basket')
-    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-    ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-    ->select('basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
-    ->get();
-    
-    return view('users.panier', compact('paniers'))->with('user', auth()->user());
-    }
-    
-//boutton commander
-    public function commander_article($id, Request $request)
-{
-    $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
-    $id_article = $shop->id_shop_article;
-    $need_member = $shop->need_member;
-    $selected_user_id = $request->selected_user_id;
-    if(countArticle($selected_user_id,$id_article) < $shop->max_per_user){
-    
-    
-    
-        $addcommand = new Basket();
-        $addcommand->user_id = auth()->user()->user_id;
-        $addcommand->family_id = auth()->user()->family_id;
-        $addcommand->pour_user_id = $request->selected_user_id;
-        $addcommand->ref = $shop->id_shop_article;
-        $addcommand->qte = 1;
-        $addcommand->save();
-
-    if ($need_member != 0) {
+    if ($need_member != 0) { 
             $result = MiseAuPanier($selected_user_id, $id_article);
-
             if ($result == 0) {
-                return redirect()->back()->with('success', 'Article ajouté au panier');}
+                return redirect()->route('panier');}
             elseif ($result == $need_member) {
             $addcommand = new Basket();
             $addcommand->user_id = auth()->user()->user_id;
@@ -135,25 +108,99 @@ class A_Controller_categorie extends Controller
             $addcommand->ref = $need_member;
             $addcommand->qte = 1;
             $addcommand->save();
-            return redirect()->back()->with('success', 'Article ajouté au panier');
+
+            return redirect()->route('panier');
         } else {
+            //panier
             dd($result);
         }
     }
 
-    return redirect()->back()->with('success', 'Article ajouté au panier');
+    return redirect()->route('panier');
 }
     else{
-        return redirect()->back()->with('error', 'Vous avez atteint la limite d\'achat de cet article');
+        return redirect()->back()->with('error', 'Vous avez atteint la limite d\'achat de cet article ou il n\'est plus disponible');
+    }
+       
+    }
+    
+//boutton commander
+public function commander_article($id, Request $request)
+{
+    $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
+    MiseAjourArticle($shop);
+
+    //step 1 : Mise à jour de stock de l'article
+
+    $id_article = $shop->id_shop_article;
+    $need_member = $shop->need_member;
+    $selected_user_id = $request->selected_user_id;
+    $quantite = $request->qte;
+    $declinaison = $request->declinaison;
+    
+    //verifier si l'article est en stock et les conditions d'achat
+    //$quantite = $request->quantite;
+    if(verifierStockUnArticle($shop, $quantite) && countArticle($selected_user_id,$id_article) < $shop->max_per_user){
+
+        // Vérifier si le produit est déjà dans le panier pour ce user
+        $panier = Basket::where([
+            ['user_id', auth()->user()->user_id],
+            ['pour_user_id', $selected_user_id],
+            ['ref', $id_article],
+            ['declinaison', $declinaison],
+        ])->first();
+
+        if ($panier) {
+            // Si le produit est déjà dans le panier, mettre à jour la quantité
+            $panier->qte += $quantite;
+            $panier->save();
+        } else {
+            // Ajouter une nouvelle ligne pour le produit
+            $addcommand = new Basket();
+            $addcommand->user_id = auth()->user()->user_id;
+            $addcommand->family_id = auth()->user()->family_id;
+            $addcommand->pour_user_id = $request->selected_user_id;
+            $addcommand->ref = $shop->id_shop_article;
+            $addcommand->qte = $quantite;
+            $addcommand->declinaison = $declinaison;
+            $addcommand->save();
+        }
+
+        if ($need_member != 0) { 
+            $result = MiseAuPanier($selected_user_id, $id_article);
+
+            if ($result == 0) {
+                return redirect()->back()->with('success', 'Article ajouté au panier');
+            } elseif ($result == $need_member) {
+                $addcommand = new Basket();
+                $addcommand->user_id = auth()->user()->user_id;
+                $addcommand->family_id = auth()->user()->family_id;
+                $addcommand->pour_user_id = $request->selected_user_id;
+                $addcommand->ref = $need_member;
+                $addcommand->qte = 1;
+                $addcommand->save();
+                return redirect()->back()->with('success', 'Article ajouté au panier');
+            } else {
+                //panier
+                dd($result);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Article ajouté au panier');
+    } else {
+        return redirect()->back()->with('error', 'Vous avez atteint la limite d\'achat de cet article ou il n\'est plus en stock');
     }
 }
 
 
-    public function commanderModal($shop_id,$user_id)
+
+    public function commanderModal($shop_id,$user_id, Request $request)
     {
+        $declinaison = $request->input('declinaison');
+        $qte = $request->input('qte');
         $selected_user = $user_id;
         $shop = Shop_article::where('id_shop_article', $shop_id)->firstOrFail();
-        return view('Articles.modal.commanderModal', compact('shop','user_id'))->with('user', auth()->user());
+        return view('Articles.modal.commanderModal', compact('shop','user_id','qte','declinaison'))->with('user', auth()->user());
     }
 
     public function saveNestedCategories(Request $request){
@@ -415,6 +462,11 @@ public function  Shop_souscategorie($id){
 public function Handle_details($id){
 
     $articl= Shop_article::where('id_shop_article', $id)->firstOrFail();
+    if ($articl->type_article == 2) {
+        $déclinaison = shop_article_2::where('id_shop_article', $id)->select('declinaison')->firstOrFail();
+        $declinaisons = json_decode($déclinaison->declinaison, true);
+    }
+    
     $indice = $id;
     $article = Shop_article::get();
     $shopService =  shop_article_1::get();
@@ -426,6 +478,10 @@ public function Handle_details($id){
     // Convertir la chaîne JSON en tableau PHP
     if (Auth::check()) {
         $selectedUsers = getArticleUsers($articl);
+    }
+    if ($articl->type_article == 2) {
+        return view('Details_article', compact('indice', 'article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user());
+
     }
     return view('Details_article', compact('indice', 'article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user());
 }
