@@ -9,7 +9,6 @@
 <!-- jQuery JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
@@ -19,7 +18,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
-
 
 
 
@@ -36,37 +34,25 @@
 <div class="container">
 
 <div class="row pb-5" style="background-color: red;">
-
-        
-
-
-   
-
+      
     <select id="framework" name="framework[]" multiple class="form-control"  onchange="myFunction()">
       @foreach($shop_article as $value)
                   <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
                 @endforeach
      </select>
    
-
-
-
-
-
-
 </div>
 
-
 <br>
 <br>
 
-             
+<button id="submit-button">test</button>         
 <div class="row">
 
 <table id="example" class="display" cellspacing="0" width="100%">
     <thead>
                 <tr>
-                    <th><input type="checkbox"></th>
+                    <th><input type="button" id="select-all" value="tout selectionner"> <input type="button" id="deselect-all" value="tout deselectionner"> </th>
                     <th hidden>Id user</th>
                     <th>Nom</th>
                     <th>email</th>
@@ -81,7 +67,7 @@
         
        @foreach($uuser as $data)
             <tr>
-            <td> <input type="checkbox"> </td>
+               <td><input type="checkbox" id="checkboxes" > </td>
                <td hidden> {{$data->user_id}} </td>
                 <td> {{$data->name}} </td>
                 <td> {{$data->email}} </td>
@@ -101,17 +87,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 <script>
 
 $(document).ready(function(){
@@ -126,22 +101,65 @@ $(document).ready(function(){
 
 </script>
 
+<script>
+
+</script>
 
 <script>
 
     $(document).ready(function() {
     var table = $('#example').DataTable();
     
- 
+    var selectedRows = [];
+
+    $('#select-all').on('click', function () {
+    $('#example tbody tr').addClass('selected', selectedRows.length === 0);
+    $('#example tbody input[type="checkbox"]').prop('checked', selectedRows.length === 0);
+    if (selectedRows.length === 0) {
+      selectedRows = rows;
+    } else {
+      selectedRows = [];
+    }
+   
+
+  });
+
+  $('#deselect-all').on('click', function () {
+    selectedRows = [];
+    var rows = table.rows({ 'search': 'applied' }).nodes();
+    $(rows).removeClass('selected');
+    $('#example tbody input[type="checkbox"]').prop('checked', false);
+  });
+
+  // Handle pagination
+  table.on('page.dt', function () {
+    var rows = table.rows({ 'search': 'applied' }).nodes();
+    $(rows).removeClass('selected');
+    selectedRows.forEach(function(row) {
+      $(row).addClass('selected');
+      $(row).find('input[type="checkbox"]').prop('checked', true);
+    });
+  });
+
+  
     $('#example tbody').on( 'click', 'tr', function () {
         $(this).toggleClass('selected');
-
-
-
-
+        var checkbox = $(this).find('input[type="checkbox"]');
+        var row = $(this).closest('tr')[0];
+    checkbox.prop('checked', !checkbox.prop('checked'));
+    $(this).toggleClass('selected', checkbox.prop('checked'));
+    if (checkbox.prop('checked')) {
+      selectedRows.push(row);
+    } else {
+      selectedRows.splice(selectedRows.indexOf(row), 1);
+    }
 
     } );
- 
+
+   
+
+
+
     $('#button').click( function () {
         alert( table.rows('.selected').data().length +' row(s) selected' );
         const selectedData = table.rows('.selected').data();
@@ -169,9 +187,7 @@ $(document).ready(function(){
     } );
 } );
 
-
 </script>
-
 
 
 <!-- Script JS qui permet de trier dynamiquement en fonction des shop articles, les users qui les ont achetes   -->
@@ -192,20 +208,18 @@ function myFunction(value) {
 
   // do something with the selected values
     console.log(selectedValues);
-    const columnData = table.column(3).data();
+    const columnData = table.column(4).data();
     console.log(columnData);
 
     const filteredData = columnData.filter(value => selectedValues.includes(value));
     console.log(filteredData);
     
-    table.column(3).data(filteredData);
+    table.column(4).data(filteredData);
     // Redraw the filtered column
-    table.column(3).search(filteredData.join('|'), true, false).draw();
-
+    table.column(4).search(filteredData.join('|'), true, false).draw();
 
 }
 </script>
-
 
 
 

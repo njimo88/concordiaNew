@@ -7,9 +7,6 @@
 @endphp
  
 
-
-
-
 <main id="main" class="main">
 <div class="container">
 @if(session()->has('success'))

@@ -38,22 +38,12 @@
 
 <div class="row pb-5" style="background-color: red;">
 
-        
-
-
-   
-
     <select id="framework" name="framework[]" multiple class="form-control" >
     @foreach($shop_article as $value)
                 <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
                @endforeach
      </select>
    
-
-
-
-
-
 
 </div>
 
@@ -95,9 +85,6 @@
 </table>
 <button id="button">test</button>
 </div>
-
-
-
 
 
 </div>

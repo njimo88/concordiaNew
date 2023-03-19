@@ -10,12 +10,6 @@ $saison_active = saison_active() ;
 @endphp
 <main id="main" class="main">
 
-@if(session()->has('success'))
-                <div class="alert alert-success">
-                    {{ session()->get('success') }}
-                </div>
-            @endif
-        
 
 <div class="container">
 	<div class="row">

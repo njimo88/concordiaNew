@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\A_ControllerBlog;
+use App\Http\Controllers\Controller_club;
 use App\Http\Controllers\A_Controller_categorie;
 use App\Http\Controllers\A_ControllerAdmin;
 use App\Http\Controllers\BlogArticle_Controller;
@@ -249,3 +250,11 @@ Route::post('/users-send-email', [Controller_Communication::class, 'sendEmail_u'
 
 
 Route::get('/TESTSAISON', [Article_Controller::class, 'TESTSAISON'])->name('TESTSAISON');
+
+
+
+/*----------------------- Club - cours ------------------------------ */
+Route::get('/club/cours_index', [Controller_club::class, 'index_cours'])->name('index_cours');
+Route::post('/club/include-page', [Controller_club::class, 'index_include'])->name('include-page');
+
+Route::get('/shop_article_cours_ajax/{id}', [Controller_club::class, 'display_form_cours'])->name('form_cours');
