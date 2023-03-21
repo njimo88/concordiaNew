@@ -460,11 +460,49 @@ function destinataires_du_mail($user_id){
     // Step 3: Update the stock_actuel for each article
     foreach ($id_shop_articles as $id_shop_article) {
         $shop_article = Shop_article::find($id_shop_article);
+        if($shop_article->type_article == 2) {
+            $article_2 = shop_article_2::find($shop_article->id_shop_article);
+    
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
+        ->where('liaison_shop_articles_bills.id_shop_article', $shop_article->id_shop_article)
+        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
+        ->groupBy('liaison_shop_articles_bills.declinaison')
+        ->get();
+
+        $stock_ini = 0;
+        $stock_actuel = 0;
+    
+        $declinaisons = json_decode($article_2->declinaison, true);
+        
+        $new_declinaisons = [];
+        foreach ($declinaisons as $key => $value) {
+            foreach ($liaison_counts as $count) {
+                if ($count->declinaison == $key+1) {
+                    $value[$key+1]['stock_actuel_d'] = $count->count;
+                }
+            }
+            $new_declinaisons[] = $value;
+            $stock_ini += $value[$key+1]['stock_ini_d'];
+            $stock_actuel += $value[$key+1]['stock_actuel_d'];
+        }
+
+        // Mettre à jour le tableau des déclinaisons dans la base de données
+        $article_2->declinaison = json_encode($new_declinaisons);
+        $article_2->save();
+        
+        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
+        $shop_article->stock_ini = $stock_ini;
+        $shop_article->stock_actuel = $stock_actuel;
+        $shop_article->save();
+        } else {
         $stock_ini = $shop_article->stock_ini;
         $count = $liaison_counts->get($id_shop_article, 0);
         $stock_actuel = $stock_ini - $count;
         $shop_article->stock_actuel = $stock_actuel;
         $shop_article->save();
+         }
+
     }
 }
 
@@ -480,11 +518,49 @@ function MiseAjourArticlePanier($articles){
 
     foreach ($articles as $article) {
         $article_db = Shop_article::find($article->ref);
-        $stock_ini = $article_db->stock_ini;
+        if($article_db->type_article == 2) {
+            $article_2 = shop_article_2::find($article_db->id_shop_article);
+    
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
+        ->where('liaison_shop_articles_bills.id_shop_article', $article_db->id_shop_article)
+        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
+        ->groupBy('liaison_shop_articles_bills.declinaison')
+        ->get();
+
+        $stock_ini = 0;
+        $stock_actuel = 0;
+    
+        $declinaisons = json_decode($article_2->declinaison, true);
+        
+        $new_declinaisons = [];
+        foreach ($declinaisons as $key => $value) {
+            foreach ($liaison_counts as $count) {
+                if ($count->declinaison == $key+1) {
+                    $value[$key+1]['stock_actuel_d'] = $count->count;
+                }
+            }
+            $new_declinaisons[] = $value;
+            $stock_ini += $value[$key+1]['stock_ini_d'];
+            $stock_actuel += $value[$key+1]['stock_actuel_d'];
+        }
+
+        // Mettre à jour le tableau des déclinaisons dans la base de données
+        $article_2->declinaison = json_encode($new_declinaisons);
+        $article_2->save();
+        
+        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
+        $article_db->stock_ini = $stock_ini;
+        $article_db->stock_actuel = $stock_actuel;
+        $article_db->save();
+        }else{
+            $stock_ini = $article_db->stock_ini;
         $count = $liaison_counts->get($article->ref, 0);
         $stock_actuel = $stock_ini - $count;
         $article_db->stock_actuel = $stock_actuel;
         $article_db->save();
+        }
+        
     }
 }
 
@@ -574,77 +650,10 @@ function calculerPaiements(float $total, int $nbfois) {
         $paiements[] = round($montant,2);
     }
 
-    $dernierMontant = round ($total - $var - $premierMontant,2);
+    $dernierMontant =$total - round ( $var + $premierMontant,2);
     $paiements[] = $dernierMontant;
     return $paiements;
 }
 
 
 
-<<<<<<< HEAD
-
-
-function sendEmailToUser($user_id, $message1,$data) {
-
-  $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
-  $email = $user->email; // Get the user's email address
-
-  Mail::to($email)->send(new UserEmail($message1,$data)); // Send the email using Laravel's Mail facade
-
-}
-
-class UserEmail extends \Illuminate\Mail\Mailable {
-    
-  public $message1; // Define a public property to store the message
-  public $data;
- 
-  public function __construct($message1, $data) {
-    $this->message1 = $message1; // Assign the message to the public property
-    $this->data = $data ;
-  }
-  public function build() {
-    return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1, 'data' => $this->data]); // Define the email's view
-  }
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-=======
-
-//fonctions pour afficher les dates en Anglais
-function fetchDay($date){
-    $lejour = ( new DateTime($date) )->format('l');
-
-  $jour_semaine = array(
-"lundi" => "Monday",
-"Mardi" => "Tuesday",
-"Mercredi" => "Wednesday",
-"Jeudi" => "Thursday",
-"Vendredi" => "Friday",
-"Samedi" => "Saturday",
-"Dimanche" => "Sunday"
-
-  );
-
-}
-
-
-
-
->>>>>>> new_abbe
-  
-=======
->>>>>>> c9000324e2d2715c299331d8db73d993087db78b

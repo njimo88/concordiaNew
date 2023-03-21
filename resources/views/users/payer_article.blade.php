@@ -77,13 +77,104 @@
                       </a>
                     </div>
                     <div class="modal-body">
-                        <a href="{{ route('detail_paiement',3) }}" type="button" class="btn btn-primary">Valider ma commande</a>
+                        <a href="{{ route('detail_paiement', ['id' => 3, 'nombre_cheques' => 1]) }}" class="btn btn-primary">Valider ma commande</a>
                     </div>
                     
                   </div>
                 </div>
               </div>
+
+              
+              <div class="modal fade" id="Chèques" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content p-2">
+                    <div class="modal-header">
+                      <h5 style="font-weight:bold" class="modal-title" id="exampleModalLabel">Paiement par chèque</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Frais : 1 € / chèque</p>
+                        <p>En cas de paiement en plusieurs fois :</p>
+                        <ul>
+                            <li>20% immédiat</li>
+                            <li>80% fractionnable</li>
+                        </ul>
+                        <div class="form-group mb-4">
+                            <label for="nombre_cheques">Nombre de chèques:</label>
+                            <select class="form-control selectpicker" id="nombre_cheques" data-style="btn-danger" data-width="auto">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <a href="#" class="btn btn-primary" id="valider_commande">Valider ma commande</a>
+                        <script>
+                            // Lorsque l'utilisateur clique sur le bouton "Valider ma commande"
+                            document.getElementById('valider_commande').addEventListener('click', function(event) {
+                                event.preventDefault(); // Empêcher le comportement par défaut du lien
+                                var nombre_cheques = document.getElementById('nombre_cheques').value; // Récupérer la valeur sélectionnée
+                                var url = '{{ route('detail_paiement', ['id' => 4, 'nombre_cheques' => ':nombre_cheques']) }}';
+                                url = url.replace(':nombre_cheques', nombre_cheques); // Remplacer la valeur de la variable dans l'URL
+                                window.location.href = url; // Rediriger vers la page detail_paiement avec le nombre de chèques sélectionné
+                            });
+                        </script>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+
+
+                <div class="modal fade" id="Virement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content p-2">
+                        <div class="modal-header">
+                          <h5 style="font-weight:bold" class="modal-title" id="exampleModalLabel">Paiement par prélèvement</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <p>Frais : 0 € / prélèvement</p>
+                          <p>En cas de paiement en plusieurs fois :</p>
+                          <ul>
+                            <li>20% immédiat</li>
+                            <li>80% fractionnable</li>
+                          </ul>
+                          <div class="form-group mb-4">
+                            <label for="nombre_virment">Nombre de virements:</label>
+                            <select class="form-control selectpicker" id="nombre_virment" data-style="btn-danger" data-width="auto">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </div>
+                        <a href="#" class="btn btn-primary" id="valider_virment">Valider ma commande</a>
+                        <script>
+                            // Lorsque l'utilisateur clique sur le bouton "Valider ma commande"
+                            document.getElementById('valider_virment').addEventListener('click', function(event) {
+                                event.preventDefault(); // Empêcher le comportement par défaut du lien
+                                var nombre_virment = document.getElementById('nombre_virment').value; // Récupérer la valeur sélectionnée
+                                var url = '{{ route('detail_paiement', ['id' => 6, 'nombre_cheques' => ':nombre_virment']) }}';
+                                url = url.replace(':nombre_cheques', nombre_virment); // Remplacer la valeur de la variable dans l'URL
+                                window.location.href = url; // Rediriger vers la page detail_paiement avec le nombre de chèques sélectionné
+                            });
+                        </script>
+                        </div>
+                       
+                      </div>
+                    </div>
+                </div>
+
+            </div>
+              
               
         </div>
 </main>
+
 @endsection

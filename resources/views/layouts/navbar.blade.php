@@ -85,7 +85,7 @@ use App\Models\Shop_category;
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
       @guest
       <a href="{{ route('A_blog') }}" class="logo d-flex align-items-center">
-        <img style="max-width: 140px !important" src="{{ asset('assets\images\logoc.png') }}" alt="">
+        <img style="max-width: 75px !important" src="{{ asset('assets\images\gym.png') }}" alt="">
       </a>
       <nav id="navbar" class="navbar">
         <ul>
@@ -219,12 +219,8 @@ use App\Models\Shop_category;
           </li>
           <li><a href="#"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
             @if (Route::has('login'))
-              <li><a href="{{ route('login') }}">Connectez-vous<i style="color: white; font-size:19px !important;" class='bx bxs-user'></i></a></li>
+              <li><a href="{{ route('login') }}">Connexion<i style="color: white; font-size:19px !important;" class='bx bxs-user'></i></a></li>
             @endif
-            @if (Route::has('register'))
-              <li><a  href="{{ route('register') }}">Inscrivez-vous</a></li>
-            @endif 
-
           </ul>
         </nav><!-- .navbar -->
   
@@ -232,7 +228,7 @@ use App\Models\Shop_category;
         <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
       @else
         <a href="{{ route('A_blog') }}" class="logo d-flex align-items-center">
-          <img style="max-width: 140px !important" src="{{ asset('assets\images\logoc.png') }}" alt="">
+          <img style="max-width: 100px !important" src="{{ asset('assets\images\gym.png') }}" alt="">
         </a>
         <nav id="navbar" class="navbar">
           <ul>
@@ -365,21 +361,41 @@ use App\Models\Shop_category;
               </ul>
             </li>
             <li><a href="#"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
-            <li class="dropdown"><a href="#"><span>{{ $user->name }}</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+            <li class="dropdown">
+              <a href="#"><span>@if(auth()->user()->image)
+                <img style="max-height: 35px" class="rounded-circle" src="{{  auth()->user()->image }}" >
+             @elseif (auth()->user()->gender == 'male')
+                <img style="max-height: 35px" class="rounded-circle" src="{{ asset('assets\images\user.jpg') }}" alt="male">
+             @elseif (auth()->user()->gender == 'female')
+                <img style="max-height: 35px" class="rounded-circle" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
+             @endif{{ auth()->user()->name }}</span> <i class="bi bi-chevron-down dropdown-indicator"></i>
+              </a>
+              
               <ul>
                 @if (auth()->user()->role >= 90)
-                <li><a href="{{ route('admin.index') }}">Administration</a></li>
+                <li><a href="{{ route('admin.index') }}"><span><img src="{{ asset("/assets/images/admin.png") }}" width="24">&nbsp;Administration</span></a></li>
              @endif
               
-                <li><a href="{{ route('users.family') }}">Ma famille</a></li>
-                <li><a href="{{ route('users.FactureUser') }}">Mes Factures/Devis</a></li>
-                <li><a href="{{ route('logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();">Déconnecter</a></li>
+                <li><a href="{{ route('users.family') }}"><span><img src="{{ asset("/assets/images/Famille (1).png") }}" width="24">&nbsp;Ma Famille</span></a></li>
+                <li><a href="{{ route('users.FactureUser') }}"><span><img src="{{ asset("/assets/images/Factures.png") }}" width="24">&nbsp;Mes Factures/Devis</span></a></li>
+                <li><a href="{{ route('logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();"><span><img src="{{ asset("/assets/images/logout.png") }}" width="20">&nbsp;Déconnecter</span></a></li>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                   @csrf
                 </form>
               </ul>
             </li>
-            <li><a href="{{ route('panier',auth()->user()->user_id) }}"><i style="color:white;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier</a></li>
+            @php
+                $paniers = DB::table('basket')
+                            ->select('basket.id')
+                            ->where('basket.user_id', '=', auth()->user()->user_id)
+                            ->get();
+            @endphp
+
+            @if(count($paniers) > 0)
+                <li><a href="{{ route('panier', auth()->user()->user_id) }}"style="color:red"><i style="color:red;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier ({{ count($paniers) }})</a></li>
+            @else
+                <li><a href="{{ route('panier', auth()->user()->user_id) }}" ><i style="color:white;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier</a></li>
+            @endif
           </ul>
         </nav><!-- .navbar -->
   

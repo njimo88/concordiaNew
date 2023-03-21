@@ -2,9 +2,9 @@
 
 @section('content')
 <main style="background-image: url('{{asset("/assets/images/background.png")}}');min-height:100vh;" id="main" class="main">
-
+<div class="container">
 <div class="row" id="corps-pricipal" style=" padding:16px; justify-content:center">
-    <div class="col-lg-10 border border-dark" style="background-color: white; padding:16px; border-radius:10px;margin-top:80px;">
+    <div class=" border border-dark" style="background-color: white; padding:16px; border-radius:10px;margin-top:80px;">
         <div class="row">
             <div class="col-lg-6">
         <h3 style="
@@ -79,7 +79,7 @@
                 <hr>
                 
                 <div class="row">
-                    <div class="col-lg-10">
+                    <div class="">
                     </div>
                     <div class="col-lg-2" style="text-align: right;">
                             <a href="{{ route('Vider_panier',auth()->user()->user_id) }}"  class="btn btn-danger m-2 col-9"  >Vider le panier</a>
@@ -93,6 +93,7 @@
         @endif
 
     </div>
+</div>
 </div>
 </main>
 @endsection

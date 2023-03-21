@@ -16,6 +16,7 @@ use PhpParser\Node\Stmt\Else_;
 use Illuminate\Support\Facades\DB;
 
 
+require_once(app_path().'/fonction.php');
 
 class A_ControllerBlog extends Controller
 { 
@@ -59,7 +60,12 @@ class A_ControllerBlog extends Controller
 
 
 
+   public function anniversaire(){
 
+    $usersbirth = getUsersBirthdayToday();
+
+    return view('anniversaire', compact('usersbirth'))->with('user', auth()->user());
+   }
 
 
    public function countdeterminesection(Request $request)
@@ -73,6 +79,15 @@ class A_ControllerBlog extends Controller
         $a_post = A_Blog_Post::latest('date_post')->paginate(3);
         $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
         $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
+        $post = DB::table('blog_posts')
+        ->join('system', 'blog_posts.id_blog_post_primaire', '=', 'system.value')
+        ->where('system.id_system', '=', 6)
+        ->select('blog_posts.contenu')
+        ->first();
+
+        printUsersBirthdayOnImage();
+
+
    // Check if request is ajax or not 
   // If request is ajax then we have to return the data of next page's content in json array
         if($request->ajax()) {
@@ -83,7 +98,7 @@ class A_ControllerBlog extends Controller
             }
 
             
-      return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2'))->with('user', auth()->user());
+      return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2','post'))->with('user', auth()->user());
 }
 
 public function Simple_Post($id){

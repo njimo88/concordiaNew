@@ -56,12 +56,13 @@ echo $formattedDate;
                 <b>Un email contenant toutes les informations ci-dessous vient de vous être envoyé.</b><br><br>
                 Nous avons bien enregistré votre commande #2023-20490 du @php englishToFrench()@endphp  (NB : Celle-ci ne sera validée qu'à la réception de votre paiement).<br><br>
                 Vous avez choisi de régler votre commande par Espèces, merci de nous transmettre votre règlement :<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;- D'un montant total de <b>{{ number_format($total, 2, ',', ' ') }} €</b> &nbsp;&nbsp;&nbsp;&nbsp;        <br>&nbsp;&nbsp;&nbsp;&nbsp;- A l'ordre de <b>"Gym Concordia"</b><br><br>Mode de paiement : <b>Espèces</b><br>En cas d'envoi, merci de le transmettre à cette adresse : <b>Trésorier Gym Concordia - 30, Rue de gambsheim - 67300 Schiltigheim</b><br><br>
-                        <fieldset class="large-8 left">
+                &nbsp;&nbsp;&nbsp;&nbsp;- D'un montant total de <b>{{ number_format($total, 2, ',', ' ') }} €</b> &nbsp;&nbsp;&nbsp;&nbsp;        <br>&nbsp;&nbsp;&nbsp;&nbsp;- A l'ordre de <b>"Gym Concordia"</b><br><br>Mode de paiement : <b>{{ $payment }}</b><br>En cas d'envoi, merci de le transmettre à cette adresse : <b>Trésorier Gym Concordia - 30, Rue de gambsheim - 67300 Schiltigheim</b><br><br>
+                <fieldset class="large-8 left">
                     <legend>Dates d'Encaissements</legend>
-                    <b>Paiement 1</b>: &nbsp;{{ number_format($total, 2, ',', ' ') }} €&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; <b>Echance : &nbsp;</b><?php
+                    <?php
                     setlocale(LC_ALL, 'fr_FR.UTF-8');
-                    
+                    date_default_timezone_set('Europe/Paris');
+
                     $englishToFrench = [
                         'January' => 'janvier',
                         'February' => 'février',
@@ -76,15 +77,24 @@ echo $formattedDate;
                         'November' => 'novembre',
                         'December' => 'décembre',
                     ];
-                    
-                    
-                    $formattedMonthYear = strtr(now()->isoFormat('MMMM YYYY'), $englishToFrench);
-                    
-                    echo $formattedMonthYear;
+
+                    $datetime = new DateTime(now()->format('Y-m-d'));
+                    $formattedMonthYear = $datetime->format('F Y');
+                    $i = 1;
+
+                    foreach ($nb_paiment as $paiment) {
+                        echo '<b>Paiement ' . $i . '</b>: &nbsp;' . number_format($paiment, 2, ',', ' ') . ' €&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; <b>Echance : &nbsp;</b>' . $formattedMonthYear . '<br>';
+                        
+                        $datetime->add(new DateInterval('P1M')); // add one month to the date
+                        $formattedMonthYear = $englishToFrench[$datetime->format('F')] . ' ' . $datetime->format('Y');
+                        $i++;
+                    }
                     ?>
-                    <br>        </fieldset>
+                </fieldset>
+                
+                
                 <hr>
-                Pour consulter votre commande : <a href="https://www.gym-concordia.com/index.php/viewbill/10490">cliquer sur ce lien</a><br>
+                Pour consulter votre commande : <a href="{{ route('facture.showBill',$bill->id) }}">cliquer sur ce lien</a><br>
             </div>
         </div>
     </div>
