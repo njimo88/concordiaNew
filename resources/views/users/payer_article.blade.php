@@ -8,15 +8,21 @@
                 {{ session('success') }}
             </div>
       @endif
+      @if ($errors->any())
+      <div class="alert alert-danger">
+          <ul>
+              @foreach ($errors->all() as $error)
+                  <li>{{ $error }}</li>
+              @endforeach
+          </ul>
+      </div>
+  @endif
         <div  class="row ">
             <div class="widget-title col-12 d-flex justify-content-between align-items-center">
                 <span><h5 style="font-weight:bold"  class="text-dark font-weight-bold">Récapitulatif :&nbsp;</h5> Total : {{ number_format($total, 2, ',', ' ') }} € TTC</span>
-                <a href="{{ url()->previous() }}" class="btn btn-outline-secondary">
-                <i class="fas fa-angle-left mr-2"></i> Retour
-                </a>
             </div>
             <div class="row d-flex justify-content-center">
-                <div style="min-height: 300px; background-color:#edeeef;" class="col-md-6 mx-3 border border-dark">
+                <div style="background-color:#edeeef;" class="col-md-6 mx-3 border border-dark">
                     <h4 class="p-3">Produits Achetés :</h4>
                     <div class="row">
                         @foreach ($paniers as $article)
@@ -54,11 +60,30 @@
                         <img style="width : 30px" src="{{ $Mpaiement->image}}" alt=""><h5 class="mx-3">{{ $Mpaiement->payment_method}}</h5>
                     </div>
                     <div class="col-11 d-flex justify-content-center m-2">
-                        <img style="max-width : 200px" src="{{ $Mpaiement->image}}" alt="">
+                            <a type="button"  data-toggle="modal" data-target="#{{ $Mpaiement->payment_method }}" href="#"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
                     </div>
 
                 </div>
+                
             @endforeach
+            <!-- Modal -->
+            <div class="modal fade" id="Espèces" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content p-2">
+                    <div class="modal-header">
+                      <h5 style="font-weight:bold" class="modal-title" id="exampleModalLabel">Payement par espèces</h5>
+                      <a type="button"  data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </a>
+                    </div>
+                    <div class="modal-body">
+                        <a href="{{ route('detail_paiement',3) }}" type="button" class="btn btn-primary">Valider ma commande</a>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+              
         </div>
 </main>
 @endsection

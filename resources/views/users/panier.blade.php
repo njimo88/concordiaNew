@@ -16,6 +16,8 @@
   text-transform: uppercase;
   font-weight: Bold;">Votre panier :</h3>
         </div>
+     
+
     @if (count($paniers) > 0)
 
         <div class="col-lg-6" style="text-align: right">
@@ -23,49 +25,55 @@
                                     
         </div>
     </div>
-    @foreach ($paniers as $paniers)
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+    <table  class="table table-striped ">
+        <tbody >
+            @foreach ($paniers as $key => $panier)
+            @if ($key == 0 || ($panier->name != $paniers[$key-1]->name || $panier->lastname != $paniers[$key-1]->lastname))
+            <tr  class="table-secondary">
+                <td width="20%">
+                    <h6><b>{{ $panier->lastname }} {{ $panier->name }}</b></h6>
+                </td>
+                <td colspan="5"></td>
+            </tr>
+            @endif
+            <tr>
+                <td width="10%" class="align-middle"><p class="text-muted small">{{ $panier->reff }} @if ($panier->declinaison_libelle != null)
+                    [{{ $panier->declinaison_libelle }}]
+                @endif</p></td>
+                <td width="20%" class="align-middle">
+                    <img width="70px" src="{{ $panier->image }}">
+                </td>
+                <td width="30%" class="align-middle">
+                    <h6 class="text-dark">{{ $panier->title }}
+                        @if ($panier->declinaison_libelle != null)
+                            [{{ $panier->declinaison_libelle }}]
+                        @endif
+                    </h6>
+                </td>
+                <td class="align-middle">
+                    <p class="text-muted small">{{ $panier->total_qte }} x {{ number_format($panier->price, 2, ',', ' ') }}&nbsp;€</p>
+                </td>
+                <td class="align-middle">
+                    <p><b>{{ number_format($panier->price*$panier->total_qte, 2, ',', ' ') }}&nbsp;€</b></p>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
     
-        <div style="width: 100%;max-height: 500px; overflow-y: scroll; border-top: solid 1px;" class="border border-dark mb-2">
-            <table width="100%">
-                <tbody><tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th width="30%" style="text-align: right"></th>
-                    <th width="20%" style="text-align: right"></th>
-                    <th width="23%" style="text-align: right"></th>
-                </tr>
-                                                                                                                    
-<input type="hidden" name="1[rowid]" value="05b0d08555ab87e2c1da0bbb1012f23d">
-                                        <tr style="background-color: #eee">
-                        <td width="20%">
-                            <i class="left"><b>&nbsp;&nbsp;&nbsp;{{ $paniers->lastname }} {{ $paniers->name }}</b></i>                             <br>
-                            <br>
-                        </td>
-                        <!-- <td width="5%" style="text-align: center">
-                            <p style="font-size: 10px;">1</p>
-                        </td>-->
-                        <td width="10%" style="text-align:center"><img width="70px" src="{{ $paniers->image }}"><p style="font-size: 10px;">{{ $paniers->reff }}</p>
-                        </td>
-                        <td width="30%" style="text-align: center">
-                            <p style="font-size: 15px; margin-top: 20px">{{ $paniers->title }}</p>
-                        </td>
-                        <td style="text-align:center">
-                            <p style="font-size: 12px; margin-top: 20px">{{ $paniers->qte }} x <br>{{ $paniers->price }}&nbsp;€</p>
-                        </td>
-                        <td style="text-align:right">
-                            <p style="font-size: 12px; margin-top: 20px">
-                                <b>{{ $paniers->price }}&nbsp;€&nbsp;&nbsp;&nbsp;</b>
-                            </p>
-                        </td>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        </tr>
-                                                </tbody></table>
-        </div>
-        
-        @endforeach
+
                 <table width="100%" style="border-radius: 20px">
-                                <tbody><tr><td class="right "><strong><span style="font-weight: bold;  margin-left: 10px; font-size: 16px;">
-                                Prix Total : {{ $total }} € TTC</span></strong></td>
+                                <tbody><tr><td class="right d-flex justify-content-end p-3"><strong><span style="background-color: yellow ; font-weight: bold;font-size: 16px;">
+                                Prix Total : {{ number_format($total, 2, ',', ' ') }} € TTC</span></strong></td>
                 </tr>
                 </tbody></table>
                 <hr>

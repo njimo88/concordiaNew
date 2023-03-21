@@ -1,0 +1,92 @@
+
+@extends('layouts.app')
+
+@section('content')
+<?php
+ function englishToFrench(){
+setlocale(LC_ALL, 'fr_FR.UTF-8');
+date_default_timezone_set('Europe/Paris');
+
+// Define an array of English to French translations for month and day names
+$englishToFrench = [
+    'January' => 'janvier',
+    'February' => 'février',
+    'March' => 'mars',
+    'April' => 'avril',
+    'May' => 'mai',
+    'June' => 'juin',
+    'July' => 'juillet',
+    'August' => 'août',
+    'September' => 'septembre',
+    'October' => 'octobre',
+    'November' => 'novembre',
+    'December' => 'décembre',
+    'Monday' => 'Lundi',
+    'Tuesday' => 'Mardi',
+    'Wednesday' => 'Mercredi',
+    'Thursday' => 'Jeudi',
+    'Friday' => 'Vendredi',
+    'Saturday' => 'Samedi',
+    'Sunday' => 'Dimanche',
+];
+
+// Use the strtr function to replace the English month and day names with their French equivalents
+$formattedDate = strtr(now()->isoFormat('dddd D MMMM YYYY à HH:mm:ss'), $englishToFrench);
+
+// Output the formatted date
+echo $formattedDate;
+}
+?>
+<main id="main" class="main" style="min-height : 100vh; padding : 88px 0; background-image: url('{{asset("/assets/images/background.png")}}');">
+    <div style="background-color:white;"  class="container rounded px-2 mt-5" >
+        @if (session('success'))
+            <div style="display: -webkit-inline-box !important;" class="alert alert-success mt-3 col-12">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if (session('error'))
+            <div style="    display: -webkit-inline-box;" class="alert alert-danger mt-3">
+                {{ session('error') }}
+            </div>
+        @endif
+        
+        <div class="row">
+            <div class=" p-3" style=" background-color: white; padding:16px; border-radius:10px">
+                <span style="color: #008000">Merci pour votre commande !</span><br><br>
+                <b>Un email contenant toutes les informations ci-dessous vient de vous être envoyé.</b><br><br>
+                Nous avons bien enregistré votre commande #2023-20490 du @php englishToFrench()@endphp  (NB : Celle-ci ne sera validée qu'à la réception de votre paiement).<br><br>
+                Vous avez choisi de régler votre commande par Espèces, merci de nous transmettre votre règlement :<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;- D'un montant total de <b>{{ number_format($total, 2, ',', ' ') }} €</b> &nbsp;&nbsp;&nbsp;&nbsp;        <br>&nbsp;&nbsp;&nbsp;&nbsp;- A l'ordre de <b>"Gym Concordia"</b><br><br>Mode de paiement : <b>Espèces</b><br>En cas d'envoi, merci de le transmettre à cette adresse : <b>Trésorier Gym Concordia - 30, Rue de gambsheim - 67300 Schiltigheim</b><br><br>
+                        <fieldset class="large-8 left">
+                    <legend>Dates d'Encaissements</legend>
+                    <b>Paiement 1</b>: &nbsp;{{ number_format($total, 2, ',', ' ') }} €&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; <b>Echance : &nbsp;</b><?php
+                    setlocale(LC_ALL, 'fr_FR.UTF-8');
+                    
+                    $englishToFrench = [
+                        'January' => 'janvier',
+                        'February' => 'février',
+                        'March' => 'mars',
+                        'April' => 'avril',
+                        'May' => 'mai',
+                        'June' => 'juin',
+                        'July' => 'juillet',
+                        'August' => 'août',
+                        'September' => 'septembre',
+                        'October' => 'octobre',
+                        'November' => 'novembre',
+                        'December' => 'décembre',
+                    ];
+                    
+                    
+                    $formattedMonthYear = strtr(now()->isoFormat('MMMM YYYY'), $englishToFrench);
+                    
+                    echo $formattedMonthYear;
+                    ?>
+                    <br>        </fieldset>
+                <hr>
+                Pour consulter votre commande : <a href="https://www.gym-concordia.com/index.php/viewbill/10490">cliquer sur ce lien</a><br>
+            </div>
+        </div>
+    </div>
+</main>
+@endsection

@@ -61,11 +61,12 @@ Route::get('/users/factures-devis/showBill/{id}', [App\Http\Controllers\UsersCon
 
 /*-----------Panier----------*/
 
-Route::get('/panier/{id}', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
+Route::get('/panier', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
 Route::get('/payer_article', [App\Http\Controllers\UsersController::class, 'payer_article'])->name('payer_article');
 Route::get('/Vider_panier/{id}', [App\Http\Controllers\UsersController::class, 'Vider_panier'])->name('Vider_panier');
 
-
+/*-----------Paiement----------*/
+Route::get('/detail_paiement/{id}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
 
 
 /*-----------Admin----------*/
@@ -109,6 +110,8 @@ Route::get('/', [A_ControllerBlog::class, 'a_fetchPost'])->name('A_blog');
 Route::get('/Simple_Post/{id}', [A_ControllerBlog::class, 'Simple_Post'])->name('Simple_Post');
 Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_par_cat1'])->name('A_blog_par_categorie1');
 Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_par_cat2'])->name('A_blog_par_categorie2');
+Route::get('/questionnaire', [A_ControllerBlog::class, 'questionnaire'])->name('questionnaire');
+Route::get('/determinesection/count', [A_ControllerBlog::class, 'countdeterminesection'])->name('countdeterminesection');
 
 
 /*---------------------------------Shop en backoffice------------------------------------------*/

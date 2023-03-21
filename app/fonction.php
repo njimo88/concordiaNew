@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\shop_article;
 use App\Models\shop_article_1;
+use App\Models\shop_article_2;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
 use Illuminate\Support\Facades\Mail;
@@ -436,8 +437,151 @@ function destinataires_du_mail($user_id){
 
 }
 
+ function MiseAjourStock()
+{
+   // Step 1: Retrieve the id_shop_article of the current season that have bills.status > 9
+   $id_shop_articles = DB::table('shop_article')
+   ->join('liaison_shop_articles_bills', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+   ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+   ->where('shop_article.saison', '=', saison_active())
+   ->where('bills.status', '>', 9)
+   ->distinct('shop_article.id_shop_article')
+   ->pluck('shop_article.id_shop_article');
 
 
+   // Step 2: Count the occurrence of each id_shop_article multiplied by quantity in the liaison_shop_articles_bills table
+    $liaison_counts = DB::table('liaison_shop_articles_bills')
+    ->whereIn('id_shop_article', $id_shop_articles)
+    ->select('id_shop_article', DB::raw('sum(quantity) as count'))
+    ->groupBy('id_shop_article')
+    ->pluck('count', 'id_shop_article');
+
+
+    // Step 3: Update the stock_actuel for each article
+    foreach ($id_shop_articles as $id_shop_article) {
+        $shop_article = Shop_article::find($id_shop_article);
+        $stock_ini = $shop_article->stock_ini;
+        $count = $liaison_counts->get($id_shop_article, 0);
+        $stock_actuel = $stock_ini - $count;
+        $shop_article->stock_actuel = $stock_actuel;
+        $shop_article->save();
+    }
+}
+
+
+
+function MiseAjourArticlePanier($articles){
+
+    $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->whereIn('id_shop_article', $articles->pluck('ref'))
+        ->select('id_shop_article', DB::raw('sum(quantity) as count'))
+        ->groupBy('id_shop_article')
+        ->pluck('count', 'id_shop_article');
+
+    foreach ($articles as $article) {
+        $article_db = Shop_article::find($article->ref);
+        $stock_ini = $article_db->stock_ini;
+        $count = $liaison_counts->get($article->ref, 0);
+        $stock_actuel = $stock_ini - $count;
+        $article_db->stock_actuel = $stock_actuel;
+        $article_db->save();
+    }
+}
+
+
+function MiseAjourArticle($article){
+    if ($article->type_article == 2) {
+        $article_2 = shop_article_2::find($article->id_shop_article);
+    
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
+        ->where('liaison_shop_articles_bills.id_shop_article', $article->id_shop_article)
+        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
+        ->groupBy('liaison_shop_articles_bills.declinaison')
+        ->get();
+
+        $stock_ini = 0;
+        $stock_actuel = 0;
+    
+        $declinaisons = json_decode($article_2->declinaison, true);
+        
+        $new_declinaisons = [];
+        foreach ($declinaisons as $key => $value) {
+            foreach ($liaison_counts as $count) {
+                if ($count->declinaison == $key+1) {
+                    $value[$key+1]['stock_actuel_d'] = $count->count;
+                }
+            }
+            $new_declinaisons[] = $value;
+            $stock_ini += $value[$key+1]['stock_ini_d'];
+            $stock_actuel += $value[$key+1]['stock_actuel_d'];
+        }
+
+        // Mettre à jour le tableau des déclinaisons dans la base de données
+        $article_2->declinaison = json_encode($new_declinaisons);
+        $article_2->save();
+        
+        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
+        $article->stock_ini = $stock_ini;
+        $article->stock_actuel = $stock_actuel;
+        $article->save();
+        
+    }
+    
+    
+    else{
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->where('id_shop_article', $article->id_shop_article)
+        ->select(DB::raw('sum(quantity) as count'))
+        ->value('count');
+
+        $stock_ini = $article->stock_ini;
+        $count = $liaison_counts ?? 0;
+        $stock_actuel = $stock_ini - $count;
+        $article->stock_actuel = $stock_actuel;
+        $article->save();
+    }
+    
+}
+
+
+function verifierStockUnArticle($article, $quantite){
+    $stockActuel = $article->stock_actuel;
+    if($quantite <= $stockActuel){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function verifierStockUnArticlePanier($articles,$quantite){
+    $stockActuel = $articles->stock_actuel;
+    if($quantite <= $stockActuel){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function calculerPaiements(float $total, int $nbfois) {
+    $paiements = [];
+    $montant = 0.8 * $total / $nbfois;
+    $premierMontant = $montant + 0.2 * $total;
+    $paiements[] = round($premierMontant,2);
+    $var = 0;
+    for ($i = 0; $i < $nbfois - 2; $i++) {
+        $var += $montant;
+        $paiements[] = round($montant,2);
+    }
+
+    $dernierMontant = round ($total - $var - $premierMontant,2);
+    $paiements[] = $dernierMontant;
+    return $paiements;
+}
+
+
+
+<<<<<<< HEAD
 
 
 function sendEmailToUser($user_id, $message1,$data) {
@@ -502,3 +646,5 @@ function fetchDay($date){
 
 >>>>>>> new_abbe
   
+=======
+>>>>>>> c9000324e2d2715c299331d8db73d993087db78b
