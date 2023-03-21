@@ -63,7 +63,8 @@ Route::get('/payer_article', [App\Http\Controllers\UsersController::class, 'paye
 Route::get('/Vider_panier/{id}', [App\Http\Controllers\UsersController::class, 'Vider_panier'])->name('Vider_panier');
 
 /*-----------Paiement----------*/
-Route::get('/detail_paiement/{id}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
+Route::get('/detail_paiement/{id}/{nombre_cheques}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
+
 
 
 /*-----------Admin----------*/
@@ -81,6 +82,7 @@ Route::middleware(['auth', 'role:90'])->group(function () {
     Route::get('/admin/paiement/factureFamille/{id}',  [BillsController::class, 'family'])->name('factureFamille');
     Route::get('/admin/paiement/facture/get-old-bills/{user_id}',  [BillsController::class, 'getOldBills']);
     Route::get('/admin/paiement/facture/showBill/{id}',  [BillsController::class, 'showBill'])->name('facture.showBill');
+    Route::post('/admin/paiement/facture/addShopMessage/{id}',  [BillsController::class, 'addShopMessage'])->name('addShopMessage');
     Route::put('/admin/paiement/facture/updateStatus/{id}',  [BillsController::class, 'updateStatus'])->name('facture.updateStatus');
     Route::put('/admin/paiement/facture/updateDes/{id}',  [BillsController::class, 'updateDes'])->name('facture.updateDes');
     Route::get('/admin/Professionnels/gestion',  [ProfessionnelsController::class, 'gestion'])->name('Professionnels.gestion');
@@ -104,6 +106,7 @@ Route::middleware(['auth', 'role:90'])->group(function () {
 
 /*---------------------------------ABBé------------------------------------------*/
 Route::get('/', [A_ControllerBlog::class, 'a_fetchPost'])->name('A_blog');
+Route::get('/anniversaire', [A_ControllerBlog::class, 'anniversaire'])->name('anniversaire');
 Route::get('/Simple_Post/{id}', [A_ControllerBlog::class, 'Simple_Post'])->name('Simple_Post');
 Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_par_cat1'])->name('A_blog_par_categorie1');
 Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_par_cat2'])->name('A_blog_par_categorie2');

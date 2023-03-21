@@ -81,7 +81,7 @@ public function editdata(){
     }
 }
 
-public function detail_paiement($id)
+public function detail_paiement($id,$nombre_cheques)
 {
     $paniers = DB::table('basket')
     ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
@@ -93,6 +93,7 @@ public function detail_paiement($id)
     ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
     ->get();
 
+    
 
     MiseAjourArticlePanier($paniers);
     $can_purchase = true;
@@ -107,7 +108,7 @@ public function detail_paiement($id)
         }
     }
 
-    if (!$can_purchase && $paniers->count() > 0) {
+    if (!$can_purchase ) {
         $error_msg = "Les articles suivants ne peuvent pas être achetés: " . implode(', ', $unavailable_articles);
         return redirect()->back()->withErrors([$error_msg]);
     }else{
@@ -128,13 +129,20 @@ public function detail_paiement($id)
         as declinaison_libelle")
         )
         ->get();
-        
+
+        $payment = DB::table('bills_payment_method')->where('id', '=', $id)->first()->payment_method;
+
     $total = 0;
     foreach ($paniers as $panier) {
         $total += $panier->qte * $panier->price;
     }
-        MiseAjourArticlePanier($paniers);
-    // ajouter une bill 
+
+    $nb_paiment = calculerPaiements($total,$nombre_cheques);
+
+
+    if($paniers->count() == 0){
+        return redirect()->route('panier');}
+        else{
     $bill = new bills;
     $bill->user_id = auth()->user()->user_id;
     $bill->date_bill = date('Y-m-d H:i:s');
@@ -162,7 +170,7 @@ public function detail_paiement($id)
         $liaison->href_product = $panier->reff;
         $liaison->quantity = $panier->qte;
         $liaison->ttc = round($panier->price, 2);
-        $liaison->addressee = auth()->user()->address;
+        $liaison->addressee = auth()->user()->lastname . ' ' . auth()->user()->name;
         $liaison->sub_total = round($panier->qte * $panier->price, 2);
         $liaison->designation = $panier->title;
         $liaison->id_shop_article = $panier->ref;
@@ -174,7 +182,9 @@ public function detail_paiement($id)
     DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
     MiseAjourStock();
 
-    return view('users.detail_paiement', compact('paniers','total'))->with('user', auth()->user());
+    return view('users.detail_paiement', compact('paniers','total','payment','nb_paiment','bill'))->with('user', auth()->user());
+}
+
     }
     
 }

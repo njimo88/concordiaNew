@@ -347,11 +347,49 @@ function countArticle($user_id, $idArticle)
     // Step 3: Update the stock_actuel for each article
     foreach ($id_shop_articles as $id_shop_article) {
         $shop_article = Shop_article::find($id_shop_article);
+        if($shop_article->type_article == 2) {
+            $article_2 = shop_article_2::find($shop_article->id_shop_article);
+    
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
+        ->where('liaison_shop_articles_bills.id_shop_article', $shop_article->id_shop_article)
+        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
+        ->groupBy('liaison_shop_articles_bills.declinaison')
+        ->get();
+
+        $stock_ini = 0;
+        $stock_actuel = 0;
+    
+        $declinaisons = json_decode($article_2->declinaison, true);
+        
+        $new_declinaisons = [];
+        foreach ($declinaisons as $key => $value) {
+            foreach ($liaison_counts as $count) {
+                if ($count->declinaison == $key+1) {
+                    $value[$key+1]['stock_actuel_d'] = $count->count;
+                }
+            }
+            $new_declinaisons[] = $value;
+            $stock_ini += $value[$key+1]['stock_ini_d'];
+            $stock_actuel += $value[$key+1]['stock_actuel_d'];
+        }
+
+        // Mettre à jour le tableau des déclinaisons dans la base de données
+        $article_2->declinaison = json_encode($new_declinaisons);
+        $article_2->save();
+        
+        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
+        $shop_article->stock_ini = $stock_ini;
+        $shop_article->stock_actuel = $stock_actuel;
+        $shop_article->save();
+        } else {
         $stock_ini = $shop_article->stock_ini;
         $count = $liaison_counts->get($id_shop_article, 0);
         $stock_actuel = $stock_ini - $count;
         $shop_article->stock_actuel = $stock_actuel;
         $shop_article->save();
+         }
+
     }
 }
 
@@ -367,11 +405,49 @@ function MiseAjourArticlePanier($articles){
 
     foreach ($articles as $article) {
         $article_db = Shop_article::find($article->ref);
-        $stock_ini = $article_db->stock_ini;
+        if($article_db->type_article == 2) {
+            $article_2 = shop_article_2::find($article_db->id_shop_article);
+    
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
+        ->where('liaison_shop_articles_bills.id_shop_article', $article_db->id_shop_article)
+        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
+        ->groupBy('liaison_shop_articles_bills.declinaison')
+        ->get();
+
+        $stock_ini = 0;
+        $stock_actuel = 0;
+    
+        $declinaisons = json_decode($article_2->declinaison, true);
+        
+        $new_declinaisons = [];
+        foreach ($declinaisons as $key => $value) {
+            foreach ($liaison_counts as $count) {
+                if ($count->declinaison == $key+1) {
+                    $value[$key+1]['stock_actuel_d'] = $count->count;
+                }
+            }
+            $new_declinaisons[] = $value;
+            $stock_ini += $value[$key+1]['stock_ini_d'];
+            $stock_actuel += $value[$key+1]['stock_actuel_d'];
+        }
+
+        // Mettre à jour le tableau des déclinaisons dans la base de données
+        $article_2->declinaison = json_encode($new_declinaisons);
+        $article_2->save();
+        
+        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
+        $article_db->stock_ini = $stock_ini;
+        $article_db->stock_actuel = $stock_actuel;
+        $article_db->save();
+        }else{
+            $stock_ini = $article_db->stock_ini;
         $count = $liaison_counts->get($article->ref, 0);
         $stock_actuel = $stock_ini - $count;
         $article_db->stock_actuel = $stock_actuel;
         $article_db->save();
+        }
+        
     }
 }
 
@@ -461,10 +537,95 @@ function calculerPaiements(float $total, int $nbfois) {
         $paiements[] = round($montant,2);
     }
 
-    $dernierMontant = round ($total - $var - $premierMontant,2);
+    $dernierMontant =$total - round ( $var + $premierMontant,2);
     $paiements[] = $dernierMontant;
     return $paiements;
 }
 
 
 
+
+function getUsersBirthdayToday()
+{
+    $saison = saison_active();
+
+    // Détermination de la date d'anniversaire d'aujourd'hui
+    $today = Carbon::now();
+    $birthday = $today->format('m-d');
+
+    // Récupération des utilisateurs qui ont acheté un article de type 0 cette saison ou la saison précédente
+    $users = \DB::table('users')
+        ->join('liaison_shop_articles_bills', 'users.user_id', '=', 'liaison_shop_articles_bills.id_user')
+        ->join('shop_article', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article.id_shop_article')
+        ->whereIn('shop_article.saison', [$saison, $saison-1]) // saison courante ou précédente
+        ->where('shop_article.type_article', '=', 0) // Type article 0 = article de saison
+        ->select('users.*')
+        ->distinct()
+        ->get();
+
+    // Filtrage des utilisateurs dont c'est l'anniversaire aujourd'hui
+   // Filtrage des utilisateurs dont c'est l'anniversaire aujourd'hui et qui ont une date de naissance définie
+$usersWithBirthday = $users->filter(function($user) use ($birthday) {
+    if ($user->birthdate !== null) {
+        $userBirthday = Carbon::parse($user->birthdate)->format('m-d');
+             
+        return $userBirthday == $birthday;
+    }
+    return false;
+});
+
+    return $usersWithBirthday;
+}
+
+
+use Intervention\Image\ImageManagerStatic as Image;
+
+
+function printUsersBirthdayOnImage()
+{
+    $users = getUsersBirthdayToday();
+
+    $image = Image::make(public_path('assets/images/birthday.jpg'));
+    
+    setlocale(LC_TIME, 'fr_FR.utf8');
+
+    // Ajout du texte souhaité au centre de l'image
+    $daysOfWeek = array('dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi');
+    $months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
+
+    $currentDayOfWeek = $daysOfWeek[strftime('%u')];
+    $currentMonth = $months[strftime('%m')-1];
+
+    $message = "En ce " . $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y") . ", nous souhaitons l'anniversaire à:";
+    $image->text($message, $image->width() / 1.75, 110, function($font) {
+        $font->file(public_path('fonts/Pacifico-Regular.ttf'));
+        $font->size(30);
+        $font->color('#000000');
+        $font->align('right');
+        $font->valign('top');
+    });
+
+
+
+    // Ajout des noms des utilisateurs sur l'image
+    $y = 160;
+    foreach ($users as $user) {
+        $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
+        $text = $user->name . ' ' . $user->lastname . ' (' . $age . ' ans)';
+        $image->text($text, $image->width() / 2.5, $y, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(24);
+            $font->color('#000000');
+            $font->align('right');
+            $font->valign('top');
+        });
+        $y += 40;
+    }
+
+    // Sauvegarde de l'image modifiée
+    $date = new DateTime();
+    $dateString = $date->format('Y-m-d');
+    $filename = $dateString . "-birthday.jpg";
+    $image->save(public_path('assets/images/' . $filename));
+
+}

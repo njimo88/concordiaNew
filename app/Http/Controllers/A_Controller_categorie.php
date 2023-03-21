@@ -43,6 +43,8 @@ class A_Controller_categorie extends Controller
             ];
 
         $shop_category =   Shop_category::get() ;
+
+        MiseAjourStock();
        
         return view('A_Categorie', $info, compact('shop_category'))->with('user', auth()->user());
 
@@ -196,6 +198,7 @@ public function commander_article($id, Request $request)
 
     public function commanderModal($shop_id,$user_id, Request $request)
     {
+        MiseAjourStock();
         $declinaison = $request->input('declinaison');
         $qte = $request->input('qte');
         $selected_user = $user_id;
@@ -425,6 +428,8 @@ public function  MainShop(){
 // Methode qui permet l'affichage du contenu des sous categories
 public function  Shop_souscategorie($id){
 
+    MiseAjourStock();
+
     $indice = $id; // indice de la categorie qu'on recupere apres click
     $info_parent =   Shop_category::select('id_shop_category_parent','name')->get() ;
     $info =   Shop_category::get() ;
@@ -450,6 +455,8 @@ public function  Shop_souscategorie($id){
         
     $n_var = filterArticlesByValidityDate($n_var);
     $requete = getFilteredArticles($n_var); 
+
+
     
 
     return view('A_Shop_SousCategorie_index',compact('info','info_parent','indice','requete','info2','article','shopService','rooms','a_user'))->with('user', auth()->user());
@@ -458,6 +465,7 @@ public function  Shop_souscategorie($id){
 
 
 public function Handle_details($id){
+    MiseAjourStock();
 
     $articl= Shop_article::where('id_shop_article', $id)->firstOrFail();
     if ($articl->type_article == 2) {
