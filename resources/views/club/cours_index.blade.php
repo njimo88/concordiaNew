@@ -47,18 +47,36 @@ $saison_active = saison_active() ;
    
     
     </h1>
+  
   <table> 
 
                 <div class="d-grid gap-2">
             @foreach($shop_article as $data)
            
-            <input readonly onclick="loadView('{{ $data->id_shop_article }}')" class="btn btn-secondary"  value="{{$data->title}}">
-            <div id="view-container" style="display: none;">
-                {{-- insert content for the view here --}}
+            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+            <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+
+
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-myvalue="{{$data->id_shop_article}}">
+                Launch demo modal
+                </button>
+                            <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Load more</a>
+                                
+                                
+                              
+                                 <div id="content"></div>
+                               
+   
             </div>
+
             @endforeach
             </div>
             </table>
+
+</div>
+
 
 </div>
 
@@ -82,8 +100,18 @@ $saison_active = saison_active() ;
             <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
 
-            @include('shop_article_cours_ajax')
-              -- insert content for the view here --
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-myvalue="{{$data->id_shop_article}}">
+                Launch demo modal
+                </button>
+                            <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Load more</a>
+                                
+                                
+                              
+                                 <div id="content"></div>
+                               
+   
             </div>
 
             @endforeach
@@ -99,41 +127,42 @@ $saison_active = saison_active() ;
 </div>
 
 <script>
-
-function toggleElement(id) {
-   
-var element = document.getElementById('my-element-' + id);
+    function toggleElement(id) {
+    var element = document.getElementById('my-element-' + id);
     if (element.style.display === 'none') {
-        // Make a GET request to the toggle route with the ID as a parameter
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    // If the toggle request is successful, show the element
-                    element.style.display = 'block';
-                } else {
-                    // If there is an error, log it to the console
-                    console.error('Error: ' + xhr.status);
-                }
-            }
-        };
-        xhr.open('GET', '/shop_article_cours_ajax/' + id);
-        xhr.send();
-        console.log('Sent AJAX request for ID ' + id);
+        element.style.display = 'block';
     } else {
-        // Hide the element
         element.style.display = 'none';
     }
-
 }
-
-
-
-
 
 </script>
 
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+     
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 </main>

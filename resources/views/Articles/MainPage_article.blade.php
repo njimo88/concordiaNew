@@ -27,16 +27,30 @@ Créer un article
        
       
         </div>
-        <div class="col-md-2 pt-4">
-          
-        <select class="form-control" name="saison" id="saison" onchange="showCustomer(this.value)">
-                   
-                    @foreach($saison_list as $data)
+      
+       <div class="row"> 
+        <div class="col-md-8"></div>
+        <div class="col-md-4">  
+       
+       <label> Saison </label>
+       <form action="{{ route('include-tab_articles') }}" method="POST">
+           @csrf
+         <select class="form-control" name="saison" id="saison">
+                  
+                  @foreach($saison_list as $data)
 
-                                    <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
-                     @endforeach
-                </select>
-        </div>
+                                  <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
+                  
+                  
+                                  @endforeach
+
+         </select>
+         <button type="submit" id="hide-row-btn" >Valider</button>
+       
+       </form>
+   </div>
+   </div>  
+      
       
 
 <!-- Modal -->
@@ -78,7 +92,55 @@ Créer un article
   </div>
 </div>
       
+@if(session('submitted'))
+
+<h5 style="text-align: center;">{{$saison}}</h5>
+<div class="table-responsive" id="maTable">
+
+      
+                
+<table id="myTable" class="table table-bordred table-striped">
+     
+     <thead>
+     
+     
+     <th>Image</th>
+      <th>Référence</th>
+       <th>Titre</th>
+       <th>Prix TTC</th>
+       <th>Prix Cumulé</th>
+        <th>Stock</th>
+        <th>Modifier</th>
+        <th>Supprimer</th>
+        <th>Dupliquer</th>
         
+         
+     </thead>
+<tbody>
+@foreach($requete_article_pick as $data)
+<tr>
+
+
+<td><img src="{{$data->image}}" style="height: 60px; width:60px"></td>
+<td>{{$data->ref}}</td>
+<td>{{$data->title}}</td>
+<td>{{$data->price}}</td>
+<td>{{$data->totalprice}}</td>
+<td>{{$data->stock_actuel}}</td>
+<td><p data-placement="top" data-toggle="tooltip" title="Editer"><a href="{{route('edit_article', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Effacer"><a href="{{route('delete_article',[ 'id' => $data->id_shop_article])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');" ><i class="bi bi-trash"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Dupliquer"><a href="{{route('duplicate_article_index', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal"><i class="fa fa-clone " ></i> </button></a></p></td>
+
+</tr>
+@endforeach
+
+</tbody>
+
+</table>
+
+
+
+@else
 <div class="table-responsive" id="maTable">
 
       
@@ -122,7 +184,7 @@ Créer un article
 
 </table>
 
-        
+@endif      
     
 
   
@@ -132,37 +194,6 @@ Créer un article
 </div> 
             
    
-
-  <!--  AFFICHAGE DE LA VUE APRES LA REQUETE D'AJAX -->
-
-<!--  AFFICHAGE DE LA VUE APRES LA REQUETE D'AJAX -->
-
-            </div>
-</div>
-
-
-<div id="txtHint">
-
-
-</div>
-
-
-
-<script>
-function showCustomer(str) {
-  if (str == "") {
-    document.getElementById("txtHint").innerHTML = "";
-    return;
-  }
-  const xhttp = new XMLHttpRequest();
-  xhttp.onload = function() {
-    document.getElementById("txtHint").innerHTML = this.responseText;
-  
-  }
-  xhttp.open("GET", "{{ route('TESTSAISON') }}?saison=" + str);
-  xhttp.send();
-}
-</script>
 
 
 

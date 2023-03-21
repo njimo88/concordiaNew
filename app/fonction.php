@@ -341,7 +341,7 @@ function Inscrits_Saison_Final($saison){
 
 function retourner_buyers_dun_shop_article($id_shop_article) {
 
-    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->toArray();
+    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->unique()->toArray();
     
 
     return $requete_liaison_shop_article_bills ;

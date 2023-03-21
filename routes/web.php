@@ -3,6 +3,7 @@
 use App\Http\Controllers\A_ControllerBlog;
 use App\Http\Controllers\Controller_club;
 use App\Http\Controllers\A_Controller_categorie;
+use App\Http\Controllers\Controller_mention_legales;
 use App\Http\Controllers\A_ControllerAdmin;
 use App\Http\Controllers\BlogArticle_Controller;
 use App\Models\A_Blog_Post;
@@ -122,7 +123,6 @@ Route::get('category-subcategory/remove/{id_shop_category}', [A_Controller_categ
 
 
 /*---------------------------------Shop en front office------------------------------------------*/
-/*---------------------------------Shop en front office------------------------------------------*/
 
 Route::get('/Categorie_front', [A_Controller_categorie::class, 'MainShop'])->name('index_categorie');
 Route::get('/SubCategorie_front/{id}', [A_Controller_categorie::class, 'Shop_souscategorie'])->name('sous_categorie');
@@ -136,7 +136,7 @@ Route::get('/commanderModal/{shop_id}/{user_id}', [A_Controller_categorie::class
 /*------------------------------ Article Back office ----------------------------------------- */
 
 Route::get('/Article', [Article_Controller::class, 'index'])->name('index_article');
-
+Route::post('/Article/include-page', [Article_Controller::class, 'index_include'])->name('include-tab_articles');
 
 Route::post('/Article/edit/{id}', [Article_Controller::class, 'edit'])->name('edit_article');
 Route::get('/Article/edit/{id}', [Article_Controller::class, 'edit_index'])->name('edit_article_index');
@@ -164,15 +164,12 @@ Route::get('/Article/create/produit', [Article_Controller::class, 'index_create_
 Route::get('/Article/create/lesson', [Article_Controller::class, 'index_create_lesson'])->name('index_create_article_lesson');
 
 
-//Route::get('/JSON', [Article_Controller::class, 'JsonProcess'])->name('test');
+
 
 
 
 // route pour afficher le formulaire de facon dynamique sur la date des cours , declencher avec le boutons ajouter une seance
 Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name('test_create_article');
-
-
-
 
 
 
@@ -210,28 +207,9 @@ Route::post('/BlogArticle_category/edit/{id}',[BlogArticle_Controller::class, 'e
 
 
 
-
-
-
-
-/*
-Route::get('/Communication/sendmail', [Controller_Communication::class, 'send_mail'])->name('sendmail');
-
-Route::get('/Communication/a', [Controller_Communication::class, 'test'])->name('test');
-Route::post('Communication/envoi', [Controller_Communication::class, 'send_mail'])->name('send_mail');
-
-Route::get('/testroute', function() {
-    $name = "Funny Coder";
-
-*/
-
-/*The email sending is done using the to method on the Mail facade
-    Mail::to('nkpericksen@gmail.com')->send(new UserEmail($name));
-});
-*/
-
-
-
+/*----------------------------- Mention legales -------------------------------------------------- */
+Route::get('/Mentions', [Controller_mention_legales::class, 'index'])->name('index_mentions_legales');
+Route::get('/Politique_de_confidentialite', [Controller_mention_legales::class, 'index_politique'])->name('index_politique');
 
 
 
@@ -246,15 +224,12 @@ Route::get('/users', [Controller_Communication::class, 'index_u'])->name('users.
 Route::post('/users-send-email', [Controller_Communication::class, 'sendEmail_u'])->name('ajax.send.email');
 
 
-/*------------------------ learn AJAX---------------------------- */
-
-
-Route::get('/TESTSAISON', [Article_Controller::class, 'TESTSAISON'])->name('TESTSAISON');
-
-
-
 /*----------------------- Club - cours ------------------------------ */
 Route::get('/club/cours_index', [Controller_club::class, 'index_cours'])->name('index_cours');
 Route::post('/club/include-page', [Controller_club::class, 'index_include'])->name('include-page');
 
-Route::get('/shop_article_cours_ajax/{id}', [Controller_club::class, 'display_form_cours'])->name('form_cours');
+//Route::get('/shop_article_cours_ajax/{id}', [Controller_club::class, 'display_form_cours'])->name('form_cours');
+
+Route::get('/form_appel/{id}', [Controller_club::class, 'form_appel_method'])->name('form_appel');
+
+Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_method'])->name('enregistrer_appel');

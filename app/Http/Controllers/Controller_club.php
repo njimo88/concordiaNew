@@ -24,6 +24,8 @@ class Controller_club extends Controller
         $shop_article_first= Shop_article::where('saison', $saison_actu)->where('type_article',1)->get() ;
 
          $saison_list = Shop_article::select('saison')->distinct('name')->get();
+
+        
          return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first'))->with('user', auth()->user()) ;
     }
 
@@ -51,11 +53,45 @@ class Controller_club extends Controller
     public function display_form_cours($id)
 {
     // Retrieve the data for the specified ID from the database
-    $data = Shop_Article::find($id);
+    $shop_article = Shop_Article::find($id);
+    $buyers = Donne_User_article_Paye($id);
 
-    // Return the view that should be displayed in the my-element div
-    return view('/shop_article_cours_ajax', ['data' => $data]);
+    $user = User::get() ;
+    $requete_articles = Shop_article::get() ;
+
+   //dd($user) ;
+  //  return view('/shop_article_cours_ajax', compact('user','buyers','requete_articles'))->with('user', auth()->user());
+
+
 }
+
+public function form_appel_method($id){
+    $shop_article = Shop_Article::find($id);
+    $buyers = Donne_User_article_Paye($id);
+  
+    $user = User::paginate(10);  
+    $users = User::select("*")->whereIn('user_id', $buyers)->get();
+
+    $the_id = $id ;
+
+   // dd($users);            
+      
+    return view('/formulaire_appel', compact('users','buyers','the_id'))->with('user', auth()->user());
+    
+
+
+}
+
+public function enregister_appel_method($id , Request $request){
+
+return $id;
+
+
+
+
+}
+
+
 
 
 

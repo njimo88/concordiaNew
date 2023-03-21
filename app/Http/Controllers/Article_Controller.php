@@ -17,15 +17,41 @@ class Article_Controller extends Controller
 
 {
     // Page d'affichages de la data table d'articles
-    public function index(){
+    public function index(Request $request){
         $S_active = saison_active();
+        $saison = $request->input('saison');
        
-;        $saison_list = Shop_article::select('saison')->distinct('name')->get();
+         $saison_list = Shop_article::select('saison')->distinct('name')->get();
          $requete_article = Shop_article::where('saison',$S_active)->paginate(50) ;
-      
 
-        return view('Articles/MainPage_article',compact('requete_article','saison_list'))->with('user', auth()->user()) ;
+         $requete_article_pick = Shop_article::where('saison',  $saison)->paginate(50) ;
+
+        
+
+        return view('Articles/MainPage_article',compact('requete_article','saison_list','saison','requete_article_pick'))->with('user', auth()->user()) ;
     }
+
+    function index_include(Request $request){
+        
+        $saison = $_POST['saison'];
+        $s_saison = $request->input('saison');
+
+        return redirect()->route('index_article', ['saison' => $saison])->with('submitted', true);
+
+    
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public function TESTSAISON(Request $request){
