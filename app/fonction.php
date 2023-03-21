@@ -75,24 +75,6 @@ function isUserMember($user_id)
     }
 }
 
-function MiseAuPanier($user_id, $id_article)
-{
-    $article = Shop_Article::findOrFail($id_article);
-    $need_member = $article->need_member;
-
-    // Vérifier si l'article nécessite une adhésion
-    if ($need_member != 0) {
-        // Vérifier si l'utilisateur est membre
-        $is_member = isUserMember($user_id);
-        if (isUserMember($user_id) == 0) {
-            return $need_member ;
-        } elseif (isUserMember($user_id) != $need_member) {
-            //comparer les prix des deux articles si larticle.ttlprice est plus grand que celui de need_member on fait rien 
-            //sinon on calcule la difference et on la met dans le panier
-        }
-    }
-
-}
 
 
   
@@ -361,7 +343,6 @@ function MiseAuPanier($user_id, $id_article)
 //fonction qui prend un $idArticle en paramètre et compte le nombre de fois qu'il est présent dans 
 //le tableau renvoyé par Donne_articles_Paye_d_un_user_aucours_d_une_saison()
 
-<<<<<<< HEAD
 function countArticle($user_id, $idArticle)
 {
     $saison = saison_active();
@@ -379,17 +360,6 @@ function countArticle($user_id, $idArticle)
 
     // Retourner le nombre de fois que l'idArticle a été trouvé
     return $count;
-=======
-// recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
-
-function retourner_buyers_dun_shop_article($id_shop_article) {
-
-    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->unique()->toArray();
-    
-
-    return $requete_liaison_shop_article_bills ;
-
->>>>>>> new_abbe
 }
 
 
