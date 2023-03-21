@@ -8,6 +8,8 @@ use App\Models\shop_article;
 use App\Models\shop_article_1;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
+use Illuminate\Support\Facades\Mail;
+
 
 
 
@@ -324,7 +326,6 @@ function Donne_User_article_Date($id_shop_article,$date1) {
 }
 
 
-
 function Inscrits_Saison_Date($sasion, $date1){
 
 }
@@ -359,6 +360,7 @@ function MiseAuPanier($user_id, $id_article)
 //fonction qui prend un $idArticle en paramètre et compte le nombre de fois qu'il est présent dans 
 //le tableau renvoyé par Donne_articles_Paye_d_un_user_aucours_d_une_saison()
 
+<<<<<<< HEAD
 function countArticle($user_id, $idArticle)
 {
     $saison = saison_active();
@@ -376,8 +378,127 @@ function countArticle($user_id, $idArticle)
 
     // Retourner le nombre de fois que l'idArticle a été trouvé
     return $count;
+=======
+// recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
+
+function retourner_buyers_dun_shop_article($id_shop_article) {
+
+    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->unique()->toArray();
+    
+
+    return $requete_liaison_shop_article_bills ;
+
+>>>>>>> new_abbe
+}
+
+
+// fonction pour determiner les destinataires des mails
+
+function destinataires_du_mail($user_id){
+    
+    $tab = [] ;
+    $tab1 = [] ;
+   
+    //recupere le famiily level pour verifier si l'user est un child ou un parent
+    $requete_user_family_level = DB::table('users')->where('user_id',$user_id)->value('family_level');
+  //recupere l'email du user
+    $requete_user_email = DB::table('users')->where('user_id',$user_id)->value('email');
+
+    if ($requete_user_family_level == "parent"){
+        $tab[] = $user_id ;
+
+        return $tab ;
+
+    }else if ( ($requete_user_family_level == "child") and (( !isset($requete_user_email)) or ($requete_user_email == NULL) )){
+        
+        $requete_user_family_id = DB::table('users')->where('user_id',$user_id)->value('family_id');
+        $tab = DB::table('users')->where('family_id', $requete_user_family_id) ->where('family_level','parent')->pluck('user_id')->toArray();
+
+        foreach($tab as $t){
+            if ($t != $user_id){
+              $tab1[] = $t ;      
+            }
+        }
+        return $tab1 ;
+
+
+
+    }else if (($requete_user_family_level == "child") and (isset($requete_user_email)) ){
+
+        $requete_user_family_id = DB::table('users')->where('user_id',$user_id)->value('family_id');
+        $tab = DB::table('users')->where('family_id', $requete_user_family_id) ->where('family_level','parent')->pluck('user_id')->toArray();
+      
+        return $tab ;
+
+
+    }
+  
+
 }
 
 
 
+
+
+function sendEmailToUser($user_id, $message1,$data) {
+
+  $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
+  $email = $user->email; // Get the user's email address
+
+  Mail::to($email)->send(new UserEmail($message1,$data)); // Send the email using Laravel's Mail facade
+
+}
+
+class UserEmail extends \Illuminate\Mail\Mailable {
+    
+  public $message1; // Define a public property to store the message
+  public $data;
+ 
+  public function __construct($message1, $data) {
+    $this->message1 = $message1; // Assign the message to the public property
+    $this->data = $data ;
+  }
+  public function build() {
+    return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1, 'data' => $this->data]); // Define the email's view
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<<<<<<< HEAD
+=======
+
+//fonctions pour afficher les dates en Anglais
+function fetchDay($date){
+    $lejour = ( new DateTime($date) )->format('l');
+
+  $jour_semaine = array(
+"lundi" => "Monday",
+"Mardi" => "Tuesday",
+"Mercredi" => "Wednesday",
+"Jeudi" => "Thursday",
+"Vendredi" => "Friday",
+"Samedi" => "Saturday",
+"Dimanche" => "Sunday"
+
+  );
+
+}
+
+
+
+
+>>>>>>> new_abbe
   

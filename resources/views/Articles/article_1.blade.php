@@ -2,38 +2,10 @@
 
 @section('content')
 @php
-function fetchDayy($date)
-                 {
 
-    $lejour = ( new DateTime($date) )->format('l');
-
-     $jour_semaine = array(
-
-                     "lundi" => "Monday",
-                    "Mardi" => "Tuesday",
-                    "Mercredi" => "Wednesday",
-                    "Jeudi" => "Thursday",
-                    "Vendredi" => "Friday",
-                    "Samedi" => "Saturday",
-                    "Dimanche" => "Sunday"
-
-                                         );
-                                                                                                        
-
-                               foreach($jour_semaine as $key=>$j){
-
-                                 if ($j == $lejour){
-                                 return $key ;
-                                                }
-                                   }
-
-                                }
 
 @endphp
  
-
-
-
 
 <main id="main" class="main">
 <div class="container">

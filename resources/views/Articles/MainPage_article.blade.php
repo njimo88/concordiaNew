@@ -2,30 +2,56 @@
 
 @section('content')
 
+@php
+
+require_once('../app/fonction.php');
+$saison_active = saison_active() ;
+
+@endphp
 <main id="main" class="main">
 
-@if(session()->has('success'))
-                <div class="alert alert-success">
-                    {{ session()->get('success') }}
-                </div>
-            @endif
-        
 
 <div class="container">
 	<div class="row">
 		
         
-        <div class="col-md-12">
+        <div class="col-md-10">
         <h4>Mes articles</h4>
         <button type="button" class="btn btn-primary">Article</button>
         <button type="button" class="btn btn-primary">Anciens articles</button>
-      
-
-
-<!-- Button trigger modal pour choisir le type d'article-->
+        <!-- Button trigger modal pour choisir le type d'article-->
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 Créer un article
 </button>
+<br>
+       
+      
+        </div>
+      
+       <div class="row"> 
+        <div class="col-md-8"></div>
+        <div class="col-md-4">  
+       
+       <label> Saison </label>
+       <form action="{{ route('include-tab_articles') }}" method="POST">
+           @csrf
+         <select class="form-control" name="saison" id="saison">
+                  
+                  @foreach($saison_list as $data)
+
+                                  <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
+                  
+                  
+                                  @endforeach
+
+         </select>
+         <button type="submit" id="hide-row-btn" >Valider</button>
+       
+       </form>
+   </div>
+   </div>  
+      
+      
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -65,63 +91,118 @@ Créer un article
     </div>
   </div>
 </div>
+      
+@if(session('submitted'))
 
-        
-    
-
-        <div class="table-responsive">
+<h5 style="text-align: center;">{{$saison}}</h5>
+<div class="table-responsive" id="maTable">
 
       
                 
-              <table id="myTable" class="table table-bordred table-striped">
-                   
-                   <thead>
-                   
-                   
-                   <th>Image</th>
-                    <th>Reference</th>
-                     <th>Titre</th>
-                     <th>Prix TTC</th>
-                     <th>Prix Cummulé</th>
-                      <th>Stock</th>
-                      <th>Modifié</th>
-                      <th>supprimé</th>
-                      <th>Dupliqué</th>
-                      
-                       
-                   </thead>
-    <tbody>
-    @foreach($requete_article as $data)
-    <tr>
-      
-      
-        <td>{{$data->image}}</td>
-        <td>{{$data->ref}}</td>
-        <td>{{$data->title}}</td>
-        <td>{{$data->price}}</td>
-        <td>{{$data->totalprice}}</td>
-        <td>{{$data->stock_actuel}}</td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a href="{{route('edit_article', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><a href="{{route('delete_article',[ 'id' => $data->id_shop_article])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');" ><i class="bi bi-trash"></i></button></a></p></td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Dupliquer"><a href="{{route('duplicate_article_index', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal">Dupliquer  </button></a></p></td>
-       
-    </tr>
-    @endforeach
+<table id="myTable" class="table table-bordred table-striped">
+     
+     <thead>
+     
+     
+     <th>Image</th>
+      <th>Référence</th>
+       <th>Titre</th>
+       <th>Prix TTC</th>
+       <th>Prix Cumulé</th>
+        <th>Stock</th>
+        <th>Modifier</th>
+        <th>Supprimer</th>
+        <th>Dupliquer</th>
         
-    </tbody>
-        
+         
+     </thead>
+<tbody>
+@foreach($requete_article_pick as $data)
+<tr>
+
+
+<td><img src="{{$data->image}}" style="height: 60px; width:60px"></td>
+<td>{{$data->ref}}</td>
+<td>{{$data->title}}</td>
+<td>{{$data->price}}</td>
+<td>{{$data->totalprice}}</td>
+<td>{{$data->stock_actuel}}</td>
+<td><p data-placement="top" data-toggle="tooltip" title="Editer"><a href="{{route('edit_article', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Effacer"><a href="{{route('delete_article',[ 'id' => $data->id_shop_article])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');" ><i class="bi bi-trash"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Dupliquer"><a href="{{route('duplicate_article_index', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal"><i class="fa fa-clone " ></i> </button></a></p></td>
+
+</tr>
+@endforeach
+
+</tbody>
+
 </table>
 
+
+
+@else
+<div class="table-responsive" id="maTable">
+
+      
+                
+<table id="myTable" class="table table-bordred table-striped">
+     
+     <thead>
+     
+     
+     <th>Image</th>
+      <th>Référence</th>
+       <th>Titre</th>
+       <th>Prix TTC</th>
+       <th>Prix Cumulé</th>
+        <th>Stock</th>
+        <th>Modifier</th>
+        <th>Supprimer</th>
+        <th>Dupliquer</th>
+        
+         
+     </thead>
+<tbody>
+@foreach($requete_article as $data)
+<tr>
+
+
+<td><img src="{{$data->image}}" style="height: 60px; width:60px"></td>
+<td>{{$data->ref}}</td>
+<td>{{$data->title}}</td>
+<td>{{$data->price}}</td>
+<td>{{$data->totalprice}}</td>
+<td>{{$data->stock_actuel}}</td>
+<td><p data-placement="top" data-toggle="tooltip" title="Editer"><a href="{{route('edit_article', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Effacer"><a href="{{route('delete_article',[ 'id' => $data->id_shop_article])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');" ><i class="bi bi-trash"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Dupliquer"><a href="{{route('duplicate_article_index', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal"><i class="fa fa-clone " ></i> </button></a></p></td>
+
+</tr>
+@endforeach
+
+</tbody>
+
+</table>
+
+@endif      
+    
+
+  
 <div class="clearfix"></div>
 <div class="d-flex justify-content-center">
     {!! $requete_article->links() !!}
-</div>          
-            </div>
+</div> 
             
-        </div>
-	</div>
-</div>
+   
+
+
+
+
+
 
 </main>
     
+
+
+
 @endsection
