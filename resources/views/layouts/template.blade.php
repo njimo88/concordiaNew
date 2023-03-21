@@ -75,7 +75,7 @@
            <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#club-nav" data-bs-toggle="collapse" href="#"><span style="color: #f59f00; margin-right:10px" class="fa fa-medal fa-fw mr-2 gc-orange"></span><span>Le Club</span><i class="bi bi-chevron-down ms-auto"></i> </a>
             <ul id="club-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-               <li> <a href="club-chartjs.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-running fa-fw mr-1"></span><span>Cours</span> </a></li>
+               <li> <a href="{{route('index_cours')}}"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-running fa-fw mr-1"></span><span>Cours</span> </a></li>
                <li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-swimming fa-fw mr-1"></span><span>Animations</span> </a></li>
                <li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-chart-line fa-fw mr-1"></span><span>Stats-Exports</span> </a></li>
                <li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-stamp fa-fw mr-1"></span><span>Valider Certificats</span> </a></li>
