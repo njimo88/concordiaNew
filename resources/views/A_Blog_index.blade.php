@@ -2,7 +2,7 @@
 
 @section('content')
 <!-- header Content -->
-<section style="background-image: url('{{asset("/assets/images/background.png")}}') !important; margin-top : 48px; " id="hero" class="hero">
+<section style="background-image: url('{{asset("/assets/images/background.png")}}')" id="hero" class="hero">
     <div class="container position-relative">
       <div class="row d-flex justify-content-center gy-5" data-aos="fade-in">
         <div class="col-lg-6 order-1 order-lg-2">
@@ -11,7 +11,7 @@
             $dateString = $date->format('Y-m-d');
             $filename = $dateString . "-birthday.jpg";
           @endphp
-          <a href="{{ route('anniversaire') }}"><img style="width : 100% !important; height: 284px !important;" src="{{ asset('assets/images/blanc.jpg') }}" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100"></a>
+          <a href="{{ route('anniversaire') }}"><img style="width : 100% !important; height: 284px !important;" src="{{ asset('assets/images/'.$filename) }}" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100"></a>
         </div>
         <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start border border-dark">
           {!! $post->contenu !!}

@@ -1,15 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-<main style="background-image: url('{{asset("/assets/images/background.png")}}')">
+<main class="main" id="main"  style="background-image: url('{{asset("/assets/images/background.png")}}')">
 
 
 <div style="background-color: white;" class="container  justify-content-center">
     <div class="row">
         @if (session('success'))
-                <div class="alert alert-success col-12">
+                <div class="alert alert-success mt-3">
                     {{ session('success') }}
                 </div>
+        @endif
+        @if (session('error'))
+            <div style="    display: -webkit-inline-box;" class="alert alert-danger mt-3">
+                {{ session('error') }}
+            </div>
         @endif
         <div class="col-6">
             <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
@@ -97,7 +102,10 @@
       <div class="col-md-4 col-12 p-3">
         <h4>Détail paiement</h4>
         <span style="font-weight:bold">Paiement</span> : €<br>
-        <span style="font-weight:bold">Echéance </span>
+        <span style="font-weight:bold">Echéance </span> <br> <br>
+        <span style="font-weight:bold">Reste à payer : {{ number_format($bill->payment_total_amount-$bill->amount_paid, 2, ',', ' ') }} €</span> 
+        <br><br><br>
+        <a href="{{ route("paiement_immediat",$bill->id ) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Immédiat <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
       </div>
     </div>
 
@@ -158,7 +166,7 @@
     </div>
 
 
-<div class="col-lg-12">
+<div class="col-lg-12 mt-3">
   @foreach($messages as $message)
   <?php
   // Configure la locale en français
@@ -187,7 +195,7 @@
       'Sunday' => 'Dimanche',
   ];
   
-  $formattedDate = \Carbon\Carbon::parse($message->date)->isoFormat('dddd D MMMM YYYY ');
+  $formattedDate = \Carbon\Carbon::parse($message->date)->isoFormat('dddd D MMMM YYYY à HH:mm:ss ');
   
   $formattedDate = strtr($formattedDate, $englishToFrench);
   ?>
@@ -221,7 +229,7 @@
 
   
 </div>
-<div style="height: 50vh"></div>
+<div style="height: 25px"></div>
 </main>
 @endsection
 

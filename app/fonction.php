@@ -9,6 +9,8 @@ use App\Models\shop_article_1;
 use App\Models\shop_article_2;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
+use App\Models\bills;
+use App\Models\ShopMessage;
 
 //fonction pour afficher la famille en fonction de l'id de la famille
 function getUsersByFamilyId($family_id)
@@ -597,30 +599,37 @@ function printUsersBirthdayOnImage()
     $currentMonth = $months[strftime('%m')-1];
 
     $message = "En ce " . $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y") . ", nous souhaitons l'anniversaire à:";
-    $image->text($message, $image->width() / 1.75, 110, function($font) {
+    $image->text($message, $image->width() / 4.6, 130, function($font) {
         $font->file(public_path('fonts/Pacifico-Regular.ttf'));
-        $font->size(30);
+        $font->size(15);
         $font->color('#000000');
-        $font->align('right');
+        $font->align('left');
         $font->valign('top');
     });
 
 
 
-    // Ajout des noms des utilisateurs sur l'image
-    $y = 160;
-    foreach ($users as $user) {
+    $y = 165;
+    $line_count = 0;
+    foreach ($users as $index => $user) {
         $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
         $text = $user->name . ' ' . $user->lastname . ' (' . $age . ' ans)';
-        $image->text($text, $image->width() / 2.5, $y, function($font) {
+        $x = $line_count % 2 == 0 ? $image->width() / 2 : $image->width() / 5;
+        $image->text($text, $x, $y, function($font) {
             $font->file(public_path('fonts/arial.ttf'));
-            $font->size(24);
+            $font->size(10);
             $font->color('#000000');
-            $font->align('right');
+            $font->align('left');
             $font->valign('top');
         });
-        $y += 40;
+        $line_count++;
+        if ($line_count % 2 == 0) {
+            $y += 16;
+        }
     }
+    
+
+
 
     // Sauvegarde de l'image modifiée
     $date = new DateTime();
@@ -628,4 +637,17 @@ function printUsersBirthdayOnImage()
     $filename = $dateString . "-birthday.jpg";
     $image->save(public_path('assets/images/' . $filename));
 
+}
+
+
+function updateTotalCharges($bill_id) {
+    $messages = ShopMessage::where('id_bill', $bill_id)->get(); 
+    $total_payed = 0; 
+    foreach ($messages as $message) {
+        $total_payed += $message->somme_payé; 
+    }
+    $bill = bills::find($bill_id); 
+    $bill->amount_paid = $total_payed; 
+    $bill->save(); 
+    return $total_payed;
 }

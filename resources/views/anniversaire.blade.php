@@ -13,7 +13,7 @@ use Carbon\Carbon;
             <div class="card-header py-3 d-flex justify-content-center">
                 <h6 class="m-0 font-weight-bold text-primary text-center">Joyeux anniversaire ! - lundi 20 mars 2023</h6>
             </div>
-            <div style="align-items :flex-start !important" class="card-body">
+            <div style="align-items :flex-center !important" class="card-body">
                 @php
                     $date = new DateTime();
                     $dateString = $date->format('Y-m-d');
@@ -21,7 +21,9 @@ use Carbon\Carbon;
 
                 @endphp
                 <img src="{{ asset('assets/images/' . $filename ) }}" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100">
-                <p class="mt-5">Vous pouvez envoyer un petit message à nos membres qui fêtent leurs anniversaires aujourd’hui en cliquant sur leurs noms... À vous de jouer :</p>
+            </div>
+            <div style="align-items :flex-start !important" class="card-body">
+                <p class="mt-2">Vous pouvez envoyer un petit message à nos membres qui fêtent leurs anniversaires aujourd’hui en cliquant sur leurs noms... À vous de jouer :</p>
                 <ul>
                     @foreach ($usersbirth as $user) 
                       @php

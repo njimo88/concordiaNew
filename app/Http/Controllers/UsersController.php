@@ -12,6 +12,8 @@ use App\Models\old_bills;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Models\Shop_article;
+use App\Models\Shop_article_2;
+use App\Models\PaiementImmediat;
 require_once(app_path().'/fonction.php');
 
 
@@ -437,7 +439,17 @@ $bill = DB::table('bills')
         ->select('old_bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.image as image')
     )->orderBy('date_bill', 'desc')
     ->get();
-    return view('users.facture',compact('bill'))->with('user', auth()->user());
+    
+    $family_id = auth()->user()->family_id;
+
+    if(PaiementImmediat::where('family_id', $family_id)->exists()) {
+        // Afficher le bouton de paiement
+        return view('users.facture', compact('bill'))->with('user', auth()->user())->with('showPaymentButton', true);
+    } else {
+        // Masquer le bouton de paiement
+        return view('users.facture', compact('bill'))->with('user', auth()->user())->with('showPaymentButton', false);
+    }
+
 }
 
 public function deleteFacture($id){
