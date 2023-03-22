@@ -11,6 +11,9 @@ use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
 use App\Models\bills;
 use App\Models\ShopMessage;
+use Illuminate\Support\Facades\Mail;
+
+
 
 //fonction pour afficher la famille en fonction de l'id de la famille
 function getUsersByFamilyId($family_id)
