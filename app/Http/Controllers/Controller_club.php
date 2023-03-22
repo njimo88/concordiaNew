@@ -6,7 +6,8 @@ use App\Models\Shop_article;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\User;
 use App\Models\Shop_category;
-
+use App\Models\appels;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 require_once('../app/fonction.php');
 
@@ -66,10 +67,11 @@ class Controller_club extends Controller
 }
 
 public function form_appel_method($id){
+
     $shop_article = Shop_Article::find($id);
     $buyers = Donne_User_article_Paye($id);
   
-    $user = User::paginate(10);  
+  
     $users = User::select("*")->whereIn('user_id', $buyers)->get();
 
     $the_id = $id ;
@@ -82,9 +84,121 @@ public function form_appel_method($id){
 
 }
 
+public function display_info_user($id){
+
+    $the_id = $id ;
+    $info_user = User::where('user_id',$id)->get() ;
+    
+    $requete_user_family_id = User::where('user_id',$id)->value('family_id');
+    $tab =  User::where('family_id', $requete_user_family_id) ->where('family_level','parent')->get();
+
+
+
+
+    return view('club/modal_info', compact('info_user','tab','the_id'))->with('user', auth()->user());
+
+
+}
+
+
+public function modif_user($id,Request $request){
+
+    $user = User::find($id);
+
+    $validatedData = $request->validate( [
+        'username' => 'nullable|string|max:255',
+        'name' => ['required', 'alpha', 'max:255'],
+        'lastname' => ['required', 'alpha', 'max:255'],
+        'email' => [ 'nullable','string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')],
+        'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
+        'profession' => 'string|max:191',
+        'birthdate' => 'required|date|before:today',
+        'address' => 'required',
+        'zip' => 'required|numeric',
+        'city' => 'required',
+        'nationality' => 'required',
+        'licenceFFGYM' => ['nullable','regex:/^\d{5}\.\d{3}\.\d{5}$/'],
+
+    ], $messages = [
+        'username.required' => "Le champ nom d'utilisateur est requis.",
+        'username.max' => "Le nom d'utilisateur ne doit pas dépasser 255 caractères.",
+        'name.required' => "Le champ nom est requis.",
+        'name.alpha' => "Le nom doit être une chaîne de caractères.",
+        'lastname.required' => "Le champ prénom est requis.",
+        'lastname.alpha' => "Le prénom doit être une chaîne de caractères.",
+        'email.required' => 'Le champ :attribute est requis.',
+        'email' => "Le format de l'adresse e-mail est invalide.",
+        'email.unique' => "L'adresse e-mail est déjà utilisée.",
+        'password.required' => "Le champ mot de passe est requis.",
+        'password.min' => "Le mot de passe doit contenir au moins 8 caractères.",
+        'password.confirmed' => "La confirmation du mot de passe ne correspond pas.",
+        'phone.required' => "Le champ numéro de téléphone  est requis.",
+        'phone.regex' => "Le format du numéro de téléphone est invalide.",
+        'gender.required' => "Le champ sexe est requis.",
+        'birthdate.required' => 'La date de naissance est requise',
+        'birthdate.date' => 'Format de date non valide',
+        'birthdate.before' => 'La date de naissance doit être antérieure à aujourd\'hui',
+        'profession.alpha' => "La profession doit être une chaîne de caractères.",
+        'address.required' => "Le champ address est requis.",
+        'zip.required' => "Le champ code postal est requis.",
+        'zip.regex' => "Le code postal doit être au format 12345 ou 12345-1234.",
+        'city.required' => "Le champ ville est requis.",
+        'city.alpha' => "La ville doit être une chaîne de caractères.",
+        'country.required' => "Le champ pays est requis.",
+        'licenceFFGYM.required' => "Le champ licence FFGYM est requis.",
+        'licenceFFGYM.regex' => "Le format de la licence FFGYM est invalide.",
+    ]);
+
+  
+        $user->update($request->all());
+
+        return redirect()->route('index_cours')->with('success', ' mise à jour effectuée avec succès');
+}
+
+
+
+
+
+
+
+
+
+
 public function enregister_appel_method($id , Request $request){
 
-return $id;
+            $appels           = new appels ;
+
+            $appels->id_cours = $id ;
+            $appels->date     = $request->input('date_appel');
+
+    
+            $tab_user     =  (array)$request->input('user_id');
+            $length_tab_user = count($tab_user);
+
+            $tab_presence =  (array)$request->input('marque_presence');
+            $length_tab_presence = count($tab_presence);
+
+
+            $ladifference = $length_tab_user - $length_tab_presence  ; // je recupere la difference de taille entre le tableau des users et le nombre d'element checked
+           
+
+            if ( $length_tab_user == $length_tab_presence) {
+
+                        $pairedArray = array_combine($tab_user,$tab_presence );
+                    //  $my_json  = json_encode($pairedArray,JSON_NUMERIC_CHECK);
+            }else{
+
+                $myArray = array_fill(0, $ladifference, 0);
+                $mergedArray = array_merge($tab_presence,$myArray);
+
+                //  $pairedArray = array_combine($tab_user, $mergedArray);
+              
+               //   $my_json  = json_encode($pairedArray,JSON_NUMERIC_CHECK);
+
+            }
+
+
+            return        $mergedArray  ;
 
 
 
