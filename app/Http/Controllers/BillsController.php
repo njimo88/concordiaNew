@@ -13,6 +13,7 @@ use App\Models\old_bills;
 use App\Models\shop_article;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\ShopMessage;
+use App\Models\PaiementImmediat;
 
 
 require_once(app_path().'/fonction.php');
@@ -38,6 +39,37 @@ class BillsController extends Controller
             ->get();
         return view('admin.facture')->with('bill', $bill)->with('user', auth()->user());
     }
+
+    public function paiement_immediat($bill_id)
+    {
+        // Get the logged-in user's ID
+        $user_id = bills::find($bill_id)->user_id;
+    
+        // Get the family ID from the logged-in user's profile
+        $family_id = auth()->user()->family_id;
+    
+        // Check if the payment record already exists for the bill
+        $existing_paiement_immediat = PaiementImmediat::where('bill_id', $bill_id)
+                                                ->where('user_id', $user_id)
+                                                ->where('family_id', $family_id)
+                                                ->first();
+    
+        // If the payment record already exists, redirect back with an error message
+        if ($existing_paiement_immediat) {
+            return redirect()->back()->with('error', 'Le paiement immédiat a déjà été effectué pour cette facture');
+        }
+    
+        // If the payment record does not exist, create a new record in the paiement_immediat table
+        $paiement_immediat = new PaiementImmediat();
+        $paiement_immediat->bill_id = $bill_id;
+        $paiement_immediat->user_id = $user_id;
+        $paiement_immediat->family_id = $family_id;
+        $paiement_immediat->save();
+
+    // Redirect back to the showBill page
+    return redirect()->back()->with('success', 'Le paiement immédiat a été intialisé avec succès');
+}
+
 
     public function updateStatus(Request $request, $id)
     {
@@ -100,7 +132,7 @@ class BillsController extends Controller
 
     public function showBill($id)
     {
-        
+        updateTotalCharges($id);
 
         $bill = DB::table('bills')
         ->join('users', 'bills.user_id', '=', 'users.user_id')

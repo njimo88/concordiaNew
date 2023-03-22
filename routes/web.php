@@ -57,7 +57,7 @@ Route::put('/users/profils', [App\Http\Controllers\UsersController::class, 'upda
 
 Route::get('/users/factures-devis', [App\Http\Controllers\UsersController::class, 'facture'])->name('users.FactureUser');
 Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
-Route::get('/users/factures-devis/showBill/{id}', [App\Http\Controllers\UsersController::class, 'showBill'])->name('user.showBill');
+Route::get('/users/factures-devis/showBill/{id}', [BillsController::class, 'showBill'])->name('user.showBill');
 
 /*-----------Panier----------*/
 
@@ -85,6 +85,7 @@ Route::middleware(['auth', 'role:90'])->group(function () {
     Route::get('/admin/paiement/factureFamille/{id}',  [BillsController::class, 'family'])->name('factureFamille');
     Route::get('/admin/paiement/facture/get-old-bills/{user_id}',  [BillsController::class, 'getOldBills']);
     Route::get('/admin/paiement/facture/showBill/{id}',  [BillsController::class, 'showBill'])->name('facture.showBill');
+    Route::get('/paiement_immediat/{bill_id}', [BillsController::class, 'paiement_immediat'])->name('paiement_immediat');
     Route::post('/admin/paiement/facture/addShopMessage/{id}',  [BillsController::class, 'addShopMessage'])->name('addShopMessage');
     Route::put('/admin/paiement/facture/updateStatus/{id}',  [BillsController::class, 'updateStatus'])->name('facture.updateStatus');
     Route::put('/admin/paiement/facture/updateDes/{id}',  [BillsController::class, 'updateDes'])->name('facture.updateDes');

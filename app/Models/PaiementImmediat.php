@@ -5,25 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-
-class bills extends Model
+class PaiementImmediat extends Model
 {
     use HasFactory;
 
+    protected $table = 'paiement_immediat';
+    public $timestamps = false;
+    
+
     protected $fillable = [
-        'date_bill',
-        'type',
-        'status',
-        'payment_total_amount',
-        'payment_method',
+        'bill_id',
         'user_id',
         'family_id',
-        'ref',
-        'total_charges',
-        'amount_paid',
-
     ];
-
-    
 }
- 

@@ -3,13 +3,20 @@
 @section('content')
 
 
-<main style="width: 100vw;
-max-height: 300vh; min-height:100vh; background-image: url('{{asset("/assets/images/background.png")}}'); color:#fff;">
-    <div class="container " style="max-height :300vh; min-height:100vh; background : #fff">
+<div class="py-5" style="min-height:100vh; background-image: url('{{asset("/assets/images/background.png")}}'); color:#fff;">
+    <div class="container border border-dark" style=" background : #fff">
         <div class="row d-flex justify-content-center">
-            <div class="col-11  text-dark my-4 p-5">
-                <h1>Liste des factures/Devis</h1>
+            <div class="col-11 d-flex justify-content-between   text-dark my-4 p-5">
+                <div>
+                    <h1>Liste des factures/Devis</h1>
+                </div>
+                @if($showPaymentButton)
+                <div>
+                    <a href="#" class="btn btn-primary">Payer facture</a>
+                </div>
+                @endif
             </div>
+            
                 <div class="col-11">  
                         <div class="row">
                             <div class="col-12 main-datatable">
@@ -107,7 +114,7 @@ max-height: 300vh; min-height:100vh; background-image: url('{{asset("/assets/ima
         
         
     </div>
-</main>
+</div>
 
    
 

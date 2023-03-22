@@ -3,70 +3,7 @@
 @section('content')
 <main id="main" class="main">
 
-    <!-- ---- modal Oldbils ---- -->
-    <div  class="modal fade " id="oldBillsModal" tabindex="-1" role="dialog" aria-labelledby="oldBillsModalLabel" aria-hidden="true">
-        <div style="max-width: 50vw;" class="modal-dialog modal-notify modal-info" role="document">
-            <!--Content-->
-            <div class="modal-content text-center">
-              <!--Body-->
-                <section class="section">
-                    <div class="row">
-                        <div class="col-12 main-datatable" style="padding-right: calc(var(--bs-gutter-x) * .0) ; padding-left: calc(var(--bs-gutter-x) * .0);">
-                            <div class="card_body">
-                                <div class="row d-flex">
-                                    <!-- Button trigger modal -->
-                                    <div class="col-12 add_flex justify-content-center mt-4">
-                                        <div class="text-center pt-3 pb-2">
-                                            <img style="width: 100px" src="{{ asset('assets\images\facturer.png') }}"
-                                                alt="Check" width="60">
-                                            <h2 class="my-4">Anciennes Factures</h2>
-                                            </div>
-                                    </div>
-                                    <div  class="modal-body overflow-x" id="oldBillsContainer">
-                                        <!-- content -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-           </div>
-        <!--/.Content-->
-      </div>
-    </div>
-
-
-
-    <!-- ---- modal famille facture ---- -->
-    <div  class="modal fade " id="factureFamille" tabindex="-1" role="dialog" aria-labelledby="oldBillsModalLabel" aria-hidden="true">
-        <div style="max-width: 50vw;" class="modal-dialog modal-notify modal-info" role="document">
-            <!--Content-->
-            <div class="modal-content text-center">
-              <!--Body-->
-                <section class="section">
-                    <div class="row">
-                        <div class="col-12 main-datatable" style="padding-right: calc(var(--bs-gutter-x) * .0) ; padding-left: calc(var(--bs-gutter-x) * .0);">
-                            <div class="card_body">
-                                <div class="row d-flex">
-                                    <!-- Button trigger modal -->
-                                    <div class="col-12 add_flex justify-content-center mt-4">
-                                        <div class="text-center pt-3 pb-2">
-                                            <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
-                                                alt="Check" width="60">
-                                            <h2 class="my-4">Factures Famille</h2>
-                                            </div>
-                                    </div>
-                                    <div  class="modal-body overflow-x" id="familyBillsContainer">
-                                        <!-- content -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-           </div>
-      </div>
-    </div>
+   
 
 
 
@@ -144,7 +81,6 @@
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="DELETE">
                                                 <a data-toggle="modal" data-target="#deleteFacture{{ $bills->id }}" href="" type="button" class="btn  rounded-circle border"><i style="color: red" class="fa-solid fa-trash"></i></a>
                                             </span> 
-                                            @include('admin.modals.deleteFacture')
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Factures famile">
                                                 <a  data-family-id="{{ $bills->family_id }}"  type="button" class="familybill btn  rounded-circle border"><i style="color: #47cead" class="fas fa-house"></i></a>
                                             </span> 
