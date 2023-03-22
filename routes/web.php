@@ -240,4 +240,8 @@ Route::post('/club/include-page', [Controller_club::class, 'index_include'])->na
 
 Route::get('/form_appel/{id}', [Controller_club::class, 'form_appel_method'])->name('form_appel');
 
+Route::get('/club/display_modal/{id}', [Controller_club::class, 'display_info_user'])->name('info_appel');
+
+Route::post('/modal_post/{id}', [Controller_club::class, 'modif_user'])->name('modif_user');
+
 Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_method'])->name('enregistrer_appel');

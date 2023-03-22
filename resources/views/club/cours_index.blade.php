@@ -9,6 +9,11 @@ $saison_active = saison_active() ;
 
 @endphp
 <main id="main" class="main">
+@if(session()->has('success'))
+                <div class="alert alert-success">
+                    {{ session()->get('success') }}
+                </div>
+            @endif
 
 
 <div class="container">
@@ -18,7 +23,7 @@ $saison_active = saison_active() ;
     <div class="col-md-4">  
        
         <label> Saison </label>
-        <form action="{{ route('include-page') }}" method="POST" onsubmit="hideRow(event)">
+        <form action="{{ route('include-page') }}" method="POST" >
             @csrf
           <select class="form-control" name="saison" id="saison">
                    
@@ -58,11 +63,7 @@ $saison_active = saison_active() ;
 
 
 
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-myvalue="{{$data->id_shop_article}}">
-                Launch demo modal
-                </button>
-                            <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Load more</a>
+                 <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
                                 
                                 
                               
@@ -102,10 +103,8 @@ $saison_active = saison_active() ;
 
 
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-myvalue="{{$data->id_shop_article}}">
-                Launch demo modal
-                </button>
-                            <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Load more</a>
+             
+                 <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
                                 
                                 
                               

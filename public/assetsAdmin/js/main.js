@@ -734,6 +734,27 @@ let input_str = {
 
 
 
- 
+  $('.openmodal').click(function() {
+    $('#display_info_user').modal('show');
+  
+    // Get the bill ID from the clicked element
+    var user_id = $(this).data('user-id');
+    
+  
+     // Make an AJAX request to retrieve the old bills
+     $.ajax({
+        
+     url: '/club/display_modal/' + user_id,
+     success: function(data) {
+        // Insert the old bills data into the modal body
+        $('#just_display').html(data);
+
+        $('.countrypicker').countrypicker();
+     }
+     });
+     });
+  
+    
+  
     
     
