@@ -1,17 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="sign-up-form row justify-content-center ">
-
+<main class="main mw-100" id="main" style="background-image: url('{{asset("/assets/images/background.png")}}'); " >
+<div class=" container d-flex justify-content-center" >
+    <div class="mb-5 row mt-5 col-12 col-md-10 col-lg-8 sign-up-form sign-up-formrelogin d-flex justify-content-center">
+      <!-- Left (Form Image) -->
+      
       <!-- Right (Form Content) -->
-      <form class="form-content col-lg-10 justify-content-center pt-5" method="POST" action="{{ route('register') }}">
+      <!-- Right (Form Content) -->
+      <form class="form-content col-lg-8 justify-content-center pt-5" method="POST" action="{{ route('register') }}">
         <!-- Form Heading -->
         @csrf
         <div class="form-heading">
           <a href="{{ route('A_blog') }}"><img  src="{{asset('assets\images\logo.png')}}" alt="" /></a>
           <h1>Creation du compte</h1>
-          <p>Veuillez remplir tous les champs obligatoires pour créer votre compte !</p>
+          <p>Veuillez remplir tous les champs pour créer votre compte !</p>
         </div>
 
         <!-- Input Wrap -->
@@ -194,13 +197,21 @@
          </div>
           
             <!-- submit button -->
-          <div class="input-wrap">
-            <button type="submit" >{{ __('Register') }}</button>
+          <div class="input-wrap mb-5">
+            <button type="submit" >Inscription</button>
+          </div>
+
+          <div class="d-flex justify-content-center my-2">
+            <span>Vous avez un compte ?  <a  href="{{ route('login') }}">
+              Connectez-vous ici
+            </a> </span>
           </div>
 
         </div>
       </form>
     </div>
   </div>
+  </main>
+  
 @endsection
 

@@ -10,6 +10,7 @@
         "barryvdh/laravel-elfinder": "^0.5.2",
         "doctrine/dbal": "^3.6",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^2.7",
         "ivaynberg/select2": "^4.0",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",

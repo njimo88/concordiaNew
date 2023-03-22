@@ -1,20 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
-<main style="background-image: url('{{asset("/assets/images/background.png")}}')">
+<main class="main" id="main"  style="background-image: url('{{asset("/assets/images/background.png")}}')">
 
 
 <div style="background-color: white;" class="container  justify-content-center">
     <div class="row">
         @if (session('success'))
-                <div class="alert alert-success col-12">
+                <div class="alert alert-success mt-3">
                     {{ session('success') }}
                 </div>
+        @endif
+        @if (session('error'))
+            <div style="    display: -webkit-inline-box;" class="alert alert-danger mt-3">
+                {{ session('error') }}
+            </div>
         @endif
         <div class="col-6">
             <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
         </div>
-        <div class="col-6" >
+        <div class="col-6 d-flex justify-content-end" >
             <a href="{{ route('paiement.facture') }}" class="my-custom-btn btn btn-primary my-4">Retour à la liste des factures</a>
         </div>
         <hr>
@@ -22,8 +27,8 @@
         <form action="{{ route('facture.updateStatus', $bill->id) }}" method="post">
             @csrf
             @method('PUT')
-            <div style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif" class="mb-3 row">
-              <div class="col-md-7 p-4 col-12">
+            <div style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif" class="mb-3 row d-flex justify-content-between">
+              <div class="col-md-5 p-4 col-12">
                 <span style="font-weight:bold">Status : </span>
                   <select  class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
                     @foreach($status as $status)
@@ -31,7 +36,7 @@
                     @endforeach
                 </select>
               </div> 
-              <div style="margin-top:25px;" class="col-md-5 p-4 col-10 d-flex justify-content-center ">
+              <div style="margin-top:25px;" class="col-md-2 p-4 col-10 d-flex justify-content-center ">
                 <button type="submit" class="btn btn-dark">Enregistrer</button>
               </div>
             </div>
@@ -97,7 +102,10 @@
       <div class="col-md-4 col-12 p-3">
         <h4>Détail paiement</h4>
         <span style="font-weight:bold">Paiement</span> : €<br>
-        <span style="font-weight:bold">Echéance </span>
+        <span style="font-weight:bold">Echéance </span> <br> <br>
+        <span style="font-weight:bold">Reste à payer : {{ number_format($bill->payment_total_amount-$bill->amount_paid, 2, ',', ' ') }} €</span> 
+        <br><br><br>
+        <a href="{{ route("paiement_immediat",$bill->id ) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Immédiat <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
       </div>
     </div>
 
@@ -152,8 +160,76 @@
           
       </tbody>
   </table>
-  <div style="height: 50vh"></div>
+  <div class="row border border-dark my-5 mx-2">
+    <div class="col-12 d-flex justify-content-center border-bottom -border-dark bg-secondary">
+      <h3 class="my-2">Historique des modification :</h3> <hr>
+    </div>
+
+
+<div class="col-lg-12 mt-3">
+  @foreach($messages as $message)
+  <?php
+  // Configure la locale en français
+  setlocale(LC_ALL, 'fr_FR.UTF-8');
+  
+  // Tableau de traduction des mois et jours de la semaine
+  $englishToFrench = [
+      'January' => 'janvier',
+      'February' => 'février',
+      'March' => 'mars',
+      'April' => 'avril',
+      'May' => 'mai',
+      'June' => 'juin',
+      'July' => 'juillet',
+      'August' => 'août',
+      'September' => 'septembre',
+      'October' => 'octobre',
+      'November' => 'novembre',
+      'December' => 'décembre',
+      'Monday' => 'Lundi',
+      'Tuesday' => 'Mardi',
+      'Wednesday' => 'Mercredi',
+      'Thursday' => 'Jeudi',
+      'Friday' => 'Vendredi',
+      'Saturday' => 'Samedi',
+      'Sunday' => 'Dimanche',
+  ];
+  
+  $formattedDate = \Carbon\Carbon::parse($message->date)->isoFormat('dddd D MMMM YYYY à HH:mm:ss ');
+  
+  $formattedDate = strtr($formattedDate, $englishToFrench);
+  ?>
+      @if ($message->state == 'Privé')
+          <u><b><span style="color:red;">(Privé)</span></b> {{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
+      @else
+          <u>{{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
+      @endif
+      {{ $message->message }}<hr>
+  @endforeach
 </div>
+
+
+  <div class="col-lg-12">
+    <form action="{{ route('addShopMessage', ['id' => $bill->id]) }}" method="POST">
+      @csrf
+      <div class="content">
+        <select class="form-control" name="comment_visibility">
+          <option value="Privé">Privé</option>
+          <option value="Public">Public</option>
+        </select>
+        <br>
+        <textarea class="form-control" style="height: 200px" name="comment_content" placeholder="Contenu du commentaire"></textarea>
+        <input type="number" class="form-control" name="somme_payé" placeholder="Somme payée">
+        <input type="hidden" name="id_admin" value="{{ auth()->user()->user_id }}">
+        <input type="submit" class="btn btn-primary" value="Envoyer">
+      </div>
+    </form>
+  </div>
+  
+
+  
+</div>
+<div style="height: 25px"></div>
 </main>
 @endsection
 

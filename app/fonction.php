@@ -9,96 +9,8 @@ use App\Models\shop_article_1;
 use App\Models\shop_article_2;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
-use Illuminate\Support\Facades\Mail;
-
-
-
-
-
- function findFamilyIdByUserId($id_user) {
-    return DB::table('users')->where('user_id', $id_user)->value('family_id');
-}
-
-
-//fonctions pour afficher les dates
-function fetchDayy($date){
-    $lejour = ( new DateTime($date) )->format('l');
-
-  $jour_semaine = array(
-"lundi" => "Monday",
-"Mardi" => "Tuesday",
-"Mercredi" => "Wednesday",
-"Jeudi" => "Thursday",
-"Vendredi" => "Friday",
-"Samedi" => "Saturday",
-"Dimanche" => "Sunday"
-
-  );
-
-}
-
-
-function isUserMember($user_id)
-{
-    $saison = saison_active();
-
-    // Récupérer tous les articles achetés par l'utilisateur au cours de la saison active
-    $articles = Donne_articles_Paye_d_un_user_aucours_d_une_saison($user_id, $saison);
-
-    // Récupérer tous les articles de la table shop_article_0
-    $article_0 = $n_var = DB::table('shop_article')
-    ->select('shop_article.id_shop_article', 'shop_article.totalprice')
-    ->where('shop_article.saison', '=', $saison)
-    ->where('shop_article.type_article', '=', '0')
-    ->get();
-
-    // Vérifier s'il y a une intersection entre les deux variables
-    $intersect = array_intersect($articles, $article_0->pluck('id_shop_article')->toArray());
-
-    if (count($intersect) == 1) {
-        // S'il n'y a qu'une seule correspondance, retourner l'ID de l'article
-        return array_values($intersect)[0];
-    } else if (count($intersect) > 1) {
-        // S'il y a plusieurs correspondances, retourner l'ID de l'article le plus cher
-        $maxPrice = 0;
-        $maxPriceArticle = 0;
-        foreach($article_0 as $article) {
-            if(in_array($article->id_shop_article, $intersect) && $article->totalprice > $maxPrice) {
-                $maxPrice = $article->totalprice;
-                $maxPriceArticle = $article->id_shop_article;
-            }
-        }
-        return $maxPriceArticle;
-    } else {
-        // S'il n'y a pas de correspondance, retourner 0
-        return 0;
-    }
-}
-
-function MiseAuPanier($user_id, $id_article)
-{
-    $article = Shop_Article::findOrFail($id_article);
-    $need_member = $article->need_member;
-
-    // Vérifier si l'article nécessite une adhésion
-    if ($need_member != 0) {
-        // Vérifier si l'utilisateur est membre
-        $is_member = isUserMember($user_id);
-        if (isUserMember($user_id) == 0) {
-            return $need_member ;
-        } elseif (isUserMember($user_id) != $need_member) {
-            //comparer les prix des deux articles si larticle.ttlprice est plus grand que celui de need_member on fait rien 
-            //sinon on calcule la difference et on la met dans le panier
-        }
-    }
-
-}
-
-
-  
-
-
-
+use App\Models\bills;
+use App\Models\ShopMessage;
 
 //fonction pour afficher la famille en fonction de l'id de la famille
 function getUsersByFamilyId($family_id)
@@ -269,6 +181,39 @@ function retourner_shop_article_dun_teacher($user_id, $saison) {
 
 }
 
+// recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
+
+function retourner_buyers_dun_shop_article($id_shop_article) {
+
+    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->toArray();
+
+    return $requete_liaison_shop_article_bills ;
+
+}
+
+
+ function findFamilyIdByUserId($id_user) {
+    return DB::table('users')->where('user_id', $id_user)->value('family_id');
+}
+
+
+//fonctions pour afficher les dates
+function fetchDayy($date){
+    $lejour = ( new DateTime($date) )->format('l');
+
+  $jour_semaine = array(
+"lundi" => "Monday",
+"Mardi" => "Tuesday",
+"Mercredi" => "Wednesday",
+"Jeudi" => "Thursday",
+"Vendredi" => "Friday",
+"Samedi" => "Saturday",
+"Dimanche" => "Sunday"
+
+  );
+
+}
+
 
 // recuperer l'ID de user et la saison et restituer les shop articles achetes
 function Donne_articles_Paye_d_un_user_aucours_d_une_saison($user_id, $saison) {
@@ -295,40 +240,41 @@ function Donne_articles_Paye_d_un_user_aucours_d_une_saison($user_id, $saison) {
 
 }
 
-// recuperer l'ID d'un shop articles et ramene tous les users qui l'ont achetees
-function Donne_User_article_Paye($id_shop_article) {
+function isUserMember($user_id)
+{
+    $saison = saison_active();
 
-    $shop_article_with_status = DB::table('bills')->where('status','>',60)->Where('id_shop_article',$id_shop_article)
-    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')->pluck('id_user')->unique()->toArray();
+    // Récupérer tous les articles achetés par l'utilisateur au cours de la saison active
+    $articles = Donne_articles_Paye_d_un_user_aucours_d_une_saison($user_id, $saison);
 
-    return   $shop_article_with_status;
+    // Récupérer tous les articles de la table shop_article_0
+    $article_0 = $n_var = DB::table('shop_article')
+    ->select('shop_article.id_shop_article', 'shop_article.totalprice')
+    ->where('shop_article.saison', '=', $saison)
+    ->where('shop_article.type_article', '=', '0')
+    ->get();
 
-}
-// recuperer l'ID d'un shop articles et ramene tous les users 
-function Donne_User_article($id_shop_article) {
+    // Vérifier s'il y a une intersection entre les deux variables
+    $intersect = array_intersect($articles, $article_0->pluck('id_shop_article')->toArray());
 
-    $shop_article_with_status = DB::table('bills')->Where('id_shop_article',$id_shop_article)
-    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')->pluck('id_user')->unique()->toArray();
-
-    return   $shop_article_with_status;
-
-}
-
-
-// recuperer l'ID d'un shop articles et retourne les USERS qui ont achete le produit a une date anterieure
-function Donne_User_article_Date($id_shop_article,$date1) {
-
-    $shop_article_with_date = DB::table('bills')->where('status','>',60)->Where('id_shop_article',$id_shop_article)->whereDate('date_bill', '<', $date1)
-    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')->pluck('id_user')->unique()->toArray();
-
-    return  $shop_article_with_date;
-   
-  
-}
-
-
-function Inscrits_Saison_Date($sasion, $date1){
-
+    if (count($intersect) == 1) {
+        // S'il n'y a qu'une seule correspondance, retourner l'ID de l'article
+        return array_values($intersect)[0];
+    } else if (count($intersect) > 1) {
+        // S'il y a plusieurs correspondances, retourner l'ID de l'article le plus cher
+        $maxPrice = 0;
+        $maxPriceArticle = 0;
+        foreach($article_0 as $article) {
+            if(in_array($article->id_shop_article, $intersect) && $article->totalprice > $maxPrice) {
+                $maxPrice = $article->totalprice;
+                $maxPriceArticle = $article->id_shop_article;
+            }
+        }
+        return $maxPriceArticle;
+    } else {
+        // S'il n'y a pas de correspondance, retourner 0
+        return 0;
+    }
 }
 
 function MiseAuPanier($user_id, $id_article)
@@ -361,7 +307,6 @@ function MiseAuPanier($user_id, $id_article)
 //fonction qui prend un $idArticle en paramètre et compte le nombre de fois qu'il est présent dans 
 //le tableau renvoyé par Donne_articles_Paye_d_un_user_aucours_d_une_saison()
 
-<<<<<<< HEAD
 function countArticle($user_id, $idArticle)
 {
     $saison = saison_active();
@@ -379,62 +324,6 @@ function countArticle($user_id, $idArticle)
 
     // Retourner le nombre de fois que l'idArticle a été trouvé
     return $count;
-=======
-// recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
-
-function retourner_buyers_dun_shop_article($id_shop_article) {
-
-    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->unique()->toArray();
-    
-
-    return $requete_liaison_shop_article_bills ;
-
->>>>>>> new_abbe
-}
-
-
-// fonction pour determiner les destinataires des mails
-
-function destinataires_du_mail($user_id){
-    
-    $tab = [] ;
-    $tab1 = [] ;
-   
-    //recupere le famiily level pour verifier si l'user est un child ou un parent
-    $requete_user_family_level = DB::table('users')->where('user_id',$user_id)->value('family_level');
-  //recupere l'email du user
-    $requete_user_email = DB::table('users')->where('user_id',$user_id)->value('email');
-
-    if ($requete_user_family_level == "parent"){
-        $tab[] = $user_id ;
-
-        return $tab ;
-
-    }else if ( ($requete_user_family_level == "child") and (( !isset($requete_user_email)) or ($requete_user_email == NULL) )){
-        
-        $requete_user_family_id = DB::table('users')->where('user_id',$user_id)->value('family_id');
-        $tab = DB::table('users')->where('family_id', $requete_user_family_id) ->where('family_level','parent')->pluck('user_id')->toArray();
-
-        foreach($tab as $t){
-            if ($t != $user_id){
-              $tab1[] = $t ;      
-            }
-        }
-        return $tab1 ;
-
-
-
-    }else if (($requete_user_family_level == "child") and (isset($requete_user_email)) ){
-
-        $requete_user_family_id = DB::table('users')->where('user_id',$user_id)->value('family_id');
-        $tab = DB::table('users')->where('family_id', $requete_user_family_id) ->where('family_level','parent')->pluck('user_id')->toArray();
-      
-        return $tab ;
-
-
-    }
-  
-
 }
 
  function MiseAjourStock()
@@ -460,11 +349,49 @@ function destinataires_du_mail($user_id){
     // Step 3: Update the stock_actuel for each article
     foreach ($id_shop_articles as $id_shop_article) {
         $shop_article = Shop_article::find($id_shop_article);
+        if($shop_article->type_article == 2) {
+            $article_2 = shop_article_2::find($shop_article->id_shop_article);
+    
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
+        ->where('liaison_shop_articles_bills.id_shop_article', $shop_article->id_shop_article)
+        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
+        ->groupBy('liaison_shop_articles_bills.declinaison')
+        ->get();
+
+        $stock_ini = 0;
+        $stock_actuel = 0;
+    
+        $declinaisons = json_decode($article_2->declinaison, true);
+        
+        $new_declinaisons = [];
+        foreach ($declinaisons as $key => $value) {
+            foreach ($liaison_counts as $count) {
+                if ($count->declinaison == $key+1) {
+                    $value[$key+1]['stock_actuel_d'] = $count->count;
+                }
+            }
+            $new_declinaisons[] = $value;
+            $stock_ini += $value[$key+1]['stock_ini_d'];
+            $stock_actuel += $value[$key+1]['stock_actuel_d'];
+        }
+
+        // Mettre à jour le tableau des déclinaisons dans la base de données
+        $article_2->declinaison = json_encode($new_declinaisons);
+        $article_2->save();
+        
+        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
+        $shop_article->stock_ini = $stock_ini;
+        $shop_article->stock_actuel = $stock_actuel;
+        $shop_article->save();
+        } else {
         $stock_ini = $shop_article->stock_ini;
         $count = $liaison_counts->get($id_shop_article, 0);
         $stock_actuel = $stock_ini - $count;
         $shop_article->stock_actuel = $stock_actuel;
         $shop_article->save();
+         }
+
     }
 }
 
@@ -480,11 +407,49 @@ function MiseAjourArticlePanier($articles){
 
     foreach ($articles as $article) {
         $article_db = Shop_article::find($article->ref);
-        $stock_ini = $article_db->stock_ini;
+        if($article_db->type_article == 2) {
+            $article_2 = shop_article_2::find($article_db->id_shop_article);
+    
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
+        ->where('liaison_shop_articles_bills.id_shop_article', $article_db->id_shop_article)
+        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
+        ->groupBy('liaison_shop_articles_bills.declinaison')
+        ->get();
+
+        $stock_ini = 0;
+        $stock_actuel = 0;
+    
+        $declinaisons = json_decode($article_2->declinaison, true);
+        
+        $new_declinaisons = [];
+        foreach ($declinaisons as $key => $value) {
+            foreach ($liaison_counts as $count) {
+                if ($count->declinaison == $key+1) {
+                    $value[$key+1]['stock_actuel_d'] = $count->count;
+                }
+            }
+            $new_declinaisons[] = $value;
+            $stock_ini += $value[$key+1]['stock_ini_d'];
+            $stock_actuel += $value[$key+1]['stock_actuel_d'];
+        }
+
+        // Mettre à jour le tableau des déclinaisons dans la base de données
+        $article_2->declinaison = json_encode($new_declinaisons);
+        $article_2->save();
+        
+        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
+        $article_db->stock_ini = $stock_ini;
+        $article_db->stock_actuel = $stock_actuel;
+        $article_db->save();
+        }else{
+            $stock_ini = $article_db->stock_ini;
         $count = $liaison_counts->get($article->ref, 0);
         $stock_actuel = $stock_ini - $count;
         $article_db->stock_actuel = $stock_actuel;
         $article_db->save();
+        }
+        
     }
 }
 
@@ -574,77 +539,115 @@ function calculerPaiements(float $total, int $nbfois) {
         $paiements[] = round($montant,2);
     }
 
-    $dernierMontant = round ($total - $var - $premierMontant,2);
+    $dernierMontant =$total - round ( $var + $premierMontant,2);
     $paiements[] = $dernierMontant;
     return $paiements;
 }
 
 
 
-<<<<<<< HEAD
 
+function getUsersBirthdayToday()
+{
+    $saison = saison_active();
 
-function sendEmailToUser($user_id, $message1,$data) {
+    // Détermination de la date d'anniversaire d'aujourd'hui
+    $today = Carbon::now();
+    $birthday = $today->format('m-d');
 
-  $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
-  $email = $user->email; // Get the user's email address
+    // Récupération des utilisateurs qui ont acheté un article de type 0 cette saison ou la saison précédente
+    $users = \DB::table('users')
+        ->join('liaison_shop_articles_bills', 'users.user_id', '=', 'liaison_shop_articles_bills.id_user')
+        ->join('shop_article', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article.id_shop_article')
+        ->whereIn('shop_article.saison', [$saison, $saison-1]) // saison courante ou précédente
+        ->where('shop_article.type_article', '=', 0) // Type article 0 = article de saison
+        ->select('users.*')
+        ->distinct()
+        ->get();
 
-  Mail::to($email)->send(new UserEmail($message1,$data)); // Send the email using Laravel's Mail facade
+    // Filtrage des utilisateurs dont c'est l'anniversaire aujourd'hui
+   // Filtrage des utilisateurs dont c'est l'anniversaire aujourd'hui et qui ont une date de naissance définie
+$usersWithBirthday = $users->filter(function($user) use ($birthday) {
+    if ($user->birthdate !== null) {
+        $userBirthday = Carbon::parse($user->birthdate)->format('m-d');
+             
+        return $userBirthday == $birthday;
+    }
+    return false;
+});
 
+    return $usersWithBirthday;
 }
 
-class UserEmail extends \Illuminate\Mail\Mailable {
+
+use Intervention\Image\ImageManagerStatic as Image;
+
+
+function printUsersBirthdayOnImage()
+{
+    $users = getUsersBirthdayToday();
+
+    $image = Image::make(public_path('assets/images/birthday.jpg'));
     
-  public $message1; // Define a public property to store the message
-  public $data;
- 
-  public function __construct($message1, $data) {
-    $this->message1 = $message1; // Assign the message to the public property
-    $this->data = $data ;
-  }
-  public function build() {
-    return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1, 'data' => $this->data]); // Define the email's view
-  }
+    setlocale(LC_TIME, 'fr_FR.utf8');
+
+    // Ajout du texte souhaité au centre de l'image
+    $daysOfWeek = array('dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi');
+    $months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
+
+    $currentDayOfWeek = $daysOfWeek[strftime('%u')];
+    $currentMonth = $months[strftime('%m')-1];
+
+    $message = "En ce " . $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y") . ", nous souhaitons l'anniversaire à:";
+    $image->text($message, $image->width() / 4.6, 130, function($font) {
+        $font->file(public_path('fonts/Pacifico-Regular.ttf'));
+        $font->size(15);
+        $font->color('#000000');
+        $font->align('left');
+        $font->valign('top');
+    });
+
+
+
+    $y = 165;
+    $line_count = 0;
+    foreach ($users as $index => $user) {
+        $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
+        $text = $user->name . ' ' . $user->lastname . ' (' . $age . ' ans)';
+        $x = $line_count % 2 == 0 ? $image->width() / 2 : $image->width() / 5;
+        $image->text($text, $x, $y, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(10);
+            $font->color('#000000');
+            $font->align('left');
+            $font->valign('top');
+        });
+        $line_count++;
+        if ($line_count % 2 == 0) {
+            $y += 16;
+        }
+    }
+    
+
+
+
+    // Sauvegarde de l'image modifiée
+    $date = new DateTime();
+    $dateString = $date->format('Y-m-d');
+    $filename = $dateString . "-birthday.jpg";
+    $image->save(public_path('assets/images/' . $filename));
 
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-=======
-
-//fonctions pour afficher les dates en Anglais
-function fetchDay($date){
-    $lejour = ( new DateTime($date) )->format('l');
-
-  $jour_semaine = array(
-"lundi" => "Monday",
-"Mardi" => "Tuesday",
-"Mercredi" => "Wednesday",
-"Jeudi" => "Thursday",
-"Vendredi" => "Friday",
-"Samedi" => "Saturday",
-"Dimanche" => "Sunday"
-
-  );
-
+function updateTotalCharges($bill_id) {
+    $messages = ShopMessage::where('id_bill', $bill_id)->get(); 
+    $total_payed = 0; 
+    foreach ($messages as $message) {
+        $total_payed += $message->somme_payé; 
+    }
+    $bill = bills::find($bill_id); 
+    $bill->amount_paid = $total_payed; 
+    $bill->save(); 
+    return $total_payed;
 }
-
-
-
-
->>>>>>> new_abbe
-  
-=======
->>>>>>> c9000324e2d2715c299331d8db73d993087db78b
