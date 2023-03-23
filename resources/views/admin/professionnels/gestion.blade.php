@@ -65,10 +65,15 @@
                                     <tr> 
                                         <td>{{ $pros->lastname }}</td>
                                         <td style="font-weight : bold;">{{ $pros->firstname }}</td> 
-                                        <td><button data-toggle="modal" data-target="#editPro{{ $pros->cle }}" type="button" class="btn btn-warning">modifier</button> @include('admin.modals.editPro')</td>
+                                        @if (auth()->user()->roles->edit_ajout_professionnel)
+                                        <td><button data-toggle="modal" data-target="#editPro{{ $pros->cle }}" type="button" class="btn btn-warning">Modifier</button> @include('admin.modals.editPro')</td>
+                                        @endif
+                                        @if (auth()->user()->roles->declarer_heure_professionnel)
                                         <td><a type="button" class="btn btn-danger" href="{{ route('Professionnels.declarationHeures',$pros->id_user)}}">Déclarer les heures</a></td>
+                                        @endif
+                                        @if (auth()->user()->roles->voir_declaration_professionnel)
                                         <td><button data-user-id="{{ $pros->id_user }}" type="button" class="declarationList btn btn-primary">Anciennes déclarations</button></td>
-                                        
+                                        @endif
                                     </tr>  
                                 @endforeach
                                
@@ -77,10 +82,12 @@
                     </div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: flex-start; " class="col-lg-12 float-right">
-                <button data-toggle="modal" data-target="#addPro"  type="button" class="mt-4 btn btn-dark">Ajouter un professionnel<i style="font-weight:900;" class="m-2 fa-regular fa-circle-plus"></i></button>
-                @include('admin.modals.addPro')
-            </div>
+            @if (auth()->user()->roles->edit_ajout_professionnel)
+                <div style="display: flex; justify-content: flex-start; " class="col-lg-12 float-right">
+                    <button data-toggle="modal" data-target="#addPro"  type="button" class="mt-4 btn btn-dark">Ajouter un professionnel<i style="font-weight:900;" class="m-2 fa-regular fa-circle-plus"></i></button>
+                    @include('admin.modals.addPro')
+                </div>
+            @endif
         </div>
     </section>
 </main>
