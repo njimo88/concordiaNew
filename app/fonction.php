@@ -668,6 +668,21 @@ function Donne_User_article_Date($id_shop_article,$date1) {
 }
 
 
+function Donne_User_article_Paye($id_shop_article) {
+
+    $shop_article = DB::table('bills')->where('status','>',60)->Where('id_shop_article',$id_shop_article)
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')->pluck('id_user')->unique()->toArray();
+
+    return  $shop_article;
+   
+  
+}
+
+
+
+
+
+
 function Inscrits_Saison_Date($sasion, $date1){
 
 }
