@@ -185,23 +185,25 @@ public function enregister_appel_method($id , Request $request){
             if ( $length_tab_user == $length_tab_presence) {
 
                         $pairedArray = array_combine($tab_user,$tab_presence );
-                    //  $my_json  = json_encode($pairedArray,JSON_NUMERIC_CHECK);
+                     $my_json  = json_encode($pairedArray,JSON_NUMERIC_CHECK);
             }else{
 
                 $myArray = array_fill(0, $ladifference, 0);
                 $mergedArray = array_merge($tab_presence,$myArray);
 
-                //  $pairedArray = array_combine($tab_user, $mergedArray);
+                $pairedArray = array_combine($tab_user, $mergedArray);
               
-               //   $my_json  = json_encode($pairedArray,JSON_NUMERIC_CHECK);
+                 $my_json  = json_encode($pairedArray,JSON_NUMERIC_CHECK);
 
             }
 
+            $appels->presents = $my_json ;
+         
+            $appels->save() ;
 
-            return        $mergedArray  ;
 
-
-
+            return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+        
 
 }
 
