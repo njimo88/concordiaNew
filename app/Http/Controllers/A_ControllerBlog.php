@@ -97,8 +97,16 @@ class A_ControllerBlog extends Controller
                     ];
             }
 
+<<<<<<< HEAD
             
       return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2','post'))->with('user', auth()->user());
+=======
+
+      return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2'))->with('user', auth()->user());
+      
+
+      
+>>>>>>> new_abbe
 }
 
 public function Simple_Post($id){
@@ -143,6 +151,12 @@ public function recherche_par_cat2(Request $request, $id) {
 
 
   
+
+
+
+
+
+
  public function a_requetes1(Request $request){
 
         $cat1 = array();

@@ -751,10 +751,190 @@ let input_str = {
 
         $('.countrypicker').countrypicker();
      }
+
      });
-     });
+     
+});
   
     
-  
+/* ------------------------------------------------------- gestion email -----------------------------------------
+
+
+
+
+
+<script>
+
+$(document).ready(function(){
+ $('#framework').multiselect({
+  nonSelectedText: 'Select Framework',
+  enableFiltering: true,
+  enableCaseInsensitiveFiltering: true,
+  buttonWidth:'600px'
+ });
+ 
+});
+
+</script>
+
+
+
+<script>
+
+    $(document).ready(function() {
+    var table = $('#example').DataTable();
     
+    var selectedRows = [];
+
+    $('#select-all').on('click', function () {
+    $('#example tbody tr').addClass('selected', selectedRows.length === 0);
+    $('#example tbody input[type="checkbox"]').prop('checked', selectedRows.length === 0);
+    if (selectedRows.length === 0) {
+      selectedRows = rows;
+    } else {
+      selectedRows = [];
+    }
+   
+
+  });
+
+  $('#deselect-all').on('click', function () {
+    selectedRows = [];
+    var rows = table.rows({ 'search': 'applied' }).nodes();
+    $(rows).removeClass('selected');
+    $('#example tbody input[type="checkbox"]').prop('checked', false);
+  });
+
+  // Handle pagination
+  table.on('page.dt', function () {
+    var rows = table.rows({ 'search': 'applied' }).nodes();
+    $(rows).removeClass('selected');
+    selectedRows.forEach(function(row) {
+      $(row).addClass('selected');
+      $(row).find('input[type="checkbox"]').prop('checked', true);
+    });
+  });
+
+  
+    $('#example tbody').on( 'click', 'tr', function () {
+        $(this).toggleClass('selected');
+        var checkbox = $(this).find('input[type="checkbox"]');
+        var row = $(this).closest('tr')[0];
+    checkbox.prop('checked', !checkbox.prop('checked'));
+    $(this).toggleClass('selected', checkbox.prop('checked'));
+    if (checkbox.prop('checked')) {
+      selectedRows.push(row);
+    } else {
+      selectedRows.splice(selectedRows.indexOf(row), 1);
+    }
+
+    });
+
+
+  
+    $('#button').click( function () {
+
+        alert( table.rows('.selected').data().length +' row(s) selected' );
+        const selectedData = table.rows('.selected').data();
+        const selectedRows = [];
+        const tab_selected_users = [] ;
+
+        if (selectedData.length > 0) {
+        const selectedCellValue = table.cell('.selected', 3).data();
+        console.log(selectedCellValue);
+    }
+
+          $.each(selectedData, function(index, value) {
+              selectedRows.push(value);
+          });
+          console.log(selectedRows);
+
+           for (let index = 0; index < table.rows('.selected').data().length; index++) {
+           
+            tab_selected_users.push(selectedRows[index][1]) ;
+            
+           }
+
+          console.log(tab_selected_users);
+
+         // return tab_selected_users;
+         var inputValue = $('#title_email').val();
+         var text_area  = $('#ckeditor').val();
+       
+          $.ajax({
+
+
+    url: '/Communication/email_sender',
+    type: 'POST',
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    data: {
+        tab_selected_users: tab_selected_users,
+        inputValue: inputValue,
+        text_area: text_area
+    },
+    success: function(response) {
+        console.log(response);
+    },
+    error: function(xhr, status, error) {
+        console.log(xhr.responseText);
+    }
+
+
+});
+
+
+
+
+
+
+
+
+});
+
+
+
+
+});
+
+
+  
+</script>
+
+
+
+
+
+<!-- Script JS qui permet de trier dynamiquement en fonction des shop articles, les users qui les ont achetes   -->
+<script>
+
+function myFunction(value) {
+
+  var selectElement = document.querySelector('select');
+  var selectedValues = [];
+  const table = $('#example').DataTable();
+
+  // loop through all the selected options and add their values to an array
+  for (var i = 0; i < selectElement.options.length; i++) {
+    if (selectElement.options[i].selected) {
+      selectedValues.push(selectElement.options[i].value);
+    }
+  }
+
+  // do something with the selected values
+    console.log(selectedValues);
+    const columnData = table.column(4).data();
+    console.log(columnData);
+
+    const filteredData = columnData.filter(value => selectedValues.includes(value));
+    console.log(filteredData);
+    
+    table.column(4).data(filteredData);
+    // Redraw the filtered column
+    table.column(4).search(filteredData.join('|'), true, false).draw();
+
+}
+</script>
+
     

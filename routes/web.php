@@ -9,6 +9,7 @@ use App\Http\Controllers\BlogArticle_Controller;
 use App\Models\A_Blog_Post;
 use App\Http\Controllers;
 use App\Http\Controllers\Article_Controller;
+use App\Http\Controllers\PDF_Controller;
 use App\Http\Controllers\Controller_Communication;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -226,10 +227,18 @@ Route::get('/Politique_de_confidentialite', [Controller_mention_legales::class, 
 
 
 /*------------------------------ Communication ----------------------------------------- */
-Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index_communication');
+//Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index_communication');
+
+Route::get('/Communication', [A_ControllerBlog::class, 'a_requetes2'])->name('index_communication');
+
 Route::get('/Communication/get_info/{article_id}', [Controller_Communication::class, 'get_info'])->name('get_communication');
 
 Route::post('/Communication/traitement', [Controller_Communication::class, 'traitement'])->name('traitement');
+
+Route::post('/Communication/email_sender',[Controller_Communication::class,'email_sender'])->name('email_sender');
+
+Route::get('/Commnication/email_page',[Controller_Communication::class,'email_page'])->name('email_page') ;
+
 
 /*------------------------ tuto send email ---------------------------- */
 Route::get('/users', [Controller_Communication::class, 'index_u'])->name('users.index');
@@ -249,3 +258,8 @@ Route::get('/club/display_modal/{id}', [Controller_club::class, 'display_info_us
 Route::post('/modal_post/{id}', [Controller_club::class, 'modif_user'])->name('modif_user');
 
 Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_method'])->name('enregistrer_appel');
+
+Route::get('/historique_appel/{id}', [Controller_club::class, 'display_historique_method'])->name('historique_appel');
+
+#-------------------------------pdf generate-------------------
+Route::get('/generate-pdf/{id}',[PDF_Controller::class, 'generate'])->name('generate-pdf');

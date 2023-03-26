@@ -1,19 +1,67 @@
-<div class="row">
-     @foreach($user as $user)
+@if ($val == 1) 
 
-    <div class="col-6 col-md-4"> 
+                            <td style="color:green"> <i class="fa fa-check"></i> </td>
+
+                        @else
+                            <td style="color:green"> <i class="fa-solid fa-xmark"></i> </td>
+
+                        @endif
+
+
+
+                        
+
+<table class="table">
+  <thead>
+  
+    <tr>   
+     <th scope="col">Date</th>
+     @foreach($appel as $data)
+      <th scope="col">{{ $data->date }}</th>
+
+  
+      @endforeach
+    </tr>
+  
+  </thead>
+  <tbody>
+    @php $i = 0 ; @endphp 
+
+    @foreach($users as $data1)
+   
+        <tr>
+        <th scope="row"> {{$data1->name }} {{$data1->lastname}}</th>
+        @foreach($appel as $dt)
+        <th scope="row">
+            @foreach($present as $value)
+          
+                @foreach($value as $key => $val)
+              
+                        @if ($dt->date == $key)
+                        
+
+
+
+                        @endif
+                    @break 
+                @endforeach
+
+          
+          
+            @endforeach
+        </th>
+        @endforeach
         
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-  <label class="form-check-label" for="flexCheckDefault">
-  test
-  </label>
-
-</div>
-    </div>
-    <div class="col-6 col-md-4"><button type="button" class="btn btn-success">Success Button</button></div>
-    <div class="col-6 col-md-4"><button type="button" class="btn btn-success">Success Button</button></div>
-  
-  
+        </tr>
+    
     @endforeach
-  </div>
+  
+
+    
+    @php $i = $i+1 ;@endphp
+    
+
+  </tbody>
+</table>
+  
+
