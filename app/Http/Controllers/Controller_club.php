@@ -9,6 +9,8 @@ use App\Models\Shop_category;
 use App\Models\appels;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use Laravel\Ui\Presets\Preset;
+
 require_once('../app/fonction.php');
 
 class Controller_club extends Controller
@@ -27,7 +29,9 @@ class Controller_club extends Controller
          $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
         
-         return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first'))->with('user', auth()->user()) ;
+        return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first'))->with('user', auth()->user()) ;
+           
+
     }
 
     function index_include(Request $request){
@@ -208,7 +212,45 @@ public function enregister_appel_method($id , Request $request){
 }
 
 
+function display_historique_method($id){
 
+    $id_cours = $id ;
+    $tab = [] ;
+    $tab2 = [] ;
+    $present = [] ;
+    $appel = appels::where('id_cours',$id)->get();
+
+    foreach($appel as $data){
+
+        foreach ((array)json_decode($data->presents) as $key => $value) {
+            $tab[] = $key ;
+            $tab2[] = $value ;
+           
+          
+       }
+       $present [] = array( $data->date => $tab2) ;
+        $tab2 = [] ;
+
+
+    }
+
+    $users = User::select("*")->whereIn('user_id', $tab)->get();
+    
+    /*
+       foreach ($present as $value) {
+        foreach($value as $key => $val)
+        dd($key) ;
+
+       } 
+
+       */
+      //$present = json_encode($present,JSON_NUMERIC_CHECK) ;
+
+      
+    return view('club/historique_view',compact('id_cours','appel','users','present'))->with('user', auth()->user()) ;
+
+ 
+}
 
 
  

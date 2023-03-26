@@ -78,6 +78,9 @@ class A_ControllerBlog extends Controller
 
 
       return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2'))->with('user', auth()->user());
+      
+
+      
 }
 
 public function Simple_Post($id){
@@ -122,6 +125,12 @@ public function recherche_par_cat2(Request $request, $id) {
 
 
   
+
+
+
+
+
+
  public function a_requetes1(Request $request){
 
         $cat1 = array();
