@@ -559,7 +559,7 @@ function getUsersBirthdayToday()
     $birthday = $today->format('m-d');
 
     // Récupération des utilisateurs qui ont acheté un article de type 0 cette saison ou la saison précédente
-    $users = \DB::table('users')
+    $users = DB::table('users')
         ->join('liaison_shop_articles_bills', 'users.user_id', '=', 'liaison_shop_articles_bills.id_user')
         ->join('shop_article', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article.id_shop_article')
         ->whereIn('shop_article.saison', [$saison, $saison-1]) // saison courante ou précédente

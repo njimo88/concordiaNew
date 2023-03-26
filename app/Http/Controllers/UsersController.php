@@ -159,6 +159,7 @@ public function detail_paiement($id,$nombre_cheques)
     }elseif ($id == 6){
         $bill->status = 36;
     }    
+    
     $year = date('Y');
     $billIdWithOffset = $bill->id + 10000;
     $bill->ref = "{$year}-{$billIdWithOffset}";
