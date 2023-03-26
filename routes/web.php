@@ -252,7 +252,7 @@ Route::post('/modal_post/{id}', [Controller_club::class, 'modif_user'])->name('m
 
 Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_method'])->name('enregistrer_appel');
 
-/*----------------------- Recherhce ------------------------------ */
+/*----------------------- Recherche ------------------------------ */
 
 Route::get('/search/blog',[SearchController::class, 'searchBlog']);
 Route::get('/search/shop', [SearchController::class, 'searchShop']);
