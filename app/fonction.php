@@ -598,8 +598,8 @@ function printUsersBirthdayOnImage()
     $daysOfWeek = array('dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi');
     $months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
 
-    $currentDayOfWeek = $daysOfWeek[strftime('%u')];
-    $currentMonth = $months[strftime('%m')-1];
+    $currentDayOfWeek = $daysOfWeek[strftime('%u')%7];
+    $currentMonth = $months[strftime('%m')-1%12];
 
     $message = "En ce " . $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y") . ", nous souhaitons l'anniversaire à:";
     $image->text($message, $image->width() / 4.6, 130, function($font) {

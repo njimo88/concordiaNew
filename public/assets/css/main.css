@@ -3136,6 +3136,14 @@ button:hover {
     color: #008CBA !important;
     cursor: pointer;
     }
+
+    .aSearch{
+      color: black !important;
+    }
+    .aSearch:hover {
+      color: red !important;
+      cursor: pointer;
+      }
 /*------------------------------------------------End Article page ----------------------------------------------------------------*/
 /*------------------------------------------------paiment page ----------------------------------------------------------------*/
 .imghover:hover{

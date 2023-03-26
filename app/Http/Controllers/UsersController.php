@@ -23,12 +23,12 @@ class UsersController extends Controller
 {
     
 public function editdata(){
+    ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
     // Retrieve all unique email addresses from the "users" table
     $emails = DB::table('users')
         ->select('email')
         ->distinct()
         ->get();
-
     // Loop through each email address
     foreach ($emails as $email) {
         // Retrieve the user with that email
@@ -36,7 +36,6 @@ public function editdata(){
             ->where('email', $email->email)
             ->where('role', '<', 20)
             ->first();
-
     // Check if the user meets the condition
     if ($user) {
         // Update the user's username to their email
@@ -45,7 +44,6 @@ public function editdata(){
             ->update(['username' => $user->email]);
     }
     }
-    dd($emails);
     dd('done');
 }
 

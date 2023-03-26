@@ -18,6 +18,7 @@ use App\Http\Controllers\BillsController;
 use App\Models\old_bills;
 use App\Http\Controllers\ProfessionnelsController;
 use App\Mail\UserEmail;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Mail;
 /*
 |--------------------------------------------------------------------------
@@ -116,6 +117,7 @@ Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_pa
 Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_par_cat2'])->name('A_blog_par_categorie2');
 Route::get('/questionnaire', [A_ControllerBlog::class, 'questionnaire'])->name('questionnaire');
 Route::get('/determinesection/count', [A_ControllerBlog::class, 'countdeterminesection'])->name('countdeterminesection');
+
 
 
 /*---------------------------------Shop en backoffice------------------------------------------*/
@@ -249,3 +251,11 @@ Route::get('/club/display_modal/{id}', [Controller_club::class, 'display_info_us
 Route::post('/modal_post/{id}', [Controller_club::class, 'modif_user'])->name('modif_user');
 
 Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_method'])->name('enregistrer_appel');
+
+/*----------------------- Recherhce ------------------------------ */
+
+Route::get('/search/blog',[SearchController::class, 'searchBlog']);
+Route::get('/search/shop', [SearchController::class, 'searchShop']);
+Route::get('/search-results', [SearchController::class, 'searchResults']);
+
+

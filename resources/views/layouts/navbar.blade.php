@@ -11,6 +11,36 @@ use App\Models\Shop_category;
                ->get();
     
     @endphp
+
+    <!-- Search Modal -->
+    <div class="modal fade" id="search-modal" tabindex="-1" role="dialog" aria-labelledby="search-modal-label" aria-modal="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content" style="background-color: #c4d8e7; outline: 0 none;">
+              <div class="modal-header d-flex justify-content-center">
+                <div class="col-lg-11">
+                  <select id="search-type" name="search-type" class="form-control custom-select-with-icons" style="text-align-last:center;">
+                      <option value="blog" selected="">Rechercher un article du blog</option>
+                      <option value="shop">Rechercher un article de la boutique</option>
+                  </select>
+              </div>
+              </div>
+              <div class="modal-body">
+                  <div class="form-row">
+                      <div class="form-group col-md-12" style="padding:5px">
+                          <form id="search-form" class="searchForm" style=" margin: 0 auto" autocomplete="off">
+                              <input type="text" id="search-query" name="search-query" class="form-control" placeholder="Rechercher un article...">
+                              <button type="submit"><i class="fa fa-search"></i></button>
+                          </form>
+                      </div>
+                      <div id="search-results" style="margin:0 auto"></div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+
+
      <div class="modal fade" id="contactModal" tabindex="-1" style="z-index:100000" data-backdrop="static" data-keyboard="false" aria-labelledby="contactModalLabel" aria-hidden="true">
       <div class="modal-dialog  modal-lg">
           <div style="background-color: #d8e3ff" class="modal-content">
@@ -217,10 +247,10 @@ use App\Models\Shop_category;
               <li><a href="#"><span><img src="{{ asset("/assets/images/HorairesBureau.png") }}" width="24">&nbsp;Horaires Bureau</span></a>
             </ul>
           </li>
-          <li><a href="#"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
-            @if (Route::has('login'))
-              <li><a href="{{ route('login') }}">Connexion<i style="color: white; font-size:19px !important;" class='bx bxs-user'></i></a></li>
-            @endif
+          <li><a href="#" data-toggle="modal" data-target="#search-modal"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
+          @if (Route::has('login'))
+            <li><a href="{{ route('login') }}">Connexion<i style="color: white; font-size:19px !important;" class='bx bxs-user'></i></a></li>
+          @endif
           </ul>
         </nav><!-- .navbar -->
   
@@ -360,7 +390,7 @@ use App\Models\Shop_category;
                 <li><a href="#"><span><img src="{{ asset("/assets/images/HorairesBureau.png") }}" width="24">&nbsp;Horaires Bureau</span></a>
               </ul>
             </li>
-            <li><a href="#"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
+            <li><a href="#" data-toggle="modal" data-target="#search-modal"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
             <li class="dropdown">
               <a href="#"><span>@if(auth()->user()->image)
                 <img style="max-height: 35px" class="rounded-circle" src="{{  auth()->user()->image }}" >
@@ -510,7 +540,7 @@ use App\Models\Shop_category;
     .cf {
         *zoom: 1;
     }
-    
+ 
     
     
     
@@ -536,6 +566,84 @@ use App\Models\Shop_category;
         }
     
     </style>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function() {
+    const $searchType = $('#search-type');
+    const $searchQuery = $('#search-query');
+    const $searchResults = $('#search-results');
+
+    $searchQuery.on('input', function() {
+        const searchType = $searchType.val();
+        const searchQuery = $searchQuery.val();
+
+        if (searchQuery.length < 3) {
+            $searchResults.empty();
+            return;
+        }
+
+        let searchUrl = '';
+
+        if (searchType === 'blog') {
+            searchUrl = '/search/blog';
+        } else if (searchType === 'shop') {
+            searchUrl = '/search/shop';
+        }
+
+        $.ajax({
+            url: searchUrl,
+            method: 'GET',
+            data: { query: searchQuery },
+            success: function(data) {
+                $searchResults.empty();
+
+                if (data.length === 0) {
+                    $searchResults.append('<p>Aucun résultat trouvé</p>');
+                } else {
+                    data.forEach(function(item) {
+                      const result = searchType === 'blog' ? item.titre : item.title;
+                      const itemId = searchType === 'blog' ? item.id_blog_post_primaire : item.id_shop_article;
+                      let saison;
+
+                      if (searchType === 'blog') {
+                          saison = new Date(item.date_post).getFullYear();
+                      } else if (searchType === 'shop') {
+                          saison = item.saison;
+                      }
+
+                      let url = '';
+
+                      if (searchType === 'blog') {
+                          url = `/Simple_Post/${itemId}`;
+                      } else if (searchType === 'shop') {
+                          url = `/details_article/${itemId}`;
+                            }
+
+                      $searchResults.append('<div class="border border-dark"><a class="aSearch p-2" href="' + url + '">['+saison+'] - ' + result + '</a></div>');
+                    });
+                }
+            }
+        });
+    });
+
+    // Handle form submission
+    $('#search-form').on('submit', function(e) {
+        e.preventDefault();
+
+        const searchType = $searchType.val();
+        const searchQuery = $searchQuery.val();
+
+        // Redirect the user to the search results page with the query as a URL parameter
+        window.location.href = `/search-results?type=${searchType}&query=${encodeURIComponent(searchQuery)}`;
+    });
+});
+
+
+
+  </script>
+  
+    
 
 @endif
+
+

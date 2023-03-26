@@ -99,7 +99,7 @@
 
 @if($data->id_shop_article == $indice and $aff == 1)  
 
-<main id="main" class="main" style="padding : 88px 0; background-image: url('{{asset("/assets/images/background.png")}}');">
+<main id="main" class="main" style="background-image: url('{{asset("/assets/images/background.png")}}');">
 <div style="background-color:white;"  class="container rounded px-2" >
   @if (session('success'))
     <div style="display: -webkit-inline-box !important;" class="alert alert-success mt-3 col-12">
@@ -394,14 +394,13 @@
     
                             {{--premier affichage concernant les produits sans professeur --}}
 
-<br>
 </main>
 
 @foreach($article as $data)
 
 @if($data->id_shop_article == $indice and $aff == 0) 
 
-<main id="main" class="main" style="min-height:100vh;padding : 88px 0; background-image: url('{{asset("/assets/images/background.png")}}');">
+<main id="main" class="main" style="min-height:100vh; background-image: url('{{asset("/assets/images/background.png")}}');">
   <div style="background-color:white;"  class="container rounded" >
     @if (session('success'))
       <div class="alert alert-success m-3">

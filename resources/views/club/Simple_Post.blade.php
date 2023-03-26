@@ -5,7 +5,7 @@
 
 <div class="container">
 <div  class="row">
-    <div style="margin-top : 80px;" id="vueParent">
+    <div class="mt-4" id="vueParent">
         <div class="card shadow mb-4 border rounded">
             <div style="background-color: #f3eded;height:45px;padding: 3px;">
                 <span x style="margin-right: 5px; vertical-align: sub;">

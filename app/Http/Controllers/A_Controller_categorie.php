@@ -495,6 +495,8 @@ public function Handle_details($id){
 }
 
 
+
+
 /* methode pour qui creer un JSON  et remplit le champ teacher de la table shop_article_1  */
    
 public function  JsonProcess(){
