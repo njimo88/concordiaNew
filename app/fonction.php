@@ -186,6 +186,17 @@ function retourner_shop_article_dun_teacher($user_id, $saison) {
 
 // recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
 
+
+
+
+
+
+
+//fonctions pour afficher les dates
+
+
+// recuperer l'ID d'un shop article et ramene tous ceux qui ont achete le produit (buyers)
+
 function retourner_buyers_dun_shop_article($id_shop_article) {
 
     $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->toArray();
@@ -696,6 +707,7 @@ function Inscrits_Saison_Final($saison){
 
 
 
+
 // fonction pour determiner les destinataires des mails
 
 function destinataires_du_mail($user_id){
@@ -740,6 +752,20 @@ function destinataires_du_mail($user_id){
 
 }
 
+function envoi_de_mail($users)
+{
+    $tab = $users ;
+    for ($i=0; $i < count($tab) ; $i++) { 
+        
+        sendEmailToUser($tab[$i],'','') ;
+
+    }
+
+    return response()->json(['success'=>'Send email successfully.']);
+
+
+}
+
 
 
 
@@ -749,7 +775,9 @@ function sendEmailToUser($user_id, $message1,$data) {
   $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
   $email = $user->email; // Get the user's email address
 
-  Mail::to($email)->send(new UserEmail($message1,$data)); // Send the email using Laravel's Mail facade
+  Mail::to($email)->cc('ericksennkp@icloud.com')->bcc('ericksennkp@icloud.com')->send(new UserEmail($message1,$data)) ;
+ 
+ // Send the email using Laravel's Mail facade
 
 }
 
@@ -757,10 +785,12 @@ class UserEmail extends \Illuminate\Mail\Mailable {
     
   public $message1; // Define a public property to store the message
   public $data;
+  
  
   public function __construct($message1, $data) {
     $this->message1 = $message1; // Assign the message to the public property
     $this->data = $data ;
+   
   }
   public function build() {
     return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1, 'data' => $this->data]); // Define the email's view
