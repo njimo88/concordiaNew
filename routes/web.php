@@ -261,7 +261,12 @@ Route::post('/modal_post/{id}', [Controller_club::class, 'modif_user'])->name('m
 
 Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_method'])->name('enregistrer_appel');
 
-Route::get('/historique_appel/{id}', [Controller_club::class, 'display_historique_method'])->name('historique_appel');
+/*----------------------- Recherche ------------------------------ */
+
+Route::get('/search/blog',[SearchController::class, 'searchBlog']);
+Route::get('/search/shop', [SearchController::class, 'searchShop']);
+Route::get('/search-results', [SearchController::class, 'searchResults']);
+
 
 #-------------------------------pdf generate-------------------
 Route::get('/generate-pdf/{id}',[PDF_Controller::class, 'generate'])->name('generate-pdf');
