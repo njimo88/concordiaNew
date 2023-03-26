@@ -215,9 +215,9 @@ Route::get('/Politique_de_confidentialite', [Controller_mention_legales::class, 
 
 
 /*------------------------------ Communication ----------------------------------------- */
-//Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index_communication');
+Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index_communication');
 
-Route::get('/Communication', [A_ControllerBlog::class, 'a_requetes2'])->name('index_communication');
+//Route::get('/Communication', [A_ControllerBlog::class, 'a_requetes2'])->name('index_communication');
 
 Route::get('/Communication/get_info/{article_id}', [Controller_Communication::class, 'get_info'])->name('get_communication');
 
