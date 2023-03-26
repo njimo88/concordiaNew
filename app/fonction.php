@@ -559,7 +559,11 @@ function getUsersBirthdayToday()
     $birthday = $today->format('m-d');
 
     // Récupération des utilisateurs qui ont acheté un article de type 0 cette saison ou la saison précédente
+<<<<<<< HEAD
+    $users = \DB::table('users')
+=======
     $users = DB::table('users')
+>>>>>>> new_abbe
         ->join('liaison_shop_articles_bills', 'users.user_id', '=', 'liaison_shop_articles_bills.id_user')
         ->join('shop_article', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article.id_shop_article')
         ->whereIn('shop_article.saison', [$saison, $saison-1]) // saison courante ou précédente
@@ -679,10 +683,13 @@ function Donne_User_article_Paye($id_shop_article) {
 }
 
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> new_abbe
 function Inscrits_Saison_Date($sasion, $date1){
 
 }
@@ -740,6 +747,20 @@ function destinataires_du_mail($user_id){
 
 }
 
+function envoi_de_mail($users)
+{
+    $tab = $users ;
+    for ($i=0; $i < count($tab) ; $i++) { 
+        
+        sendEmailToUser($tab[$i],'','') ;
+
+    }
+
+    return response()->json(['success'=>'Send email successfully.']);
+
+
+}
+
 
 
 
@@ -749,7 +770,9 @@ function sendEmailToUser($user_id, $message1,$data) {
   $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
   $email = $user->email; // Get the user's email address
 
-  Mail::to($email)->send(new UserEmail($message1,$data)); // Send the email using Laravel's Mail facade
+  Mail::to($email)->cc('ericksennkp@icloud.com')->bcc('ericksennkp@icloud.com')->send(new UserEmail($message1,$data)) ;
+ 
+ // Send the email using Laravel's Mail facade
 
 }
 
@@ -757,10 +780,12 @@ class UserEmail extends \Illuminate\Mail\Mailable {
     
   public $message1; // Define a public property to store the message
   public $data;
+  
  
   public function __construct($message1, $data) {
     $this->message1 = $message1; // Assign the message to the public property
     $this->data = $data ;
+   
   }
   public function build() {
     return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1, 'data' => $this->data]); // Define the email's view

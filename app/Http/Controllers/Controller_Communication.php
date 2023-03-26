@@ -23,14 +23,18 @@ class Controller_Communication extends Controller
 
    $saison_actu = saison_active() ;
 
+
     /*
     $users = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
     ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
     ->get();
     */
-    $users = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
+    $users = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')->distinct()
     ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
     ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)->get();
+
+
+
 
    /*  pour la view new email
     $data = [];
@@ -51,7 +55,7 @@ $data = [];
         ];
     }
  
-        $shop_article = Shop_article::get();
+        $shop_article = Shop_article::select('*')->where('saison', $saison_actu)->distinct('id_shop_article')->get();
         $uuser =  $users ;
     //   return view('Communication/new_email',compact('shop_article','uuser','data'))->with('user', auth()->user()) ;
    // return sendEmailToUser(140,'MONSIEUR FERANDEL',[10,22,33]);
@@ -111,24 +115,36 @@ $data = [];
 
 
 
-  function envoi_de_mail($users)
-  {
-        $tab = $users ;
-        for ($i=0; $i < count($tab) ; $i++) { 
-            
-            sendEmailToUser($tab[$i],'','') ;
+  function email_sender(Request $request){
 
+        $myData = (array)$request->input('tab_selected_users');
+        $titre = $request->input('inputValue');
+        $text_area = $request->input('text_area');
+        $taille_data = count($myData);
+
+        if ($taille_data > 0) {
+
+            for ($i=0; $i <$taille_data ; $i++) { 
+                sendEmailToUser($myData[$i],$titre,'text_area') ;
+            }
+        }else{
+
+            sendEmailToUser($myData[0],$titre,$text_area) ;
         }
 
-        return response()->json(['success'=>'Send email successfully.']);
+    
+       // return view('Commnication/email_page',compact('myData'))->with('user', auth()->user()) ;
+       // return redirect('Communication/email_sender')->with('myData', $myData)->with('user', auth()->user()) ;
+        return 'eye' ;
+    }
+    
 
+    function email_page(){
 
-  }
+        return view('Communication/email_page')->with('user', auth()->user()) ;
 
-
-
-
-
+    }
+ 
 
 
 }

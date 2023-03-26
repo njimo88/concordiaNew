@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Document</title>
 
 <!-- jQuery JS -->
@@ -79,10 +80,122 @@
     </tbody>
 
 </table>
+
+<br>
+
+<form action=""  method="GET"  enctype="multipart/form-data">
+          @csrf
+          <div class="row pt-5">
+          <input type="submit" class="btn btn-primary" value="Valider">
+          </div>
+         
+          <div class="row">
+
+          <div class="col-md-2">
+              
+
+          </div>
+
+          
+
+
+
+              
+          <div class="col-md-8">
+              <br>
+
+                          <input type="text" id="title_email" name="title" class="form-control" placeholder="Title">
+
+                          <textarea name="editor1"  id="ckeditor" class="form-control" name="ckeditor"></textarea>
+                          
+          </div>
+              <div class="col-md-2">
+              
+
+              </div>
+
+
+
+          </div>
+
+         
+
+
+  </div>
+
+  <script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
+<script type="text/javascript">
+  CKEDITOR.replace('editor1', {
+      filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
+      filebrowserBrowseUrl: "/elfinder/ckeditor",
+      filebrowserUploadMethod: 'form',
+      language: 'fr',
+      on: {
+      loaded: function() {
+          ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
+      }
+  },
+
+      toolbar: [{ name: 'document', items : [ 'Source','NewPage','Preview' ] },
+          { name: 'basicstyles', items : [ 'Bold','Italic','Strike','-','RemoveFormat' ] },
+          { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+          { name: 'editing', items : [ 'Find','Replace','-','SelectAll','-','Scayt' ] },
+          '/',
+          { name: 'styles', items : [ 'Styles','Format' ] },
+          { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote' ] },
+          { name: 'insert', items :[ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak','Iframe' ] },
+          { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
+          { name: 'tools', items : [ 'Maximize','-','About' ] }
+],
+              uiColor: '#FFDC6E'
+  });
+
+
+
+
+</script>
+
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <button id="button">test</button>
+
 </div>
 
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -101,9 +214,7 @@ $(document).ready(function(){
 
 </script>
 
-<script>
 
-</script>
 
 <script>
 
@@ -154,13 +265,12 @@ $(document).ready(function(){
       selectedRows.splice(selectedRows.indexOf(row), 1);
     }
 
-    } );
-
-   
+    });
 
 
-
+  
     $('#button').click( function () {
+
         alert( table.rows('.selected').data().length +' row(s) selected' );
         const selectedData = table.rows('.selected').data();
         const selectedRows = [];
@@ -182,12 +292,55 @@ $(document).ready(function(){
             
            }
 
-          console.log( tab_selected_users);
+          console.log(tab_selected_users);
 
-    } );
-} );
+         // return tab_selected_users;
+         var inputValue = $('#title_email').val();
+         var text_area  = $('#ckeditor').val();
+       
+          $.ajax({
 
+
+    url: '/Communication/email_sender',
+    type: 'POST',
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    data: {
+        tab_selected_users: tab_selected_users,
+        inputValue: inputValue,
+        text_area: text_area
+    },
+    success: function(response) {
+        console.log(response);
+    },
+    error: function(xhr, status, error) {
+        console.log(xhr.responseText);
+    }
+
+
+});
+
+
+
+
+
+
+
+
+});
+
+
+
+
+});
+
+
+  
 </script>
+
+
+
 
 
 <!-- Script JS qui permet de trier dynamiquement en fonction des shop articles, les users qui les ont achetes   -->
