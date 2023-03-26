@@ -159,7 +159,9 @@ public function detail_paiement($id,$nombre_cheques)
     }elseif ($id == 6){
         $bill->status = 36;
     }    
-    $bill->ref = "FAC".date('YmdHis');
+    $year = date('Y');
+    $billIdWithOffset = $bill->id + 10000;
+    $bill->ref = "{$year}-{$billIdWithOffset}";
     $bill->payment_total_amount = $total;
     $bill->family_id = auth()->user()->family_id;
     $bill->save();
