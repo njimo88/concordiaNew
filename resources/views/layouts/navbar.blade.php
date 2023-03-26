@@ -618,8 +618,8 @@ use App\Models\Shop_category;
                       } else if (searchType === 'shop') {
                           url = `/details_article/${itemId}`;
                             }
-
-                      $searchResults.append('<div class="border border-dark"><a class="aSearch p-2" href="' + url + '">['+saison+'] - ' + result + '</a></div>');
+                      let saisonn = saison + '-' + (saison + 1);
+                      $searchResults.append('<div class="border border-dark"><a class="aSearch p-2" href="' + url + '">['+saisonn+'] - ' + result + '</a></div>');
                     });
                 }
             }

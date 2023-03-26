@@ -38,7 +38,12 @@ class SearchController extends Controller
         if ($searchType === 'blog') {
             $results = A_Blog_Post::where('titre', 'like', '%' . $searchQuery . '%')->get();
         } else if ($searchType === 'shop') {
-            $results = Shop_article::where('title', 'like', '%' . $searchQuery . '%')->get();
+            if (Auth::check() && Auth::user()->role >= 90) {
+                $results = Shop_article::where('title', 'like', '%' . $searchQuery . '%')->get();
+            } else {
+                $activeSaison = saison_active();
+                $results = Shop_article::where('title', 'like', '%' . $searchQuery . '%')->where('saison', $activeSaison)->get();
+            }
         } else {
             // Invalid search type, return an error
         }

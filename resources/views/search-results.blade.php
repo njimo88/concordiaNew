@@ -14,11 +14,11 @@
                 @foreach ($results as $result)
                 @if ($searchType === 'blog')
                     <div class="border border-dark col-9 m-2">
-                        <a class="aSearch p-2" href="{{ url('/Simple_Post/' . $result->id_blog_post_primaire) }}">{{ $result->titre }}</a>
+                        <a class="aSearch p-2" href="{{ url('/Simple_Post/' . $result->id_blog_post_primaire) }}">[{{ $result->date_post }}] {{ $result->titre }}</a>
                     </div>
                 @elseif ($searchType === 'shop')
                     <div class="border border-dark col-9 m-2">
-                        <a class="aSearch p-2" href="{{ url('/details_article/' . $result->id_shop_article) }}">{{ $result->title }}</a>
+                        <a class="aSearch p-2" href="{{ url('/details_article/' . $result->id_shop_article) }}">[{{$result->saison }}-{{ $result->saison+1 }}] {{ $result->title }}</a>
                     </div>
                 @endif
             @endforeach

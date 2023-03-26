@@ -20,7 +20,7 @@
             <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
         </div>
         <div class="col-6 d-flex justify-content-end" >
-            <a href="{{ url()->previous() }}" class="my-custom-btn btn btn-primary my-4">Retour à la liste des factures</a>
+            <a href="{{ url()->previous() }}" class="my-custom-btn btn btn-primary my-4">Retour</a>
         </div>
         <hr>
         
