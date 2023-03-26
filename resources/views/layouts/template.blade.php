@@ -2,6 +2,351 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 @include('layouts.adminheader')
 <body>
+
+   <div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Paramètres Système</h3>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="stat-widget-one">
+    
+                        <div class="stat-icon dib"><i style="color: #2770e6; display:inline-block" class="fa fa-solid fa-door-open mr-1"></i>
+    
+                            <form  id="form" >
+                            
+                                <input id="checkbox1"  type="checkbox" class="checkbox">
+                                <input type="hidden" id="url" name="URL" value="/admin">
+                                <div class="stat-text" style="font-size : 12px !important;">Portes ouvertes</div>
+                                <label for="checkbox1" class="switch">
+                                    <span class="switch__circle">
+                                        <span class="switch__circle-inner"></span>
+                                    </span>
+                                    <span class="switch__left">Off</span>
+                                    <span class="switch__right">On</span>
+                                </label>
+                                                           <input hidden="" name="redirect" value="0">
+    
+                            </form>
+                        </div>
+                    </div>
+    
+                </div>
+    
+            </div>
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="stat-widget-one">
+                        <div class="stat-icon dib"><i style="color: #2770e6; display:inline-block" class="fa fa-solid fa-envelope mr-1"></i>
+                            <form  id="form">
+                            
+                                <input id="checkbox2"  type="checkbox" class="checkbox">
+                                <div class="stat-text" style="font-size : 12px !important;">Mails inscription</div>
+                                <label for="checkbox2" class="switch">
+                                 <span class="switch__circle">
+                                     <span class="switch__circle-inner"></span>
+                                 </span>
+                                 <span class="switch__left">Off</span>
+                                 <span class="switch__right">On</span>
+                             </label>
+                                                           <input hidden="" name="redirect" value="0">
+    
+                            </form>
+                        </div>
+                    </div>
+    
+                </div>
+    
+            </div>
+            <div class="col-lg-3">
+                <div class="card">
+                    <form  id="form" >
+                    <input id="checkbox3"  type="checkbox" class="checkbox">
+                        <input type="hidden" id="Etat_Switch" name="Etat_Switch" value="0">
+                        <div class="stat-text" style="font-size : 12px !important;">Message Général Shop
+                        </div>
+                        <label for="checkbox3" class="switch">
+                            <span class="switch__circle">
+                            <span class="switch__circle-inner"></span></span>
+                            <span class="switch__left">Off</span>
+                            <span class="switch__right">On</span>
+                        </label>                    <input hidden="" name="redirect" value="0">
+    
+                    </form>
+            </div>
+            <br>
+          </div>
+          <div class="col-lg-3">
+                <div class="card">
+                    <form  id="form" >
+                    <input id="checkbox5"  type="checkbox" class="checkbox" checked="">
+                        <input type="hidden" id="Etat_Vente" name="Etat_Vente" value="1">
+                        <div class="stat-text" style="font-size : 12px !important;">Cours en Vente
+                        </div>
+                        <label for="checkbox5" class="switch">
+                            <span class="switch__circle">
+                            <span class="switch__circle-inner"></span></span>
+                            <span class="switch__left">Off</span>
+                            <span class="switch__right">On</span>
+                        </label>                    <input hidden="" name="redirect" value="0">
+    
+                    </form>
+            </div>
+          </div>
+         </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <style>
+        #submenu1 .fa {
+            color: red;
+        }
+    
+        .gc-rouge {
+            color: red;
+        }
+    
+        #submenu2 .fa {
+            color: cyan;
+        }
+    
+        .gc-cyan {
+            color: cyan;
+        }
+    
+        #submenu3 .fa {
+            color: green;
+        }
+    
+        .gc-green {
+            color: green;
+        }
+    
+        #submenu4 .fa {
+            color: orange;
+        }
+    
+        .gc-orange {
+            color: orange;
+        }
+    
+        #submenu5 .fa {
+            color: pink;
+        }
+    
+        .gc-pink {
+            color: pink;
+        }
+    
+        #submenu6 .fa {
+            color: lime;
+        }
+    
+        .gc-lime {
+            color: lime;
+        }
+    
+        #submenu7 .fa {
+            color: yellow;
+        }
+    
+        .gc-yellow {
+            color: yellow;
+        }
+    
+        #submenu8 .fa {
+            color: violet;
+        }
+    
+        .gc-violet {
+            color: violet;
+        }
+    
+        #submenu9 .fa {
+            color: red;
+        }
+    
+        .gc-blue {
+            color: red;
+        }
+        #form{
+            position: relative;
+            bottom: 5px;
+            left: 10px;
+            display: inline-block;
+        }
+        .switch {
+            align-items: center;
+            background-color: gray;
+            border-radius: 500px;
+            cursor: pointer;
+            display: flex;
+            height: 40px;
+            justify-content: space-between;
+            padding: 0 10px;
+            position: relative;
+            user-select: none;
+            width: 80px;
+        }
+        .checkbox:checked~.switch {
+            background-color: blue;
+        }
+    
+        .switch__left,
+        .switch__right {
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    
+        .checkbox:checked~.switch .switch__left {
+            visibility: hidden;
+        }
+    
+        .checkbox:not(:checked)~.switch .switch__right {
+            visibility: hidden;
+        }
+    
+        .switch__circle {
+            height: 40px;
+            padding: 5px;
+            position: absolute;
+            transition: all 0.1s linear;
+            width: 40px;
+        }
+    
+        .checkbox:checked~.switch .switch__circle {
+            left: 0;
+            right: calc(100% - 40px);
+        }
+    
+        .checkbox:not(:checked)~.switch .switch__circle {
+            left: calc(100% - 40px);
+            right: 0;
+        }
+    
+        .switch__circle-inner {
+            background-color: white;
+            border-radius: 50%;
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+        .card-body {
+        padding: 0;
+      }
+      .card {
+        background: #ffffff;
+        margin: 7.5px 0;
+        padding: 20px;
+        border: 1px solid #e7e7e7;
+        border-radius: 3px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+      .card-subtitle {
+        font-size: 12px;
+        margin: 10px 0;
+      }
+      .card-title {
+        font-weight: 400;
+        font-size: 18px;
+        margin: 0;
+      }
+      .card-title h4 {
+        display: inline-block;
+        font-weight: 400;
+        font-size: 18px;
+      }
+      .card-title p {
+        font-family: 'Roboto', sans-serif;
+        margin-bottom: 12px;
+      }
+      .card-header-right-icon {
+        display: inline-block;
+        float: right;
+      }
+      .card-header-right-icon li {
+        float: right;
+        padding-left: 14px;
+        color: #868e96;
+        cursor: pointer;
+        vertical-align: middle;
+        transition: all 0.5s ease-in-out;
+        display: inline-block;
+      }
+      .card-header-right-icon li .ti-close {
+        font-size: 12px;
+      }
+      .card-option {
+        position: relative;
+      }
+      .card-option-dropdown {
+        display: none;
+        left: auto;
+        right: 0;
+      }
+      .card-option-dropdown li {
+        display: block;
+        float: left;
+        width: 100%;
+        padding: 0;
+      }
+      .card-option-dropdown li a {
+        line-height: 25px;
+        font-size: 12px;
+      }
+      .card-option-dropdown li a i {
+        margin-right: 10px;
+      }
+    
+      .stat-widget-one .stat-icon {
+        vertical-align: top;
+      }
+      .stat-widget-one .stat-icon i {
+        font-size: 30px;
+        border-width: 3px;
+        border-style: solid;
+        border-radius: 100px;
+        padding: 15px;
+        font-weight: 900;
+        display: inline-block;
+      }
+      .stat-widget-one .stat-content {
+        margin-left: 30px;
+        margin-top: 7px;
+      }
+      .stat-widget-one .stat-text {
+        font-size: 14px;
+        color: #868e96;
+      }
+      .stat-widget-one .stat-digit {
+        font-size: 24px;
+        color: #373757;
+      }
+      .checkbox{
+          display: none;
+      }
+    
+      @media (min-width: 800px) {
+        .titlecolor{
+        }
+      }
+      @media (max-width: 800px) {
+        .titlecolor{
+            background-color:#343a40!important;
+        }
+      }
+    </style>
+    </div>
+
     <header id="header" class="header fixed-top d-flex align-items-center">
         <div class="d-flex align-items-center justify-content-between"> <a href="{{ route('admin.index') }}" class="logo d-flex align-items-center"> <img src="{{ asset('assets/images/logo.png') }}" alt=""> <span class="d-none d-lg-block">Admin</span> </a> <i class="bi bi-list toggle-sidebar-btn"></i></div>
         <nav class="header-nav ms-auto">
@@ -21,11 +366,7 @@
                     <li class="dropdown-header">
                        <h6> {{ $user->name }} {{ $user->lastname }}</h6>
                     </li>
-                    
-                    <li> <a class="dropdown-item d-flex align-items-center" href="users-profile.html"> <i class="bi bi-person"></i> <span>My Profile</span> </a></li>
-                    
-                    <li> <a class="dropdown-item d-flex align-items-center" href="users-profile.html"> <i class="bi bi-gear"></i> <span>Account Settings</span> </a></li>
-                    
+                    <li> <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#settings"> <i class="bi bi-gear"></i> <span>Settings</span> </a></li>
                     <li> <a class="dropdown-item d-flex align-items-center" href="{{ route('A_blog') }}"> <i class="bi bi-box-arrow-right"></i> <span>Retour au blog</span> </a></li>
                  </ul>
               </li>
