@@ -267,6 +267,3 @@ Route::get('/search/blog',[SearchController::class, 'searchBlog']);
 Route::get('/search/shop', [SearchController::class, 'searchShop']);
 Route::get('/search-results', [SearchController::class, 'searchResults']);
 
-
-#-------------------------------pdf generate-------------------
-Route::get('/generate-pdf/{id}',[PDF_Controller::class, 'generate'])->name('generate-pdf');
