@@ -70,11 +70,7 @@
           </a> <br>
           
         </div>
-        <div class="d-flex justify-content-center my-2">
-          <span>Pas encore de compte ?  <a  href="{{ route('register') }}">
-            Créer un compte ici
-          </a> </span>
-        </div>
+        
         
     @endif
 
