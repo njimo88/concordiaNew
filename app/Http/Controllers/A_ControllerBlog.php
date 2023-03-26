@@ -143,6 +143,12 @@ public function recherche_par_cat2(Request $request, $id) {
 
 
   
+
+
+
+
+
+
  public function a_requetes1(Request $request){
 
         $cat1 = array();

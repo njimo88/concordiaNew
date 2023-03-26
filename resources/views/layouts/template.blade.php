@@ -491,6 +491,7 @@
 
 <script src="../r_js/style.js"></script>
 
+
     @livewireScripts
 </body>
 </html>

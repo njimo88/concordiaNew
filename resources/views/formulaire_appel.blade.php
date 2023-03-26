@@ -28,7 +28,7 @@ $saison_active = saison_active() ;
                         
                         </div>
                         <div class="col-6 col-md-4"> </div>
-                        <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">Historique des appels</button></div>
+                        <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$the_id)}}">Historique des appels</a></button></div>
                     
                     </div>
                     <br>

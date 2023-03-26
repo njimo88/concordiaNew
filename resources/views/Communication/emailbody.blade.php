@@ -9,10 +9,9 @@
 <body>
     check it out and see if you can get rid of this nagging habit .
 
-    @foreach($data as $dt)
-        {{$dt}}
-    @endforeach
-
+   
     {{$message1}}
+
+    {{$data}}
 </body>
 </html>
