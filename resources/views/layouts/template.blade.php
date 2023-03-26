@@ -35,69 +35,97 @@
      <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
            <li class="nav-item"> <a class="nav-link " href="{{ route('admin.index') }}"> <i class="bi bi-grid"></i> <span>Acceuil</span> </a></li>
-           <li class="nav-item">
-              <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"><span style="margin-right: 5px; color:#007b00;" class="fa fa-users fa-fw mr-2 gc-green"></span> <span>Utilisateurs</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-              <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                 <li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-solid fa-user"></i><span>Membres</span> </a></li>
-                 <li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-light fa-at"></i><span>ClickAsso</span> </a></li>
-              </ul>
-           </li>
-           <li class="nav-item">
-              <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#"> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Blog</span><i class="bi bi-chevron-down ms-auto"></i></a>
-              <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                 <li> <a href="{{route('index')}}"> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Articles</span> </a></li>
-                 <li> <a href="{{route('index_article_redaction')}}"> <i style="color: #0ef9de" class="fa-solid fa-pen"></i><span>Rédiger un article</span> </a></li>
-                 <li> <a href="forms-editors.html"> <i style="color: #0ef9de" class="fa-sharp fa-regular fa-images"></i><span>Gérer le slider</span> </a></li>
-                 <li> <a href="{{route('index_article_category')}}"><span style="margin-right: 10px; color: #0ef9de" class="fa fa-list-ol fa-fw mr-1"></span><span>Catégories</span> </a></li>
-              </ul>
-           </li>
-           <li class="nav-item">
-              <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#"> <i style="color: #ff0000" class="fa-solid fa-money-bill"></i><span>Paiement</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-              <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                 <li> <a href="{{route('paiement.facture')}}"><i style="color: #ff0000"  class="fa-solid fa-euro-sign"></i><span>Facture</span> </a></li>
-                 <li> <a href="tables-data.html"><i style="color: #ff0000"  class="fa-solid fa-ticket"></i></span><span>Réduction</span> </a></li>
-              </ul>
-           </li>
-           <li class="nav-item">
-              <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#"> <i style="color: #f7bac5"  class="bi bi-gem"></i><span>Boutique</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-              <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                 <li> <a href="{{ route('index_article') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-basket-shopping fa-fw mr-1"></span><span>Article</span> </a></li>
-                 <li> <a href="{{ route('A_Categorie') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-coins fa-fw mr-1"></span><span>Catégories</span> </a></li>
-              </ul>
-           </li>
-           <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#"> <i style="color: #f80000;" class="fa-regular fa-message"></i><span>Communication</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-            <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-               <li> <a href="charts-chartjs.html"><span style="color: #f80000; margin-right:8px" class="fa fa-envelope fa-fw mr-1"></span><span>Envoie de mail</span> </a></li>
-               <li> <a href="charts-apexcharts.html"><span style="color: #f80000; margin-right:8px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Historique</span> </a></li>
-            </ul>
-           </li>
-           <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#club-nav" data-bs-toggle="collapse" href="#"><span style="color: #f59f00; margin-right:10px" class="fa fa-medal fa-fw mr-2 gc-orange"></span><span>Le Club</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-            <ul id="club-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-               <li> <a href="{{route('index_cours')}}"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-running fa-fw mr-1"></span><span>Cours</span> </a></li>
-               <li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-swimming fa-fw mr-1"></span><span>Animations</span> </a></li>
-               <li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-chart-line fa-fw mr-1"></span><span>Stats-Exports</span> </a></li>
-               <li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-stamp fa-fw mr-1"></span><span>Valider Certificats</span> </a></li>
-            </ul>
-           </li>
-           <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#pro-nav" data-bs-toggle="collapse" href="#"><span style="color: #00f900; margin-right:10px" class="fa fa-id-card-clip fa-fw mr-2 gc-lime"></span><span>Professionnels</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-            <ul id="pro-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-               <li> <a href="{{ route('Professionnels.gestion') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-user-tie fa-fw mr-1"></span><span>Gestion</span> </a></li>
-               <li> <a href="{{ route('proffesional.calculSalary') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-euro-sign fa-fw mr-1"></span><span>Calcul des salaires</span> </a></li>
-               <li> <a href="club-apexclub.html"><span style="color: #00f900; margin-right:10px" class="fa fa-stamp fa-fw mr-1"></span><span>Valider les heures</span> </a></li>
-            </ul>
-           </li>
-           <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#para-nav" data-bs-toggle="collapse" href="#"><span style="color: #f5f503; margin-right:10px" class="fa fa-screwdriver-wrench fa-fw mr-2 gc-yellow"></span><span>Paramètres</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-            <ul id="para-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-               <li> <a href="pro-chartjs.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-user-check fa-fw mr-1"></span><span>Gestion des droits</span> </a></li>
-               <li> <a href="pro-apexclub.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Paramètres</span> </a></li>
-               <li> <a href="club-apexclub.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Salles</span> </a></li>
-               <li> <a href="club-apexclub.html"><i style="color: #f5f503;" class="fa-regular fa-message"></i></span><span>Message Général</span> </a></li>
-            </ul>
-           </li>
+           @if(auth()->user()->roles->estAutoriserDeVoirMembres || auth()->user()->roles->estAutoriserDeVoirClickAsso)
+               <li class="nav-item">
+                  <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"><span style="margin-right: 5px; color:#007b00;" class="fa fa-users fa-fw mr-2 gc-green"></span> <span>Utilisateurs</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                     @if(auth()->user()->roles->estAutoriserDeVoirMembres)<li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-solid fa-user"></i><span>Membres</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirClickAsso)<li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-light fa-at"></i><span>ClickAsso</span> </a></li>@endif
+                  </ul>
+               </li>
+            @endif
+            @if ( auth()->user()->roles->estAutoriserDeVoirArticles || auth()->user()->roles->estAutoriserDeRedigerArticles || auth()->user()->roles->estAutoriserDeGererSlider || auth()->user()->roles->estAutoriserDeVoirCategories)
+               <li class="nav-item">
+                  <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#"> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Blog</span><i class="bi bi-chevron-down ms-auto"></i></a>
+                  <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                     @if (auth()->user()->roles->estAutoriserDeVoirArticles)
+                        <li> <a href="{{route('index')}}"> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Articles</span> </a></li>
+                     @endif
+                     @if ( auth()->user()->roles->estAutoriserDeRedigerArticles)
+                        <li> <a href="{{route('index_article_redaction')}}"> <i style="color: #0ef9de" class="fa-solid fa-pen"></i><span>Rédiger un article</span> </a></li>
+                     @endif
+                     @if ( auth()->user()->roles->estAutoriserDeGererSlider)
+                        <li> <a href="forms-editors.html"> <i style="color: #0ef9de" class="fa-sharp fa-regular fa-images"></i><span>Gérer le slider</span> </a></li>
+                     @endif
+                     @if ( auth()->user()->roles->estAutoriserDeVoirCategories)
+                        <li> <a href="{{route('index_article_category')}}"> <i style="color: #0ef9de" class="fa-solid fa-list-ol"></i><span>Catégories</span> </a></li>
+                     @endif
+                  </ul>
+               </li>
+            @endif
+            @if (auth()->user()->roles->estAutoriserDeVoirFacture || auth()->user()->roles->estAutoriserDeVoirReduction)
+               <li class="nav-item">
+                  <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#"> <i style="color: #ff0000" class="fa-solid fa-money-bill"></i><span>Paiement</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                     @if (auth()->user()->roles->estAutoriserDeVoirFacture)
+                           <li> <a href="{{route('paiement.facture')}}"><i style="color: #ff0000"  class="fa-solid fa-euro-sign"></i><span>Facture</span> </a></li>
+                     @endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirReduction)
+                           <li> <a href="tables-data.html"><i style="color: #ff0000"  class="fa-solid fa-ticket"></i></span><span>Réduction</span> </a></li>
+                        @endif
+                  </ul>
+               </li>
+           @endif
+           @if ( auth()->user()->roles->estAutoriserDeVoirArticleBoutique || auth()->user()->roles->estAutoriserDeVoirCategorieBoutique)
+               <li class="nav-item">
+                  <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#"> <i style="color: #f7bac5"  class="bi bi-gem"></i><span>Boutique</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                     @if( auth()->user()->roles->estAutoriserDeVoirArticleBoutique )<li> <a href="{{ route('index_article') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-basket-shopping fa-fw mr-1"></span><span>Article</span> </a></li>@endif
+                     @if( auth()->user()->roles->estAutoriserDeVoirCategorieBoutique )<li> <a href="{{ route('A_Categorie') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-coins fa-fw mr-1"></span><span>Catégories</span> </a></li>@endif
+                  </ul>
+               </li>
+            @endif
+            @if ( auth()->user()->roles->estAutoriserDeVoirMessages || auth()->user()->roles->estAutoriserDeVoirHistorique)
+               <li class="nav-item">
+                  <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#"> <i style="color: #f80000;" class="fa-regular fa-message"></i><span>Communication</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                     @if (auth()->user()->roles->estAutoriserDeVoirMessages)<li> <a href="charts-chartjs.html"><span style="color: #f80000; margin-right:8px" class="fa fa-envelope fa-fw mr-1"></span><span>Envoie de mail</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirHistorique)<li> <a href="charts-apexcharts.html"><span style="color: #f80000; margin-right:8px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Historique</span> </a></li> @endif
+                  </ul>
+               </li>
+            @endif
+            @if ( auth()->user()->roles->estAutoriserDeVoirCours || auth()->user()->roles->estAutoriserDeVoirAnimations || auth()->user()->roles->estAutoriserDeVoirStatsExports || auth()->user()->roles->estAutoriserDeVoirValiderCertificats)
+               <li class="nav-item">
+                  <a class="nav-link collapsed" data-bs-target="#club-nav" data-bs-toggle="collapse" href="#"><span style="color: #f59f00; margin-right:10px" class="fa fa-medal fa-fw mr-2 gc-orange"></span><span>Le Club</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <ul id="club-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                     @if (auth()->user()->roles->estAutoriserDeVoirCours)<li> <a href="{{route('index_cours')}}"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-running fa-fw mr-1"></span><span>Cours</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirAnimations)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-swimming fa-fw mr-1"></span><span>Animations</span> </a></li>@endif 
+                     @if (auth()->user()->roles->estAutoriserDeVoirStatsExports)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-chart-line fa-fw mr-1"></span><span>Stats-Exports</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirValiderCertificats)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-stamp fa-fw mr-1"></span><span>Valider Certificats</span> </a></li>@endif
+                  </ul>
+               </li>
+            @endif
+            @if ( auth()->user()->roles->estAutoriserDeVoirGestionProfessionnels || auth()->user()->roles->estAutoriserDeVoirCalculDesSalaires || auth()->user()->roles->estAutoriserDeVoirValiderLesHeures)
+               <li class="nav-item">
+                  <a class="nav-link collapsed" data-bs-target="#pro-nav" data-bs-toggle="collapse" href="#"><span style="color: #00f900; margin-right:10px" class="fa fa-id-card-clip fa-fw mr-2 gc-lime"></span><span>Professionnels</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <ul id="pro-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                     @if (auth()->user()->roles->estAutoriserDeVoirGestionProfessionnels)<li> <a href="{{ route('Professionnels.gestion') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-user-tie fa-fw mr-1"></span><span>Gestion</span> </a></li> @endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirCalculDesSalaires)<li> <a href="{{ route('proffesional.calculSalary') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-euro-sign fa-fw mr-1"></span><span>Calcul des salaires</span> </a></li> @endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirValiderLesHeures) <li> <a href="pro-chartjs.html"><span style="color: #00f900; margin-right:10px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Valider les heures</span> </a></li> @endif
+                  </ul>
+               </li>
+            @endif
+            @if ( auth()->user()->roles->estAutoriserDeVoirGestionDesDroits || auth()->user()->roles->estAutoriserDeVoirParametresGeneraux || auth()->user()->roles->estAutoriserDeVoirSalles || auth()->user()->roles->estAutoriserDeVoirMessageGeneral )
+               <li class="nav-item">
+                  <a class="nav-link collapsed" data-bs-target="#para-nav" data-bs-toggle="collapse" href="#"><span style="color: #f5f503; margin-right:10px" class="fa fa-screwdriver-wrench fa-fw mr-2 gc-yellow"></span><span>Paramètres</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <ul id="para-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                     @if (auth()->user()->roles->estAutoriserDeVoirGestionDesDroits)<li> <a href="pro-chartjs.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-user-check fa-fw mr-1"></span><span>Gestion des droits</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirParametresGeneraux)<li> <a href="pro-apexclub.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Paramètres</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirSalles)<li> <a href="pro-apexclub.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Salles</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirMessageGeneral)               <li> <a href="club-apexclub.html"><i style="color: #f5f503;" class="fa-regular fa-message"></i></span><span>Message Général</span> </a></li>@endif
+                  </ul>
+               </li>
+            @endif
         </ul>
      </aside>
     @yield('content')

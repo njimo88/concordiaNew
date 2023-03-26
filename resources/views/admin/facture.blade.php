@@ -55,9 +55,13 @@
                                
                                     <tr  style="background-color: {{ $bills->row_color}}"> 
                                         <td>
+                                            @if (auth()->user()->roles->supprimer_edit_facture)
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Afficher Facture">
                                                 <a type="button" class=" user-link a text-black "  href="{{ route('facture.showBill', ['id' => $bills->id]) }}">{{ intval($bills->id) }}</i></a>
                                               </span>
+                                            @else
+                                                {{ intval($bills->id) }}
+                                            @endif
                                         </td>
                                         <td style="font-weight : bold;">{{ $bills->name}} {{ $bills->lastname}}</td> 
                                         <td><img style="height: 30px" src="{{ $bills->image}}" alt="">
@@ -77,10 +81,12 @@
                                             <img src="{{ $bills->image_status }}" alt="Caution acceptée">
                                             <span style="display: none;">{{ $bills->bill_status}}</span>
                                         </td>
-                                        <td>   
+                                        <td> 
+                                            @if (auth()->user()->roles->supprimer_edit_facture)  
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="DELETE">
                                                 <a data-toggle="modal" data-target="#deleteFacture{{ $bills->id }}" href="" type="button" class="btn  rounded-circle border"><i style="color: red" class="fa-solid fa-trash"></i></a>
                                             </span> 
+                                            @endif
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Factures famile">
                                                 <a  data-family-id="{{ $bills->family_id }}"  type="button" class="familybill btn  rounded-circle border"><i style="color: #47cead" class="fas fa-house"></i></a>
                                             </span> 

@@ -20,27 +20,34 @@
             <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
         </div>
         <div class="col-6 d-flex justify-content-end" >
-            <a href="{{ route('paiement.facture') }}" class="my-custom-btn btn btn-primary my-4">Retour à la liste des factures</a>
+            <a href="{{ url()->previous() }}" class="my-custom-btn btn btn-primary my-4">Retour à la liste des factures</a>
         </div>
         <hr>
         
-        <form action="{{ route('facture.updateStatus', $bill->id) }}" method="post">
-            @csrf
-            @method('PUT')
-            <div style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif" class="mb-3 row d-flex justify-content-between">
-              <div class="col-md-5 p-4 col-12">
-                <span style="font-weight:bold">Status : </span>
-                  <select  class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
-                    @foreach($status as $status)
-                        <option value="{{ $status->id }}" {{ $bill->status == $status->id ? 'selected' : '' }} role="option">{{ $status->status }}</option>
-                    @endforeach
-                </select>
-              </div> 
-              <div style="margin-top:25px;" class="col-md-2 p-4 col-10 d-flex justify-content-center ">
-                <button type="submit" class="btn btn-dark">Enregistrer</button>
+        @if (auth()->user()->roles->changer_status_facture)
+          <form action="{{ route('facture.updateStatus', $bill->id) }}" method="post">
+              @csrf
+              @method('PUT')
+          @else
+              <form>
+          @endif
+              <div style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif" class="mb-3 row d-flex justify-content-between">
+                  <div class="col-md-5 p-4 col-12">
+                      <span style="font-weight:bold">Status : </span>
+                      <select  class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" @if(!auth()->user()->roles->changer_status_facture) disabled @endif>
+                          @foreach($status as $status)
+                              <option value="{{ $status->id }}" {{ $bill->status == $status->id ? 'selected' : '' }} role="option">{{ $status->status }}</option>
+                          @endforeach
+                      </select>
+                  </div> 
+                  @if (auth()->user()->roles->changer_status_facture)
+                  <div style="margin-top:25px;" class="col-md-2 p-4 col-10 d-flex justify-content-center ">
+                      <button type="submit" class="btn btn-dark">Enregistrer</button>
+                  </div>
+                  @endif
               </div>
-            </div>
-        </form>
+          </form>
+
           
           <hr>
         </div>
@@ -105,7 +112,9 @@
         <span style="font-weight:bold">Echéance </span> <br> <br>
         <span style="font-weight:bold">Reste à payer : {{ number_format($bill->payment_total_amount-$bill->amount_paid, 2, ',', ' ') }} €</span> 
         <br><br><br>
-        <a href="{{ route("paiement_immediat",$bill->id ) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Immédiat <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
+        @if (auth()->user()->roles->paiement_immediat)
+          <a href="{{ route("paiement_immediat",$bill->id ) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Immédiat <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
+        @endif
       </div>
     </div>
 
@@ -126,28 +135,35 @@
       <tbody>
           @foreach ($shop as $shop)
           <tr>
+            @if (auth()->user()->roles->changer_designation_facture)
             <form action="{{ route('facture.updateDes', $shop->id_liaison) }}" method="post">
-              @csrf
-              @method('PUT')
-              <td style="width: 800px;">
-                <div class="row ">
-                  <div class="col-md-2 col-12">
-                    <img style="height: 70px" src="{{ $shop->image }}"  alt="">
-                  </div>
-                    <div class="col-md-6 col-12">
-                      <select name="designation"  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
-                        <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
-                        @foreach($designation as $title)
-                            <option value="{{ $title }}" role="option">{{ $title }}</option>
-                        @endforeach
-                    </select>
+                @csrf
+                @method('PUT')
+            @else
+                <form>
+            @endif
+                <td style="width: 800px;">
+                    <div class="row ">
+                        <div class="col-md-2 col-12">
+                            <img style="height: 70px" src="{{ $shop->image }}"  alt="">
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <select name="designation"  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" @if(!auth()->user()->roles->changer_designation_facture) disabled @endif>
+                                <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
+                                @foreach($designation as $title)
+                                    <option value="{{ $title }}" role="option">{{ $title }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @if (auth()->user()->roles->changer_designation_facture)
+                        <div class="col-md-2 col-12">
+                            <button type="submit" class="btn btn-sm btn-warning mt-3">Changer</button>
+                        </div>
+                        @endif
                     </div>
-                  <div class="col-md-2 col-12">
-                    <button type="submit" class="btn btn-sm btn-warning mt-3">Changer</button>
-                  </div>
-                </div>
-              </td>
+                </td>
             </form>
+
               <td>{{ $shop->quantity }} </td>
               <td>{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
               <td>{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>

@@ -118,9 +118,12 @@
                                 </div>
                         @endif
                         <!-- Button trigger modal -->
-                        <div class="col-6 form-group mt-3 ">
-                            <button data-toggle="modal" data-target="#addMember" type="button"  class="m-0 user-link btn btn-primary">Ajouter un user <i class="mx-2 fa-solid fa-plus"></i></button>
-                        </div>
+                        @if (auth()->user()->roles->supprimer_edit_ajout_user)
+                            <div class="col-6 form-group mt-3 ">
+                                <button data-toggle="modal" data-target="#addMember" type="button"  class="m-0 user-link btn btn-primary">Ajouter un user <i class="mx-2 fa-solid fa-plus"></i></button>
+                            </div>
+                        @endif
+                        
                           <!-- Modal -->
                           <div class="modal fade " id="addMember" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered " role="document">
@@ -161,17 +164,20 @@
                                                 $n_users->birthdate
                                             @endif
                                         </td>
-                                        <td>   
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="DELETE">
-                                                <img data-user-id="{{ $n_users->user_id }}" class="deleteUser editbtn2 mx-2" src="{{ asset('assets/images/delete.png') }}" alt="">
-                                            </span>
-                                            
+                                        <td> 
+                                            @if (auth()->user()->roles->supprimer_edit_ajout_user)  
+                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="DELETE">
+                                                    <img data-user-id="{{ $n_users->user_id }}" class="deleteUser editbtn2 mx-2" src="{{ asset('assets/images/delete.png') }}" alt="">
+                                                </span>
+                                            @endif
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Facture Famille">
                                             <img  data-family-id="{{ $n_users->family_id }}"  type="button" class="familybill editbtn2 mx-2" src="{{ asset('assets/images/icon.png') }}"> 
                                             </span>
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Réinitialiser le mot de passe">
-                                                <img data-user-id="{{ $n_users->user_id }}" class="Resetpass editbtn2 mx-2" src="{{ asset('assets/images/rotate.png') }}"> 
-                                            </span>
+                                            @if (auth()->user()->roles->reinitialiser_mot_de_passe_user)
+                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Réinitialiser le mot de passe">
+                                                    <img data-user-id="{{ $n_users->user_id }}" class="Resetpass editbtn2 mx-2" src="{{ asset('assets/images/rotate.png') }}"> 
+                                                </span>
+                                            @endif
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Les membres de ma famille">
                                                 <img data-user-id="{{ $n_users->family_id }}"  type="button" class="familymem editbtn2 mx-2" src="{{ asset('assets/images/familyy.png') }}"> 
                                             </span>

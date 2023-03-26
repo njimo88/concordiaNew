@@ -19,12 +19,14 @@ $saison_active = saison_active() ;
         <h4>Mes articles</h4>
         <button type="button" class="btn btn-primary">Article</button>
         <button type="button" class="btn btn-primary">Anciens articles</button>
+
+        @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
         <!-- Button trigger modal pour choisir le type d'article-->
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 Créer un article
 </button>
 <br>
-       
+       @endif
       
         </div>
       
@@ -110,10 +112,11 @@ Créer un article
        <th>Prix TTC</th>
        <th>Prix Cumulé</th>
         <th>Stock</th>
+        @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
         <th>Modifier</th>
         <th>Supprimer</th>
         <th>Dupliquer</th>
-        
+        @endif
          
      </thead>
 <tbody>
@@ -127,10 +130,11 @@ Créer un article
 <td>{{$data->price}}</td>
 <td>{{$data->totalprice}}</td>
 <td>{{$data->stock_actuel}}</td>
+@if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
 <td><p data-placement="top" data-toggle="tooltip" title="Editer"><a href="{{route('edit_article', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
 <td><p data-placement="top" data-toggle="tooltip" title="Effacer"><a href="{{route('delete_article',[ 'id' => $data->id_shop_article])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');" ><i class="bi bi-trash"></i></button></a></p></td>
 <td><p data-placement="top" data-toggle="tooltip" title="Dupliquer"><a href="{{route('duplicate_article_index', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal"><i class="fa fa-clone " ></i> </button></a></p></td>
-
+@endif
 </tr>
 @endforeach
 
@@ -156,10 +160,11 @@ Créer un article
        <th>Prix TTC</th>
        <th>Prix Cumulé</th>
         <th>Stock</th>
+        @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
         <th>Modifier</th>
         <th>Supprimer</th>
         <th>Dupliquer</th>
-        
+        @endif
          
      </thead>
 <tbody>
@@ -173,10 +178,11 @@ Créer un article
 <td>{{$data->price}}</td>
 <td>{{$data->totalprice}}</td>
 <td>{{$data->stock_actuel}}</td>
+@if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
 <td><p data-placement="top" data-toggle="tooltip" title="Editer"><a href="{{route('edit_article', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
 <td><p data-placement="top" data-toggle="tooltip" title="Effacer"><a href="{{route('delete_article',[ 'id' => $data->id_shop_article])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');" ><i class="bi bi-trash"></i></button></a></p></td>
 <td><p data-placement="top" data-toggle="tooltip" title="Dupliquer"><a href="{{route('duplicate_article_index', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal"><i class="fa fa-clone " ></i> </button></a></p></td>
-
+@endif
 </tr>
 @endforeach
 
