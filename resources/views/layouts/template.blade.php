@@ -486,10 +486,44 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
 <script src="../r_js/jquery.nestable.js"></script>
+<script>
+     $(document).ready(function () {
+        // Événement change pour checkbox3
+        $('#checkbox3').on('change', function () {
+            updateSetting($(this), 3);
+        });
+
+        // Événement change pour checkbox5
+        $('#checkbox5').on('change', function () {
+            updateSetting($(this), 5);
+        });
+
+        function updateSetting(checkbox, settingId) {
+            let settingValue = checkbox.is(':checked') ? 1 : 0;
+
+            $.ajax({
+                url: '{{ route('update_system_setting') }}',
+                type: 'POST',
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'setting_id': settingId,
+                    'setting_value': settingValue
+                },
+                success: function (data) {
+                    console.log(data.message);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
+            });
+        }
+    });
+</script>
 
 <script src="{{asset('assetsAdmin/js/main.js')}}"></script>
 
 <script src="../r_js/style.js"></script>
+
 
     @livewireScripts
 </body>
