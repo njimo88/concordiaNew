@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use App\Http\Requests\AddUserform;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+
 require_once(app_path().'/fonction.php');
 
 
@@ -42,6 +44,17 @@ class n_AdminController extends Controller
         $n_users = User::find($user_id);
         $roles = Role::all();
         return view('admin.modals.editUser', compact('n_users','roles'))->with('user', auth()->user());
+    }
+
+    public function message_general(Request $request){
+        $id = $request->input('setting_id'); 
+        $value = $request->input('setting_value');
+    
+        $systemSetting = SystemSetting::findOrFail($id);
+        $systemSetting->value = $value;
+        $systemSetting->save();
+    
+        return response()->json(['message' => 'Valeur mise à jour avec succès']);
     }
  
 

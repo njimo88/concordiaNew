@@ -10,6 +10,7 @@ use App\Models\Shop_article;
 use App\Models\Shop_category;
 use App\Models\shop_article_1;
 use App\Models\User;
+use App\Models\SystemSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -416,15 +417,22 @@ public function commander_article($id, Request $request)
 */
 
 //---------------------------------------------------------------------frontoffice method pour le shop -------------------------------------------------------'
-public function  MainShop(){
+public function MainShop()
+{
+    
+    $info = Shop_category::where('id_shop_category', '<=', '9')->orderBy('order_category', 'ASC')->get();
 
+    
+    $systemSetting = SystemSetting::find(3);
+    $messageContent = null;
 
- // requete qui permet de recuperer les categories principales , celles qui ont des sous categories
+    if ($systemSetting && $systemSetting->value == 1) {
+        $messageContent = $systemSetting->Message;
+    }
 
- $info = Shop_category::where('id_shop_category','<=','9')->orderBy('order_category', 'ASC')->get();
-
-    return view('A_Shop_Categorie_index',compact('info'))->with('user', auth()->user());
+    return view('A_Shop_Categorie_index', compact('info', 'messageContent'))->with('user', auth()->user());
 }
+
 
 
 // Methode qui permet l'affichage du contenu des sous categories
@@ -459,9 +467,14 @@ public function  Shop_souscategorie($id){
     $requete = getFilteredArticles($n_var); 
 
 
-    
+    $systemSetting = SystemSetting::find(3);
+    $messageContent = null;
 
-    return view('A_Shop_SousCategorie_index',compact('info','info_parent','indice','requete','info2','article','shopService','rooms','a_user'))->with('user', auth()->user());
+    if ($systemSetting && $systemSetting->value == 1) {
+        $messageContent = $systemSetting->Message;
+    }
+
+    return view('A_Shop_SousCategorie_index',compact('info','info_parent','messageContent','indice','requete','info2','article','shopService','rooms','a_user'))->with('user', auth()->user());
 
 }
 
@@ -483,15 +496,22 @@ public function Handle_details($id){
     $info =   Shop_category::get();
     $selectedUsers = array();
 
+    $systemSetting = SystemSetting::find(3);
+    $messageContent = null;
+
+    if ($systemSetting && $systemSetting->value == 1) {
+        $messageContent = $systemSetting->Message;
+    }
+
     // Convertir la chaîne JSON en tableau PHP
     if (Auth::check()) {
         $selectedUsers = getArticleUsers($articl);
     }
     if ($articl->type_article == 2) {
-        return view('Details_article', compact('indice', 'article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user());
+        return view('Details_article', compact('indice', 'messageContent','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user());
 
     }
-    return view('Details_article', compact('indice', 'article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user());
+    return view('Details_article', compact('indice','messageContent', 'article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user());
 }
 
 

@@ -101,7 +101,8 @@ Route::middleware(['auth', 'role:90'])->group(function () {
     Route::put('/admin/members/mdpUniversel/{user_id}', [n_AdminController::class, 'mdpUniversel'])->name('admin.mdpUniversel');
     Route::get('/admin/members/mdpUniverselmodal/{user_id}', [n_AdminController::class, 'mdpUniverselmodal']);
     Route::get('/admin/members/familleMembers/{user_id}', [n_AdminController::class, 'familleMembers']);
-
+/*----------------------- Systeme ------------------------------ */
+Route::post('/admin/update-system-setting', [n_AdminController::class, 'message_general'])->name('update_system_setting');
 
 }); 
 
@@ -257,5 +258,6 @@ Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_metho
 Route::get('/search/blog',[SearchController::class, 'searchBlog']);
 Route::get('/search/shop', [SearchController::class, 'searchShop']);
 Route::get('/search-results', [SearchController::class, 'searchResults']);
+
 
 
