@@ -35,7 +35,7 @@ class Controller_Communication extends Controller
     //   return view('Communication/new_email',compact('shop_article','uuser','data'))->with('user', auth()->user()) ;
    // return sendEmailToUser(140,'MONSIEUR FERANDEL',[10,22,33]);
 
-    return view('Communication/form_email',compact('shop_article','uuser','data'))->with('user', auth()->user()) ;
+    return view('Communication/page_envoi_de_mail',compact('shop_article','uuser'))->with('user', auth()->user()) ;
    
 }
 
@@ -101,10 +101,12 @@ class Controller_Communication extends Controller
         if ($taille_data > 0) {
 
             for ($i=0; $i <$taille_data ; $i++) { 
-                sendEmailToUser($myData[$i],$titre,'text_area') ;
+                sendEmailToUser($myData[$i],$titre,$text_area) ;
             }
-        }else{
+        }elseif($taille_data<=0){
 
+           
+        }else{
             sendEmailToUser($myData[0],$titre,$text_area) ;
         }
 

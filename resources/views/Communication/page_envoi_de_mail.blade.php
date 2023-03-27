@@ -1,54 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Document</title>
+@extends('layouts.template')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<meta charset="UTF-8">
+<!-- Styles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+<!-- Or for RTL support -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
 
-<!-- jQuery JS -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>  
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
-
-
-
-
-
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="/path/to/cdn/jquery.min.js"></script>
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
 
-<link href="../css/styleCom.css" rel="stylesheet">
+@section('content')
 
-</head>
-<body>
+<style>
+.dataTables_wrapper .dataTables_filter {
+    float: right !important;
+    text-align: left !important;
+}
+</style>
+
+
+
+<main id="main" class="main">
+
+<figure class="text-center">
+  
+    <h2>Envoi de mail.</h2>
+
+ 
+</figure>
+
+
 <div class="container">
 
-<div class="row pb-5" style="background-color: red;">
-      
-    <select id="framework" name="framework[]" multiple class="form-control"  onchange="myFunction()">
-      @foreach($shop_article as $value)
+   
+<div class="row pb-5" >
+
+<select class="form-select form-control" id="multiple-select-field"  name="framework[]" data-placeholder="Choix d'articles" onchange="myFunction()"  multiple>
+@foreach($shop_article as $value)
                   <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
                 @endforeach
-     </select>
+</select>
    
 </div>
 
-<br>
-<br>
 
-<button id="submit-button">test</button>         
-<div class="row">
+</div>
+
+
+<div class="container">
+
+
 
 <table id="example" class="display" cellspacing="0" width="100%">
     <thead>
@@ -83,10 +91,20 @@
 
 <br>
 
+
+
+
+</div>
+
+
+<div class="container">
+
+
+
 <form action=""  method="GET"  enctype="multipart/form-data">
           @csrf
           <div class="row pt-5">
-          <input type="submit" class="btn btn-primary" value="Valider">
+       
           </div>
          
           <div class="row">
@@ -106,7 +124,7 @@
 
                           <input type="text" id="title_email" name="title" class="form-control" placeholder="Title">
 
-                          <textarea name="editor1"  id="ckeditor" class="form-control" name="ckeditor"></textarea>
+                          <textarea name="editor1"  id="ckeditor" class="form-control" ></textarea>
                           
           </div>
               <div class="col-md-2">
@@ -154,52 +172,34 @@
 
 
 </script>
-
+<input  class="btn btn-primary"  id="button" value="Valider">
 </form>
 
 
 
 
-
-
-<button id="button">test</button>
-
-</div>
-
 </div>
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+</main>
 
 <script>
-
-$(document).ready(function(){
- $('#framework').multiselect({
-  nonSelectedText: 'Select Framework',
-  enableFiltering: true,
-  enableCaseInsensitiveFiltering: true,
-  buttonWidth:'600px'
- });
- 
-});
-
+$( '#multiple-select-field' ).select2( {
+    theme: "bootstrap-5",
+    width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+    placeholder: $( this ).data( 'placeholder' ),
+    closeOnSelect: false,
+} );
 </script>
 
 
 
+
 <script>
+
+
 
     $(document).ready(function() {
     var table = $('#example').DataTable();
@@ -251,8 +251,16 @@ $(document).ready(function(){
     });
 
 
-  
+    CKEDITOR.replace( 'ckeditor' );
     $('#button').click( function () {
+        var editor = CKEDITOR.instances.ckeditor;
+  if (editor) {
+    var editorValue = editor.getData();
+    console.log(editorValue);
+  } else {
+    console.log('Editor not found.');
+  }
+  var textWithoutTags = editorValue;
 
         alert( table.rows('.selected').data().length +' row(s) selected' );
         const selectedData = table.rows('.selected').data();
@@ -279,7 +287,7 @@ $(document).ready(function(){
 
          // return tab_selected_users;
          var inputValue = $('#title_email').val();
-         var text_area  = $('#ckeditor').val();
+         var text_area  = textWithoutTags;
        
           $.ajax({
 
@@ -323,9 +331,6 @@ $(document).ready(function(){
 </script>
 
 
-
-
-
 <!-- Script JS qui permet de trier dynamiquement en fonction des shop articles, les users qui les ont achetes   -->
 <script>
 
@@ -360,9 +365,4 @@ function myFunction(value) {
 
 
 
-
-
-
-
-</body>
-</html>
+@endsection

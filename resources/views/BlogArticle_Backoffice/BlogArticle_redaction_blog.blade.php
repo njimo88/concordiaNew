@@ -210,10 +210,10 @@
 
 
 </form>
+<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 
 </main>
 
-<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 
 
 

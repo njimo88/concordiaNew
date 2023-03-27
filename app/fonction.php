@@ -760,7 +760,7 @@ function sendEmailToUser($user_id, $message1,$data) {
   $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
   $email = $user->email; // Get the user's email address
 
-  Mail::to($email)->cc('ericksennkp@icloud.com')->bcc('ericksennkp@icloud.com')->send(new UserEmail($message1,$data)) ;
+  Mail::to($email)->cc('')->bcc('')->send(new UserEmail($message1,$data)) ;
  
  // Send the email using Laravel's Mail facade
 
@@ -785,16 +785,24 @@ class UserEmail extends \Illuminate\Mail\Mailable {
 
 /* -------------------------SendEmail ------------------------------- */
 
-function receiveEmailFromUser(Request $request, $email_destinataire) {
+function receiveEmailFromUser(Request $request,$email_destinataire) {
     $email = $request->input('email');
     $message = $request->input('message');
     $nom = $request->input('name');
 
+    
     Mail::raw($message, function($message) use ($email,$email_destinataire,$nom) {
-        $message->to($email_destinataire)
-                ->subject('Nouveau message de '.$nom)
+                $message->from('nkpericksen@gmail.com')
+                ->to($email_destinataire)
+                ->subject('['.$nom.'] Message d\'un utilisateur')
                 ->replyTo($email);
     });
+
+    
+
+    //dd($email);
+
+    
 }
 
 
