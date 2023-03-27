@@ -17,51 +17,7 @@ use App\Models\Shop_category;
 
 class A_ControllerBlog extends Controller
 { 
-   /* 
-       public function Afficher(){
-        $data = [
-            'productOne' => 'iphone',
-            'productTwo' => 'Samsung',
-        ] ;
-
-        $letitre = A_Blog_Post::select('titre')->get();
-
-       
-
-        $Nom = "cool";
-        $a_infoblog = A_Blog_Post::get();
-
-        return view('Blog_singlepage', compact('a_infoblog'));
-        
-        //return view('Blog_singlepage')->with('data',$data) ; // with the "wih method" the key and the $variable must be identical
-    }
    
-   
-
-   public function a_Afficher_PagePrincipal(){
-
-
-        $a_infoblog = A_Blog_Post::latest('date_post')->paginate(25,['*'],'A_Blog_index'); //there are also SortBy it will be Asc order 	->sortBy('code');
-        $a_contenu = A_Blog_Post::select('contenu')->get();
-
-       //$a_categorie1 = A_Blog_Post::select('categorie1')->get();
-       $a_categorie1= A_Blog_Post::first()->get('categorie1');
-
-     //   $a_contenu = A_ControllerBlog::htmlToPlainText($a_contenu) ;
-    
-        return view("A_Blog_index",[
-            'a_infoblog' => $a_infoblog,
-            'a_contenu' => $a_contenu,
-            'a_categorie1' => $a_categorie1
-        ]);
-    }
-             $a_post = A_Blog_Post::latest('date_post')->paginate(5);
-          $a_post = A_Blog_Post::paginate(5);
-
-          return view('Blog_test',compact('a_post'));
-          
-          */
-
     public function a_fetchPost(Request $request){
         
         $a_post = A_Blog_Post::latest('date_post')->paginate(3);

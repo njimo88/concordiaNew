@@ -20,24 +20,25 @@ use App\Models\Shop_category;
                       <span aria-hidden="true">&times;</span>
                   </button>
               </div>
-              <form action="" id="sendMailForm" method="post" class="form-example">
+              <form action="{{route('traitement_prendre_contact')}}" id="sendMailForm" method="post" class="form-example">
+                @csrf
                   <div class="modal-body p-5 py-3">
                   <fieldset class="form-group">
                               <div class="form cf form-group row">
 
                               <div class="plan cf form-group col-sm-10">
 
-                                  <input type="radio" name="emailcontact[]" id="bureau" value="1" checked>
+                                  <input type="checkbox" name="bureau" id="bureau" value="1" >
                                   <label class="bureau-label four col" for="bureau">
                                       Bureau
                                   </label>
 
-                                  <input type="radio" name="emailcontact[]" id="tresorier" value="2">
+                                  <input  type="checkbox" name="tresorier" id="tresorier" value="2">
                                   <label class="tresorier-label four col" for="tresorier">
                                       Trésorier
                                   </label>
 
-                                  <input type="radio" name="emailcontact[]" id="president" value="3">
+                                  <input  type="checkbox"name="president" id="president" value="3">
                                   <label class="president-label four col" for="president">
                                       Président
                                   </label>

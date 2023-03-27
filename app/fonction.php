@@ -11,6 +11,7 @@ use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
 use App\Models\bills;
 use App\Models\ShopMessage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -752,7 +753,7 @@ function envoi_de_mail($users)
 
 
 
-
+/* -------------------------SendEmailToUser using the id ------------------------------- */
 
 function sendEmailToUser($user_id, $message1,$data) {
 
@@ -782,17 +783,19 @@ class UserEmail extends \Illuminate\Mail\Mailable {
 
 }
 
+/* -------------------------SendEmail ------------------------------- */
 
+function receiveEmailFromUser(Request $request, $email_destinataire) {
+    $email = $request->input('email');
+    $message = $request->input('message');
+    $nom = $request->input('name');
 
-
-
-
-
-
-
-
-
-
+    Mail::raw($message, function($message) use ($email,$email_destinataire,$nom) {
+        $message->to($email_destinataire)
+                ->subject('Nouveau message de '.$nom)
+                ->replyTo($email);
+    });
+}
 
 
 

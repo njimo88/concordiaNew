@@ -11,6 +11,8 @@ use App\Http\Controllers;
 use App\Http\Controllers\Article_Controller;
 use App\Http\Controllers\PDF_Controller;
 use App\Http\Controllers\Controller_Communication;
+use App\Http\Controllers\Prendre_Contact_Controller;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\n_AdminController;
@@ -251,3 +253,7 @@ Route::get('/historique_appel/{id}', [Controller_club::class, 'display_historiqu
 
 #-------------------------------pdf generate-------------------
 Route::get('/generate-pdf/{id}',[PDF_Controller::class, 'generate'])->name('generate-pdf');
+
+#-------------------------------route pour gerer l'envoi de mail  generate-------------------
+Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');
+
