@@ -21,19 +21,19 @@ class Prendre_Contact_Controller extends Controller
 
             if ($request->input('bureau') == 1){
 
-                receiveEmailFromUser($request,'nnkp066@gmail.com');
+                receiveEmailFromUser($request,'bureau@gym-concordia.com');
             
 
 
             }elseif($request->input('tresorier') == 2){
 
-                receiveEmailFromUser($request,'nnkp066@gmail.com');
+                receiveEmailFromUser($request,'tresorier@gym-concordia.com');
                
               
 
             }elseif($request->input('president') == 3){
 
-                receiveEmailFromUser($request,'elric.ferandel@gmail.com');
+                receiveEmailFromUser($request,'president@gym-concordia.com');
                
               
             }
@@ -48,8 +48,7 @@ class Prendre_Contact_Controller extends Controller
     }
 
 
-
-
+    
 
 
 
