@@ -82,6 +82,7 @@ class A_ControllerBlog extends Controller
         $post = DB::table('blog_posts')
         ->join('system', 'blog_posts.id_blog_post_primaire', '=', 'system.value')
         ->where('system.id_system', '=', 6)
+        ->where('status','Publié')
         ->select('blog_posts.contenu')
         ->first();
 
