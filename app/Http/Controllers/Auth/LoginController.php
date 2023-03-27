@@ -14,7 +14,7 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected $redirectTo = '/';
+    protected $redirectTo = '/bbb';
     public function showLoginForm()
 {
     // Store the previous URL in the session

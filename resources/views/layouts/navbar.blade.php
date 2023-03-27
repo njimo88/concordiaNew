@@ -2,6 +2,7 @@
 <?php
 use Illuminate\Support\Facades\DB;
 use App\Models\Shop_category;
+use Illuminate\Support\Facades\Route;
 ?>
 @if (!in_array(Route::currentRouteName(), ['register', 'login']))
     <!-- ======= Header ======= -->

@@ -82,6 +82,7 @@ class A_ControllerBlog extends Controller
         $post = DB::table('blog_posts')
         ->join('system', 'blog_posts.id_blog_post_primaire', '=', 'system.value')
         ->where('system.id_system', '=', 6)
+        ->where('status','Publié')
         ->select('blog_posts.contenu')
         ->first();
 
@@ -143,6 +144,12 @@ public function recherche_par_cat2(Request $request, $id) {
 
 
   
+
+
+
+
+
+
  public function a_requetes1(Request $request){
 
         $cat1 = array();

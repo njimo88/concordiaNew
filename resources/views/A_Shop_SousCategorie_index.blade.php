@@ -1,8 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-<main id="main" class="main" class="mt-0" style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height: 100vh;">
+<main id="main" class="main pt-3" class="mt-0" style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height: 100vh;">
   
+  @if($messageContent)
+      <div style="background-color: #fefefe" class="container mb-3 p-3 border rounded">
+          <div class="row">
+              <div class="col-12">
+                  <!-- Affichez le contenu du champ Message -->
+                  {!! $messageContent !!}
+              </div>
+          </div>
+      </div>
+      @endif
 
   <div class="container">
     
