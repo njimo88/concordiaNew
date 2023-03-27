@@ -23,45 +23,21 @@ class Controller_Communication extends Controller
 
    $saison_actu = saison_active() ;
 
-
-    /*
-    $users = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
-    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-    ->get();
-    */
     $users = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')->distinct()
     ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
     ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)->get();
 
 
-
-
-   /*  pour la view new email
-    $data = [];
-    foreach ($users as $result) {
-        $data[] = [
-            'nom' => $result->name,
-            'email' => $result->email,
-            'id' => $result->id_shop_article,
-            
-        ];
-    }
-*/
-$data = [];
-    foreach ($users as $result) {
-        $data[] = [
-            'id' => $result->id_shop_article,
-            
-        ];
-    }
  
         $shop_article = Shop_article::select('*')->where('saison', $saison_actu)->distinct('id_shop_article')->get();
         $uuser =  $users ;
+
     //   return view('Communication/new_email',compact('shop_article','uuser','data'))->with('user', auth()->user()) ;
    // return sendEmailToUser(140,'MONSIEUR FERANDEL',[10,22,33]);
-   return view('Communication/form_email',compact('shop_article','uuser','data'))->with('user', auth()->user()) ;
+
+    return view('Communication/form_email',compact('shop_article','uuser','data'))->with('user', auth()->user()) ;
    
-   }
+}
 
    function get_info(Request $request, $article_id){
 
