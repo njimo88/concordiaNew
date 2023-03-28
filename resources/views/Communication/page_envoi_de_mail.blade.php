@@ -65,7 +65,8 @@
                     <th hidden>Id user</th>
                     <th>Nom</th>
                     <th>email</th>
-                    <th>id article</th>
+                    <th>Articles</th>
+                    <th hidden>title</th>
                 
                 </tr>
     </thead>
@@ -80,7 +81,8 @@
                <td hidden> {{$data->user_id}} </td>
                 <td> {{$data->name}} </td>
                 <td> {{$data->email}} </td>
-                <td id='myTdElement'>{{$data->id_shop_article}}</td>
+                <td id='myTdElement' hidden>{{$data->id_shop_article}}</td>
+                <td>{{$data->title}}</td>
                 
             </tr>
        @endforeach
@@ -114,11 +116,7 @@
 
           </div>
 
-          
-
-
-
-              
+        
           <div class="col-md-8">
               <br>
 
