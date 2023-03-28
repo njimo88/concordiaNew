@@ -21,21 +21,25 @@ class Prendre_Contact_Controller extends Controller
 
             if ($request->input('bureau') == 1){
 
-                receiveEmailFromUser($request,'bureau@gym-concordia.com');
+               receiveEmailFromUser($request,'bureau@gym-concordia.com');
+              // envoiEmail($email, $message,'nnkp066@gmail.com',$nom) ;
             
 
 
             }elseif($request->input('tresorier') == 2){
 
-                receiveEmailFromUser($request,'tresorier@gym-concordia.com');
-               
+         receiveEmailFromUser($request,'tresorier@gym-concordia.com');
+             //envoiEmail($email, $message,'nnkp066@gmail.com',$nom) ;
+            
               
 
             }elseif($request->input('president') == 3){
 
                // receiveEmailFromUser($request,'president@gym-concordia.com');
-             //  receiveEmailFromUser($request,'nnkp066@gmail.com');
                receiveEmailFromUser($request,'nnkp066@gmail.com');
+
+            // envoiEmail($email, $message,'nnkp066@gmail.com',$nom) ;
+            
                
               
             }

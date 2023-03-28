@@ -13,6 +13,7 @@ use App\Models\bills;
 use App\Models\ShopMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Config;
 
 
 
@@ -792,7 +793,7 @@ function receiveEmailFromUser(Request $request,$email_destinataire) {
 
     
     Mail::raw($message, function($message) use ($email,$email_destinataire,$nom) {
-                $message->from('nkpericksen@gmail.com')
+                $message->from(config('mail.from.address'), config('mail.from.name'))
                 ->to($email_destinataire)
                 ->subject('['.$nom.'] Message d\'un utilisateur')
                 ->replyTo($email);
@@ -804,6 +805,77 @@ function receiveEmailFromUser(Request $request,$email_destinataire) {
 
     
 }
+
+/* -------------------------another Email function  ------------------------------- */
+
+
+
+function envoiEmail($userEmail, $message,$receiverEmail,$userName) {
+
+   
+    // Set the SMTP credentials dynamically
+    /*
+    config(['mail.from.address' => ]);
+    config(['mail.from.name' =>]);
+    config(['mail.host' => 'smtp.gmail.com']);
+    config(['mail.port' => 587]);
+    config(['mail.encryption' => 'tls']);
+    */
+ 
+    Config::set('mail.from.address', $userEmail);
+    Config::set('mail.smtp.username',  $userName);
+  
+
+    Mail::to($receiverEmail)->send(new ContactFormMail($userEmail, $message,$userName));
+}
+
+
+class ContactFormMail  extends \Illuminate\Mail\Mailable{
+ 
+
+    public $userEmail;
+    public $message;
+    public $userName;
+  
+
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($userEmail, $message, $userName)
+    {
+        $this->userEmail = $userEmail;
+        $this->message = $message;
+        $this->userName = $userName;
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build()
+    {
+        return  $this->from($this->userEmail, $this->userName)
+                    ->subject('['.$this->userName.'] Message d\'un utilisateur')
+                    ->view('Communication/form_email')
+                    ->with([
+                        'userEmail' => $this->userEmail,
+                        'message' => $this->message,
+                    ]);
+    }
+
+
+    }
+
+
+
+
+
+
+
+
 
 
 
@@ -824,7 +896,3 @@ function fetchDay($date){
 
 }
 
-
-
-
-  

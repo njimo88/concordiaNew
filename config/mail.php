@@ -14,6 +14,8 @@ return [
     */
 
     'default' => env('MAIL_MAILER', 'smtp'),
+   // 'default' => env('MAIL_MAILER', 'sendmail'),
+   // 'driver' => env('MAIL_DRIVER', 'sendmail'),
 
     /*
     |--------------------------------------------------------------------------
@@ -59,7 +61,8 @@ return [
 
         'sendmail' => [
             'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+            'path' => env('MAIL_SENDMAIL_PATH',  'C:/wamp64/sendmail/sendmail.exe -t -i'),
+           
         ],
 
         'log' => [
@@ -95,6 +98,8 @@ return [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
+   
+
 
     /*
     |--------------------------------------------------------------------------

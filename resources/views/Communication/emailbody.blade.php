@@ -12,6 +12,8 @@
    
     {{$message1}}
 
-    {{$data}}
+  
+    {!! $data !!}
+    
 </body>
 </html>
