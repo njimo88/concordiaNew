@@ -21,30 +21,32 @@ class Prendre_Contact_Controller extends Controller
 
             if ($request->input('bureau') == 1){
 
-               receiveEmailFromUser($request,'bureau@gym-concordia.com');
-              // envoiEmail($email, $message,'nnkp066@gmail.com',$nom) ;
+              // receiveEmailFromUser($request,'bureau@gym-concordia.com');
+              envoiEmail($email, $message,'bureau@gym-concordia.com',$nom) ;
             
 
 
             }elseif($request->input('tresorier') == 2){
 
-         receiveEmailFromUser($request,'tresorier@gym-concordia.com');
-             //envoiEmail($email, $message,'nnkp066@gmail.com',$nom) ;
+         //receiveEmailFromUser($request,'tresorier@gym-concordia.com');
+            envoiEmail($email, $message,'tresorier@gym-concordia.com',$nom) ;
             
               
 
             }elseif($request->input('president') == 3){
 
                // receiveEmailFromUser($request,'president@gym-concordia.com');
-               receiveEmailFromUser($request,'nnkp066@gmail.com');
+              // receiveEmailFromUser($request,'nnkp066@gmail.com');
 
-            // envoiEmail($email, $message,'nnkp066@gmail.com',$nom) ;
+             envoiEmail($email, $message,'nnkp066@gmail.com',$nom) ;
             
                
               
             }
 
-            return redirect()->back()->with('success', 'Your message has been sent successfully!');
+          // return redirect()->back()->with('success', 'Your message has been sent successfully!#myModal');
+           return redirect()->back()->with('success', 'votre message a été envoyé avec succès!')->with('sent', true);
+         //  return 'ok';
 
 
 

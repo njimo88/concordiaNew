@@ -11,8 +11,53 @@ use App\Models\Shop_category;
                ->get();
     
     @endphp
-     <div class="modal fade" id="contactModal" tabindex="-1" style="z-index:100000" data-backdrop="static" data-keyboard="false" aria-labelledby="contactModalLabel" aria-hidden="true">
-      <div class="modal-dialog  modal-lg">
+    @if(session()->has('success'))
+
+
+
+               <script>
+                          // create temporary div
+                          var tempDiv = document.createElement('div');
+                          tempDiv.id = 'temp-div';
+
+                          // add message to div
+                          tempDiv.innerHTML =  'votre message a été envoyé avec succès!';
+                        
+                          // add div to page
+                          document.body.appendChild(tempDiv);
+                          setTimeout(function() {
+                                                  document.body.removeChild(tempDiv);
+                                            }, 5000); // remove div after 5 seconds
+
+                        
+                  </script>
+
+
+
+            @endif
+
+            <style>
+ #temp-div {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    box-shadow: 0px 0px 10px #cccccc;
+    padding: 20px;
+}
+              </style>
+
+
+
+
+     <div class="modal fade" id="contactModal" tabindex="-1" style="z-index:100000" data-backdrop="static" data-keyboard="false" aria-labelledby="contactModalLabel" aria-hidden="true" data-target="#myModal">
+      
+ 
+
+     
+     <div class="modal-dialog  modal-lg">
           <div style="background-color: #d8e3ff" class="modal-content">
               <div class="modal-header border m-4 mb-0" style="background-color: white;">
                   <h5 class="modal-title" id="contactModalLabel" style=" font-size: 1.5em;font-weight: 400; font-family: Arial, Helvetica, sans-serif">Envoyer un Message</h5>
@@ -428,5 +473,14 @@ use App\Models\Shop_category;
     
     </style>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    @if(!empty(Session::get('sent')) && Session::get('sent') == true)
+          <script>
+          $(function() {
+              $('#myModal').modal('show');
+          });
+          </script>
+      @endif
+
 
 @endif

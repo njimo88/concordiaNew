@@ -814,19 +814,19 @@ function envoiEmail($userEmail, $message,$receiverEmail,$userName) {
 
    
     // Set the SMTP credentials dynamically
-    /*
-    config(['mail.from.address' => ]);
-    config(['mail.from.name' =>]);
-    config(['mail.host' => 'smtp.gmail.com']);
-    config(['mail.port' => 587]);
-    config(['mail.encryption' => 'tls']);
-    */
- 
-    Config::set('mail.from.address', $userEmail);
-    Config::set('mail.smtp.username',  $userName);
-  
+$config = [
+    'driver' => "smtp",
+    'host' => "smtp.ionos.fr",
+    'port' => 465,
+    'from' => ['address' => $userEmail, 'name' => $userName],
+    'encryption' => "ssl",
+    'username' => "webmaster@gym-concordia.com",
+    'password' => "mickmickmath&67_mickmickmath&67"
+];
 
-    Mail::to($receiverEmail)->send(new ContactFormMail($userEmail, $message,$userName));
+    
+
+    Mail::mailer('smtp')->to($receiverEmail)->send(new ContactFormMail($userEmail, $message,$userName));
 }
 
 
