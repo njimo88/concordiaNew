@@ -229,10 +229,8 @@ Route::post('/Communication/email_sender',[Controller_Communication::class,'emai
 
 Route::get('/Commnication/email_page',[Controller_Communication::class,'email_page'])->name('email_page') ;
 
+Route::post('/display_saison',[Controller_Communication::class,'display_by_saison'])->name('display_by_saison') ;
 
-/*------------------------ tuto send email ---------------------------- */
-Route::get('/users', [Controller_Communication::class, 'index_u'])->name('users.index');
-Route::post('/users-send-email', [Controller_Communication::class, 'sendEmail_u'])->name('ajax.send.email');
 
 
 /*----------------------- Club - cours ------------------------------ */

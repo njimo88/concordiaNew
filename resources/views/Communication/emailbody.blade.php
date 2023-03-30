@@ -11,9 +11,6 @@
 
    
     {{$message1}}
-
-  
-    {!! $data !!}
     
 </body>
 </html>

@@ -27,59 +27,104 @@
 
 
 
-@if (auth()->user()->role == 40)
+@if (auth()->user()->role == 40 ||auth()->user()->role == 30 )
 
-@php 
-$id_teacher = auth()->user()->user_id ;
-$add = [] ;
-@endphp
+        @php 
+        $id_teacher = auth()->user()->user_id ;
+        $my_email = auth()->user()->email ;
+        $userName = auth()->user()->name;
+        
+        $my_articles = [] ;
+        $add = [] ;
+        @endphp
+
+           <style>
+
+                  .success-message {
+                      color: green;
+                  }
+
+                  .error-message {
+                      color: red;
+                  }
+
+
+          </style>
+
 
 <main id="main" class="main">
 
+
+<div class="row"> 
+        <div class="col-md-8"></div>
+        <div class="col-md-4">  
+       
+       <label> Saison </label>
+       <form action="{{route('display_by_saison')}}" method="POST">
+           @csrf
+         <select class="form-control" name="saison" id="saison">
+                  
+                  @foreach($saison_list as $data)
+
+                                  <option value="{{$data->saison}}" {{ $data->saison == $saison_actu ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
+                  
+                  
+                                  @endforeach
+
+         </select>
+         <button type="submit" id="hide-row-btn" >Valider</button>
+       
+       </form>
+   </div>
+   </div>  
+      
+
+
+<div id="response-message"> </div>
+
 <figure class="text-center">
-  
     <h2>Envoi de mail.</h2>
-  
-{{$id_teacher}}
 </figure>
+
+@if(session('submitted'))
 
 
 <div class="container">
 
-   
 <div class="row pb-5" >
 
 <select class="form-select form-control" id="multiple-select-field"  name="framework[]" data-placeholder="Choix d'articles" onchange="myFunction()"  multiple>
-                @foreach($shop_article_lesson as $value)
+                @foreach($shop_article_lesson_pick as $value)
                         @php $add [] = (array)json_decode($value->teacher) ; 
+
                 if (isset($add)) {
                         foreach ($add as $teacherArray) {
                                   foreach($teacherArray as  $t){
-                                   
+                                  
                                     if ($id_teacher === $t){
-                                        
+                                              $my_articles [] = $value->id_shop_article ;
 
                         @endphp
-                        <option value="{{$value->id_shop_article}}">{{$value->title}}   {{$value->id_shop_article}}</option>
+                        <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
                                       
                         @php
                                         break;
                                     }
-                                       
+                                      
                                         }
 
                                         }
 
                                 }
-                                       
+                                      
                                         $add = [] ;
                         @endphp
-                       
+                      
 
-               
+              
                 @endforeach
 </select>
-   
+  
 </div>
 
 
@@ -103,22 +148,36 @@ $add = [] ;
                 
                 </tr>
     </thead>
- 
-   
- 
+
+  
+
     <tbody>
         
-       @foreach($uusers_lesson as $data)
-            <tr>
-               <td><input type="checkbox" id="checkboxes" > </td>
-               <td hidden> {{$data->user_id}} </td>
-                <td> {{$data->name}} </td>
-                <td> {{$data->email}} </td>
-                <td id='myTdElement' hidden>{{$data->id_shop_article}}</td>
-                <td>{{$data->title}}</td>
-                
-            </tr>
-       @endforeach
+      @foreach($users_lesson_pick as $data)
+
+                  
+
+                          
+
+            @if ( in_array($data->id_shop_article, $my_articles) )
+
+
+                  <tr>
+                    <td><input type="checkbox" id="checkboxes" > </td>
+                    <td hidden> {{$data->user_id}} </td>
+                      <td> {{$data->name}} </td>
+                      <td> {{$data->email}} </td>
+                      <td id='myTdElement' hidden>{{$data->id_shop_article}}</td>
+                      <td>{{$data->title}}</td>
+                      
+                  </tr>
+            @endif
+
+
+
+
+
+      @endforeach
   
     </tbody>
 
@@ -130,6 +189,115 @@ $add = [] ;
 
 
 </div>
+
+
+
+
+@else
+
+              <div class="container">
+
+              <div class="row pb-5" >
+
+              <select class="form-select form-control" id="multiple-select-field"  name="framework[]" data-placeholder="Choix d'articles" onchange="myFunction()"  multiple>
+                              @foreach($shop_article_lesson_pick as $value)
+                                      @php $add [] = (array)json_decode($value->teacher) ; 
+
+                              if (isset($add)) {
+                                      foreach ($add as $teacherArray) {
+                                                foreach($teacherArray as  $t){
+                                                
+                                                  if ($id_teacher === $t){
+                                                            $my_articles [] = $value->id_shop_article ;
+
+                                      @endphp
+                                      <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
+                                                    
+                                      @php
+                                                      break;
+                                                  }
+                                                    
+                                                      }
+
+                                                      }
+
+                                              }
+                                                    
+                                                      $add = [] ;
+                                      @endphp
+                                    
+
+                            
+                              @endforeach
+              </select>
+                
+              </div>
+
+
+
+              </div>
+
+
+              <div class="container">
+
+
+
+              <table id="example" class="display" cellspacing="0" width="100%">
+                  <thead>
+                              <tr>
+                                  <th><input type="button" id="select-all" value="tout selectionner"> <input type="button" id="deselect-all" value="tout deselectionner"> </th>
+                                  <th hidden>Id user</th>
+                                  <th>Nom</th>
+                                  <th>email</th>
+                                  <th>Articles</th>
+                                  <th hidden>title</th>
+                              
+                              </tr>
+                  </thead>
+              
+                
+              
+                  <tbody>
+                      
+                    @foreach($users_lesson_pick as $data)
+
+                                
+
+                                        
+
+                          @if ( in_array($data->id_shop_article, $my_articles) )
+
+
+                                <tr>
+                                  <td><input type="checkbox" id="checkboxes" > </td>
+                                  <td hidden> {{$data->user_id}} </td>
+                                    <td> {{$data->name}} </td>
+                                    <td> {{$data->email}} </td>
+                                    <td id='myTdElement' hidden>{{$data->id_shop_article}}</td>
+                                    <td>{{$data->title}}</td>
+                                    
+                                </tr>
+                          @endif
+
+
+
+
+
+                    @endforeach
+                
+                  </tbody>
+
+              </table>
+
+              <br>
+
+
+
+
+              </div>
+
+@endif
+
 
 
 <div class="container">
@@ -152,7 +320,8 @@ $add = [] ;
         
           <div class="col-md-8">
               <br>
-
+                           <input hidden id="userName" name="userName" value="{{$userName}}">
+                          <input hidden id="email_sender" name="email_sender" value="{{$my_email}}">
                           <input type="text" id="title_email" name="title" class="form-control" placeholder="Title">
 
                           <textarea name="editor1"  id="ckeditor" class="form-control" ></textarea>
@@ -318,6 +487,7 @@ $( '#multiple-select-field' ).select2( {
 
          // return tab_selected_users;
          var inputValue = $('#title_email').val();
+         var userName     = $('#userName').val();
          var text_area  = textWithoutTags;
        
           $.ajax({
@@ -331,14 +501,26 @@ $( '#multiple-select-field' ).select2( {
     data: {
         tab_selected_users: tab_selected_users,
         inputValue: inputValue,
-        text_area: text_area
+        text_area: text_area,
+        userName :userName
     },
     success: function(response) {
         console.log(response);
+
+        if (response.status === 'success') {
+          //  $('#message').text(response.message).addClass('success-message');
+          var message = '<div class="alert alert-success">' + response.message + '</div>';
+          $('#response-message').html(message);
+          
+        } else {
+          var message = '<div class="alert alert-danger">' + response.message + '</div>';
+        $('#response-message').html(message);
+        }
     },
     error: function(xhr, status, error) {
         console.log(xhr.responseText);
     }
+
 
 
 });
@@ -400,40 +582,131 @@ function myFunction(value) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @elseif (auth()->user()->role == 90 || auth()->user()->role == 100)
 
+      @php
 
+      $my_email = auth()->user()->email ;
+      $userName = auth()->user()->name;
+
+      @endphp
 
 
 <main id="main" class="main">
 
+<div id="response-message"> </div>
+
+
+<div class="row"> 
+        <div class="col-md-8"></div>
+        <div class="col-md-4">  
+       
+       <label> Saison </label>
+       <form action="{{route('display_by_saison')}}" method="POST">
+           @csrf
+         <select class="form-control" name="saison" id="saison">
+                  
+                  @foreach($saison_list as $data)
+
+                                  <option value="{{$data->saison}}" {{ $data->saison == $saison_actu ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
+                  
+                  
+                                  @endforeach
+
+         </select>
+         <button type="submit" id="hide-row-btn" >Valider</button>
+       
+       </form>
+   </div>
+   </div>  
+      
+
+
+
+
+
+
+
+
+
 <figure class="text-center">
   
-    <h2>Envoi de mail.</h2>
+    <h2>Envoi de mail</h2>
 
  
 </figure>
+
+@if(session('submitted'))
+
+<div class="container">
+ <h3 style="text-align: center;"> {{ $saison }} </h3>
+   
+<div class="row pb-5" >
+
+<select class="form-select form-control" id="multiple-select-field"  name="framework[]" data-placeholder="Choix d'articles" onchange="myFunction()"  multiple>
+@foreach($shop_article_pick as $value)
+                  <option value="{{$value->id_shop_article}}">{{$value->title}}</option>
+                @endforeach
+</select>
+   
+</div>
+
+
+</div>
+
+
+<div class="container">
+
+
+
+<table id="example" class="display" cellspacing="0" width="100%">
+    <thead>
+                <tr>
+                    <th><input type="button" id="select-all" value="tout selectionner"> <input type="button" id="deselect-all" value="tout deselectionner"> </th>
+                    <th hidden>Id user</th>
+                    <th>Nom</th>
+                    <th>email</th>
+                    <th>Articles</th>
+                    <th hidden>title</th>
+                
+                </tr>
+    </thead>
+ 
+   
+ 
+    <tbody>
+        
+       @foreach($users_pick as $data)
+            <tr>
+               <td><input type="checkbox" id="checkboxes" > </td>
+               <td hidden> {{$data->user_id}} </td>
+                <td> {{$data->name}} </td>
+                <td> {{$data->email}} </td>
+                <td id='myTdElement' hidden>{{$data->id_shop_article}}</td>
+                <td>{{$data->title}}</td>
+                
+            </tr>
+       @endforeach
+  
+    </tbody>
+
+</table>
+
+<br>
+
+
+
+
+</div>
+
+
+        
+
+
+
+
+
+@else
 
 
 <div class="container">
@@ -498,6 +771,36 @@ function myFunction(value) {
 </div>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@endif
+
+
+
+
+
+
+
+
 <div class="container">
 
 
@@ -519,6 +822,8 @@ function myFunction(value) {
           <div class="col-md-8">
               <br>
 
+                          <input hidden id="email_sender" name="email_sender" value="{{$my_email}}">
+                          <input hidden id="userName" name="userName" value="{{$userName}}">
                           <input type="text" id="title_email" name="title" class="form-control" placeholder="Title">
 
                           <textarea name="editor1"  id="ckeditor" class="form-control" ></textarea>
@@ -684,6 +989,8 @@ $( '#multiple-select-field' ).select2( {
 
          // return tab_selected_users;
          var inputValue = $('#title_email').val();
+         var email_sender = $('#email_sender').val();
+         var userName     = $('#userName').val();
          var text_area  = textWithoutTags;
        
           $.ajax({
@@ -697,10 +1004,22 @@ $( '#multiple-select-field' ).select2( {
     data: {
         tab_selected_users: tab_selected_users,
         inputValue: inputValue,
-        text_area: text_area
+        text_area: text_area,
+        email_sender:email_sender,
+        userName:userName
     },
     success: function(response) {
         console.log(response);
+
+        if (response.status === 'success') {
+          //  $('#message').text(response.message).addClass('success-message');
+          var message = '<div class="alert alert-success">' + response.message + '</div>';
+          $('#response-message').html(message);
+          
+        } else {
+          var message = '<div class="alert alert-danger">' + response.message + '</div>';
+        $('#response-message').html(message);
+        }
     },
     error: function(xhr, status, error) {
         console.log(xhr.responseText);
@@ -726,7 +1045,6 @@ $( '#multiple-select-field' ).select2( {
 
   
 </script>
-
 
 <!-- Script JS qui permet de trier dynamiquement en fonction des shop articles, les users qui les ont achetes   -->
 <script>

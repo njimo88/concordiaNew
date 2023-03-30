@@ -89,11 +89,6 @@ class BlogArticle_Controller extends Controller
         }
 
 
-
-
-
-
-
         $blog->update($request->all());
         return redirect()->back()->with('user', auth()->user())->with('success', 'le billet de blog modifié a été avec succès');
 

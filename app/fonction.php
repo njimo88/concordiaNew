@@ -738,54 +738,70 @@ function destinataires_du_mail($user_id){
 
 }
 
-function envoi_de_mail($users)
-{
-    $tab = $users ;
-    for ($i=0; $i < count($tab) ; $i++) { 
-        
-        sendEmailToUser($tab[$i],'','') ;
 
-    }
-
-    return response()->json(['success'=>'Send email successfully.']);
-
-
-}
 
 
 
 /* -------------------------SendEmailToUser using the id ------------------------------- */
 
-function sendEmailToUser($user_id, $message1,$data) {
+function sendEmailToUser($user_id, $message1,$data,$email_sender,$userName) {
 
   $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
   $email = $user->email; // Get the user's email address
 
-  Mail::to($email)->cc('')->bcc('')->send(new UserEmail($message1,$data)) ;
+    // Set the SMTP credentials dynamically
+    $config = [
+        'driver' => "smtp",
+        'host' => "smtp.ionos.fr",
+        'port' => 465,
+        'from' => ['address' => $email_sender, 'name' => $userName],
+        'encryption' => "ssl",
+        'username' => "webmaster@gym-concordia.com",
+        'password' => "mickmickmath&67_mickmickmath&67"
+    ];
+
+    Mail::mailer('smtp')->to($email)->cc($email_sender)->bcc($email_sender)->send(new ContactFormMail($email_sender, $message1,$userName));
+   
+ // Mail::to($email)->cc('')->bcc('')->send(new UserEmail($message1,$data)) ;
  
  // Send the email using Laravel's Mail facade
 
 }
 
+/*
+
 class UserEmail extends \Illuminate\Mail\Mailable {
     
+  public $email_sender;  
   public $message1; // Define a public property to store the message
-  public $data;
+  public $userName;
+
+
   
  
-  public function __construct($message1, $data) {
-    $this->message1 = $message1; // Assign the message to the public property
-    $this->data = $data ;
-   
+  public function __construct($email_sender,$message1, $userName) {
+    $this->message1     = $message1; // Assign the message to the public property
+    $this->email_sender = $email_sender ;
+    $this->userName     = $userName;
+    
   }
   public function build() {
-    return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1, 'data' => $this->data]); // Define the email's view
+    return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1]); // Define the email's view
 
+    return  $this->from($this->email_sender, $this->userName)
+    ->subject('['.$this->userName.'] Message d\'un utilisateur')
+    ->view('Communication/emailbody')
+    ->with([
+        'message' => $this->message1,
+    ]);
 
     
   }
 
 }
+
+
+*/
 
 /* -------------------------SendEmail ------------------------------- */
 
