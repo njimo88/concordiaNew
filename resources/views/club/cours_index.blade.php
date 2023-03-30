@@ -32,7 +32,7 @@ $saison_active = saison_active() ;
                                    <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
                    
                    
-                                   @endforeach
+                    @endforeach
 
           </select>
           <button type="submit" id="hide-row-btn" >Submit</button>
@@ -105,9 +105,8 @@ $saison_active = saison_active() ;
                 <!-- Button trigger modal -->
              
                  <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
+                                 @include('formulaire_appel',$data->id_shop_article)              
                                 
-                                
-                              
                                  <div id="content"></div>
                                
    

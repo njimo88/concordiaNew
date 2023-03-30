@@ -319,7 +319,7 @@ use App\Models\Shop_category;
             <li><a href="#"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
             <li class="dropdown"><a href="#"><span>{{ $user->name }}</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
               <ul>
-                @if (auth()->user()->role >= 90)
+                @if (auth()->user()->role >= 20)
                 <li><a href="{{ route('admin.index') }}">Administration</a></li>
              @endif
               

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Shop_category;
 use App\Models\Shop_service;
 use App\Mail\UserEmail;
+use App\Models\shop_article_1;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,14 +29,32 @@ class Controller_Communication extends Controller
     ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)->get();
 
 
- 
-        $shop_article = Shop_article::select('*')->where('saison', $saison_actu)->distinct('id_shop_article')->get();
+      $shop_article = Shop_article::select('*')->where('saison', $saison_actu)->distinct('id_shop_article')->get();
+
+
+         $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
+        ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
+
+
+     $users_lesson = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article','shop_article.title','shop_article_1.teacher')->distinct()
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+    ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
+    ->join('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
+
+    ->where('shop_article.type_article',1)
+    ->where('saison', $saison_actu)->get();
+
+
+
+
         $uuser =  $users ;
+
+        $uusers_lesson = $users_lesson ;
 
     //   return view('Communication/new_email',compact('shop_article','uuser','data'))->with('user', auth()->user()) ;
    // return sendEmailToUser(140,'MONSIEUR FERANDEL',[10,22,33]);
-
-    return view('Communication/page_envoi_de_mail',compact('shop_article','uuser'))->with('user', auth()->user()) ;
+     //   dd($shop_article_lesson);
+   return view('Communication/page_envoi_de_mail',compact('shop_article','uuser','shop_article_lesson','uusers_lesson'))->with('user', auth()->user()) ;
    
 }
 

@@ -780,6 +780,9 @@ class UserEmail extends \Illuminate\Mail\Mailable {
   }
   public function build() {
     return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1, 'data' => $this->data]); // Define the email's view
+
+
+    
   }
 
 }

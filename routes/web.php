@@ -69,7 +69,7 @@ Route::get('/panier/{id}', [App\Http\Controllers\UsersController::class, 'panier
 
 /*-----------Admin----------*/
 
-Route::middleware(['auth', 'role:90'])->group(function () {
+Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/admin', [n_AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/members', [n_AdminController::class, 'members'])->name('utilisateurs.members');
     Route::post('/admin/members/addUser', [n_AdminController::class, 'addUser'])->name('admin.addUser');
