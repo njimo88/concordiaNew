@@ -90,7 +90,7 @@
 
 
 <div class="container">
-
+<h3 style="text-align: center;"> {{ $saison }} </h3>
 <div class="row pb-5" >
 
 <select class="form-select form-control" id="multiple-select-field"  name="framework[]" data-placeholder="Choix d'articles" onchange="myFunction()"  multiple>
@@ -200,7 +200,7 @@
               <div class="row pb-5" >
 
               <select class="form-select form-control" id="multiple-select-field"  name="framework[]" data-placeholder="Choix d'articles" onchange="myFunction()"  multiple>
-                              @foreach($shop_article_lesson_pick as $value)
+                              @foreach($shop_article_lesson as $value)
                                       @php $add [] = (array)json_decode($value->teacher) ; 
 
                               if (isset($add)) {
@@ -259,7 +259,7 @@
               
                   <tbody>
                       
-                    @foreach($users_lesson_pick as $data)
+                    @foreach($uusers_lesson as $data)
 
                                 
 
