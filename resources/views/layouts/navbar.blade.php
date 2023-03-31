@@ -92,6 +92,8 @@ use App\Models\Shop_category;
                               </div>
                           </fieldset>
                           <div class="form-row row mt-5">
+                             
+                              @if (!auth()->user())
                               <div class="form-group col-md-5">
                               <label class="text-dark" for="name">&nbsp;Prénom - Nom</label>
                               <input placeholder="Prénom - Nom" class="form-control mt-2" type="text" name="name" value="" required>
@@ -100,6 +102,18 @@ use App\Models\Shop_category;
                               <label class="text-dark" for="email">&nbsp;Email</label>
                               <input placeholder="Email" class="form-control mt-2" type="email" name="email" value="" required>
                               </div>
+                              @else
+                              <div class="form-group col-md-5">
+                              <label class="text-dark" for="name">&nbsp;Prénom - Nom</label>
+                              <input placeholder="Prénom - Nom" class="form-control mt-2" type="text" name="name" value="{{auth()->user()->lastname}} {{auth()->user()->name}} " required readonly style="background-color: grey; color:#fff">
+                              </div>
+
+                              <div class="form-group col-md-7">
+                              <label class="text-dark" for="email">&nbsp;Email</label>
+                              <input placeholder="Email" class="form-control mt-2" type="email" name="email" value="{{auth()->user()->email}}" required readonly style="background-color: grey; color:#ffffff">
+                              </div>
+
+                              @endif
                           </div>
                               <div class="form-row">
                           <div class="form-group col-md-12">
