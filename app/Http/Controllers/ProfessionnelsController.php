@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cart;
 use App\Models\CalculSalaire;
 use App\Models\BasketAn;
+use Illuminate\Support\Facades\Storage;
+
 require_once(app_path().'/fonction.php');
 
 
@@ -274,7 +276,75 @@ private function getPeriode($path)
 public function declarationHeures($id)
     {
         $user_id = $id;
+        
         return view('admin.professionnels.declarationHeures',compact('user_id'))->with('user', auth()->user());
+    }
+
+    public function declaration($id, Request $request)
+    {
+        $user_id = $id;
+        $info = $request->all();
+        return view('admin.professionnels.declaration',compact('user_id','info'))->with('user', auth()->user());
+    }
+
+    
+
+
+
+function checkFile()
+{
+    $professionals = Professionnels::all();
+    $array_users = array();
+    $array_general = array();
+
+    foreach ($professionals as $row) {
+        $id_professionnal = $row['id_user'];
+        $directory = "employee_documents/3-validation/" . $id_professionnal;
+        $files = Storage::disk('public')->files($directory);
+        
+        foreach ($files as $file) {
+            if (pathinfo($file, PATHINFO_EXTENSION) == 'csv') {
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                dd($filename);
+                $explode = explode('-', $filename);
+                $year = $explode[1];
+                $month = $explode[2];
+
+                $date = '1-' . $month . "-" . $year;
+                setlocale(LC_TIME, 'fr_FR');
+                $format_date = strftime("%B %Y", strtotime($date));
+                $periode = utf8_encode($format_date);
+
+                $fichier_demande_csv = $directory . '/' . $id_professionnal . '-' . $year . '-' . $month . '.csv';
+                $fichier_demande_pdf = $directory . '/' . $id_professionnal . '-' . $year . '-' . $month . '.pdf';
+
+                if (Storage::disk('public')->exists($fichier_demande_csv)) {
+                    if (!Storage::disk('public')->exists($fichier_demande_pdf)) {
+                        $array_users['id_user'] = $id_professionnal;
+                        $array_users['name'] = $row['lastname'] . " " . $row['firstname'];
+                        $array_users['periode'] = $periode;
+
+                        array_push($array_general, $array_users);
+                    }
+                }
+            }
+        }
+    }
+    dd($array_general);
+
+    return $array_general;
+}
+
+public function valideHeure()
+    {
+        $array_professionals = $this->checkFile();
+        $totalItems = 0; 
+
+        return view('admin.professionnels.valider_heures', [
+            'array_professionals' => $array_professionals,
+            'totalItems' => $totalItems,
+            'pageName' => 'Valider les heures',
+        ]);
     }
 
 

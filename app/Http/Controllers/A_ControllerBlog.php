@@ -86,7 +86,7 @@ class A_ControllerBlog extends Controller
         ->select('blog_posts.contenu')
         ->first();
 
-        printUsersBirthdayOnImage();
+        
 
 
    // Check if request is ajax or not 

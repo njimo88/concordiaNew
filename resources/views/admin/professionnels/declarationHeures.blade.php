@@ -111,6 +111,13 @@ function VacancesScolaires($datedujour)
 
 	$year = date("Y", $datedujour);
 
+	//2020-2021
+	$toussaint[2020]   = array(mktime(0, 0, 0, 10,  24,  2020), mktime(0, 0, 0, 11,  8,  2020)); //ok
+	$noel[2020] = array(mktime(0, 0, 0, 12,  19,  2020), mktime(0, 0, 0, 1,  3,  2021)); //ok
+	$hiver[2021]   = array(mktime(0, 0, 0, 2,  4,  2021), mktime(0, 0, 0, 2,  20,  2021)); //ok
+	$printemps[2021] = array(mktime(0, 0, 0, 4,  10,  2021), mktime(0, 0, 0, 4,  26,  2021)); //ok
+	$ete[2021] = array(mktime(0, 0, 0, 6,  28,  2021), mktime(0, 0, 0, 9,  6,  2021)); //ok
+
 	//2021-2022
 	$toussaint[2021]   = array(mktime(0, 0, 0, 10,  23,  2021), mktime(0, 0, 0, 11,  8,  2021)); //ok
 	$noel[2021] = array(mktime(0, 0, 0, 12,  18,  2021), mktime(0, 0, 0, 1,  2,  2022)); //ok
@@ -185,41 +192,57 @@ function ColorFont($datedujour)
 	return $colordufont;
 };
 
-function AfficheMois($mois, $annee, $user_id)
-{
-	$user = DB::table('users_professionals')->where('id_user', $user_id)->first();
+function AfficheMois ( $mois , $annee , $user_id )
+{	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "test2";
+	
+	$sql = new mysqli($servername, $username, $password, $dbname);
 
-if ($user) {
-$VariableBDD[0] = $user->id_user;
-$VariableBDD[1] = utf8_decode($user->lastname);
-$VariableBDD[2] = utf8_decode($user->firstname);
-$VariableBDD[3] = $user->VolumeHebdo;
-$VariableBDD[4] = $user->Lundi;
-$VariableBDD[5] = $user->Mardi;
-$VariableBDD[6] = $user->Mercredi;
-$VariableBDD[7] = $user->Jeudi;
-$VariableBDD[8] = $user->Vendredi;
-$VariableBDD[9] = $user->Samedi;
-$VariableBDD[10] = $user->Dimanche;
-$VariableBDD[11] = $user->OldHeuresRealisees;
-$VariableBDD[12] = $user->SoldeConges;
-$VariableBDD[13] = $user->matricule;
-$VariableBDD[14] = $user->email;
-$resultatrenvoye = '';
-$NomEmploye = $VariableBDD[1];
-$PrenomEmploye = $VariableBDD[2];
-$Matricule = $VariableBDD[13];
-$SoldeConges = $VariableBDD[12];
-$EmailEmploye = $VariableBDD[14];
-$saison = getSeason($user_id);
-$saisonplusun = $saison + 1;
-$HeuresTheoriques = array($VariableBDD[4], $VariableBDD[5], $VariableBDD[6], $VariableBDD[7], $VariableBDD[8], $VariableBDD[9], $VariableBDD[10]);
-$OldHeuresRealisees = $VariableBDD[11];
-$VolumeHebdo = $VariableBDD[3];
-} else {
-// User not found, handle error accordingly
-}
-$JourSemaine = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche");
+	if ($sql->connect_errno) {
+		printf("Échec de la connexion : %s\n", $sql->connect_error);
+		exit();
+	}
+
+	if ($result = $sql->query("SELECT * FROM users_professionals WHERE id_user='$user_id'")) {
+		foreach ($result as $ligne) {
+			$VariableBDD[0] = $ligne["id_user"];
+			$VariableBDD[1] = utf8_decode($ligne["lastname"]);
+			$VariableBDD[2] = utf8_decode($ligne["firstname"]);
+			$VariableBDD[3] = $ligne["VolumeHebdo"];
+			$VariableBDD[4] = $ligne["Lundi"];
+			$VariableBDD[5] = $ligne["Mardi"];
+			$VariableBDD[6] = $ligne["Mercredi"];
+			$VariableBDD[7] = $ligne["Jeudi"];
+			$VariableBDD[8] = $ligne["Vendredi"];
+			$VariableBDD[9] = $ligne["Samedi"];
+			$VariableBDD[10] = $ligne["Dimanche"];
+			$VariableBDD[11] = $ligne["OldHeuresRealisees"];
+			$VariableBDD[12] = $ligne["SoldeConges"];
+			$VariableBDD[13] = $ligne["matricule"];
+			$VariableBDD[14] = $ligne["email"];
+		}
+
+		/* Libération du jeu de résultats */
+		$result->close();
+	}
+
+
+	$resultatrenvoye = '';
+
+	$NomEmploye = $VariableBDD[1];
+	$PrenomEmploye = $VariableBDD[2];
+	$Matricule = $VariableBDD[13];
+	$SoldeConges = $VariableBDD[12];
+	$EmailEmploye = $VariableBDD[14];
+	$saison = getSeason($user_id);
+	$saisonplusun = $saison + 1;
+	$HeuresTheoriques = array($VariableBDD[4], $VariableBDD[5], $VariableBDD[6], $VariableBDD[7], $VariableBDD[8], $VariableBDD[9], $VariableBDD[10]);
+	$OldHeuresRealisees = $VariableBDD[11];
+	$VolumeHebdo = $VariableBDD[3];
+
+	$JourSemaine = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche");
 	$Moislettres = array("", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
 
 	// Ajout des jours pour 1er jour
@@ -248,12 +271,13 @@ $JourSemaine = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"
 	}
 	$TotalMensueldu = $VolumeMensueldu * $NbMoisPeriode;
 
-	$fichier_csv = public_path('employee_documents/1-sauvegarde/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
+		$fichier_csv = public_path('employee_documents/1-sauvegarde/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
 	$fichier_demande_csv = public_path('employee_documents/2-demande/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
 
 	if (file_exists($fichier_demande_csv)) {
 		$current = file_get_contents($fichier_demande_csv);
 		$donneesextraites = explode(';', $current);
+		dd ($current);
 
 		$TotalHeures = $donneesextraites[0];
 		$TotalConges = $donneesextraites[2];
@@ -279,7 +303,8 @@ $JourSemaine = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"
 	};
 
 
-	$resultatrenvoye .= '<form action="/affichheures.php" method="post">';
+	$resultatrenvoye .= '<form action="' . route('Professionnels.declaration', $user_id) . '" method="post">';
+				$resultatrenvoye .= csrf_field();
 
 	$resultatrenvoye .= '<input type="hidden" name="mois" value="' . $mois . '">';
 	$resultatrenvoye .= '<input type="hidden" name="annee" value="' . $annee . '">';
@@ -287,7 +312,7 @@ $JourSemaine = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"
 	//$resultatrenvoye .= '<input type="hidden" name="idemploye" value="'.$idemploye.'">' ;
 	$resultatrenvoye .= '<input type="hidden" name="email" value="' . $EmailEmploye . '">';
 
-	$fichier_csv = public_path('employee_documents/3-validation/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
+	$fichier_csv = '../Gym-Concordia/Documents/Employes/3-validation/' . $user_id . '-' . $annee . '-' . $mois . '.csv';
 
 	$resultatrenvoye .= '<div align="center"><table border="5px" width="80%><tbody align="left"><tr><td>';
 	$resultatrenvoye .= '<table align="center">';
@@ -351,7 +376,10 @@ $JourSemaine = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"
 	$resultatrenvoye .= '</td></tr></tbody></table></div></form>';
 
 	return $resultatrenvoye;
-};
+
+	// Close the database connection
+	$sql->close();
+} ;
 
 function AfficheMois_valide($mois, $annee, $user_id, $valeurpdf)
 {
@@ -684,48 +712,34 @@ $VolumeHebdo = $VariableBDD[3];
 	return $resultatpdfrenvoye;
 };
 
-function Sauvegarde($mois, $annee, $user_id, $info)
-{
-	$maxdaymois = cal_days_in_month(CAL_GREGORIAN, $mois, $annee);
+function Sauvegarde($mois, $annee, $user_id, $info) {
+    $maxdaymois = cal_days_in_month(CAL_GREGORIAN, $mois, $annee);
+	$directory = public_path('employee_documents/1-sauvegarde');
+    $fichier_csv = $directory.'/'.$user_id.'-'.$annee.'-'.$mois.'.csv';
 
-	$fichier_csv = public_path('employee_documents/2-demande/' . $user_id . '-' . $annee . '-' . $mois . '.csv');
-    
+	$stockage = '' ;
+	$stockage = $info['HeuresTotal'].';'.$info['JoursCongesPris'].';'.$info['JoursCongesRestant'] ;
+	$stockage .= ';'.$info['JoursMaladiePris'].';'.$info['TotalHeuresMaladiePrises'] ;
 
-	$stockage = '';
-	$stockage = $info['HeuresTotal'] . ';' . $info['JoursCongesPris'] . ';' . $info['JoursCongesRestant'];
-	$stockage .= ';' . $info['JoursMaladiePris'] . ';' . $info['TotalHeuresMaladiePrises'];
+	$stockage .= ';'.$info['HeuresTotal'].';'.$info['JoursCongesPris'].';'.$info['JoursCongesRestant'] ;
+	$stockage .= ';'.$info['JoursMaladiePris'].';'.$info['TotalHeuresMaladiePrises'] ;
 
-	$stockage .= ';' . $info['HeuresTotal'] . ';' . $info['JoursCongesPris'] . ';' . $info['JoursCongesRestant'];
-	$stockage .= ';' . $info['JoursMaladiePris'] . ';' . $info['TotalHeuresMaladiePrises'];
+    for ($i = 1; $i <= $maxdaymois; $i++) {
+        if (isset($info['Conges'][$i]) ) {
+            $info['Conges'][$i] = "TRUE";
+        } else {
+            $info['Conges'][$i] = "FALSE";
+        }
+        if (isset($info['Maladie'][$i])) {
+            $info['Maladie'][$i] = "TRUE";
+        } else {
+            $info['Maladie'][$i] = "FALSE";
+        }
+        $stockage .= ';'.(isset($info['Heures'][$i]) ? $info['Heures'][$i] : '').';'.(isset($info['Conges'][$i]) ? $info['Conges'][$i] : '').';'.(isset($info['Maladie'][$i]) ? $info['Maladie'][$i] : '').';'.(isset($info['Remarque'][$i]) ? $info['Remarque'][$i] : '');
+    }
 
-
-	for ($i = 1; $i <= $maxdaymois; $i++) {
-		if (isset($info['Maladie'][$i]) || isset($info['Conges'][$i])) {
-			if (isset($info['Maladie'][$i])) {
-				if ($info['Maladie'][$i] == "on") {
-					$info['Maladie'][$i] = "TRUE";
-				} else $info['Maladie'][$i] = "FALSE";
-
-				$stockage .= ';' . $info['Heures'][$i] . ';;' . $info['Maladie'][$i] . ';' . $info['Remarque'][$i];
-			}
-			if (isset($info['Conges'][$i])) {
-				if ($info['Conges'][$i] == "on") {
-					$info['Conges'][$i] = "TRUE";
-				} else $info['Conges'][$i] = "FALSE";
-
-				$stockage .= ';' . $info['Heures'][$i] . ';' . $info['Conges'][$i] . ';;' . $info['Remarque'][$i];
-			}
-		} else {
-			if (!isset($info['Conges'][$i])) {
-				$info['Conges'][$i] = "";
-			}
-
-			$stockage .= ';' . $info['Heures'][$i] . ';' . $info['Conges'][$i] . ';;' . $info['Remarque'][$i];
-		}
-	}
-
-	file_put_contents($fichier_csv, $stockage);
-};
+    file_put_contents($fichier_csv, $stockage);
+}
 
 
 

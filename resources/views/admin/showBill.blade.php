@@ -19,9 +19,20 @@
         <div class="col-6">
             <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
         </div>
-        <div class="col-6 d-flex justify-content-end" >
-            <a href="{{ url()->previous() }}" class="my-custom-btn btn btn-primary my-4">Retour</a>
-        </div>
+        <div class="row col-6 d-flex justify-content-end" >
+          <div class="col-3" >
+            <form method="post" action="{{ route('generatePDFfacture', $bill->id) }}">
+              @csrf
+              <button type="submit" class="my-custom-btn btn btn-primary my-4">Facture <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
+            </form>
+            
+          
+          </div>
+          <div class="col-3" >
+            <a href="{{ url()->previous() }}" class="my-custom-btn btn btn-primary my-4">Retour  <img src="{{ asset("assets\images\a-gauche.png") }}" alt=""></a>
+          </div>
+      </div>
+        
         <hr>
         
         @if (auth()->user()->roles->changer_status_facture)
@@ -33,7 +44,6 @@
           @endif
               <div style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif" class="mb-3 row d-flex justify-content-between">
                   <div class="col-md-5 p-4 col-12">
-                      <span style="font-weight:bold">Status : </span>
                       <select  class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" @if(!auth()->user()->roles->changer_status_facture) disabled @endif>
                           @foreach($status as $status)
                               <option value="{{ $status->id }}" {{ $bill->status == $status->id ? 'selected' : '' }} role="option">{{ $status->status }}</option>
@@ -41,7 +51,7 @@
                       </select>
                   </div> 
                   @if (auth()->user()->roles->changer_status_facture)
-                  <div style="margin-top:25px;" class="col-md-2 p-4 col-10 d-flex justify-content-center ">
+                  <div class="col-md-2 p-4 col-10 d-flex justify-content-center ">
                       <button type="submit" class="btn btn-dark">Enregistrer</button>
                   </div>
                   @endif

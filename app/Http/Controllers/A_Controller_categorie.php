@@ -479,7 +479,7 @@ public function  Shop_souscategorie($id){
 }
 
 
-public function Handle_details($id){
+public function Handle_details( $id){
     MiseAjourStock();
 
     $articl= Shop_article::where('id_shop_article', $id)->firstOrFail();
@@ -503,15 +503,17 @@ public function Handle_details($id){
         $messageContent = $systemSetting->Message;
     }
 
+    $coursVente = SystemSetting::find(5);
+
     // Convertir la chaîne JSON en tableau PHP
     if (Auth::check()) {
         $selectedUsers = getArticleUsers($articl);
     }
     if ($articl->type_article == 2) {
-        return view('Details_article', compact('indice', 'messageContent','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user());
+        return view('Details_article', compact('indice', 'messageContent','coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user());
 
     }
-    return view('Details_article', compact('indice','messageContent', 'article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user());
+    return view('Details_article', compact('indice','messageContent', 'coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user());
 }
 
 
