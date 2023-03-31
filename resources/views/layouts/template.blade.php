@@ -430,7 +430,7 @@
                <li class="nav-item">
                   <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#"> <i style="color: #f80000;" class="fa-regular fa-message"></i><span>Communication</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                     @if (auth()->user()->roles->estAutoriserDeVoirMessages)<li> <a href="charts-chartjs.html"><span style="color: #f80000; margin-right:8px" class="fa fa-envelope fa-fw mr-1"></span><span>Envoie de mail</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirMessages)<li> <a href="{{route('index_communication')}}"><span style="color: #f80000; margin-right:8px" class="fa fa-envelope fa-fw mr-1"></span><span>Envoie de mail</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirHistorique)<li> <a href="charts-apexcharts.html"><span style="color: #f80000; margin-right:8px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Historique</span> </a></li> @endif
                   </ul>
                </li>
