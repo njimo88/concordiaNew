@@ -10,6 +10,8 @@ use App\Models\A_Blog_Post;
 use App\Http\Controllers;
 use App\Http\Controllers\Article_Controller;
 use App\Http\Controllers\Controller_Communication;
+use App\Http\Controllers\Prendre_Contact_Controller;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\n_AdminController;
@@ -73,7 +75,7 @@ Route::get('/detail_paiement/{id}/{nombre_cheques}', [App\Http\Controllers\Users
 
 /*-----------Admin----------*/
 
-Route::middleware(['auth', 'role:90'])->group(function () {
+Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/admin', [n_AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/members', [n_AdminController::class, 'members'])->name('utilisateurs.members');
     Route::post('/admin/members/addUser', [n_AdminController::class, 'addUser'])->name('admin.addUser');
@@ -122,6 +124,10 @@ Route::get('/determinesection/count', [A_ControllerBlog::class, 'countdetermines
 
 
 /*---------------------------------Shop en backoffice------------------------------------------*/
+Route::middleware(['auth'])->group(function () {
+
+
+
 Route::get('/Categorie_back', [A_Controller_categorie::class, 'index'])->name('A_Categorie');
 Route::post('/Categorie/save', [A_Controller_categorie::class, 'saveNestedCategories'])->name('save-categories');
 
@@ -135,6 +141,7 @@ Route::post('category-subcategory/edit/{id_shop_category}', [A_Controller_catego
 Route::get('category-subcategory/remove/{id_shop_category}', [A_Controller_categorie::class, 'remove'])->name('category-remove');
 
 
+}); 
 
 /*---------------------------------Shop en front office------------------------------------------*/
 
@@ -149,6 +156,9 @@ Route::get('/commanderModal/{shop_id}/{user_id}', [A_Controller_categorie::class
 
 
 /*------------------------------ Article Back office ----------------------------------------- */
+
+Route::middleware(['auth'])->group(function () {
+
 
 Route::get('/Article', [Article_Controller::class, 'index'])->name('index_article');
 Route::post('/Article/include-page', [Article_Controller::class, 'index_include'])->name('include-tab_articles');
@@ -188,9 +198,13 @@ Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name
 
 
 
+}); 
 
 
 /*------------------------------ BLOG BACK OFFICE ----------------------------------------- */
+
+Route::middleware(['auth'])->group(function () {
+
 Route::get('/BlogArticle_index', [BlogArticle_Controller::class, 'index'])->name('index');
 
 //delete blog
@@ -220,7 +234,7 @@ Route::get('/BlogArticle_category/delete/{id}', [BlogArticle_Controller::class, 
 Route::get('/BlogArticle_category/edit/{id}', [BlogArticle_Controller::class, 'edit_index'])->name('edit_index');
 Route::post('/BlogArticle_category/edit/{id}',[BlogArticle_Controller::class, 'edit_cate'])->name('edit_cate');
 
-
+}); 
 
 /*----------------------------- Mention legales -------------------------------------------------- */
 Route::get('/Mentions', [Controller_mention_legales::class, 'index'])->name('index_mentions_legales');
@@ -228,16 +242,32 @@ Route::get('/Politique_de_confidentialite', [Controller_mention_legales::class, 
 
 
 
+
+Route::middleware(['auth'])->group(function () {
+
 /*------------------------------ Communication ----------------------------------------- */
 Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index_communication');
+
+//Route::get('/Communication', [A_ControllerBlog::class, 'a_requetes2'])->name('index_communication');
+
 Route::get('/Communication/get_info/{article_id}', [Controller_Communication::class, 'get_info'])->name('get_communication');
 
 Route::post('/Communication/traitement', [Controller_Communication::class, 'traitement'])->name('traitement');
 
-/*------------------------ tuto send email ---------------------------- */
-Route::get('/users', [Controller_Communication::class, 'index_u'])->name('users.index');
-Route::post('/users-send-email', [Controller_Communication::class, 'sendEmail_u'])->name('ajax.send.email');
+Route::post('/Communication/email_sender',[Controller_Communication::class,'email_sender'])->name('email_sender');
 
+Route::get('/Commnication/email_page',[Controller_Communication::class,'email_page'])->name('email_page') ;
+
+Route::post('/display_saison',[Controller_Communication::class,'display_by_saison'])->name('display_by_saison') ;
+
+
+
+}); 
+
+
+
+
+Route::middleware(['auth'])->group(function () {
 
 /*----------------------- Club - cours ------------------------------ */
 Route::get('/club/cours_index', [Controller_club::class, 'index_cours'])->name('index_cours');
@@ -253,11 +283,12 @@ Route::post('/modal_post/{id}', [Controller_club::class, 'modif_user'])->name('m
 
 Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_method'])->name('enregistrer_appel');
 
-/*----------------------- Recherche ------------------------------ */
+Route::get('/historique_appel/{id}', [Controller_club::class, 'display_historique_method'])->name('historique_appel');
 
-Route::get('/search/blog',[SearchController::class, 'searchBlog']);
-Route::get('/search/shop', [SearchController::class, 'searchShop']);
-Route::get('/search-results', [SearchController::class, 'searchResults']);
+#-------------------------------pdf generate-------------------
+Route::get('/generate-pdf/{id}',[PDF_Controller::class, 'generate'])->name('generate-pdf');
 
+#-------------------------------route pour gerer l'envoi de mail  generate-------------------
+Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');
 
-
+}); 

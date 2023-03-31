@@ -12,38 +12,53 @@ use Illuminate\Support\Facades\Route;
                ->get();
     
     @endphp
-
-    <!-- Search Modal -->
-    <div class="modal fade" id="search-modal" tabindex="-1" role="dialog" aria-labelledby="search-modal-label" aria-modal="true">
-      <div class="modal-dialog modal-lg">
-          <div class="modal-content" style="background-color: #c4d8e7; outline: 0 none;">
-              <div class="modal-header d-flex justify-content-center">
-                <div class="col-lg-11">
-                  <select id="search-type" name="search-type" class="form-control custom-select-with-icons" style="text-align-last:center;">
-                      <option value="blog" selected="">Rechercher un article du blog</option>
-                      <option value="shop">Rechercher un article de la boutique</option>
-                  </select>
-              </div>
-              </div>
-              <div class="modal-body">
-                  <div class="form-row">
-                      <div class="form-group col-md-12" style="padding:5px">
-                          <form id="search-form" class="searchForm" style=" margin: 0 auto" autocomplete="off">
-                              <input type="text" id="search-query" name="search-query" class="form-control" placeholder="Rechercher un article...">
-                              <button type="submit"><i class="fa fa-search"></i></button>
-                          </form>
-                      </div>
-                      <div id="search-results" style="margin:0 auto"></div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
-  
+    @if(session()->has('success'))
 
 
-     <div class="modal fade" id="contactModal" tabindex="-1" style="z-index:100000" data-backdrop="static" data-keyboard="false" aria-labelledby="contactModalLabel" aria-hidden="true">
-      <div class="modal-dialog  modal-lg">
+
+               <script>
+                          // create temporary div
+                          var tempDiv = document.createElement('div');
+                          tempDiv.id = 'temp-div';
+
+                          // add message to div
+                          tempDiv.innerHTML =  'votre message a été envoyé avec succès!';
+                        
+                          // add div to page
+                          document.body.appendChild(tempDiv);
+                          setTimeout(function() {
+                                                  document.body.removeChild(tempDiv);
+                                            }, 5000); // remove div after 5 seconds
+
+                        
+                  </script>
+
+
+
+            @endif
+
+            <style>
+ #temp-div {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    box-shadow: 0px 0px 10px #cccccc;
+    padding: 20px;
+}
+              </style>
+
+
+
+
+     <div class="modal fade" id="contactModal" tabindex="-1" style="z-index:100000" data-backdrop="static" data-keyboard="false" aria-labelledby="contactModalLabel" aria-hidden="true" data-target="#myModal">
+      
+ 
+
+     
+     <div class="modal-dialog  modal-lg">
           <div style="background-color: #d8e3ff" class="modal-content">
               <div class="modal-header border m-4 mb-0" style="background-color: white;">
                   <h5 class="modal-title" id="contactModalLabel" style=" font-size: 1.5em;font-weight: 400; font-family: Arial, Helvetica, sans-serif">Envoyer un Message</h5>
@@ -51,24 +66,25 @@ use Illuminate\Support\Facades\Route;
                       <span aria-hidden="true">&times;</span>
                   </button>
               </div>
-              <form action="" id="sendMailForm" method="post" class="form-example">
+              <form action="{{route('traitement_prendre_contact')}}" id="sendMailForm" method="post" class="form-example">
+                @csrf
                   <div class="modal-body p-5 py-3">
                   <fieldset class="form-group">
                               <div class="form cf form-group row">
 
                               <div class="plan cf form-group col-sm-10">
 
-                                  <input type="radio" name="emailcontact[]" id="bureau" value="1" checked>
+                                  <input type="radio" name="send_me" id="bureau" value="1" >
                                   <label class="bureau-label four col" for="bureau">
                                       Bureau
                                   </label>
 
-                                  <input type="radio" name="emailcontact[]" id="tresorier" value="2">
+                                  <input  type="radio" name="send_me" id="tresorier" value="2">
                                   <label class="tresorier-label four col" for="tresorier">
                                       Trésorier
                                   </label>
 
-                                  <input type="radio" name="emailcontact[]" id="president" value="3">
+                                  <input  type="radio"name="send_me" id="president" value="3">
                                   <label class="president-label four col" for="president">
                                       Président
                                   </label>
@@ -77,6 +93,8 @@ use Illuminate\Support\Facades\Route;
                               </div>
                           </fieldset>
                           <div class="form-row row mt-5">
+                             
+                              @if (!auth()->user())
                               <div class="form-group col-md-5">
                               <label class="text-dark" for="name">&nbsp;Prénom - Nom</label>
                               <input placeholder="Prénom - Nom" class="form-control mt-2" type="text" name="name" value="" required>
@@ -85,6 +103,18 @@ use Illuminate\Support\Facades\Route;
                               <label class="text-dark" for="email">&nbsp;Email</label>
                               <input placeholder="Email" class="form-control mt-2" type="email" name="email" value="" required>
                               </div>
+                              @else
+                              <div class="form-group col-md-5">
+                              <label class="text-dark" for="name">&nbsp;Prénom - Nom</label>
+                              <input placeholder="Prénom - Nom" class="form-control mt-2" type="text" name="name" value="{{auth()->user()->lastname}} {{auth()->user()->name}} " required readonly style="background-color: grey; color:#fff">
+                              </div>
+
+                              <div class="form-group col-md-7">
+                              <label class="text-dark" for="email">&nbsp;Email</label>
+                              <input placeholder="Email" class="form-control mt-2" type="email" name="email" value="{{auth()->user()->email}}" required readonly style="background-color: grey; color:#ffffff">
+                              </div>
+
+                              @endif
                           </div>
                               <div class="form-row">
                           <div class="form-group col-md-12">
@@ -403,8 +433,8 @@ use Illuminate\Support\Facades\Route;
               </a>
               
               <ul>
-                @if (auth()->user()->role >= 90)
-                <li><a href="{{ route('admin.index') }}"><span><img src="{{ asset("/assets/images/admin.png") }}" width="24">&nbsp;Administration</span></a></li>
+                @if (auth()->user()->role >= 20)
+                <li><a href="{{ route('admin.index') }}">Administration</a></li>
              @endif
               
                 <li><a href="{{ route('users.family') }}"><span><img src="{{ asset("/assets/images/Famille (1).png") }}" width="24">&nbsp;Ma Famille</span></a></li>
@@ -567,83 +597,16 @@ use Illuminate\Support\Facades\Route;
         }
     
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-    $(document).ready(function() {
-    const $searchType = $('#search-type');
-    const $searchQuery = $('#search-query');
-    const $searchResults = $('#search-results');
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-    $searchQuery.on('input', function() {
-        const searchType = $searchType.val();
-        const searchQuery = $searchQuery.val();
+    @if(!empty(Session::get('sent')) && Session::get('sent') == true)
+          <script>
+          $(function() {
+              $('#myModal').modal('show');
+          });
+          </script>
+      @endif
 
-        if (searchQuery.length < 3) {
-            $searchResults.empty();
-            return;
-        }
-
-        let searchUrl = '';
-
-        if (searchType === 'blog') {
-            searchUrl = '/search/blog';
-        } else if (searchType === 'shop') {
-            searchUrl = '/search/shop';
-        }
-
-        $.ajax({
-            url: searchUrl,
-            method: 'GET',
-            data: { query: searchQuery },
-            success: function(data) {
-                $searchResults.empty();
-
-                if (data.length === 0) {
-                    $searchResults.append('<p>Aucun résultat trouvé</p>');
-                } else {
-                    data.forEach(function(item) {
-                      const result = searchType === 'blog' ? item.titre : item.title;
-                      const itemId = searchType === 'blog' ? item.id_blog_post_primaire : item.id_shop_article;
-                      let saison;
-
-                      if (searchType === 'blog') {
-                          saison = new Date(item.date_post).getFullYear();
-                      } else if (searchType === 'shop') {
-                          saison = item.saison;
-                      }
-
-                      let url = '';
-
-                      if (searchType === 'blog') {
-                          url = `/Simple_Post/${itemId}`;
-                      } else if (searchType === 'shop') {
-                          url = `/details_article/${itemId}`;
-                            }
-                      let saisonn = saison + '-' + (saison + 1);
-                      $searchResults.append('<div class="border border-dark"><a class="aSearch p-2" href="' + url + '">['+saisonn+'] - ' + result + '</a></div>');
-                    });
-                }
-            }
-        });
-    });
-
-    // Handle form submission
-    $('#search-form').on('submit', function(e) {
-        e.preventDefault();
-
-        const searchType = $searchType.val();
-        const searchQuery = $searchQuery.val();
-
-        // Redirect the user to the search results page with the query as a URL parameter
-        window.location.href = `/search-results?type=${searchType}&query=${encodeURIComponent(searchQuery)}`;
-    });
-});
-
-
-
-  </script>
-  
-    
 
 @endif
 

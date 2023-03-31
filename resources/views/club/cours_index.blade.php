@@ -32,7 +32,7 @@ $saison_active = saison_active() ;
                                    <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
                    
                    
-                                   @endforeach
+                    @endforeach
 
           </select>
           <button type="submit" id="hide-row-btn" >Submit</button>
@@ -43,125 +43,329 @@ $saison_active = saison_active() ;
     <div class="col-md-4"></div>
     <div class="col-md-4"></div>
 
- @if(session('submitted'))
+
+@if (auth()->user()->role == 40 || auth()->user()->role == 30 )
+
+
+      @php 
+              $id_teacher = auth()->user()->user_id ;
+              $my_articles = [] ;
+              $add = [] ;
+      @endphp
+
+
+
+
+
+
+@if(session('submitted'))
        
- <div id="div1-content">
-    <h1 style="text-align:center;"> 
-  
-       {{$saison}}
-   
-    
-    </h1>
-  
-  <table> 
-
-                <div class="d-grid gap-2">
-            @foreach($shop_article as $data)
-           
-            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
-            <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
-
-
-
-                 <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                                
-                                
-                              
-                                 <div id="content"></div>
-                               
-   
-            </div>
-
-            @endforeach
-            </div>
-            </table>
-
-</div>
-
-
-</div>
-
-    @else
-
-
-
-    <div id="div1-content">
-    <h1 style="text-align:center;"> 
-   
-        {{$saison_active}}
-   
-    
-    </h1>
-  <table> 
-
-                <div class="d-grid gap-2">
-            @foreach($shop_article_first as $data)
-           
-            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
-            <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
-
-
-
-                <!-- Button trigger modal -->
-             
-                 <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                                
-                                
-                              
-                                 <div id="content"></div>
-                               
-   
-            </div>
-
-            @endforeach
-            </div>
-            </table>
-
-</div>
-
-
-    @endif
-    
-
-</div>
-
-<script>
-    function toggleElement(id) {
-    var element = document.getElementById('my-element-' + id);
-    if (element.style.display === 'none') {
-        element.style.display = 'block';
-    } else {
-        element.style.display = 'none';
-    }
-}
-
-</script>
-
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
+       <div id="div1-content">
+          <h1 style="text-align:center;"> 
         
-     
+             {{$saison}}
+         
+          
+          </h1>
+        
+        <table> 
+      
+                      <div class="d-grid gap-2">
+                  @foreach($shop_article_lesson_choisie as $data)
+
+
+                  @php $add [] = (array)json_decode($data->teacher) ; 
+
+                        if (isset($add)) {
+                                foreach ($add as $teacherArray) {
+                                          foreach($teacherArray as  $t){
+                                          
+                                            if ($id_teacher === $t){
+                                                      $my_articles [] = $data->id_shop_article ;
+
+                  @endphp
+        <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+                  <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+      
+      
+      
+                       <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
+                                      
+                                      
+                                    
+                                       <div id="content"></div>
+                                     
+         
+                  </div>
+                      
+        @php
+                        break;
+                    }
+                      
+                        }
+
+                        }
+
+                }
+                      
+                        $add = [] ;
+        @endphp
+      
+
+                  
+                 
+                 
+      
+                  @endforeach
+                  </div>
+                  </table>
       
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+      
+      
       </div>
-    </div>
-  </div>
-</div>
+      
+@else
+      
+      
+      
+          <div id="div1-content">
+          <h1 style="text-align:center;"> 
+         
+              {{$saison_active}}
+         
+          
+          </h1>
+        <table> 
+      
+                      <div class="d-grid gap-2">
+                      @foreach($shop_article_lesson as $data)
+
+
+                              @php $add [] = (array)json_decode($data->teacher) ; 
+
+                                    if (isset($add)) {
+                                            foreach ($add as $teacherArray) {
+                                                      foreach($teacherArray as  $t){
+                                                      
+                                                        if ($id_teacher === $t){
+                                                                  $my_articles [] = $data->id_shop_article ;
+
+                              @endphp
+                              <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+                              <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+
+
+
+                                  <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
+                                                  
+                                                  
+                                                
+                                                  <div id="content"></div>
+                                                
+
+                              </div>
+                                  
+                              @php
+                                    break;
+                                }
+                                  
+                                    }
+
+                                    }
+
+                              }
+                                  
+                                    $add = [] ;
+                              @endphp
+
+
+
+
+
+      
+                  @endforeach
+                  </div>
+                  </table>
+      
+      </div>
+      
+      
+          @endif
+          
+      
+      </div>
+      
+      <script>
+          function toggleElement(id) {
+          var element = document.getElementById('my-element-' + id);
+          if (element.style.display === 'none') {
+              element.style.display = 'block';
+          } else {
+              element.style.display = 'none';
+          }
+      }
+      
+      </script>
+      
+      
+      
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              
+           
+            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+@elseif (auth()->user()->role == 90 || auth()->user()->role == 100)
+
+
+@if(session('submitted'))
+       
+       <div id="div1-content">
+          <h1 style="text-align:center;"> 
+        
+             {{$saison}}
+         
+          
+          </h1>
+        
+        <table> 
+      
+                      <div class="d-grid gap-2">
+                  @foreach($shop_article as $data)
+                 
+                  <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+                  <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+      
+      
+      
+                       <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
+                                      
+                                      
+                                    
+                                       <div id="content"></div>
+                                     
+         
+                  </div>
+      
+                  @endforeach
+                  </div>
+                  </table>
+      
+      </div>
+      
+      
+      </div>
+      
+          @else
+      
+      
+      
+          <div id="div1-content">
+          <h1 style="text-align:center;"> 
+         
+              {{$saison_active}}
+         
+          
+          </h1>
+        <table> 
+      
+                      <div class="d-grid gap-2">
+                  @foreach($shop_article_first as $data)
+                 
+                            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+                            <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+      
+      
+      
+                                <!-- Button trigger modal -->
+                            
+                                <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
+                                                          
+                                                
+                                                <div id="content"></div>
+                                              
+                  
+                            </div>
+      
+                  @endforeach
+                  </div>
+                  </table>
+      
+      </div>
+      
+      
+          @endif
+          
+      
+      </div>
+      
+      <script>
+          function toggleElement(id) {
+          var element = document.getElementById('my-element-' + id);
+          if (element.style.display === 'none') {
+              element.style.display = 'block';
+          } else {
+              element.style.display = 'none';
+          }
+      }
+      
+      </script>
+      
+      
+      
+      
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              
+           
+            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+
+
+
+
+
+
+@endif
+
 
 
 </main>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Shop_article;
+use App\Models\shop_article_1;
 
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\User;
@@ -22,14 +23,41 @@ class Controller_club extends Controller
 
         $saison = $request->input('saison');
 
+        /*------------------------------------- requtes pour les teachers ------------------------------*/
+
+       
+       
+            // requete pour la saison active
+        $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
+          ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
+
+            //requete pour la saison choisie
+          $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
+          ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison',  $saison)->get();
+
+
+
+
+
+
+
+
+
+
+
+
+        /* ------------------------------------------requetes pour l'admin------------------------------*/
+
         $shop_article = Shop_article::where('saison',$saison)->where('type_article',1)->get() ;
 
+        $shop_article_teacher = Shop_article::select('*')->where('saison', $saison_actu)->distinct('id_shop_article')->get();
+     
         $shop_article_first= Shop_article::where('saison', $saison_actu)->where('type_article',1)->get() ;
 
          $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
         
-        return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first'))->with('user', auth()->user()) ;
+        return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie'))->with('user', auth()->user()) ;
            
 
     }

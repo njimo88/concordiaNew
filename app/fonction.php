@@ -11,7 +11,9 @@ use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
 use App\Models\bills;
 use App\Models\ShopMessage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Config;
 
 
 
@@ -725,84 +727,240 @@ function destinataires_du_mail($user_id){
 
 }
 
-function envoi_de_mail($users)
-{
-    $tab = $users ;
-    for ($i=0; $i < count($tab) ; $i++) { 
-        
-        sendEmailToUser($tab[$i],'','') ;
-
-    }
-
-    return response()->json(['success'=>'Send email successfully.']);
-
-
-}
 
 
 
 
-
-function sendEmailToUser($user_id, $message1,$data) {
+/* -------------------------SendEmailToUser using the id ------------------------------- 
+function sendEmailToUser($user_id, $message1,$email_sender,$userName) {
 
   $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
   $email = $user->email; // Get the user's email address
 
-  Mail::to($email)->cc('ericksennkp@icloud.com')->bcc('ericksennkp@icloud.com')->send(new UserEmail($message1,$data)) ;
- 
- // Send the email using Laravel's Mail facade
+    // Set the SMTP credentials dynamically
+    $config = [
+        'driver' => "smtp",
+        'host' => "smtp.ionos.fr",
+        'port' => 465,
+        'from' => ['address' => $email_sender, 'name' => $userName],
+        'encryption' => "ssl",
+        'username' => "webmaster@gym-concordia.com",
+        'password' => "mickmickmath&67_mickmickmath&67"
+    ];
 
+    Mail::mailer('smtp')->to($email)->cc($email_sender)->bcc($email_sender)->send(new ContactFormMail($email_sender, $message1,$userName));
+   
+ 
 }
+
+*/
+
+
+/*
 
 class UserEmail extends \Illuminate\Mail\Mailable {
     
+  public $email_sender;  
   public $message1; // Define a public property to store the message
-  public $data;
+  public $userName;
+
+
   
  
-  public function __construct($message1, $data) {
-    $this->message1 = $message1; // Assign the message to the public property
-    $this->data = $data ;
-   
+  public function __construct($email_sender,$message1, $userName) {
+    $this->message1     = $message1; // Assign the message to the public property
+    $this->email_sender = $email_sender ;
+    $this->userName     = $userName;
+    
   }
   public function build() {
-    return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1, 'data' => $this->data]); // Define the email's view
+    return $this->subject('Gym Concordia [bureau]')->view('Communication/emailbody',['message1' => $this->message1]); // Define the email's view
+
+    return  $this->from($this->email_sender, $this->userName)
+    ->subject('['.$this->userName.'] Message d\'un utilisateur')
+    ->view('Communication/emailbody')
+    ->with([
+        'message' => $this->message1,
+    ]);
+
+    
   }
 
 }
 
 
+*/
+
+/* -------------------------SendEmail ------------------------------- */
+
+function receiveEmailFromUser(Request $request,$email_destinataire) {
+    $email = $request->input('email');
+    $message = $request->input('message');
+    $nom = $request->input('name');
+
+    
+    Mail::raw($message, function($message) use ($email,$email_destinataire,$nom) {
+                $message->from(config('mail.from.address'), config('mail.from.name'))
+                ->to($email_destinataire)
+                ->subject('['.$nom.'] Message d\'un utilisateur')
+                ->replyTo($email);
+    });
+
+    
+
+    //dd($email);
+
+    
+}
+
+/* -------------------------another Email function  ------------------------------- */
 
 
 
+function envoiEmail($userEmail, $message,$receiverEmail,$userName) {
 
+   
+    // Set the SMTP credentials dynamically
+$config = [
+    'driver' => "smtp",
+    'host' => "smtp.ionos.fr",
+    'port' => 465,
+    'from' => ['address' => $userEmail, 'name' => $userName],
+    'encryption' => "ssl",
+    'username' => "webmaster@gym-concordia.com",
+    'password' => "mickmickmath&67_mickmickmath&67"
+];
 
+    
 
-
-
-
-
-
-
-
-//fonctions pour afficher les dates en Anglais
-function fetchDay($date){
-    $lejour = ( new DateTime($date) )->format('l');
-
-  $jour_semaine = array(
-"lundi" => "Monday",
-"Mardi" => "Tuesday",
-"Mercredi" => "Wednesday",
-"Jeudi" => "Thursday",
-"Vendredi" => "Friday",
-"Samedi" => "Saturday",
-"Dimanche" => "Sunday"
-
-  );
-
+    Mail::mailer('smtp')->to($receiverEmail)->send(new ContactFormMail($userEmail, $message,$userName));
 }
 
 
+class ContactFormMail  extends \Illuminate\Mail\Mailable{
+ 
 
-
+    public $userEmail;
+    public $message;
+    public $userName;
   
+
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($userEmail, $message, $userName)
+    {
+        $this->userEmail = $userEmail;
+        $this->message = $message;
+        $this->userName = $userName;
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build()
+    {
+        return  $this->from($this->userEmail, $this->userName)
+                    ->subject('['.$this->userName.'] Message d\'un utilisateur')
+                    ->view('Communication/form_email')
+                    ->with([
+                        'content_Email' => $this->message,
+                    ]);
+    }
+
+
+    }
+
+
+
+    
+    function envoiEmail2($userEmail, $message,$receiverEmail,$userName,$titre) {
+
+    
+        // Set the SMTP credentials dynamically
+    $config = [
+        'driver' => "smtp",
+        'host' => "smtp.ionos.fr",
+        'port' => 465,
+        'from' => ['address' => $userEmail, 'name' => $userName],
+        'encryption' => "ssl",
+        'username' => "webmaster@gym-concordia.com",
+        'password' => "mickmickmath&67_mickmickmath&67"
+    ];
+
+        
+
+        Mail::mailer('smtp')->to($receiverEmail)->send(new ContactFormMail_module_com($userEmail, $message,$userName,$titre));
+    }
+
+
+
+    class ContactFormMail_module_com  extends \Illuminate\Mail\Mailable{
+ 
+
+        public $userEmail;
+        public $message;
+        public $userName;
+        public $titre;
+    
+        /**
+         * Create a new message instance.
+         *
+         * @return void
+         */
+        public function __construct($userEmail, $message, $userName,$titre)
+        {
+            $this->userEmail = $userEmail;
+            $this->message = $message;
+            $this->userName = $userName;
+            $this->titre    = $titre ;
+        }
+    
+        /**
+         * Build the message.
+         *
+         * @return $this
+         */
+        public function build()
+        {
+            return  $this->from($this->userEmail, $this->userName)
+                        ->subject('['.$this->userName.'] Message d\'un utilisateur')
+                        ->view('Communication/emailbody')
+                        ->with([
+                            'message1' => $this->message,
+                            'the_title' => $this->titre
+                        ]);
+        }
+    
+    
+ }
+    
+
+
+
+
+
+
+
+            //fonctions pour afficher les dates en Anglais
+            function fetchDay($date){
+
+                            $lejour = ( new DateTime($date) )->format('l');
+
+                        $jour_semaine = array(
+                        "lundi" => "Monday",
+                        "Mardi" => "Tuesday",
+                        "Mercredi" => "Wednesday",
+                        "Jeudi" => "Thursday",
+                        "Vendredi" => "Friday",
+                        "Samedi" => "Saturday",
+                        "Dimanche" => "Sunday"
+
+                        );
+
+            }
+

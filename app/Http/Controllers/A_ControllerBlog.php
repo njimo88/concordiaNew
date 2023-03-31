@@ -111,7 +111,7 @@ public function Simple_Post($id){
 public function recherche_par_cat1(Request $request, $id) {
 
     // $a_requete1 = A_Blog_Post::latest('date_post')->paginate(5);
-    $a_requete1 = A_Blog_Post::latest('date_post')->paginate(5000);
+    $a_requete1 = A_Blog_Post::latest('date_post')->paginate(10);
     $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
     $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
    
@@ -129,7 +129,7 @@ public function recherche_par_cat1(Request $request, $id) {
 public function recherche_par_cat2(Request $request, $id) {
 
 
-    $a_requete1 = A_Blog_Post::latest('date_post')->paginate(1000);
+    $a_requete1 = A_Blog_Post::latest('date_post')->paginate(10);
     $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
     $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
  

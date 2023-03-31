@@ -7,11 +7,19 @@
     <title>Document</title>
 </head>
 <body>
-    check it out and see if you can get rid of this nagging habit .
+<div class="container">
+
+<div>
+    <h3> titre du message : {{$the_title}} </h3>
+
+    <p>  {!!$message1!!} </p>
+    
+  </div>
+
+</div>
 
    
-    {{$message1}}
-
-    {{$data}}
+   
+    
 </body>
 </html>
