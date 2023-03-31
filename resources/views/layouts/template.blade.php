@@ -353,18 +353,18 @@
            <ul class="d-flex align-items-center">
               <li class="nav-item dropdown pe-3">
                  <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                  @if($user->image)
-                     <img class="rounded-circle" src="{{  $user->image }}" >
-                  @elseif ($user->gender == 'male')
+                  @if(auth()->user()->image)
+                     <img class="rounded-circle" src="{{  auth()->user()->image }}" >
+                  @elseif (auth()->user()->gender == 'male')
                      <img class="rounded-circle" src="{{ asset('assets\images\user.jpg') }}" alt="male">
-                  @elseif ($user->gender == 'female')
+                  @elseif (auth()->user()->gender == 'female')
                      <img class="rounded-circle" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
                   @endif
-                    <span class="d-none d-md-block dropdown-toggle ps-2">{{ $user->name }}</span> 
+                    <span class="d-none d-md-block dropdown-toggle ps-2">{{ auth()->user()->name }}</span> 
                   </a>
                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
-                       <h6> {{ $user->name }} {{ $user->lastname }}</h6>
+                       <h6> {{ auth()->user()->name }} {{ auth()->user()->lastname }}</h6>
                     </li>
                     <li> <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#settings"> <i class="bi bi-gear"></i> <span>Settings</span> </a></li>
                     <li> <a class="dropdown-item d-flex align-items-center" href="{{ route('A_blog') }}"> <i class="bi bi-box-arrow-right"></i> <span>Retour au blog</span> </a></li>

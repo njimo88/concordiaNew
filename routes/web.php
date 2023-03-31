@@ -93,6 +93,7 @@ Route::post('/generatePDFfacture/{id}', [generatePDF::class, 'generatePDFfacture
 Route::middleware(['auth', 'role:90'])->group(function () {
     Route::get('/admin', [n_AdminController::class, 'index'])->name('admin.index');
     Route::get('/admin/members', [n_AdminController::class, 'members'])->name('utilisateurs.members');
+    Route::get('/admin/members/getDataForDataTable', [n_AdminController::class, 'getDataForDataTable']);
     Route::post('/admin/members/addUser', [n_AdminController::class, 'addUser'])->name('admin.addUser');
     Route::put('/admin/members/{user_id}', [n_AdminController::class, 'editUser'])->name('admin.editUser');
     Route::get('/admin/members/editUser/{user_id}', [n_AdminController::class, 'editUsermodal']);
