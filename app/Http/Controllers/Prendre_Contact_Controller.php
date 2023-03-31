@@ -38,7 +38,7 @@ class Prendre_Contact_Controller extends Controller
                // receiveEmailFromUser($request,'president@gym-concordia.com');
               // receiveEmailFromUser($request,'nnkp066@gmail.com');
 
-             envoiEmail($email, $message,'nnkp066@gmail.com',$nom) ;
+             envoiEmail($email, $message,'president@gym-concordia.com',$nom) ;
             
                
               
