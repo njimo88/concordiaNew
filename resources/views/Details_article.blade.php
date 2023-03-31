@@ -109,7 +109,7 @@
               </div>
           </div>
       </div>
-      @endif
+  @endif
 <div style="background-color:white;"  class="container rounded px-2" >
   @if (session('success'))
     <div style="display: -webkit-inline-box !important;" class="alert alert-success mt-3 col-12">
@@ -346,7 +346,7 @@
               <div class="card" >
                 <div class="card-body"   style="display: block !important;">
                   <h4 class="card-title">Inscrire</h4>
-                  @if ($data->stock_actuel <= 0)
+                  @if ($data->stock_actuel <= 0 )
                     @if ($data->type_article == 0)
                         <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
                     @elseif ($data->type_article == 1)
@@ -361,7 +361,11 @@
                             <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }} {{ $user->user_id }}</option>
                           @endforeach
                       </select>
-                      <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
+                      @if ($coursVente->value == 1)
+                        <p style="font-weight:bold">Inscriptions inaccessibles actuellement</p>
+                      @else
+                        <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
+                      @endif
                   @endif
                   </span>
                 </div>

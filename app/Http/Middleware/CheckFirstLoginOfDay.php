@@ -4,6 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
+require_once(app_path().'/fonction.php');
+
 
 class CheckFirstLoginOfDay
 {
@@ -16,6 +20,18 @@ class CheckFirstLoginOfDay
      */
     public function handle(Request $request, Closure $next)
     {
+        $today = Carbon::now()->format('Y-m-d');
+        $cacheKey = "first_login_of_day_{$today}";
+
+        if (!Cache::get($cacheKey)) {
+
+            printUsersBirthdayOnImage();
+            
+            Cache::put($cacheKey, true, Carbon::tomorrow()->diffInSeconds(Carbon::now()));
+        }
+
         return $next($request);
     }
+
+ 
 }

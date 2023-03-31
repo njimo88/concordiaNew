@@ -14,6 +14,8 @@ use App\Models\shop_article;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\ShopMessage;
 use App\Models\PaiementImmediat;
+use PDF;
+use Intervention\Image\ImageManagerStatic as Image;
 
 
 require_once(app_path().'/fonction.php');

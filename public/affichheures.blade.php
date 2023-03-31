@@ -159,11 +159,10 @@ function ColorFont ( $datedujour )
 } ;
 
 
-//Affichage du Mois
-zzzz
 
 
-function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
+
+ function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
 {
 	$sql = new mysqli('db566489223.db.1and1.com', 'dbo566489223', 'mickmickmath', 'db566489223');
 
@@ -398,8 +397,7 @@ function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
 
 		// Close the database connection
 		$sql->close();
-} ;
-
+}
 
 
 function Sauvegarde ( $mois , $annee , $user_id , $info )

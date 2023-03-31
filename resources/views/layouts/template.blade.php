@@ -353,18 +353,18 @@
            <ul class="d-flex align-items-center">
               <li class="nav-item dropdown pe-3">
                  <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                  @if($user->image)
-                     <img class="rounded-circle" src="{{  $user->image }}" >
-                  @elseif ($user->gender == 'male')
+                  @if(auth()->user()->image)
+                     <img class="rounded-circle" src="{{  auth()->user()->image }}" >
+                  @elseif (auth()->user()->gender == 'male')
                      <img class="rounded-circle" src="{{ asset('assets\images\user.jpg') }}" alt="male">
-                  @elseif ($user->gender == 'female')
+                  @elseif (auth()->user()->gender == 'female')
                      <img class="rounded-circle" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
                   @endif
-                    <span class="d-none d-md-block dropdown-toggle ps-2">{{ $user->name }}</span> 
+                    <span class="d-none d-md-block dropdown-toggle ps-2">{{ auth()->user()->name }}</span> 
                   </a>
                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                     <li class="dropdown-header">
-                       <h6> {{ $user->name }} {{ $user->lastname }}</h6>
+                       <h6> {{ auth()->user()->name }} {{ auth()->user()->lastname }}</h6>
                     </li>
                     <li> <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#settings"> <i class="bi bi-gear"></i> <span>Settings</span> </a></li>
                     <li> <a class="dropdown-item d-flex align-items-center" href="{{ route('A_blog') }}"> <i class="bi bi-box-arrow-right"></i> <span>Retour au blog</span> </a></li>
@@ -452,7 +452,7 @@
                   <ul id="pro-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if (auth()->user()->roles->estAutoriserDeVoirGestionProfessionnels)<li> <a href="{{ route('Professionnels.gestion') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-user-tie fa-fw mr-1"></span><span>Gestion</span> </a></li> @endif
                      @if (auth()->user()->roles->estAutoriserDeVoirCalculDesSalaires)<li> <a href="{{ route('proffesional.calculSalary') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-euro-sign fa-fw mr-1"></span><span>Calcul des salaires</span> </a></li> @endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirValiderLesHeures) <li> <a href="pro-chartjs.html"><span style="color: #00f900; margin-right:10px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Valider les heures</span> </a></li> @endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirValiderLesHeures) <li> <a href="{{ route('proffesional.valideHeure') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Valider les heures</span> </a></li> @endif
                   </ul>
                </li>
             @endif
@@ -486,44 +486,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
 <script src="../r_js/jquery.nestable.js"></script>
-<script>
-     $(document).ready(function () {
-        // Événement change pour checkbox3
-        $('#checkbox3').on('change', function () {
-            updateSetting($(this), 3);
-        });
-
-        // Événement change pour checkbox5
-        $('#checkbox5').on('change', function () {
-            updateSetting($(this), 5);
-        });
-
-        function updateSetting(checkbox, settingId) {
-            let settingValue = checkbox.is(':checked') ? 1 : 0;
-
-            $.ajax({
-                url: '{{ route('update_system_setting') }}',
-                type: 'POST',
-                data: {
-                    '_token': '{{ csrf_token() }}',
-                    'setting_id': settingId,
-                    'setting_value': settingValue
-                },
-                success: function (data) {
-                    console.log(data.message);
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log(textStatus, errorThrown);
-                }
-            });
-        }
-    });
-</script>
-
 <script src="{{asset('assetsAdmin/js/main.js')}}"></script>
-
 <script src="../r_js/style.js"></script>
-
 
     @livewireScripts
 </body>
