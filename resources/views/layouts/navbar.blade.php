@@ -73,17 +73,17 @@ use App\Models\Shop_category;
 
                               <div class="plan cf form-group col-sm-10">
 
-                                  <input type="checkbox" name="bureau" id="bureau" value="1" >
+                                  <input type="radio" name="send_me" id="bureau" value="1" >
                                   <label class="bureau-label four col" for="bureau">
                                       Bureau
                                   </label>
 
-                                  <input  type="checkbox" name="tresorier" id="tresorier" value="2">
+                                  <input  type="radio" name="send_me" id="tresorier" value="2">
                                   <label class="tresorier-label four col" for="tresorier">
                                       Trésorier
                                   </label>
 
-                                  <input  type="checkbox"name="president" id="president" value="3">
+                                  <input  type="radio"name="send_me" id="president" value="3">
                                   <label class="president-label four col" for="president">
                                       Président
                                   </label>

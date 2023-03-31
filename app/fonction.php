@@ -742,9 +742,8 @@ function destinataires_du_mail($user_id){
 
 
 
-/* -------------------------SendEmailToUser using the id ------------------------------- */
-
-function sendEmailToUser($user_id, $message1,$data,$email_sender,$userName) {
+/* -------------------------SendEmailToUser using the id ------------------------------- 
+function sendEmailToUser($user_id, $message1,$email_sender,$userName) {
 
   $user = User::findOrFail($user_id); // Find the user by ID or throw an exception
   $email = $user->email; // Get the user's email address
@@ -762,11 +761,11 @@ function sendEmailToUser($user_id, $message1,$data,$email_sender,$userName) {
 
     Mail::mailer('smtp')->to($email)->cc($email_sender)->bcc($email_sender)->send(new ContactFormMail($email_sender, $message1,$userName));
    
- // Mail::to($email)->cc('')->bcc('')->send(new UserEmail($message1,$data)) ;
  
- // Send the email using Laravel's Mail facade
-
 }
+
+*/
+
 
 /*
 
@@ -880,8 +879,7 @@ class ContactFormMail  extends \Illuminate\Mail\Mailable{
                     ->subject('['.$this->userName.'] Message d\'un utilisateur')
                     ->view('Communication/form_email')
                     ->with([
-                        'userEmail' => $this->userEmail,
-                        'message' => $this->message,
+                        'content_Email' => $this->message,
                     ]);
     }
 
@@ -890,6 +888,68 @@ class ContactFormMail  extends \Illuminate\Mail\Mailable{
 
 
 
+    
+    function envoiEmail2($userEmail, $message,$receiverEmail,$userName,$titre) {
+
+    
+        // Set the SMTP credentials dynamically
+    $config = [
+        'driver' => "smtp",
+        'host' => "smtp.ionos.fr",
+        'port' => 465,
+        'from' => ['address' => $userEmail, 'name' => $userName],
+        'encryption' => "ssl",
+        'username' => "webmaster@gym-concordia.com",
+        'password' => "mickmickmath&67_mickmickmath&67"
+    ];
+
+        
+
+        Mail::mailer('smtp')->to($receiverEmail)->send(new ContactFormMail_module_com($userEmail, $message,$userName,$titre));
+    }
+
+
+
+    class ContactFormMail_module_com  extends \Illuminate\Mail\Mailable{
+ 
+
+        public $userEmail;
+        public $message;
+        public $userName;
+        public $titre;
+    
+        /**
+         * Create a new message instance.
+         *
+         * @return void
+         */
+        public function __construct($userEmail, $message, $userName,$titre)
+        {
+            $this->userEmail = $userEmail;
+            $this->message = $message;
+            $this->userName = $userName;
+            $this->titre    = $titre ;
+        }
+    
+        /**
+         * Build the message.
+         *
+         * @return $this
+         */
+        public function build()
+        {
+            return  $this->from($this->userEmail, $this->userName)
+                        ->subject('['.$this->userName.'] Message d\'un utilisateur')
+                        ->view('Communication/emailbody')
+                        ->with([
+                            'message1' => $this->message,
+                            'the_title' => $this->titre
+                        ]);
+        }
+    
+    
+ }
+    
 
 
 
@@ -897,21 +957,21 @@ class ContactFormMail  extends \Illuminate\Mail\Mailable{
 
 
 
+            //fonctions pour afficher les dates en Anglais
+            function fetchDay($date){
 
-//fonctions pour afficher les dates en Anglais
-function fetchDay($date){
-    $lejour = ( new DateTime($date) )->format('l');
+                            $lejour = ( new DateTime($date) )->format('l');
 
-  $jour_semaine = array(
-"lundi" => "Monday",
-"Mardi" => "Tuesday",
-"Mercredi" => "Wednesday",
-"Jeudi" => "Thursday",
-"Vendredi" => "Friday",
-"Samedi" => "Saturday",
-"Dimanche" => "Sunday"
+                        $jour_semaine = array(
+                        "lundi" => "Monday",
+                        "Mardi" => "Tuesday",
+                        "Mercredi" => "Wednesday",
+                        "Jeudi" => "Thursday",
+                        "Vendredi" => "Friday",
+                        "Samedi" => "Saturday",
+                        "Dimanche" => "Sunday"
 
-  );
+                        );
 
-}
+            }
 

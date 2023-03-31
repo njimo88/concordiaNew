@@ -20,10 +20,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
 
-
-
-
-
 <script src="/path/to/cdn/jquery.min.js"></script>
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
@@ -34,17 +30,14 @@
 <body>
 <div class="container">
 
-</div>
+        <div>
+          
+            <p> {{$content_Email}} </p>
+            
+          </div>
 
+  </div>
 
-<p>Hi there,</p>
-
-<p>You have received a new contact form submission from </p>
-
-<p></p>
-
-<p>Thanks,</p>
-<p>Your Website</p>
 
 </body>
 </html>

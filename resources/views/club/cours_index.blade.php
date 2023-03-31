@@ -97,20 +97,20 @@ $saison_active = saison_active() ;
                 <div class="d-grid gap-2">
             @foreach($shop_article_first as $data)
            
-            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
-            <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+                      <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+                      <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
 
 
-                <!-- Button trigger modal -->
-             
-                 <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                                 @include('formulaire_appel',$data->id_shop_article)              
-                                
-                                 <div id="content"></div>
-                               
-   
-            </div>
+                          <!-- Button trigger modal -->
+                      
+                          <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
+                                                    
+                                          
+                                          <div id="content"></div>
+                                        
+            
+                      </div>
 
             @endforeach
             </div>

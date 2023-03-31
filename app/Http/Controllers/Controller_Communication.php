@@ -184,9 +184,7 @@ function display_by_saison(Request $request){
                 // Get the user's email address
                 //sendEmailToUser($myData[$i],$titre,$text_area,$email_sender,$name_sender) ;
 
-
-
-                envoiEmail($email_sender, $text_area,$email,$name_sender) ;
+                envoiEmail2($email_sender, $text_area,$email,$name_sender, $titre) ;
                 $emailSent = 'true';
             }
         }elseif($taille_data<=0){
@@ -196,7 +194,7 @@ function display_by_saison(Request $request){
             $user = User::findOrFail($myData[0]); // Find the user by ID or throw an exception
             $email = $user->email;
            // sendEmailToUser($myData[0],$titre,$text_area,$email_sender,$name_sender) ;
-            envoiEmail($email_sender, $text_area,$email,$name_sender) ;
+            envoiEmail2($email_sender, $text_area,$email,$name_sender, $titre) ;
             $emailSent = 'true';
         }
 
