@@ -111,6 +111,10 @@ Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_pa
 
 
 /*---------------------------------Shop en backoffice------------------------------------------*/
+Route::middleware(['auth'])->group(function () {
+
+
+
 Route::get('/Categorie_back', [A_Controller_categorie::class, 'index'])->name('A_Categorie');
 Route::post('/Categorie/save', [A_Controller_categorie::class, 'saveNestedCategories'])->name('save-categories');
 
@@ -124,6 +128,7 @@ Route::post('category-subcategory/edit/{id_shop_category}', [A_Controller_catego
 Route::get('category-subcategory/remove/{id_shop_category}', [A_Controller_categorie::class, 'remove'])->name('category-remove');
 
 
+}); 
 
 /*---------------------------------Shop en front office------------------------------------------*/
 
@@ -137,6 +142,9 @@ Route::get('/commanderModal/{shop_id}/{user_id}', [A_Controller_categorie::class
 
 
 /*------------------------------ Article Back office ----------------------------------------- */
+
+Route::middleware(['auth'])->group(function () {
+
 
 Route::get('/Article', [Article_Controller::class, 'index'])->name('index_article');
 Route::post('/Article/include-page', [Article_Controller::class, 'index_include'])->name('include-tab_articles');
@@ -176,9 +184,13 @@ Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name
 
 
 
+}); 
 
 
 /*------------------------------ BLOG BACK OFFICE ----------------------------------------- */
+
+Route::middleware(['auth'])->group(function () {
+
 Route::get('/BlogArticle_index', [BlogArticle_Controller::class, 'index'])->name('index');
 
 //delete blog
@@ -208,13 +220,16 @@ Route::get('/BlogArticle_category/delete/{id}', [BlogArticle_Controller::class, 
 Route::get('/BlogArticle_category/edit/{id}', [BlogArticle_Controller::class, 'edit_index'])->name('edit_index');
 Route::post('/BlogArticle_category/edit/{id}',[BlogArticle_Controller::class, 'edit_cate'])->name('edit_cate');
 
-
+}); 
 
 /*----------------------------- Mention legales -------------------------------------------------- */
 Route::get('/Mentions', [Controller_mention_legales::class, 'index'])->name('index_mentions_legales');
 Route::get('/Politique_de_confidentialite', [Controller_mention_legales::class, 'index_politique'])->name('index_politique');
 
 
+
+
+Route::middleware(['auth'])->group(function () {
 
 /*------------------------------ Communication ----------------------------------------- */
 Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index_communication');
@@ -232,6 +247,13 @@ Route::get('/Commnication/email_page',[Controller_Communication::class,'email_pa
 Route::post('/display_saison',[Controller_Communication::class,'display_by_saison'])->name('display_by_saison') ;
 
 
+
+}); 
+
+
+
+
+Route::middleware(['auth'])->group(function () {
 
 /*----------------------- Club - cours ------------------------------ */
 Route::get('/club/cours_index', [Controller_club::class, 'index_cours'])->name('index_cours');
@@ -255,3 +277,4 @@ Route::get('/generate-pdf/{id}',[PDF_Controller::class, 'generate'])->name('gene
 #-------------------------------route pour gerer l'envoi de mail  generate-------------------
 Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');
 
+}); 
