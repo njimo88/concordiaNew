@@ -159,8 +159,6 @@ function ColorFont ( $datedujour )
 } ;
 
 
-//Affichage du Mois
-zzzz
 
 
 function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
