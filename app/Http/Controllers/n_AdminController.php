@@ -31,7 +31,7 @@ class n_AdminController extends Controller
 
         $n_users = User::orderBy('name', 'asc')
         ->select('user_id', 'username', 'name', 'lastname', 'birthdate', 'phone','family_id')
-        ->get();
+        ->paginate(100);
 
         return view('admin.members', compact('n_users','roles'))->with('user', auth()->user());
     }
