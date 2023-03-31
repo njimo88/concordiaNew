@@ -32,7 +32,7 @@
           </div>
     </div>
        
-    <div style="--bs-modal-width: 1000px !important;" class="modal fade " id="oldBillsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div style="--bs-modal-width: 1000px !important; z-index: 1000000 !important;" class="modal fade " id="oldBillsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered " role="document">
             <div class="modal-content p-3">
               <!--Body-->
@@ -46,7 +46,7 @@
                                         <div class="text-center pt-3 pb-2">
                                             <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
                                                 alt="Check" width="60">
-                                            <h2 class="my-4">Factures Famille</h2>
+                                            <h2 class="my-4">Anciennes Factures </h2>
                                             </div>
                                     </div>
                                     <div  class="row modal-body overflow-x" id="oldBillsContainer">
@@ -62,7 +62,7 @@
     </div>
 
     <!-- ---- modal famille facture ---- -->
-    <div style="--bs-modal-width: 80vw !important; height: 95vh !important; overflow-y: auto;" class="modal fade " id="factureFamille" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div style="--bs-modal-width: 55vw !important; height: 80vh !important; overflow-y: auto;" class="modal fade " id="factureFamille" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered " role="document">
             <div class="modal-content">
               <!--Body-->

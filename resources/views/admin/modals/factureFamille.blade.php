@@ -5,34 +5,7 @@ float: left !important;
 text-align: left !important;
 }
 </style>
-<div style="--bs-modal-width: 1000px !important;" class="modal fade " id="oldBillsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered " role="document">
-        <div class="modal-content p-3">
-          <!--Body-->
-            <section class="section">
-                <div class="row">
-                    <div class="col-12 main-datatable" style="padding-right: calc(var(--bs-gutter-x) * .0) ; padding-left: calc(var(--bs-gutter-x) * .0);">
-                        <div class="card_body">
-                            <div class="row d-flex">
-                                <!-- Button trigger modal -->
-                                <div class="col-12 add_flex justify-content-center mt-4">
-                                    <div class="text-center pt-3 pb-2">
-                                        <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
-                                            alt="Check" width="60">
-                                        <h2 class="my-4">Factures Famille</h2>
-                                        </div>
-                                </div>
-                                <div  class="row modal-body overflow-x" id="oldBillsContainer">
-                                    <!-- content -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-       </div>
-  </div>
-</div>
+
 <table style="max-width:1000px" id="myTableadminmember" class="border cust-datatable dataTable no-footer table">
     <thead>
         <tr>
@@ -79,3 +52,23 @@ text-align: left !important;
 <div id="noDataMessage" style="display: none; color:black;  margin: auto;
     text-align: center;padding: 10px;">Aucune donnée disponible</div>
 </div>
+<script>
+    $('#myTableadminmember').on('click', '.bill', function(){
+  
+
+  $('#oldBillsModal').modal('show');
+
+  // Get the bill ID from the clicked element
+  var user_id = $(this).data('user-id');
+console.log(user_id);
+   // Make an AJAX request to retrieve the old bills
+   $.ajax({
+      
+   url: '/admin/paiement/facture/get-old-bills/' + user_id,
+   success: function(data) {
+       console.log(data);
+      $('#oldBillsContainer').html(data);
+   }
+   });
+ });
+</script>

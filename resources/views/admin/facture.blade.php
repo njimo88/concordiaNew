@@ -41,7 +41,7 @@
                                         <div class="text-center pt-3 pb-2">
                                             <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
                                                 alt="Check" width="60">
-                                            <h2 class="my-4">Factures Famille</h2>
+                                            <h2 class="my-4">Anciennes Factures</h2>
                                             </div>
                                     </div>
                                     <div  class="row modal-body overflow-x" id="oldBillsContainer">
@@ -93,13 +93,8 @@
                                           
                                         <td><?php echo date("d/m/Y à H:i", strtotime($bills->date_bill)); ?></td>
 
-
-                                        <td style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Anciennes factures">
-                                                <a  data-user-id="{{ $bills->user_id }}"  type="button" class="bill user-link a text-black "  href="#">{{ $bills->payment_total_amount }}<i class="fa-solid fa-euro-sign"></i></a>
-                                            </span>
-                                            
-                                        </td>
+                                        <td style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">{{ number_format($bills->payment_total_amount, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
+                                        
                                         <td>
                                             <img src="{{ $bills->image_status }}" alt="Caution acceptée">
                                             <span style="display: none;">{{ $bills->bill_status}}</span>

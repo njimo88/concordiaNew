@@ -34,11 +34,12 @@ class BillsController extends Controller
     public function index()
     {
         $bill = DB::table('bills')
-            ->join('users', 'bills.user_id', '=', 'users.user_id')
-            ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-            ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status','bills_status.row_color')
-            ->get();
+    ->join('users', 'bills.user_id', '=', 'users.user_id')
+    ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+    ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+    ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status','bills_status.row_color')
+    ->orderBy('bills.date_bill', 'desc')
+    ->get();
 
             
         return view('admin.facture')->with('bill', $bill)->with('user', auth()->user());
@@ -83,19 +84,21 @@ class BillsController extends Controller
         return  redirect()->back()->with('success', 'Le statut de la facture n°'.$id.' a été modifié avec succès');
     }
     public function getOldBills($user_id)
-    {
-        $oldBills = 
-
-            DB::table('old_bills')->join('users', 'old_bills.user_id', '=', 'users.user_id')
+{
+    $oldBills = DB::table('old_bills')->join('users', 'old_bills.user_id', '=', 'users.user_id')
         ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
         ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
-        ->select('old_bills.*','bills_status.image_status','bills_payment_method.image', 'old_bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_status.status')
+        ->select('old_bills.*', 'bills_status.image_status', 'bills_payment_method.image', 'old_bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_status.status')
         ->where('old_bills.user_id', $user_id)
         ->get();
 
-        
-        return view('admin.modals.showOldBills', compact('oldBills'));
+    if ($oldBills->isEmpty()) {
+        return 'Aucune facture trouvée.';
     }
+
+    return view('admin.modals.showOldBills', compact('oldBills'));
+}
+
 
     public function updateDes(Request $request, $id){
 
@@ -134,6 +137,10 @@ class BillsController extends Controller
         ->where('bills.family_id', $family_id)
          ->select('bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.image as image', 'users.name', 'users.lastname')
         ->get();
+
+        if ($bill->isEmpty()) {
+            return 'Aucune facture trouvée.';
+        }
         
         return view('admin.modals.factureFamille', compact('bill'))->with('user', auth()->user());
     }
