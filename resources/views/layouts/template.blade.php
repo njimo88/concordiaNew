@@ -452,7 +452,7 @@
                   <ul id="pro-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if (auth()->user()->roles->estAutoriserDeVoirGestionProfessionnels)<li> <a href="{{ route('Professionnels.gestion') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-user-tie fa-fw mr-1"></span><span>Gestion</span> </a></li> @endif
                      @if (auth()->user()->roles->estAutoriserDeVoirCalculDesSalaires)<li> <a href="{{ route('proffesional.calculSalary') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-euro-sign fa-fw mr-1"></span><span>Calcul des salaires</span> </a></li> @endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirValiderLesHeures) <li> <a href="pro-chartjs.html"><span style="color: #00f900; margin-right:10px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Valider les heures</span> </a></li> @endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirValiderLesHeures) <li> <a href="{{ route('proffesional.valideHeure') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Valider les heures</span> </a></li> @endif
                   </ul>
                </li>
             @endif

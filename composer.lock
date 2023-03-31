@@ -4,11 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "0432c052362e9216e2e4b26189bb4007",
-=======
-    "content-hash": "675d0a088c6c7bcbfa79d021dac7e2bf",
->>>>>>> new_abbe
+    "content-hash": "7e8a790a16560edb75fb2824c7a70503",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -382,6 +378,73 @@
                 }
             ],
             "time": "2023-01-15T23:15:59+00:00"
+        },
+        {
+            "name": "codedge/laravel-fpdf",
+            "version": "1.11.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codedge/laravel-fpdf.git",
+                "reference": "426993f1b2d5b0f113984e9dcac0dc58c2ef05b2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/codedge/laravel-fpdf/zipball/426993f1b2d5b0f113984e9dcac0dc58c2ef05b2",
+                "reference": "426993f1b2d5b0f113984e9dcac0dc58c2ef05b2",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^9.0 || ^10.0",
+                "php": "~8.0 || ~8.1"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.29",
+                "orchestra/testbench": "^6.25.1 || ^8.0",
+                "phpunit/phpunit": "^9.6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Fpdf": "Codedge\\Fpdf\\Facades\\Fpdf"
+                    },
+                    "providers": [
+                        "Codedge\\Fpdf\\FpdfServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Codedge\\Fpdf\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Holger Lösken",
+                    "email": "holger.loesken@codedge.de"
+                }
+            ],
+            "description": "Laravel package to include Fpdf. It ships with Fpdf 1.85.",
+            "keywords": [
+                "fpdf",
+                "laravel",
+                "pdf"
+            ],
+            "support": {
+                "issues": "https://github.com/codedge/laravel-fpdf/issues",
+                "source": "https://github.com/codedge/laravel-fpdf"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/codedge",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-02-08T15:13:24+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -1831,16 +1894,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v9.52.4",
+            "version": "v9.52.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "9239128cfb4d22afefb64060dfecf53e82987267"
+                "reference": "e14d28c0f9403630d13f308bb43f3d3cb73d6d67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/9239128cfb4d22afefb64060dfecf53e82987267",
-                "reference": "9239128cfb4d22afefb64060dfecf53e82987267",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/e14d28c0f9403630d13f308bb43f3d3cb73d6d67",
+                "reference": "e14d28c0f9403630d13f308bb43f3d3cb73d6d67",
                 "shasum": ""
             },
             "require": {
@@ -2025,7 +2088,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2023-02-22T14:38:06+00:00"
+            "time": "2023-03-28T18:03:54+00:00"
         },
         {
             "name": "laravel/sanctum",
@@ -3834,16 +3897,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.11.13",
+            "version": "v0.11.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "722317c9f5627e588788e340f29b923e58f92f54"
+                "reference": "8c2e264def7a8263a68ef6f0b55ce90b77d41e17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/722317c9f5627e588788e340f29b923e58f92f54",
-                "reference": "722317c9f5627e588788e340f29b923e58f92f54",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/8c2e264def7a8263a68ef6f0b55ce90b77d41e17",
+                "reference": "8c2e264def7a8263a68ef6f0b55ce90b77d41e17",
                 "shasum": ""
             },
             "require": {
@@ -3904,9 +3967,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/psysh/issues",
-                "source": "https://github.com/bobthecow/psysh/tree/v0.11.13"
+                "source": "https://github.com/bobthecow/psysh/tree/v0.11.14"
             },
-            "time": "2023-03-21T14:22:44+00:00"
+            "time": "2023-03-28T03:41:01+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -4047,12 +4110,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "bf2bee216a4379eaf62162307d62bb7850405fec"
+                "reference": "8e955307d32dc9b6992440ff81321d3cb09db75a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/bf2bee216a4379eaf62162307d62bb7850405fec",
-                "reference": "bf2bee216a4379eaf62162307d62bb7850405fec",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/8e955307d32dc9b6992440ff81321d3cb09db75a",
+                "reference": "8e955307d32dc9b6992440ff81321d3cb09db75a",
                 "shasum": ""
             },
             "require": {
@@ -4132,7 +4195,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-07T16:14:23+00:00"
+            "time": "2023-03-27T22:05:11+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",
@@ -4186,6 +4249,124 @@
                 "source": "https://github.com/sabberworm/PHP-CSS-Parser/tree/8.4.0"
             },
             "time": "2021-12-11T13:40:54+00:00"
+        },
+        {
+            "name": "setasign/fpdf",
+            "version": "1.8.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Setasign/FPDF.git",
+                "reference": "f4104a04c9a3f95c4c26a0a0531abebcc980987a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Setasign/FPDF/zipball/f4104a04c9a3f95c4c26a0a0531abebcc980987a",
+                "reference": "f4104a04c9a3f95c4c26a0a0531abebcc980987a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "ext-zlib": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "fpdf.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Olivier Plathey",
+                    "email": "oliver@fpdf.org",
+                    "homepage": "http://fpdf.org/"
+                }
+            ],
+            "description": "FPDF is a PHP class which allows to generate PDF files with pure PHP. F from FPDF stands for Free: you may use it for any kind of usage and modify it to suit your needs.",
+            "homepage": "http://www.fpdf.org",
+            "keywords": [
+                "fpdf",
+                "pdf"
+            ],
+            "support": {
+                "source": "https://github.com/Setasign/FPDF/tree/1.8.5"
+            },
+            "time": "2022-11-18T07:02:00+00:00"
+        },
+        {
+            "name": "setasign/fpdi",
+            "version": "v2.3.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Setasign/FPDI.git",
+                "reference": "bccc892d5fa1f48c43f8ba7db5ed4ba6f30c8c05"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Setasign/FPDI/zipball/bccc892d5fa1f48c43f8ba7db5ed4ba6f30c8c05",
+                "reference": "bccc892d5fa1f48c43f8ba7db5ed4ba6f30c8c05",
+                "shasum": ""
+            },
+            "require": {
+                "ext-zlib": "*",
+                "php": "^5.6 || ^7.0 || ^8.0"
+            },
+            "conflict": {
+                "setasign/tfpdf": "<1.31"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~5.7",
+                "setasign/fpdf": "~1.8",
+                "setasign/tfpdf": "1.31",
+                "squizlabs/php_codesniffer": "^3.5",
+                "tecnickcom/tcpdf": "~6.2"
+            },
+            "suggest": {
+                "setasign/fpdf": "FPDI will extend this class but as it is also possible to use TCPDF or tFPDF as an alternative. There's no fixed dependency configured."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "setasign\\Fpdi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Slabon",
+                    "email": "jan.slabon@setasign.com",
+                    "homepage": "https://www.setasign.com"
+                },
+                {
+                    "name": "Maximilian Kresse",
+                    "email": "maximilian.kresse@setasign.com",
+                    "homepage": "https://www.setasign.com"
+                }
+            ],
+            "description": "FPDI is a collection of PHP classes facilitating developers to read pages from existing PDF documents and use them as templates in FPDF. Because it is also possible to use FPDI with TCPDF, there are no fixed dependencies defined. Please see suggestions for packages which evaluates the dependencies automatically.",
+            "homepage": "https://www.setasign.com/fpdi",
+            "keywords": [
+                "fpdf",
+                "fpdi",
+                "pdf"
+            ],
+            "support": {
+                "issues": "https://github.com/Setasign/FPDI/issues",
+                "source": "https://github.com/Setasign/FPDI/tree/v2.3.7"
+            },
+            "funding": [
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/setasign/fpdi",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2023-02-09T10:38:43+00:00"
         },
         {
             "name": "snapappointments/bootstrap-select",
@@ -6768,6 +6949,68 @@
             "time": "2022-03-08T17:03:00+00:00"
         },
         {
+            "name": "webklex/laravel-pdfmerger",
+            "version": "1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Webklex/laravel-pdfmerger.git",
+                "reference": "3c903d0d1e7d7288c524c3c6483b73ccb88606c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Webklex/laravel-pdfmerger/zipball/3c903d0d1e7d7288c524c3c6483b73ccb88606c1",
+                "reference": "3c903d0d1e7d7288c524c3c6483b73ccb88606c1",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=5.0",
+                "php": ">=5.5.9",
+                "setasign/fpdf": "1.8.*",
+                "setasign/fpdi": "^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*",
+                "scrutinizer/ocular": "~1.1",
+                "squizlabs/php_codesniffer": "~2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Webklex\\PDFMerger\\": "src/PDFMerger"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Malte Goldenbaum",
+                    "email": "github@webklex.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Generic PDF merger for Laravel",
+            "homepage": "https://github.com/webklex/pdfmerger",
+            "keywords": [
+                "laravel",
+                "merger",
+                "pdf",
+                "pdfmerger",
+                "webklex"
+            ],
+            "support": {
+                "issues": "https://github.com/Webklex/laravel-pdfmerger/issues",
+                "source": "https://github.com/Webklex/laravel-pdfmerger/tree/1.3.1"
+            },
+            "time": "2022-09-14T08:14:06+00:00"
+        },
+        {
             "name": "webmozart/assert",
             "version": "1.11.0",
             "source": {
@@ -7239,16 +7482,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.21.2",
+            "version": "v1.21.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "19d6fe167e2389b41fe1b4ee52293d1eaf8a43fc"
+                "reference": "3042ff8cf403817c340d5a7762b2d32900239f46"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/19d6fe167e2389b41fe1b4ee52293d1eaf8a43fc",
-                "reference": "19d6fe167e2389b41fe1b4ee52293d1eaf8a43fc",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/3042ff8cf403817c340d5a7762b2d32900239f46",
+                "reference": "3042ff8cf403817c340d5a7762b2d32900239f46",
                 "shasum": ""
             },
             "require": {
@@ -7300,7 +7543,7 @@
                 "issues": "https://github.com/laravel/sail/issues",
                 "source": "https://github.com/laravel/sail"
             },
-            "time": "2023-03-06T14:23:15+00:00"
+            "time": "2023-03-13T01:22:10+00:00"
         },
         {
             "name": "maximebf/debugbar",

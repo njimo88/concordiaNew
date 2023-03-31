@@ -9,6 +9,7 @@ use App\Http\Controllers\BlogArticle_Controller;
 use App\Models\A_Blog_Post;
 use App\Http\Controllers;
 use App\Http\Controllers\Article_Controller;
+use App\Http\Controllers\generatePDF;
 use App\Http\Controllers\Controller_Communication;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -43,31 +44,47 @@ Route::get('/test', function () {
 Auth::routes();
 
 /*Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/users/family', [App\Http\Controllers\UsersController::class, 'family'])->name('users.family');
+    Route::post('/users/family/addMember', [App\Http\Controllers\UsersController::class, 'addMember'])->name('users.addMember');
+    Route::post('/users/family/addEnfant', [App\Http\Controllers\UsersController::class, 'addEnfant'])->name('users.addEnfant');
+    Route::put('/users/family/editFamille/{user_id}', [App\Http\Controllers\UsersController::class, 'editFamille'])->name('users.editFamille');
+    Route::get('/users/family/detailsUser/{user_id}', [App\Http\Controllers\UsersController::class, 'detailsUser']);
+    Route::get('/modif', [App\Http\Controllers\UsersController::class, 'editdata']);
 
-Route::get('/users/family', [App\Http\Controllers\UsersController::class, 'family'])->name('users.family');
-Route::post('/users/family/addMember', [App\Http\Controllers\UsersController::class, 'addMember'])->name('users.addMember');
-Route::post('/users/family/addEnfant', [App\Http\Controllers\UsersController::class, 'addEnfant'])->name('users.addEnfant');
-Route::put('/users/family/editFamille/{user_id}', [App\Http\Controllers\UsersController::class, 'editFamille'])->name('users.editFamille');
-Route::get('/users/family/detailsUser/{user_id}', [App\Http\Controllers\UsersController::class, 'detailsUser']);
-Route::get('/modif', [App\Http\Controllers\UsersController::class, 'editdata']);
-
-
-
-Route::get('/users/profils', [App\Http\Controllers\UsersController::class, 'edit'])->name('users.edit-profil');
+    Route::get('/users/profils', [App\Http\Controllers\UsersController::class, 'edit'])->name('users.edit-profil');
 Route::put('/users/profils', [App\Http\Controllers\UsersController::class, 'update'])->name('users.update-profil');
 
 Route::get('/users/factures-devis', [App\Http\Controllers\UsersController::class, 'facture'])->name('users.FactureUser');
 Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
 Route::get('/users/factures-devis/showBill/{id}', [BillsController::class, 'showBill'])->name('user.showBill');
 
-/*-----------Panier----------*/
 
-Route::get('/panier', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
-Route::get('/payer_article', [App\Http\Controllers\UsersController::class, 'payer_article'])->name('payer_article');
-Route::get('/Vider_panier/{id}', [App\Http\Controllers\UsersController::class, 'Vider_panier'])->name('Vider_panier');
+/*-----------PDF--------------------------*/
 
-/*-----------Paiement----------*/
-Route::get('/detail_paiement/{id}/{nombre_cheques}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
+Route::post('/generatePDFfacture/{id}', [generatePDF::class, 'generatePDFfacture'])->name('generatePDFfacture');
+
+});
+
+
+
+
+
+
+
+
+    /*-----------Panier----------*/
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/panier', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
+    Route::get('/payer_article', [App\Http\Controllers\UsersController::class, 'payer_article'])->name('payer_article');
+    Route::get('/Vider_panier/{id}', [App\Http\Controllers\UsersController::class, 'Vider_panier'])->name('Vider_panier');
+    
+    /*-----------Paiement----------*/
+    Route::get('/detail_paiement/{id}/{nombre_cheques}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
+
+});
+
+
 
 
 
@@ -81,6 +98,8 @@ Route::middleware(['auth', 'role:90'])->group(function () {
     Route::get('/admin/members/editUser/{user_id}', [n_AdminController::class, 'editUsermodal']);
     Route::get('/admin/members/delete/{user_id}', [n_AdminController::class, 'DeleteUser'])->name('admin.DeleteUser');
     Route::get('/admin/members/deletemodal/{user_id}', [n_AdminController::class, 'DeleteUsermodal']);
+
+     /*----------------------- Factures ------------------------------ */
     Route::get('/admin/paiement/facture', [BillsController::class, 'index'])->name('paiement.facture');
     Route::get('/admin/paiement/facture/{id}', [BillsController::class, 'delete'])->name('paiement.deleteFacture');
     Route::get('/admin/paiement/factureFamille/{id}',  [BillsController::class, 'family'])->name('factureFamille');
@@ -90,19 +109,24 @@ Route::middleware(['auth', 'role:90'])->group(function () {
     Route::post('/admin/paiement/facture/addShopMessage/{id}',  [BillsController::class, 'addShopMessage'])->name('addShopMessage');
     Route::put('/admin/paiement/facture/updateStatus/{id}',  [BillsController::class, 'updateStatus'])->name('facture.updateStatus');
     Route::put('/admin/paiement/facture/updateDes/{id}',  [BillsController::class, 'updateDes'])->name('facture.updateDes');
+
+    /*----------------------- Professionnels ------------------------------ */
     Route::get('/admin/Professionnels/gestion',  [ProfessionnelsController::class, 'gestion'])->name('Professionnels.gestion');
     Route::put('/admin/Professionnels/gestion/{user_id}',  [ProfessionnelsController::class, 'editPro'])->name('Professionnels.editPro');
     Route::put('/admin/Professionnels/gestion/addPro/{user_id}',  [ProfessionnelsController::class, 'addPro'])->name('Professionnels.addPro');
     Route::get('/admin/Professionnels/gestion/declarationList/{id_user}',  [ProfessionnelsController::class, 'declarationList']);
     Route::get('/admin/Professionnels/gestion/declarationHeures/{id}',  [ProfessionnelsController::class, 'declarationHeures'])->name('Professionnels.declarationHeures');
+    Route::post('/admin/Professionnels/gestion/declaration/{id}',  [ProfessionnelsController::class, 'declaration'])->name('Professionnels.declaration');
     Route::get('/admin/Professionnels/gestion/calculSalary',  [ProfessionnelsController::class, 'calculSalary'])->name('proffesional.calculSalary');
     Route::post('/admin/Professionnels/gestion/modifySM',  [ProfessionnelsController::class, 'modifySM'])->name('proffesional.modifySM');
     Route::post('/admin/Professionnels/gestion/simuleSalary',  [ProfessionnelsController::class, 'simuleSalary'])->name('proffesional.simuleSalary');
+    Route::get('/valider-heures', [ProfessionnelsController::class, 'valideHeure'])->name('proffesional.valideHeure');
+    /*----------------------- END Professionnels ------------------------------ */
     Route::put('/admin/members/mdpUniversel/{user_id}', [n_AdminController::class, 'mdpUniversel'])->name('admin.mdpUniversel');
     Route::get('/admin/members/mdpUniverselmodal/{user_id}', [n_AdminController::class, 'mdpUniverselmodal']);
     Route::get('/admin/members/familleMembers/{user_id}', [n_AdminController::class, 'familleMembers']);
-/*----------------------- Systeme ------------------------------ */
-Route::post('/admin/update-system-setting', [n_AdminController::class, 'message_general'])->name('update_system_setting');
+    /*----------------------- Systeme ------------------------------ */
+    Route::post('/admin/update-system-setting', [n_AdminController::class, 'message_general'])->name('update_system_setting');
 
 }); 
 
@@ -112,6 +136,7 @@ Route::post('/admin/update-system-setting', [n_AdminController::class, 'message_
 
 /*---------------------------------ABBé------------------------------------------*/
 Route::get('/', [A_ControllerBlog::class, 'a_fetchPost'])->name('A_blog');
+Route::get('/home', [A_ControllerBlog::class, 'a_fetchPost']);
 Route::get('/anniversaire', [A_ControllerBlog::class, 'anniversaire'])->name('anniversaire');
 Route::get('/Simple_Post/{id}', [A_ControllerBlog::class, 'Simple_Post'])->name('Simple_Post');
 Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_par_cat1'])->name('A_blog_par_categorie1');

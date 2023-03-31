@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 require_once(app_path().'/fonction.php');
 
@@ -27,9 +28,10 @@ class n_AdminController extends Controller
     public function members()
     {
         $roles = Role::all();
+
         $n_users = User::orderBy('name', 'asc')
-                ->select('user_id', 'username', 'name', 'lastname', 'birthdate', 'phone','family_id')
-                ->get();
+        ->select('user_id', 'username', 'name', 'lastname', 'birthdate', 'phone','family_id')
+        ->get();
 
         return view('admin.members', compact('n_users','roles'))->with('user', auth()->user());
     }
