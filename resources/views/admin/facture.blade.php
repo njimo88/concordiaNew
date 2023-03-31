@@ -26,13 +26,36 @@
                         <!-- Button trigger modal -->
 
                           <!-- Modal -->
-                          <div class="modal fade " id="addMember" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                              <div class="modal-content ">
-                                
-                              </div>
+                          <!-- ---- modal OLD facture ---- -->
+    <div style="--bs-modal-width: 1000px !important;" class="modal fade " id="oldBillsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content p-3">
+              <!--Body-->
+                <section class="section">
+                    <div class="row">
+                        <div class="col-12 main-datatable" style="padding-right: calc(var(--bs-gutter-x) * .0) ; padding-left: calc(var(--bs-gutter-x) * .0);">
+                            <div class="card_body">
+                                <div class="row d-flex">
+                                    <!-- Button trigger modal -->
+                                    <div class="col-12 add_flex justify-content-center mt-4">
+                                        <div class="text-center pt-3 pb-2">
+                                            <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
+                                                alt="Check" width="60">
+                                            <h2 class="my-4">Factures Famille</h2>
+                                            </div>
+                                    </div>
+                                    <div  class="row modal-body overflow-x" id="oldBillsContainer">
+                                        <!-- content -->
+                                    </div>
+                                </div>
                             </div>
-                          </div>
+                        </div>
+                    </div>
+                </section>
+           </div>
+      </div>
+    </div>
+
                           @if (session('success'))
                                 <div class="alert alert-success col-11">
                                     {{ session('success') }}

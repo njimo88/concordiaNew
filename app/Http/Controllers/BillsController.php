@@ -39,6 +39,8 @@ class BillsController extends Controller
             ->join('bills_status', 'bills.status', '=', 'bills_status.id')
             ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status','bills_status.row_color')
             ->get();
+
+            
         return view('admin.facture')->with('bill', $bill)->with('user', auth()->user());
     }
 
@@ -82,12 +84,16 @@ class BillsController extends Controller
     }
     public function getOldBills($user_id)
     {
-        $oldBills = old_bills::join('users', 'old_bills.user_id', '=', 'users.user_id')
-            ->select('old_bills.*', 'users.name', 'users.lastname')
-            ->where('old_bills.user_id', $user_id)
-            ->get();
+        $oldBills = 
 
-            
+            DB::table('old_bills')->join('users', 'old_bills.user_id', '=', 'users.user_id')
+        ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+        ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+        ->select('old_bills.*','bills_status.image_status','bills_payment_method.image', 'old_bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_status.status')
+        ->where('old_bills.user_id', $user_id)
+        ->get();
+
+        
         return view('admin.modals.showOldBills', compact('oldBills'));
     }
 

@@ -319,6 +319,22 @@
     pageLength: 100,
     info: false,
     bLengthChange: false,
+    paging: false, // Désactiver la pagination
+    lengthChange: false, 
+    language: {
+      search: "Rechercher&nbsp;:",
+      lengthMenu: "Afficher _MENU_ entrées",
+      zeroRecords: "Aucun résultat trouvé",
+      info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+      infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+      infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+      paginate: {
+          first: "Premier",
+          last: "Dernier",
+          next: "Suivant",
+          previous: "Précédent"
+      }
+  },
     drawCallback: function(settings) {
       var api = this.api();
       api.column(0, {
@@ -351,6 +367,24 @@
     var isAsc = $(this).hasClass('asc');
     table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
   });   $('#myTableabb').DataTable({
+    info: false,
+    bLengthChange: false,
+    paging: false, // Désactiver la pagination
+    lengthChange: false, 
+    language: {
+      search: "Rechercher&nbsp;:",
+      lengthMenu: "Afficher _MENU_ entrées",
+      zeroRecords: "Aucun résultat trouvé",
+      info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+      infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+      infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+      paginate: {
+          first: "Premier",
+          last: "Dernier",
+          next: "Suivant",
+          previous: "Précédent"
+      }
+  },
     drawCallback: function(settings) {
       var api = this.api();
       api.column(0, {
@@ -386,48 +420,63 @@
   
    /*---------------------------------sorting by column myTableMembers --------------------------------------*/
   
-  $('#myTableMembers').DataTable({ 
-     pageLength: 100,
+   $('#myTableMembers').DataTable({ 
+    pageLength: 100,
     info: false,
     bLengthChange: false,
-    order: [[1, 'asc']],
-    drawCallback: function(settings) {
-      var api = this.api();
-      api.column(1, {
-        order: 'applied'
-      }).nodes();
-    },
-    columnDefs: [
-      {
-        targets: 3,
-        type: 'datetime-dd-mm-yyyy'
-      },
-      {
-        targets: 4,
-        sortable: false
-      }
-    ]
-  });
-  
-  $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
-      var b = d.split(/\D+/);
-      return new Date(b[2], b[1] - 1, b[0], 0, 0, 0);
-  };
-  
-  
-  // Apply the search
-  $('#myTableMembers thead input').on('keyup change', function() {
-    table
-      .column($(this).parent().index() + ':visible')
-      .search(this.value)
-      .draw();
-  });
-  
-  $('#myTableMembers').on('click', 'thead th', function() {
-    var colIndex = $(this).index();
-    var isAsc = $(this).hasClass('asc');
-    table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
-  });
+    language: {
+       search: "Rechercher&nbsp;:",
+       lengthMenu: "Afficher _MENU_ entrées",
+       zeroRecords: "Aucun résultat trouvé",
+       info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+       infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+       infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+       paginate: {
+           first: "Premier",
+           last: "Dernier",
+           next: "Suivant",
+           previous: "Précédent"
+       }
+   },
+   order: [[1, 'asc']],
+   drawCallback: function(settings) {
+     var api = this.api();
+     api.column(1, {
+       order: 'applied'
+     }).nodes();
+   },
+   columnDefs: [
+     {
+       targets: 3,
+       type: 'datetime-dd-mm-yyyy'
+     },
+     {
+       targets: 4,
+       sortable: false
+     }
+   ]
+ });
+ 
+ $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
+     var b = d.split(/\D+/);
+     return new Date(b[2], b[1] - 1, b[0], 0, 0, 0);
+ };
+ 
+ 
+ // Appliquer la recherche
+ $('#myTableMembers thead input').on('keyup change', function() {
+   table
+     .column($(this).parent().index() + ':visible')
+     .search(this.value)
+     .draw();
+ });
+ 
+ $('#myTableMembers').on('click', 'thead th', function() {
+   var colIndex = $(this).index();
+   var isAsc = $(this).hasClass('asc');
+   table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
+ });
+
   
   
 
@@ -522,11 +571,8 @@
         
      url: '/admin/paiement/factureFamille/' + family_id,
      success: function(data) {
-      console.log(data.length);
-        // Insert the old bills data into the modal body
-        if (data.length = 839) {
-          noDataMessage.style.display = "block";
-      }
+        
+        
         $('#familyBillsContainer').html(data);
      }
      });
@@ -534,26 +580,43 @@
   /*---------------------------------modal--------------------------------------*/
   
    
+  $('#myTable').on('click', '.bill', function(){
   
-  $('.bill').click(function() {
+
        $('#oldBillsModal').modal('show');
      
        // Get the bill ID from the clicked element
        var user_id = $(this).data('user-id');
-       
   
         // Make an AJAX request to retrieve the old bills
         $.ajax({
            
         url: '/admin/paiement/facture/get-old-bills/' + user_id,
         success: function(data) {
-           // Insert the old bills data into the modal body
+            console.log(data);
            $('#oldBillsContainer').html(data);
         }
         });
-        });
+      });
   
+      $('.bill') .click(function(){
   
+
+        $('#oldBillsModal').modal('show');
+      
+        // Get the bill ID from the clicked element
+        var user_id = $(this).data('user-id');
+   console.log(user_id);
+         // Make an AJAX request to retrieve the old bills
+         $.ajax({
+            
+         url: '/admin/paiement/facture/get-old-bills/' + user_id,
+         success: function(data) {
+             console.log(data);
+            $('#oldBillsContainer').html(data);
+         }
+         });
+       });
       
         
       /*-------------------------------------------------------------------------------------------*/

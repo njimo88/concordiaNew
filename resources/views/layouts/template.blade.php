@@ -366,7 +366,7 @@
                     <li class="dropdown-header">
                        <h6> {{ auth()->user()->name }} {{ auth()->user()->lastname }}</h6>
                     </li>
-                    <li> <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#settings"> <i class="bi bi-gear"></i> <span>Settings</span> </a></li>
+                    <li> <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#settings"> <i class="bi bi-gear"></i> <span>Paramètres</span> </a></li>
                     <li> <a class="dropdown-item d-flex align-items-center" href="{{ route('A_blog') }}"> <i class="bi bi-box-arrow-right"></i> <span>Retour au blog</span> </a></li>
                  </ul>
               </li>

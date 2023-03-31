@@ -16,7 +16,7 @@
             <form action="{{ route("admin.mdpUniversel", $n_users->user_id) }}"   method="post">
                 @csrf
                 @method('PUT')
-                <button type="submit" class="btn btn-danger">Yes</button>
+                <button type="submit" class="btn btn-danger">Oui</button>
             </form>
             
           </div>

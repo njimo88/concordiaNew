@@ -27,8 +27,8 @@
                      <th>Dernier éditeur </th>
                      <th>Date de modification</th>
                      <th>Statut</th>
-                     <th>Modifié</th>
-                      <th>supprimé</th>
+                     <th>Modifier</th>
+                      <th>supprimer</th>
                     
                      
                        
@@ -36,21 +36,21 @@
                             <tbody>
                                
                                 @foreach($requete_user as $data)
-    <tr style="background-color:{{$data->color}}">
+    <tr >
       
         <td>{{$data->titre}}</td>
 
-        <td>{{$data->date_post}}</td>
+        <td><?php echo date("d/m/Y à H:i", strtotime($data->date_post)); ?></td>
       
         <td>{{$data->name}}</td>
            
         <td>{{$data->name}}</td>
 
     
-        <td>{{$data->updated_at}}</td>
+        <td><?php echo date("d/m/Y à H:i", strtotime($data->updated_at)); ?></td>
         <td>{{$data->status}}</td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a href="{{route('edit_blog_index',['id' => $data->id_blog_post_primaire])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><a href="{{route('delete_blog',['id' => $data->id_blog_post_primaire])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');" ><i class="bi bi-trash"></i></button></a></p></td>
+        <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a href="{{route('edit_blog_index',['id' => $data->id_blog_post_primaire])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier ce billet de blog ?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
+        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><a href="{{route('delete_blog',['id' => $data->id_blog_post_primaire])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimerce billet de blog ?');" ><i class="bi bi-trash"></i></button></a></p></td>
     
     </tr>
     @endforeach
