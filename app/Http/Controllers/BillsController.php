@@ -168,7 +168,7 @@ class BillsController extends Controller
         ->select('id','status')
         ->get();
 
-        $designation = Shop_article::where('saison', '=', saison_active())
+        $designation = shop_article::where('saison', '=', saison_active())
         ->orderBy('title', 'asc')
         ->distinct()
         ->pluck('title')

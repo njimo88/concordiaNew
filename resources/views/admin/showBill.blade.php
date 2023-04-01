@@ -109,7 +109,6 @@
           echo '<span style="font-weight:bold">Date</span> '.$formattedDate;
           ?>
         <br>
-        <span style="font-weight:bold">Dernière mise à jour</span> : ?????????? <br>
         <span style="font-weight:bold">Référence commande </span>: {{ $bill->ref }} <br>
         <span style="font-weight:bold">Mode de paiement </span>: {{ $bill->payment_method }} <br>
         Paiement en 1 fois <br>
@@ -118,8 +117,6 @@
       </div>
       <div class="col-md-4 col-12 p-3">
         <h4>Détail paiement</h4>
-        <span style="font-weight:bold">Paiement</span> : €<br>
-        <span style="font-weight:bold">Echéance </span> <br> <br>
         <span style="font-weight:bold">Reste à payer : {{ number_format($bill->payment_total_amount-$bill->amount_paid, 2, ',', ' ') }} €</span> 
         <br><br><br>
         @if (auth()->user()->roles->paiement_immediat)
