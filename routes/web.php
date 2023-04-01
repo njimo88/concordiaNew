@@ -318,3 +318,9 @@ Route::get('/generate-pdf/{id}',[PDF_Controller::class, 'generate'])->name('gene
 Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');
 
 }); 
+
+/*----------------------- Recherche ------------------------------ */
+
+Route::get('/search/blog',[SearchController::class, 'searchBlog']);
+Route::get('/search/shop', [SearchController::class, 'searchShop']);
+Route::get('/search-results', [SearchController::class, 'searchResults']);
