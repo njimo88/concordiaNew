@@ -522,7 +522,6 @@
         
      url: '/admin/paiement/factureFamille/' + family_id,
      success: function(data) {
-      console.log(data.length);
         // Insert the old bills data into the modal body
         if (data.length = 839) {
           noDataMessage.style.display = "block";
@@ -755,5 +754,4 @@ let input_str = {
      });
      
 });
-  
   
