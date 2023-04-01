@@ -50,6 +50,32 @@ use Illuminate\Support\Facades\Route;
 }
               </style>
 
+ <!-- Search Modal -->
+ <div class="modal fade" id="search-modal" tabindex="-1" role="dialog" aria-labelledby="search-modal-label" aria-modal="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content" style="background-color: #c4d8e7; outline: 0 none;">
+          <div class="modal-header d-flex justify-content-center">
+            <div class="col-lg-11">
+              <select id="search-type" name="search-type" class="form-control custom-select-with-icons" style="text-align-last:center;">
+                  <option value="blog" selected="">Rechercher un article du blog</option>
+                  <option value="shop">Rechercher un article de la boutique</option>
+              </select>
+          </div>
+          </div>
+          <div class="modal-body">
+              <div class="form-row">
+                  <div class="form-group col-md-12" style="padding:5px">
+                      <form id="search-form" class="searchForm" style=" margin: 0 auto" autocomplete="off">
+                          <input type="text" id="search-query" name="search-query" class="form-control" placeholder="Rechercher un article...">
+                          <button type="submit"><i class="fa fa-search"></i></button>
+                      </form>
+                  </div>
+                  <div id="search-results" style="margin:0 auto"></div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
 
 
 
