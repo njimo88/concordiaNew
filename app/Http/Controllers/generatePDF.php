@@ -34,64 +34,66 @@ class generatePDF extends Controller
         $image2->resize(700, 1000);
 
         $image2->text($bill->name, 100, 86, function($font) {
-            $font->file(public_path('fonts/Arial.ttf'));
+            $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
             $font->color('#000000');
         });
+        
+    
         $image2->text($bill->lastname, 419, 73+13, function($font) {
-            $font->file(public_path('fonts/Arial.ttf'));
+            $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
             $font->color('#000000');
         });
         
 
         $image2->text($bill->address, 119, 119+13, function($font) {
-        $font->file(public_path('fonts/Arial.ttf'));
+        $font->file(public_path('fonts/arial.ttf'));
         $font->size(12);
         $font->color('#000000');
         });
         $image2->text($bill->zip, 122, 142+13, function($font) {
-            $font->file(public_path('fonts/Arial.ttf'));
+            $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
             $font->color('#000000');
         });
         $image2->text($bill->city, 285, 141+13, function($font) {
-            $font->file(public_path('fonts/Arial.ttf'));
+            $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
             $font->color('#000000');
         });
 
         $image2->text(date('d', strtotime($bill->date_bill)), 228, 290+13, function($font) {
-            $font->file(public_path('fonts/Arial.ttf'));
+            $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
             $font->color('#000000');
         });
         $image2->text(date('m', strtotime($bill->date_bill)), 266, 290+13, function($font) {
-            $font->file(public_path('fonts/Arial.ttf'));
+            $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
             $font->color('#000000');
         });
         $image2->text(date('Y', strtotime($bill->date_bill)), 332, 290+13, function($font) {
-            $font->file(public_path('fonts/Arial.ttf'));
+            $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
             $font->color('#000000');
         });
 
         if ($bill->method_payment == 'Virement' || $bill->method_payment == 'Carte Bancaire') {
             $image2->text('x', 388, 559, function($font) {
-                $font->file(public_path('fonts/Arial.ttf'));
+                $font->file(public_path('fonts/arial.ttf'));
                 $font->size(12);
                 $font->color('#000000');
             });
         } else if ($bill->method_payment == 'Chèque') {
             $image2->text('x', 193, 559, function($font) {
-                $font->file(public_path('fonts/Arial.ttf'));
+                $font->file(public_path('fonts/arial.ttf'));
                 $font->size(12);
                 $font->color('#000000');
             });
         } else if ($bill->method_payment == 'Espèces') {
             $image2->text('x', 50, 559, function($font) {
-                $font->file(public_path('fonts/Arial.ttf'));
+                $font->file(public_path('fonts/arial.ttf'));
                 $font->size(12);
                 $font->color('#000000');
             });
