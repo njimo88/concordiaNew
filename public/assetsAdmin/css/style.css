@@ -1549,11 +1549,9 @@
 	border-radius: var(--bs-modal-border-radius) !important;
 	outline: 0;
   }
-.a{
-    
-}
 
   .a:hover {
+    cursor: pointer;
     color: #ae00ff !important;
 }
 

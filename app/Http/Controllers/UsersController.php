@@ -14,6 +14,9 @@ use Illuminate\Validation\Rule;
 use App\Models\Shop_article;
 use App\Models\Shop_article_2;
 use App\Models\PaiementImmediat;
+use App\Models\Role;
+use App\Models\SystemSetting;
+use Illuminate\Support\Facades\Hash;
 require_once(app_path().'/fonction.php');
 
 

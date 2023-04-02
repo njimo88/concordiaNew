@@ -110,7 +110,7 @@
           </div>
       </div>
   @endif
-<div style="background-color:white;"  class="container rounded px-2" >
+<div style="background-color:white;"  class="container rounded" >
   @if (session('success'))
     <div style="display: -webkit-inline-box !important;" class="alert alert-success mt-3 col-12">
         {{ session('success') }}
@@ -361,7 +361,7 @@
                             <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }} {{ $user->user_id }}</option>
                           @endforeach
                       </select>
-                      @if ($coursVente->value == 1)
+                      @if ($coursVente->value == 0)
                         <p style="font-weight:bold">Inscriptions inaccessibles actuellement</p>
                       @else
                         <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>

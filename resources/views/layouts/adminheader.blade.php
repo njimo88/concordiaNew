@@ -6,7 +6,6 @@
     <meta content="" name="description">
     <meta content="" name="keywords">
     
-    
     <link href="{{asset('assetsAdmin/css/bootstrap-icons.css')}}" rel="stylesheet">
     <link href="{{asset('assetsAdmin/css/boxicons.min.css')}}" rel="stylesheet">
     <link href="{{asset('assetsAdmin/css/quill.snow.css')}}" rel="stylesheet">

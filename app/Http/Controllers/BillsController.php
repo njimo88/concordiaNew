@@ -114,19 +114,24 @@ class BillsController extends Controller
         return  redirect()->back()->with('success', 'La désignationa été modifié avec succès');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\bills  $bills
-     * @return \Illuminate\Http\Response
-     */
-    public function delete( $id)
-    {
-        $bill = bills::find($id);
-        $bill->delete();
-        return redirect()->route('paiement.facture')->with('success', 'Le facture a été annulé avec succès');
 
-    }
+
+    public function destroy(bills $bill)
+{
+    // Supprimer la facture
+    $bill->delete();
+
+    // Ajouter un message à la session
+    session()->flash('success', 'La facture a été supprimée avec succès.');
+
+    // Rediriger vers la page d'origine
+    return back();
+}
+
+
+    
+    
+    
 
     public function family($family_id)
     {

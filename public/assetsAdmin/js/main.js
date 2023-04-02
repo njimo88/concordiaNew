@@ -315,9 +315,24 @@
 
 /*my table Sort-------------------------------------------------------------------*/
 $('#myTable').DataTable({
-  pageLength: 100,
   info: false,
-  bLengthChange: false,
+    bLengthChange: false,
+    paging: false, // Désactiver la pagination
+    lengthChange: false, 
+    language: {
+      search: "Rechercher&nbsp;:",
+      lengthMenu: "Afficher _MENU_ entrées",
+      zeroRecords: "Aucun résultat trouvé",
+      info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+      infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+      infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+      paginate: {
+          first: "Premier",
+          last: "Dernier",
+          next: "Suivant",
+          previous: "Précédent"
+      }
+  },
   order: [],
   drawCallback: function(settings) {
     var api = this.api();
@@ -563,7 +578,7 @@ $('#myTable').on('click', 'thead th', function() {
 
   /*---------------------------------modal myTableMembers familybill---------------------------------------*/
 
-  $('#myTableMembers').on('click', '.familybill', function(){
+  $('#myTable').on('click', '.familybill', function(){
     $('#factureFamille').modal('show');
   
     // Get the bill ID from the clicked element
@@ -613,7 +628,32 @@ $('#myTable').on('click', 'thead th', function() {
       
         
       /*-------------------------------------------------------------------------------------------*/
-  
+      $(document).on('click', '.delete-bill', function(event) {
+        event.preventDefault();
+        // Récupérer l'ID de la facture à supprimer
+        var billId = $(this).data('id');
+      
+        // Afficher une boîte de dialogue pour demander la confirmation de la suppression
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
+          // Envoyer une requête AJAX pour supprimer la facture
+          fetch('/facture/' + billId, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            // Si la suppression réussit, afficher un message de confirmation et recharger la page
+            alert('La facture a été supprimée avec succès.');
+            location.reload();
+          })
+          .catch(error => console.error(error));
+        }
+      });
+      
+    
 /*------------------------------------------------------------------------------------Professionnel-----------------------------------------------------------------------------------------*/
 
         /*---------------------------------modal declarationList--------------------------------------*/
