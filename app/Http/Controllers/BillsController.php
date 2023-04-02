@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Models\old_bills;
-use App\Models\shop_article;
+use App\Models\Shop_article;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\ShopMessage;
 use App\Models\PaiementImmediat;
@@ -103,7 +103,7 @@ class BillsController extends Controller
     public function updateDes(Request $request, $id){
 
         $new = LiaisonShopArticlesBill::where('id_liaison', $id)->first();
-        $article = shop_article::where('title', $request->designation)->first();
+        $article = Shop_article::where('title', $request->designation)->first();
 
         $new->designation = $article->title;
         $new->href_product = $article->ref;
@@ -168,7 +168,7 @@ class BillsController extends Controller
         ->select('id','status')
         ->get();
 
-        $designation = shop_article::where('saison', '=', saison_active())
+        $designation = Shop_article::where('saison', '=', saison_active())
         ->orderBy('title', 'asc')
         ->distinct()
         ->pluck('title')
