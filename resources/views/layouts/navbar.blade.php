@@ -633,7 +633,81 @@ use Illuminate\Support\Facades\Route;
           </script>
       @endif
 
-
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script>
+      $(document).ready(function() {
+      const $searchType = $('#search-type');
+      const $searchQuery = $('#search-query');
+      const $searchResults = $('#search-results');
+  
+      $searchQuery.on('input', function() {
+          const searchType = $searchType.val();
+          const searchQuery = $searchQuery.val();
+  
+          if (searchQuery.length < 3) {
+              $searchResults.empty();
+              return;
+          }
+  
+          let searchUrl = '';
+  
+          if (searchType === 'blog') {
+              searchUrl = '/search/blog';
+          } else if (searchType === 'shop') {
+              searchUrl = '/search/shop';
+          }
+  
+          $.ajax({
+              url: searchUrl,
+              method: 'GET',
+              data: { query: searchQuery },
+              success: function(data) {
+                  $searchResults.empty();
+  
+                  if (data.length === 0) {
+                      $searchResults.append('<p>Aucun résultat trouvé</p>');
+                  } else {
+                      data.forEach(function(item) {
+                        const result = searchType === 'blog' ? item.titre : item.title;
+                        const itemId = searchType === 'blog' ? item.id_blog_post_primaire : item.id_shop_article;
+                        let saison;
+  
+                        if (searchType === 'blog') {
+                            saison = new Date(item.date_post).getFullYear();
+                        } else if (searchType === 'shop') {
+                            saison = item.saison;
+                        }
+  
+                        let url = '';
+  
+                        if (searchType === 'blog') {
+                            url = `/Simple_Post/${itemId}`;
+                        } else if (searchType === 'shop') {
+                            url = `/details_article/${itemId}`;
+                              }
+                        let saisonn = saison + '-' + (saison + 1);
+                        $searchResults.append('<div class="border border-dark"><a class="aSearch p-2" href="' + url + '">['+saisonn+'] - ' + result + '</a></div>');
+                      });
+                  }
+              }
+          });
+      });
+  
+      // Handle form submission
+      $('#search-form').on('submit', function(e) {
+          e.preventDefault();
+  
+          const searchType = $searchType.val();
+          const searchQuery = $searchQuery.val();
+  
+          // Redirect the user to the search results page with the query as a URL parameter
+          window.location.href = `/search-results?type=${searchType}&query=${encodeURIComponent(searchQuery)}`;
+      });
+  });
+  
+  
+  
+    </script>
 @endif
 
 
