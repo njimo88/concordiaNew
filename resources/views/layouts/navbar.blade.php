@@ -460,7 +460,7 @@ use Illuminate\Support\Facades\Route;
               
               <ul>
                 @if (auth()->user()->role >= 20)
-                <li><a href="{{ route('admin.index') }}">Administration</a></li>
+                <li><a href="{{ route('admin.index') }}"><span><img src="{{ asset("/assets/images/admin.png") }}" width="24">&nbsp;Administration</span></a></li>
              @endif
               
                 <li><a href="{{ route('users.family') }}"><span><img src="{{ asset("/assets/images/Famille (1).png") }}" width="24">&nbsp;Ma Famille</span></a></li>
