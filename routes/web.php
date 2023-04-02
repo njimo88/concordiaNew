@@ -312,7 +312,6 @@ Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_metho
 Route::get('/historique_appel/{id}', [Controller_club::class, 'display_historique_method'])->name('historique_appel');
 
 #-------------------------------pdf generate-------------------
-Route::get('/generate-pdf/{id}',[PDF_Controller::class, 'generate'])->name('generate-pdf');
 
 #-------------------------------route pour gerer l'envoi de mail  generate-------------------
 Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');
