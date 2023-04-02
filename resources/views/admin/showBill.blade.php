@@ -16,19 +16,25 @@
                 {{ session('error') }}
             </div>
         @endif
-        <div class="col-6">
+        <div class="col-3">
             <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
         </div>
-        <div class="row col-6 d-flex justify-content-end" >
-          <div class="col-3" >
+        <div class="row col-9 d-flex justify-content-end" >
+          <div class="col-3 d-flex justify-content-end" >
             <form method="post" action="{{ route('generatePDFfacture', $bill->id) }}">
               @csrf
               <button type="submit" class="my-custom-btn btn btn-primary my-4">Facture <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
             </form>
-            
-          
           </div>
-          <div class="col-3" >
+          @if ($bill->status == 100)
+          <div class="col-3 d-flex justify-content-end" >
+            <form method="post" action="{{ route('generatePDFreduction_Fiscale', $bill->id) }}">
+              @csrf
+              <button type="submit" class="my-custom-btn btn btn-primary my-4">Réduction Fiscale  <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
+            </form>
+          </div>
+          @endif          
+          <div class="col-2 d-flex justify-content-end" >
             <a href="{{ url()->previous() }}" class="my-custom-btn btn btn-primary my-4">Retour  <img src="{{ asset("assets\images\a-gauche.png") }}" alt=""></a>
           </div>
       </div>

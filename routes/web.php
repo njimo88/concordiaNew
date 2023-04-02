@@ -65,6 +65,8 @@ Route::middleware(['auth'])->group(function () {
 /*-----------PDF--------------------------*/
 
 Route::post('/generatePDFfacture/{id}', [generatePDF::class, 'generatePDFfacture'])->name('generatePDFfacture');
+Route::post('/generatePDFreduction_Fiscale/{id}', [generatePDF::class, 'generatePDFreduction_Fiscale'])->name('generatePDFreduction_Fiscale');
+
 
 });
 
