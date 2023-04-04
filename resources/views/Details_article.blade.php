@@ -182,7 +182,12 @@
             <div class="card" style="border:0px; box-shadow: none;" >
               <div class="card-body"  style="background-color: white;     display: flow-root !important;  " >
                 <h4 class="card-title">Prix :</h4>
-                <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €
+                @if($priceToDisplay != $data->totalprice)
+                    <span style="text-decoration: line-through;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
+                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span> <br>
+                  @else
+                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
+                  @endif
                 </span>
                 @if ($data->nouveaute == 1)
                   <img style="position: absolute;
@@ -475,7 +480,14 @@
               <div class="card" style="border:0px; box-shadow: none;" >
                 <div class="card-body"  style="background-color: white;     display: flow-root !important;  " >
                   <h4 class="card-title">Prix :</h4>
-                  <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €
+                  @if($priceToDisplay != $data->totalprice)
+                    <span style="font-size: large;">Prix d'origine:</span><br>
+                    <span style="text-decoration: line-through;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span><br>
+                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span>
+                  @else
+                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
+                  @endif
+
                   </span>
                   @if ($data->nouveaute == 1)
                     <img style="position: absolute;

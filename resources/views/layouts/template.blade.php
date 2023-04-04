@@ -412,7 +412,7 @@
                            <li> <a href="{{route('paiement.facture')}}"><i style="color: #ff0000"  class="fa-solid fa-euro-sign"></i><span>Facture</span> </a></li>
                      @endif
                      @if (auth()->user()->roles->estAutoriserDeVoirReduction)
-                           <li> <a href="tables-data.html"><i style="color: #ff0000"  class="fa-solid fa-ticket"></i></span><span>Réduction</span> </a></li>
+                           <li> <a href="{{route('paiement.reduction')}}"><i style="color: #ff0000"  class="fa-solid fa-ticket"></i></span><span>Réduction</span> </a></li>
                         @endif
                   </ul>
                </li>

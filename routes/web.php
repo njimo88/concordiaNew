@@ -116,6 +116,18 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::put('/admin/paiement/facture/updateDes/{id}',  [BillsController::class, 'updateDes'])->name('facture.updateDes');
     Route::delete('/bill/{bill}', [BillsController::class, 'destroy'])->name('bill.destroy');
 
+    /*----------------------- Reduction ------------------------------ */
+    Route::get('/admin/paiement/reduction', [BillsController::class, 'reduction'])->name('paiement.reduction');
+    Route::delete('/admin/paiement/reduction/{reduction}', [BillsController::class, 'deleteReduction'])->name('paiement.reduction.delete');
+    Route::get('/reduction/{id}/edit', [BillsController::class, 'editReduction'])->name('edit.reduction');
+    Route::put('/reduction/{id}/update', [BillsController::class, 'updateReduction'])->name('update.reduction');
+    Route::post('/reduction/update_liaisons', [BillsController::class, 'updateLiaisons'])->name('update_liaisons');
+
+
+
+
+
+
 
     /*----------------------- Professionnels ------------------------------ */
     Route::get('/admin/Professionnels/gestion',  [ProfessionnelsController::class, 'gestion'])->name('Professionnels.gestion');

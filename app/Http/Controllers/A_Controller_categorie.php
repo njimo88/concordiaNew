@@ -436,36 +436,29 @@ public function MainShop()
 
 
 // Methode qui permet l'affichage du contenu des sous categories
-public function  Shop_souscategorie($id){
-
+public function Shop_souscategorie($id){
     MiseAjourStock();
 
-    $indice = $id; // indice de la categorie qu'on recupere apres click
-    $info_parent =   Shop_category::select('id_shop_category_parent','name')->get() ;
-    $info =   Shop_category::get() ;
-    $info2 =  Shop_category::select('name','description')->where('id_shop_category','=',$indice)->first() ;
-
+    $indice = $id;
+    $info_parent = Shop_category::select('id_shop_category_parent','name')->get();
+    $info = Shop_category::get();
+    $info2 = Shop_category::select('name','description')->where('id_shop_category','=',$indice)->first();
     $article = Shop_article::get();
-    $shopService =  shop_article_1::get();
+    $shopService = shop_article_1::get();
     $rooms = rooms::get();
     $a_user = User::all();
 
-
-
-    // jointure des tables shop_article, liaison_shop_articles_shop_categories et shop categorie pour l'affichage des categories et de leur descentantes(categories)
     $saison_active = saison_active();
 
     $n_var = DB::table('shop_article')
         ->join('liaison_shop_articles_shop_categories', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_shop_categories.id_shop_article')
         ->join('shop_category', 'shop_category.id_shop_category', '=', 'liaison_shop_articles_shop_categories.id_shop_category')
-        ->select('shop_article.*','shop_category.*',  'shop_article.image as image')
+        ->select('shop_article.*','shop_category.*', 'shop_article.image as image')
         ->where('shop_article.saison', '=', $saison_active)
         ->get();
 
-        
     $n_var = filterArticlesByValidityDate($n_var);
     $requete = getFilteredArticles($n_var); 
-
 
     $systemSetting = SystemSetting::find(3);
     $messageContent = null;
@@ -474,15 +467,21 @@ public function  Shop_souscategorie($id){
         $messageContent = $systemSetting->Message;
     }
 
-    return view('A_Shop_SousCategorie_index',compact('info','info_parent','messageContent','indice','requete','info2','article','shopService','rooms','a_user'))->with('user', auth()->user());
-
+    return view('A_Shop_SousCategorie_index', compact('info', 'info_parent', 'messageContent', 'indice', 'requete', 'info2', 'article', 'shopService', 'rooms', 'a_user'))
+            ->with('user', auth()->user())
+            ->with('getReducedPrice', 'getReducedPrice');
 }
+
 
 
 public function Handle_details( $id){
     MiseAjourStock();
-
+    
     $articl= Shop_article::where('id_shop_article', $id)->firstOrFail();
+
+    $reducedPrice = getReducedPrice($id, $articl->totalprice);
+    $priceToDisplay = $reducedPrice ? $reducedPrice : $articl->totalprice;
+
     if ($articl->type_article == 2) {
         $déclinaison = shop_article_2::where('id_shop_article', $id)->select('declinaison')->firstOrFail();
         $declinaisons = json_decode($déclinaison->declinaison, true);
@@ -510,10 +509,10 @@ public function Handle_details( $id){
         $selectedUsers = getArticleUsers($articl);
     }
     if ($articl->type_article == 2) {
-        return view('Details_article', compact('indice', 'messageContent','coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user());
+        return view('Details_article', compact('indice', 'messageContent','coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user())->with('priceToDisplay', $priceToDisplay);
 
     }
-    return view('Details_article', compact('indice','messageContent', 'coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user());
+    return view('Details_article', compact('indice','messageContent', 'coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user())->with('priceToDisplay', $priceToDisplay);
 }
 
 

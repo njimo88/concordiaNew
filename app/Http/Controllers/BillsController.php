@@ -16,6 +16,8 @@ use App\Models\ShopMessage;
 use App\Models\PaiementImmediat;
 use PDF;
 use Intervention\Image\ImageManagerStatic as Image;
+use App\Models\ShopReduction;
+use App\Models\LiaisonShopArticlesShopReductions;
 
 
 require_once(app_path().'/fonction.php');
@@ -44,6 +46,151 @@ class BillsController extends Controller
             
         return view('admin.facture')->with('bill', $bill)->with('user', auth()->user());
     }
+
+    public function reduction()
+    {
+        $shopReductions = ShopReduction::all();
+        return view('admin.shop-reduction', compact('shopReductions'));
+    }
+
+    public function createReduction(Request $request)
+    {
+        $shopReduction = new ShopReduction();
+        $shopReduction->code = $request->code;
+        $shopReduction->text = $request->text;
+        $shopReduction->percentage = $request->percentage;
+        $shopReduction->value = $request->value;
+        $shopReduction->description = $request->description;
+        $shopReduction->max_per_user = $request->max_per_user;
+        $shopReduction->active = $request->active;
+        $shopReduction->startvalidity = $request->startvalidity;
+        $shopReduction->endvalidity = $request->endvalidity;
+        $shopReduction->automatic = $request->automatic;
+        $shopReduction->limited_user = $request->limited_user;
+        $shopReduction->limited_shop_article = $request->limited_shop_article;
+        $shopReduction->save();
+
+        return redirect()->back()->with('success', 'La réduction a été créée avec succès');
+    }
+
+    public function deleteReduction(ShopReduction $reduction)
+    {
+
+
+        // Supprimer la réduction
+        $reduction->delete();
+
+        // Ajouter un message à la session
+        session()->flash('success', 'La réduction a été supprimée avec succès.');
+
+        // Rediriger vers la page d'origine
+        return back();
+    }
+
+
+    public function editReduction($id)
+{
+    $shopReduction = ShopReduction::find($id);
+    $liaisons = LiaisonShopArticlesShopReductions::where('id_shop_reduction', $id)->get();
+    $shopArticles =  Shop_article::where('saison', '=', saison_active())->orderBy('title')->get();
+    $checkedArticles = collect();
+    $uncheckedArticles = collect();
+    foreach ($shopArticles as $shopArticle) {
+        $liaison = $liaisons->where('id_shop_article', $shopArticle->id_shop_article)->first();
+        if ($liaison) {
+            $checkedArticles->push($shopArticle);
+        } else {
+            $uncheckedArticles->push($shopArticle);
+        }
+    }
+    return view('admin.edit_reduction')->with([
+        'shopReduction' => $shopReduction,
+        'checkedArticles' => $checkedArticles,
+        'uncheckedArticles' => $uncheckedArticles
+    ]);
+}
+
+
+
+    public function updateReduction(Request $request, $id)
+    {
+
+        $shopReduction = ShopReduction::findOrFail($id);
+
+        $request->validate([
+            'code' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'value' => 'required|numeric|min:0',
+            'percentage' => 'required|numeric|min:0|max:100',
+            'startvalidity' => 'required|date',
+            'endvalidity' => 'required|date|after:startvalidity',
+            'usable' => 'required|integer|min:0',
+            ], [
+            'code.required' => 'Le champ Code est obligatoire.',
+            'code.string' => 'Le champ Code doit être une chaîne de caractères.',
+            'code.max' => 'Le champ Code ne doit pas dépasser :max caractères.',
+            'description.string' => 'Le champ Description doit être une chaîne de caractères.',
+            'value.required' => 'Le champ Valeur est obligatoire.',
+            'value.numeric' => 'Le champ Valeur doit être un nombre.',
+            'value.min' => 'Le champ Valeur doit être supérieur ou égal à :min.',
+            'percentage.required' => 'Le champ Pourcentage est obligatoire.',
+            'percentage.numeric' => 'Le champ Pourcentage doit être un nombre.',
+            'percentage.min' => 'Le champ Pourcentage doit être supérieur ou égal à :min.',
+            'percentage.max' => 'Le champ Pourcentage doit être inférieur ou égal à :max.',
+            'startvalidity.required' => 'Le champ Date de début de validité est obligatoire.',
+            'startvalidity.date' => 'Le champ Date de début de validité doit être une date.',
+            'endvalidity.required' => 'Le champ Date de fin de validité est obligatoire.',
+            'endvalidity.date' => 'Le champ Date de fin de validité doit être une date.',
+            'endvalidity.after' => 'Le champ Date de fin de validité doit être postérieure à la date de début de validité.',
+            'usable.required' => 'Le champ Nombre d\'utilisations limité est obligatoire.',
+            'usable.integer' => 'Le champ Nombre d\'utilisations limité doit être un entier.',
+            'usable.min' => 'Le champ Nombre d\'utilisations limité doit être supérieur ou égal à :min.',
+            'automatic.required' => 'Le champ Automatic est obligatoire.',
+            ]);
+    
+        $shopReduction->code = $request->input('code');
+        $shopReduction->description = $request->input('description');
+        $shopReduction->value = $request->input('value');
+        $shopReduction->percentage = $request->input('percentage');
+        $shopReduction->startvalidity = $request->input('startvalidity');
+        $shopReduction->endvalidity = $request->input('endvalidity');
+        $shopReduction->usable = $request->input('usable');
+        $shopReduction->state = $request->input('state', 0);
+        $shopReduction->automatic = $request->input('automatic', 0);
+        
+        $shopReduction->save();
+    
+        return redirect()->back()->with('success', 'Réduction mise à jour avec succès.');
+    
+    }
+
+    public function updateLiaisons(Request $request)
+{
+    $shopReductionId = $request->input('shop_reduction_id');
+    $checkedShopArticles = $request->input('shop_article', []);
+    $existingLiaisons = LiaisonShopArticlesShopReductions::where('id_shop_reduction', $shopReductionId)->get();
+    $existingLiaisonIds = $existingLiaisons->pluck('id_liaison')->toArray();
+
+    // créer les nouvelles liaisons
+    foreach ($checkedShopArticles as $shopArticleId) {
+        if (!in_array($shopArticleId, $existingLiaisonIds)) {
+            $liaison = new LiaisonShopArticlesShopReductions();
+            $liaison->id_shop_reduction = $shopReductionId;
+            $liaison->id_shop_article = $shopArticleId;
+            $liaison->save();
+        }
+    }
+
+    // supprimer les liaisons existantes qui ne sont plus cochées
+    LiaisonShopArticlesShopReductions::where('id_shop_reduction', $shopReductionId)
+    ->whereNotIn('id_shop_article', $checkedShopArticles)
+    ->delete();
+
+
+    return redirect()->back()->with('success', 'Les liaisons ont été mises à jour avec succès.');
+}
+
+
 
     public function paiement_immediat($bill_id)
     {

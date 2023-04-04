@@ -14,6 +14,9 @@ use App\Models\ShopMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
+use App\Mail\SendMail;
+use App\Models\ShopReduction;
+use App\Models\LiaisonShopArticlesShopReductions;
 
 
 
@@ -964,3 +967,29 @@ class ContactFormMail  extends \Illuminate\Mail\Mailable{
 
             }
 
+
+function getReducedPrice($articleId, $originalPrice) {
+    $shopReductions = LiaisonShopArticlesShopReductions::where('id_shop_article', $articleId)->get();
+
+    $reducedPrice = $originalPrice;
+    
+    foreach($shopReductions as $shopReduction) {
+        $reduction = ShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
+            ->whereNull('destroy')
+            ->where('state', 1)
+            ->whereDate('startvalidity', '<=', now())
+            ->whereDate('endvalidity', '>=', now())
+            ->first();
+        if($reduction) {
+            if($reduction->value) {
+                $reducedPrice -= $reduction->value;
+            } elseif($reduction->percentage) {
+                $reducedPrice *= (1 - ($reduction->percentage / 100));
+            }
+        }
+    }
+
+
+    return $reducedPrice;
+}
+            
