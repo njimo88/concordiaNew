@@ -16,6 +16,17 @@
         
     @endif
 
+    <div class="pagetitle">
+        <h1>Liste des factures</h1>
+        <nav>
+           <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+              <li class="breadcrumb-item">Paiement</li>
+              <li class="breadcrumb-item active">Reduction</li>
+           </ol>
+        </nav>
+     </div>
+
     <table id="reductions" class="table nowrap dataTable no-footer dtr-inline" style="width: 100%; background-color: rgb(253, 239, 255); border-width: 2px; border-style: solid; border-color: grey;" aria-describedby="reductions_info">
         <thead>
             <tr>
