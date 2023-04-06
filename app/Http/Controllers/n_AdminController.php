@@ -29,11 +29,10 @@ class n_AdminController extends Controller
     {
         $roles = Role::all();
 
-        $n_users = Cache::remember('users', 60*60*24, function () {
-            return User::orderBy('name', 'asc')
+        $n_users = User::orderBy('name', 'asc')
                 ->select('user_id', 'username', 'name', 'lastname', 'birthdate', 'phone','family_id')
                 ->get();
-        });
+        
         return view('admin.members', compact('n_users','roles'));
     }
     

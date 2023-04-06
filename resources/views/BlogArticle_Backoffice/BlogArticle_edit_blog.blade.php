@@ -26,20 +26,20 @@ $date = Carbon::now();
 //echo date("d/m/Y", strtotime($date));
  
  ?>
-              <div class="row pt-5">
-                    <div class="col-md-2">
-                        
-                    </div>
-                    <div class="col-md-12">
-                           <a href="{{route('index')}}"><button class="btn btn-warning"> retour</button></a>
-                    </div>
-</div>
+              <div class="row d-flex justify-content-between pt-5">
+                <div class="col-md-6">
+                  <h1>Modification d'un billet de blog</h1>
+                </div>
+                <div class="col-6 d-flex justify-content-end px-4">
+                        <a href="{{route('index')}}"><button class="btn btn-warning">Retour</button></a>
+                </div>
+              </div>
 
 @foreach($blog as $data1)
 
 
 
-            <h1> modification d'un billet de blog</h2>
+            
 
                   
             <div class="row">
@@ -61,7 +61,7 @@ $date = Carbon::now();
     <div class="row" style="background-color:pink; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
 
           
-<div class="row">
+<div class="row pb-3">
 
     <div>
               <br>
@@ -194,7 +194,7 @@ $date = Carbon::now();
     <div class="col-sm-4" style="background-color:Cyan; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;">
     <div class="col-md-12">
     <div class="col">
-        <label>Publier en différé (si nul, publication immédiate)</label>
+        <label class="text-dark p-2">Publier en différé (si nul, publication immédiate)</label>
       <input type="datetime-local" class="form-control" placeholder="" name="date_post" value="<?php echo date('Y-m-d\TH:i'); ?>">
 
     </div>

@@ -16,26 +16,33 @@
                 {{ session('error') }}
             </div>
         @endif
-        <div class="col-6">
+        <div class="col-3">
             <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
         </div>
-        <div class="row col-6 d-flex justify-content-end" >
-          <div class="col-3" >
+        <div class="row col-9 d-flex justify-content-end" >
+          <div class="col-3 d-flex justify-content-end" >
             <form method="post" action="{{ route('generatePDFfacture', $bill->id) }}">
               @csrf
               <button type="submit" class="my-custom-btn btn btn-primary my-4">Facture <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
             </form>
-            
-          
           </div>
-          <div class="col-3" >
+          @if ($bill->status == 100)
+          <div class="col-3 d-flex justify-content-end" >
+            <form method="post" action="{{ route('generatePDFreduction_Fiscale', $bill->id) }}">
+              @csrf
+              <button type="submit" class="my-custom-btn btn btn-primary my-4">Réduction Fiscale  <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
+            </form>
+          </div>
+          @endif          
+          <div class="col-2 d-flex justify-content-end" >
             <a href="{{ url()->previous() }}" class="my-custom-btn btn btn-primary my-4">Retour  <img src="{{ asset("assets\images\a-gauche.png") }}" alt=""></a>
           </div>
       </div>
         
         <hr>
         
-        @if (auth()->user()->roles->changer_status_facture)
+        @if (auth()->user()->roles->changer_status_facture && Route::currentRouteName() === 'facture.showBill')
+        
           <form action="{{ route('facture.updateStatus', $bill->id) }}" method="post">
               @csrf
               @method('PUT')
@@ -44,13 +51,14 @@
           @endif
               <div style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif" class="mb-3 row d-flex justify-content-between">
                   <div class="col-md-5 p-4 col-12">
-                      <select  class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" @if(!auth()->user()->roles->changer_status_facture) disabled @endif>
+                      <select  class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" @if(!auth()->user()->roles->changer_status_facture || Route::currentRouteName() !== 'facture.showBill'
+                        ) disabled @endif>
                           @foreach($status as $status)
                               <option value="{{ $status->id }}" {{ $bill->status == $status->id ? 'selected' : '' }} role="option">{{ $status->status }}</option>
                           @endforeach
                       </select>
                   </div> 
-                  @if (auth()->user()->roles->changer_status_facture)
+                  @if (auth()->user()->roles->changer_status_facture && Route::currentRouteName() === 'facture.showBill')
                   <div class="col-md-2 p-4 col-10 d-flex justify-content-center ">
                       <button type="submit" class="btn btn-dark">Enregistrer</button>
                   </div>
@@ -109,7 +117,6 @@
           echo '<span style="font-weight:bold">Date</span> '.$formattedDate;
           ?>
         <br>
-        <span style="font-weight:bold">Dernière mise à jour</span> : ?????????? <br>
         <span style="font-weight:bold">Référence commande </span>: {{ $bill->ref }} <br>
         <span style="font-weight:bold">Mode de paiement </span>: {{ $bill->payment_method }} <br>
         Paiement en 1 fois <br>
@@ -118,11 +125,9 @@
       </div>
       <div class="col-md-4 col-12 p-3">
         <h4>Détail paiement</h4>
-        <span style="font-weight:bold">Paiement</span> : €<br>
-        <span style="font-weight:bold">Echéance </span> <br> <br>
         <span style="font-weight:bold">Reste à payer : {{ number_format($bill->payment_total_amount-$bill->amount_paid, 2, ',', ' ') }} €</span> 
         <br><br><br>
-        @if (auth()->user()->roles->paiement_immediat)
+        @if (auth()->user()->roles->paiement_immediat && Route::currentRouteName() === 'facture.showBill')
           <a href="{{ route("paiement_immediat",$bill->id ) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Immédiat <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
         @endif
       </div>
@@ -145,7 +150,7 @@
       <tbody>
           @foreach ($shop as $shop)
           <tr>
-            @if (auth()->user()->roles->changer_designation_facture)
+            @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
             <form action="{{ route('facture.updateDes', $shop->id_liaison) }}" method="post">
                 @csrf
                 @method('PUT')
@@ -158,14 +163,14 @@
                             <img style="height: 70px" src="{{ $shop->image }}"  alt="">
                         </div>
                         <div class="col-md-6 col-12">
-                            <select name="designation"  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" @if(!auth()->user()->roles->changer_designation_facture) disabled @endif>
+                            <select name="designation"  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" @if(!auth()->user()->roles->changer_designation_facture || Route::currentRouteName() !== 'facture.showBill') disabled @endif>
                                 <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
                                 @foreach($designation as $title)
                                     <option value="{{ $title }}" role="option">{{ $title }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        @if (auth()->user()->roles->changer_designation_facture)
+                        @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
                         <div class="col-md-2 col-12">
                             <button type="submit" class="btn btn-sm btn-warning mt-3">Changer</button>
                         </div>

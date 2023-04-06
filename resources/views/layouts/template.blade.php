@@ -366,7 +366,7 @@
                     <li class="dropdown-header">
                        <h6> {{ auth()->user()->name }} {{ auth()->user()->lastname }}</h6>
                     </li>
-                    <li> <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#settings"> <i class="bi bi-gear"></i> <span>Settings</span> </a></li>
+                    <li> <a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#settings"> <i class="bi bi-gear"></i> <span>Paramètres</span> </a></li>
                     <li> <a class="dropdown-item d-flex align-items-center" href="{{ route('A_blog') }}"> <i class="bi bi-box-arrow-right"></i> <span>Retour au blog</span> </a></li>
                  </ul>
               </li>
@@ -412,7 +412,7 @@
                            <li> <a href="{{route('paiement.facture')}}"><i style="color: #ff0000"  class="fa-solid fa-euro-sign"></i><span>Facture</span> </a></li>
                      @endif
                      @if (auth()->user()->roles->estAutoriserDeVoirReduction)
-                           <li> <a href="tables-data.html"><i style="color: #ff0000"  class="fa-solid fa-ticket"></i></span><span>Réduction</span> </a></li>
+                           <li> <a href="{{route('paiement.reduction')}}"><i style="color: #ff0000"  class="fa-solid fa-ticket"></i></span><span>Réduction</span> </a></li>
                         @endif
                   </ul>
                </li>
@@ -472,6 +472,39 @@
     @yield('content')
     
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+// Événement change pour checkbox3
+$('#checkbox3').on('change', function () {
+  updateSetting($(this), 3);
+});
+
+// Événement change pour checkbox5
+$('#checkbox5').on('change', function () {
+  updateSetting($(this), 5);
+});
+
+function updateSetting(checkbox, settingId) {
+  let settingValue = checkbox.is(':checked') ? 1 : 0;
+
+  $.ajax({
+      url: '{{ route("update_system_setting") }}',
+      type: 'POST',
+      data: {
+          '_token': '{{ csrf_token() }}',
+          'setting_id': settingId,
+          'setting_value': settingValue
+      },
+      success: function (data) {
+          console.log(data.message);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+      }
+  });
+}
+});
+</script>
 <script src="{{asset('assetsAdmin/js/tinymce.min.js')}}"></script>
 <script src="{{asset('assetsAdmin/js/validate.js')}}"></script>
 <script src="{{asset('assetsAdmin/js/echarts.min.js')}}"></script>

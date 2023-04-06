@@ -1,7 +1,7 @@
 
           <!--Header-->
           <div class="modal-header d-flex justify-content-center">
-            <h2>Delete User</h2>
+            <h2>Suppression utilisateur</h2>
           </div>
     
           <!--Body-->
@@ -11,7 +11,7 @@
             <i class=" fa-solid fa-trash fa-4x animated rotateIn mb-4"></i>
             
     
-            <p>Si vous supprimez l'utilisateur {{ $n_users->name }} {{ $n_users->lastname }}, il disparaîtra à jamais. Êtes-vous sûr de vouloir continuer ?</p>
+            <p>Etes-vous certain de vouloir supprimer l'utilisateur {{ $n_users->name }} {{ $n_users->lastname }} ?</p>
     
           </div>
     
@@ -21,7 +21,7 @@
             <form  action="{{ route("admin.DeleteUser", $n_users->user_id) }}" method="delete">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger">Yes</button>
+                <button type="submit" class="btn btn-danger">Oui</button>
             </form>
             
           </div>

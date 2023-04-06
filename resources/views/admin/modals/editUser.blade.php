@@ -19,7 +19,7 @@
                                 @elseif ($n_users->gender == 'female')
                                     <img class="rounded-circle mt-5" width="150px" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
                                 @endif
-                            <span style="">{{ $n_users->lastname }} {{ $n_users->name }} N°{{ $n_users->user_id }}</span>
+                            <span class="text-dark">{{ $n_users->lastname }} {{ $n_users->name }} N°{{ $n_users->user_id }}</span>
                         </div>
                     </div>
                 <div class="col-md-9 border-right">

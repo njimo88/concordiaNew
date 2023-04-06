@@ -32,10 +32,37 @@
           </div>
     </div>
        
-
+    <div style="--bs-modal-width: 1000px !important; z-index: 1000000 !important;" class="modal fade " id="oldBillsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content p-3">
+              <!--Body-->
+                <section class="section">
+                    <div class="row">
+                        <div class="col-12 main-datatable" style="padding-right: calc(var(--bs-gutter-x) * .0) ; padding-left: calc(var(--bs-gutter-x) * .0);">
+                            <div class="card_body">
+                                <div class="row d-flex">
+                                    <!-- Button trigger modal -->
+                                    <div class="col-12 add_flex justify-content-center mt-4">
+                                        <div class="text-center pt-3 pb-2">
+                                            <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
+                                                alt="Check" width="60">
+                                            <h2 class="my-4">Anciennes Factures </h2>
+                                            </div>
+                                    </div>
+                                    <div  class="row modal-body overflow-x" id="oldBillsContainer">
+                                        <!-- content -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+           </div>
+      </div>
+    </div>
 
     <!-- ---- modal famille facture ---- -->
-    <div style="--bs-modal-width: 80vw !important; height: 95vh !important; overflow-y: auto;" class="modal fade " id="factureFamille" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div style="--bs-modal-width: 55vw !important; height: 80vh !important; overflow-y: auto;" class="modal fade " id="factureFamille" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered " role="document">
             <div class="modal-content">
               <!--Body-->
@@ -120,7 +147,7 @@
                         <!-- Button trigger modal -->
                         @if (auth()->user()->roles->supprimer_edit_ajout_user)
                             <div class="col-6 form-group mt-3 ">
-                                <button data-toggle="modal" data-target="#addMember" type="button"  class="m-0 user-link btn btn-primary">Ajouter un user <i class="mx-2 fa-solid fa-plus"></i></button>
+                                <button data-toggle="modal" data-target="#addMember" type="button"  class="m-0 user-link btn btn-primary">Ajouter un membre <i class="mx-2 fa-solid fa-plus"></i></button>
                             </div>
                         @endif
                         
@@ -166,7 +193,7 @@
                                         </td>
                                         <td> 
                                             @if (auth()->user()->roles->supprimer_edit_ajout_user)  
-                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="DELETE">
+                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Supprimer">
                                                     <img data-user-id="{{ $n_users->user_id }}" class="deleteUser editbtn2 mx-2" src="{{ asset('assets/images/delete.png') }}" alt="">
                                                 </span>
                                             @endif

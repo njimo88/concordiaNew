@@ -1,7 +1,12 @@
 @extends('layouts.template')
 
 @section('content')
+
+
 <main id="main" class="main">
+    @if(session()->has('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
 
    
 
@@ -26,18 +31,65 @@
                         <!-- Button trigger modal -->
 
                           <!-- Modal -->
-                          <div class="modal fade " id="addMember" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                              <div class="modal-content ">
-                                
-                              </div>
-                            </div>
-                          </div>
-                          @if (session('success'))
-                                <div class="alert alert-success col-11">
-                                    {{ session('success') }}
+                          <!-- ---- modal OLD facture ---- -->
+    <div style="--bs-modal-width: 1000px !important;" class="modal fade " id="oldBillsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content p-3">
+              <!--Body-->
+                <section class="section">
+                    <div class="row">
+                        <div class="col-12 main-datatable" style="padding-right: calc(var(--bs-gutter-x) * .0) ; padding-left: calc(var(--bs-gutter-x) * .0);">
+                            <div class="card_body">
+                                <div class="row d-flex">
+                                    <!-- Button trigger modal -->
+                                    <div class="col-12 add_flex justify-content-center mt-4">
+                                        <div class="text-center pt-3 pb-2">
+                                            <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
+                                                alt="Check" width="60">
+                                            <h2 class="my-4">Anciennes Factures</h2>
+                                            </div>
+                                    </div>
+                                    <div  class="row modal-body overflow-x" id="oldBillsContainer">
+                                        <!-- content -->
+                                    </div>
                                 </div>
-                          @endif
+                            </div>
+                        </div>
+                    </div>
+                </section>
+           </div>
+      </div>
+    </div>
+<!-- ---- modal famille facture ---- -->
+<div style="--bs-modal-width: 55vw !important; height: 80vh !important; overflow-y: auto;" class="modal fade " id="factureFamille" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered " role="document">
+        <div class="modal-content">
+          <!--Body-->
+            <section class="section">
+                <div class="row">
+                    <div class="col-12 main-datatable" style="padding-right: calc(var(--bs-gutter-x) * .0) ; padding-left: calc(var(--bs-gutter-x) * .0);">
+                        <div class="card_body">
+                            <div class="row d-flex">
+                                <!-- Button trigger modal -->
+                                <div class="col-12 add_flex justify-content-center mt-4">
+                                    <div class="text-center pt-3 pb-2">
+                                        <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
+                                            alt="Check" width="60">
+                                        <h2 class="my-4">Factures Famille</h2>
+                                        </div>
+                                </div>
+                                <div  class="row modal-body overflow-x" id="familyBillsContainer">
+                                    <!-- content -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+       </div>
+  </div>
+</div>
+                         
                     </div>
                     <div class="overflow-x">
                         <table style="width:100%;" id="myTable"  class="table cust-datatable dataTable no-footer">
@@ -70,25 +122,29 @@
                                           
                                         <td><?php echo date("d/m/Y à H:i", strtotime($bills->date_bill)); ?></td>
 
-
-                                        <td style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Anciennes factures">
-                                                <a  data-user-id="{{ $bills->user_id }}"  type="button" class="bill user-link a text-black "  href="#">{{ $bills->payment_total_amount }}<i class="fa-solid fa-euro-sign"></i></a>
-                                            </span>
-                                            
-                                        </td>
+                                        <td data-user-id="{{ $bills->user_id }}"  class="bill a" style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">{{ number_format($bills->payment_total_amount, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
+                                        
                                         <td>
                                             <img src="{{ $bills->image_status }}" alt="Caution acceptée">
                                             <span style="display: none;">{{ $bills->bill_status}}</span>
                                         </td>
                                         <td> 
                                             @if (auth()->user()->roles->supprimer_edit_facture)  
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="DELETE">
-                                                <a data-toggle="modal" data-target="#deleteFacture{{ $bills->id }}" href="" type="button" class="btn  rounded-circle border"><i style="color: red" class="fa-solid fa-trash"></i></a>
-                                            </span> 
+                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Supprimer">
+                                                    <button href="#" type="button" class=" delete-bill "
+                                                    onclick="event.preventDefault(); if(confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {document.getElementById('delete-form').submit();}">
+                                                        <i  class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </span> 
+                                                <form id="delete-form" action="{{ route('bill.destroy', $bills->id) }}" method="POST" style="display: none;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                </form>
                                             @endif
+
+
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Factures famile">
-                                                <a  data-family-id="{{ $bills->family_id }}"  type="button" class="familybill btn  rounded-circle border"><i style="color: #47cead" class="fas fa-house"></i></a>
+                                                <button  data-family-id="{{ $bills->family_id }}"  type="button" class="familybill"><i  class="fas fa-house"></i></button>
                                             </span> 
                                         </td>
                                         

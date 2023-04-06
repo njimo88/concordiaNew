@@ -8,7 +8,7 @@
     }
 </style>
 <div class="row d-flex justify-content-center align-items-center h-100">
-  <div class="col col-lg-12">
+  <div class="col-lg-12">
     <div class="card " style="border-radius: .5rem;">
       <div class="row g-0">
         <div class="col-md-4 gradient-custom text-center text-white"

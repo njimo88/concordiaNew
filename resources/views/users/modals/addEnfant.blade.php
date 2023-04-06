@@ -1,6 +1,8 @@
 
 <div class="container">
-  <div class="my-5 col-12 sign-up-form row justify-content-center ">
+  <div style="box-shadow:none;
+  border:0 none;
+  outline:0;" class="m-0 my-5 col-12 sign-up-form row justify-content-center ">
     <!-- Left (Form Image) -->
 
     <!-- Right (Form Content) -->

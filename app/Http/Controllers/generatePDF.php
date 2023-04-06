@@ -14,6 +14,122 @@ use setasign\Fpdi\Fpdi;
 
 class generatePDF extends Controller
 {
+
+    public function generatePDFreduction_Fiscale($id)
+    {
+        // Récupération des informations de facture
+        $bill = DB::table('bills')
+            ->join('users', 'bills.user_id', '=', 'users.user_id')
+            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+            ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+            ->where('bills.id', $id)
+            ->select('bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate')
+            ->first();
+        
+        // Chargement de l'image de fond
+        $image = Image::make(public_path('assets/images/Page-CERFA-1.png'));
+        $image->resize(700, 1000); 
+
+        $image2 = Image::make(public_path('assets/images/Page-CERFA-2.png'));
+        $image2->resize(700, 1000);
+
+        $image2->text($bill->name, 100, 86, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+        
+    
+        $image2->text($bill->lastname, 419, 73+13, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+        
+
+        $image2->text($bill->address, 119, 119+13, function($font) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size(12);
+        $font->color('#000000');
+        });
+        $image2->text($bill->zip, 122, 142+13, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+        $image2->text($bill->city, 285, 141+13, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+
+        $image2->text(date('d', strtotime($bill->date_bill)), 228, 290+13, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+        $image2->text(date('m', strtotime($bill->date_bill)), 266, 290+13, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+        $image2->text(date('Y', strtotime($bill->date_bill)), 332, 290+13, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+
+        if ($bill->method_payment == 'Virement' || $bill->method_payment == 'Carte Bancaire') {
+            $image2->text('x', 388, 559, function($font) {
+                $font->file(public_path('fonts/arial.ttf'));
+                $font->size(12);
+                $font->color('#000000');
+            });
+        } else if ($bill->method_payment == 'Chèque') {
+            $image2->text('x', 193, 559, function($font) {
+                $font->file(public_path('fonts/arial.ttf'));
+                $font->size(12);
+                $font->color('#000000');
+            });
+        } else if ($bill->method_payment == 'Espèces') {
+            $image2->text('x', 50, 559, function($font) {
+                $font->file(public_path('fonts/arial.ttf'));
+                $font->size(12);
+                $font->color('#000000');
+            });
+        }
+
+         // Conversion de l'image modifiée en PDF
+         $pdf1 = PDF::loadHTML('<img src="data:image/' . $image->mime . ';base64,' . base64_encode($image->encode()) . '">');
+         $pdf2 = PDF::loadHTML('<img src="data:image/' . $image2->mime . ';base64,' . base64_encode($image2->encode()) . '">');
+         
+         // Save the PDFs to temporary files
+         $tempFile1 = tempnam(sys_get_temp_dir(), 'pdf');
+         $tempFile2 = tempnam(sys_get_temp_dir(), 'pdf');
+         $pdf1->save($tempFile1);
+         $pdf2->save($tempFile2);
+         
+         // Merge the PDFs into a single PDF
+         $pdf = new Fpdi();
+         $pageCount1 = $pdf->setSourceFile($tempFile1);
+         for ($pageIndex = 1; $pageIndex <= $pageCount1; $pageIndex++) {
+             $pdf->AddPage();
+             $templateId = $pdf->importPage($pageIndex);
+             $pdf->useTemplate($templateId);
+         }
+         
+         $pageCount2 = $pdf->setSourceFile($tempFile2);
+         for ($pageIndex = 1; $pageIndex <= $pageCount2; $pageIndex++) {
+             $pdf->AddPage();
+             $templateId = $pdf->importPage($pageIndex);
+             $pdf->useTemplate($templateId);
+         }
+         
+         // Send the merged PDF to the browser for download
+         $pdf->Output('generatePDF.pdf', 'D');
+    }
+
+    
     public function generatePDFfacture($id)
 {
     // Récupération des informations de facture

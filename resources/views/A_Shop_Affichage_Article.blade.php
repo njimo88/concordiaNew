@@ -186,18 +186,34 @@
                         
                         
                      
-                         <div class="col-md-3 row my-3">
-                            <div style="background-color: #ededed; position: relative;" class="col-12 border border-dark p-3">
+                        <div class="col-md-3 row my-3">
+                          <div style="background-color: #ededed; position: relative;" class="col-12 border border-dark p-3">
                               <h3 style="font-size: 1.25rem !important" class="card-title mb-3">Prix :</h3>
                               @if ($data->nouveaute == 1)
-                                <img style="max-height:40px;position: absolute; top: 10px; right: 30px;" src="{{ asset("/assets/images/nouveau.webp") }}" alt="">
+                                  <img style="max-height:40px;position: absolute; top: 10px; right: 30px;" src="{{ asset("/assets/images/nouveau.webp") }}" alt="">
                               @endif
-                              <span style="font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
+                              @php
+                                  $reducedPrice = isset($getReducedPrice) ? $getReducedPrice($data->id_shop_article, $data->totalprice) : null;
+                                  $priceToDisplay = $reducedPrice ? $reducedPrice : $data->totalprice;
+                              @endphp
+                              @if ($reducedPrice && $reducedPrice != $data->totalprice)
+                                <span style="text-decoration: line-through;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
+                                <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span> <br>
+                              @else
+                                  <span style="font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span>
+                              @endif
                               <div style="position: absolute; bottom: 5px; right: 2px;">
-                                <span style="font-size: medium; text-decoration: underline;">Saison:</span> <span style="font-size: small">{{$data->saison}}/{{$data->saison+1}}</span> 
+                                  <span style="font-size: medium; text-decoration: underline;">Saison:</span> <span style="font-size: small">{{$data->saison}}/{{$data->saison+1}}</span> 
                               </div>
                             </div>
-                          </div>
+                        </div>
+                      
+                                  
+                                  
+                                  
+                                  
+                                  
+
                           
                           
 

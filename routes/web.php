@@ -56,16 +56,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/modif', [App\Http\Controllers\UsersController::class, 'editdata']);
 
     Route::get('/users/profils', [App\Http\Controllers\UsersController::class, 'edit'])->name('users.edit-profil');
-Route::put('/users/profils', [App\Http\Controllers\UsersController::class, 'update'])->name('users.update-profil');
+    Route::put('/users/profils', [App\Http\Controllers\UsersController::class, 'update'])->name('users.update-profil');
 
-Route::get('/users/factures-devis', [App\Http\Controllers\UsersController::class, 'facture'])->name('users.FactureUser');
-Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
-Route::get('/users/factures-devis/showBill/{id}', [BillsController::class, 'showBill'])->name('user.showBill');
+    Route::get('/users/factures-devis', [App\Http\Controllers\UsersController::class, 'facture'])->name('users.FactureUser');
+    Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
+    Route::get('/users/factures-devis/showBill/{id}', [BillsController::class, 'showBill'])->name('user.showBill');
 
 
 /*-----------PDF--------------------------*/
 
 Route::post('/generatePDFfacture/{id}', [generatePDF::class, 'generatePDFfacture'])->name('generatePDFfacture');
+Route::post('/generatePDFreduction_Fiscale/{id}', [generatePDF::class, 'generatePDFreduction_Fiscale'])->name('generatePDFreduction_Fiscale');
+
 
 });
 
@@ -113,6 +115,20 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::post('/admin/paiement/facture/addShopMessage/{id}',  [BillsController::class, 'addShopMessage'])->name('addShopMessage');
     Route::put('/admin/paiement/facture/updateStatus/{id}',  [BillsController::class, 'updateStatus'])->name('facture.updateStatus');
     Route::put('/admin/paiement/facture/updateDes/{id}',  [BillsController::class, 'updateDes'])->name('facture.updateDes');
+    Route::delete('/bill/{bill}', [BillsController::class, 'destroy'])->name('bill.destroy');
+
+    /*----------------------- Reduction ------------------------------ */
+    Route::get('/admin/paiement/reduction', [BillsController::class, 'reduction'])->name('paiement.reduction');
+    Route::delete('/admin/paiement/reduction/{reduction}', [BillsController::class, 'deleteReduction'])->name('paiement.reduction.delete');
+    Route::get('/reduction/{id}/edit', [BillsController::class, 'editReduction'])->name('edit.reduction');
+    Route::put('/reduction/{id}/update', [BillsController::class, 'updateReduction'])->name('update.reduction');
+    Route::post('/reduction/update_liaisons', [BillsController::class, 'updateLiaisons'])->name('update_liaisons');
+
+
+
+
+
+
 
     /*----------------------- Professionnels ------------------------------ */
     Route::get('/admin/Professionnels/gestion',  [ProfessionnelsController::class, 'gestion'])->name('Professionnels.gestion');
@@ -318,7 +334,6 @@ Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_metho
 Route::get('/historique_appel/{id}', [Controller_club::class, 'display_historique_method'])->name('historique_appel');
 
 #-------------------------------pdf generate-------------------
-Route::get('/generate-pdf/{id}',[PDF_Controller::class, 'generate'])->name('generate-pdf');
 
 #-------------------------------route pour gerer l'envoi de mail  generate-------------------
 Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');

@@ -10,12 +10,14 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Models\old_bills;
-use App\Models\shop_article;
+use App\Models\Shop_article;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\ShopMessage;
 use App\Models\PaiementImmediat;
 use PDF;
 use Intervention\Image\ImageManagerStatic as Image;
+use App\Models\ShopReduction;
+use App\Models\LiaisonShopArticlesShopReductions;
 
 
 require_once(app_path().'/fonction.php');
@@ -34,13 +36,161 @@ class BillsController extends Controller
     public function index()
     {
         $bill = DB::table('bills')
-            ->join('users', 'bills.user_id', '=', 'users.user_id')
-            ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-            ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status','bills_status.row_color')
-            ->get();
+    ->join('users', 'bills.user_id', '=', 'users.user_id')
+    ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+    ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+    ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status','bills_status.row_color')
+    ->orderBy('bills.date_bill', 'desc')
+    ->get();
+
+            
         return view('admin.facture')->with('bill', $bill)->with('user', auth()->user());
     }
+
+    public function reduction()
+    {
+        $shopReductions = ShopReduction::all();
+        return view('admin.shop-reduction', compact('shopReductions'));
+    }
+
+    public function createReduction(Request $request)
+    {
+        $shopReduction = new ShopReduction();
+        $shopReduction->code = $request->code;
+        $shopReduction->text = $request->text;
+        $shopReduction->percentage = $request->percentage;
+        $shopReduction->value = $request->value;
+        $shopReduction->description = $request->description;
+        $shopReduction->max_per_user = $request->max_per_user;
+        $shopReduction->active = $request->active;
+        $shopReduction->startvalidity = $request->startvalidity;
+        $shopReduction->endvalidity = $request->endvalidity;
+        $shopReduction->automatic = $request->automatic;
+        $shopReduction->limited_user = $request->limited_user;
+        $shopReduction->limited_shop_article = $request->limited_shop_article;
+        $shopReduction->save();
+
+        return redirect()->back()->with('success', 'La réduction a été créée avec succès');
+    }
+
+    public function deleteReduction(ShopReduction $reduction)
+    {
+
+
+        // Supprimer la réduction
+        $reduction->delete();
+
+        // Ajouter un message à la session
+        session()->flash('success', 'La réduction a été supprimée avec succès.');
+
+        // Rediriger vers la page d'origine
+        return back();
+    }
+
+
+    public function editReduction($id)
+{
+    $shopReduction = ShopReduction::find($id);
+    $liaisons = LiaisonShopArticlesShopReductions::where('id_shop_reduction', $id)->get();
+    $shopArticles =  Shop_article::where('saison', '=', saison_active())->orderBy('title')->get();
+    $checkedArticles = collect();
+    $uncheckedArticles = collect();
+    foreach ($shopArticles as $shopArticle) {
+        $liaison = $liaisons->where('id_shop_article', $shopArticle->id_shop_article)->first();
+        if ($liaison) {
+            $checkedArticles->push($shopArticle);
+        } else {
+            $uncheckedArticles->push($shopArticle);
+        }
+    }
+    return view('admin.edit_reduction')->with([
+        'shopReduction' => $shopReduction,
+        'checkedArticles' => $checkedArticles,
+        'uncheckedArticles' => $uncheckedArticles
+    ]);
+}
+
+
+
+    public function updateReduction(Request $request, $id)
+    {
+
+        $shopReduction = ShopReduction::findOrFail($id);
+
+        $request->validate([
+            'code' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'value' => 'required|numeric|min:0',
+            'percentage' => 'required|numeric|min:0|max:100',
+            'startvalidity' => 'required|date',
+            'endvalidity' => 'required|date|after:startvalidity',
+            'usable' => 'required|integer|min:0',
+            ], [
+            'code.required' => 'Le champ Code est obligatoire.',
+            'code.string' => 'Le champ Code doit être une chaîne de caractères.',
+            'code.max' => 'Le champ Code ne doit pas dépasser :max caractères.',
+            'description.string' => 'Le champ Description doit être une chaîne de caractères.',
+            'value.required' => 'Le champ Valeur est obligatoire.',
+            'value.numeric' => 'Le champ Valeur doit être un nombre.',
+            'value.min' => 'Le champ Valeur doit être supérieur ou égal à :min.',
+            'percentage.required' => 'Le champ Pourcentage est obligatoire.',
+            'percentage.numeric' => 'Le champ Pourcentage doit être un nombre.',
+            'percentage.min' => 'Le champ Pourcentage doit être supérieur ou égal à :min.',
+            'percentage.max' => 'Le champ Pourcentage doit être inférieur ou égal à :max.',
+            'startvalidity.required' => 'Le champ Date de début de validité est obligatoire.',
+            'startvalidity.date' => 'Le champ Date de début de validité doit être une date.',
+            'endvalidity.required' => 'Le champ Date de fin de validité est obligatoire.',
+            'endvalidity.date' => 'Le champ Date de fin de validité doit être une date.',
+            'endvalidity.after' => 'Le champ Date de fin de validité doit être postérieure à la date de début de validité.',
+            'usable.required' => 'Le champ Nombre d\'utilisations limité est obligatoire.',
+            'usable.integer' => 'Le champ Nombre d\'utilisations limité doit être un entier.',
+            'usable.min' => 'Le champ Nombre d\'utilisations limité doit être supérieur ou égal à :min.',
+            'automatic.required' => 'Le champ Automatic est obligatoire.',
+            ]);
+    
+        $shopReduction->code = $request->input('code');
+        $shopReduction->description = $request->input('description');
+        $shopReduction->value = $request->input('value');
+        $shopReduction->percentage = $request->input('percentage');
+        $shopReduction->startvalidity = $request->input('startvalidity');
+        $shopReduction->endvalidity = $request->input('endvalidity');
+        $shopReduction->usable = $request->input('usable');
+        $shopReduction->state = $request->input('state', 0);
+        $shopReduction->automatic = $request->input('automatic', 0);
+        
+        $shopReduction->save();
+    
+        return redirect()->back()->with('success', 'Réduction mise à jour avec succès.');
+    
+    }
+
+    public function updateLiaisons(Request $request)
+{
+    $shopReductionId = $request->input('shop_reduction_id');
+    $checkedShopArticles = $request->input('shop_article', []);
+    $existingLiaisons = LiaisonShopArticlesShopReductions::where('id_shop_reduction', $shopReductionId)->get();
+    $existingLiaisonIds = $existingLiaisons->pluck('id_liaison')->toArray();
+
+    // créer les nouvelles liaisons
+    foreach ($checkedShopArticles as $shopArticleId) {
+        if (!in_array($shopArticleId, $existingLiaisonIds)) {
+            $liaison = new LiaisonShopArticlesShopReductions();
+            $liaison->id_shop_reduction = $shopReductionId;
+            $liaison->id_shop_article = $shopArticleId;
+            $liaison->save();
+        }
+    }
+
+    // supprimer les liaisons existantes qui ne sont plus cochées
+    LiaisonShopArticlesShopReductions::where('id_shop_reduction', $shopReductionId)
+    ->whereNotIn('id_shop_article', $checkedShopArticles)
+    ->delete();
+
+
+    return redirect()->back()->with('success', 'Les liaisons ont été mises à jour avec succès.');
+}
+
+
 
     public function paiement_immediat($bill_id)
     {
@@ -81,20 +231,26 @@ class BillsController extends Controller
         return  redirect()->back()->with('success', 'Le statut de la facture n°'.$id.' a été modifié avec succès');
     }
     public function getOldBills($user_id)
-    {
-        $oldBills = old_bills::join('users', 'old_bills.user_id', '=', 'users.user_id')
-            ->select('old_bills.*', 'users.name', 'users.lastname')
-            ->where('old_bills.user_id', $user_id)
-            ->get();
+{
+    $oldBills = DB::table('old_bills')->join('users', 'old_bills.user_id', '=', 'users.user_id')
+        ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+        ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+        ->select('old_bills.*', 'bills_status.image_status', 'bills_payment_method.image', 'old_bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_status.status')
+        ->where('old_bills.user_id', $user_id)
+        ->get();
 
-            
-        return view('admin.modals.showOldBills', compact('oldBills'));
+    if ($oldBills->isEmpty()) {
+        return 'Aucune facture trouvée.';
     }
+
+    return view('admin.modals.showOldBills', compact('oldBills'));
+}
+
 
     public function updateDes(Request $request, $id){
 
         $new = LiaisonShopArticlesBill::where('id_liaison', $id)->first();
-        $article = shop_article::where('title', $request->designation)->first();
+        $article = Shop_article::where('title', $request->designation)->first();
 
         $new->designation = $article->title;
         $new->href_product = $article->ref;
@@ -105,19 +261,24 @@ class BillsController extends Controller
         return  redirect()->back()->with('success', 'La désignationa été modifié avec succès');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\bills  $bills
-     * @return \Illuminate\Http\Response
-     */
-    public function delete( $id)
-    {
-        $bill = bills::find($id);
-        $bill->delete();
-        return redirect()->route('paiement.facture')->with('success', 'Le facture a été annulé avec succès');
 
-    }
+
+    public function destroy(bills $bill)
+{
+    // Supprimer la facture
+    $bill->delete();
+
+    // Ajouter un message à la session
+    session()->flash('success', 'La facture a été supprimée avec succès.');
+
+    // Rediriger vers la page d'origine
+    return back();
+}
+
+
+    
+    
+    
 
     public function family($family_id)
     {
@@ -128,6 +289,10 @@ class BillsController extends Controller
         ->where('bills.family_id', $family_id)
          ->select('bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.image as image', 'users.name', 'users.lastname')
         ->get();
+
+        if ($bill->isEmpty()) {
+            return 'Aucune facture trouvée.';
+        }
         
         return view('admin.modals.factureFamille', compact('bill'))->with('user', auth()->user());
     }

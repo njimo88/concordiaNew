@@ -313,44 +313,96 @@
 })();
 
 
-
-   /*---------------------------------sorting by column myTable --------------------------------------*/
-   $('#myTable').DataTable({
-    pageLength: 100,
-    info: false,
+/*my table Sort-------------------------------------------------------------------*/
+$('#myTable').DataTable({
+  info: false,
     bLengthChange: false,
-    drawCallback: function(settings) {
-      var api = this.api();
-      api.column(0, {
-        order: 'applied'
-      }).nodes();
-    },
-    columnDefs: [
-      {
-        targets: 3,
-        type: 'datetime-dd-mm-yyyy'
+    paging: false, // Désactiver la pagination
+    lengthChange: false, 
+    language: {
+      search: "Rechercher&nbsp;:",
+      lengthMenu: "Afficher _MENU_ entrées",
+      zeroRecords: "Aucun résultat trouvé",
+      info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+      infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+      infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+      paginate: {
+          first: "Premier",
+          last: "Dernier",
+          next: "Suivant",
+          previous: "Précédent"
       }
-    ]
-  });
+  },
+  order: [],
+  drawCallback: function(settings) {
+    var api = this.api();
+    api.column(0, {
+      order: 'applied'
+    }).nodes();
+  },
+  columnDefs: [
+    {
+      targets: 3,
+      type: 'datetime-dd-mm-yyyy'
+    },{
+      targets: 4,
+      type: 'numeric-comma'
+    }
+  ]
+});
+
+ 
+$.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
+    var b = d.split(/\D/);
+    return new Date(b[2], b[1] - 1, b[0], b[3], b[4], b[5]);
+};
+
+
+$.fn.dataTable.ext.type.order['numeric-comma-pre'] = function ( d ) {
   
-  $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
-      var b = d.split(/\D/);
-      return new Date(b[2], b[1] - 1, b[0], b[3], b[4], b[5]);
-  };
+  return parseFloat(d.replace(' ', '').replace(',', '.'));
+};
+
+
+// Apply the search
+$('#myTable thead input').on('keyup change', function() {
+  table
+    .column($(this).parent().index() + ':visible')
+    .search(this.value)
+    .draw();
+});
+
+$('#myTable').on('click', 'thead th', function() {
+  var colIndex = $(this).index();
+  var isAsc = $(this).hasClass('asc');
+  table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
+});
+/*my table end-------------------------------------------------------------------*/
   
-  // Apply the search
-  $('#myTable thead input').on('keyup change', function() {
-    table
-      .column($(this).parent().index() + ':visible')
-      .search(this.value)
-      .draw();
-  });
   
   $('#myTableabb').on('click', 'thead th', function() {
     var colIndex = $(this).index();
     var isAsc = $(this).hasClass('asc');
     table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
   });   $('#myTableabb').DataTable({
+    info: false,
+    bLengthChange: false,
+    paging: false, // Désactiver la pagination
+    lengthChange: false, 
+    language: {
+      search: "Rechercher&nbsp;:",
+      lengthMenu: "Afficher _MENU_ entrées",
+      zeroRecords: "Aucun résultat trouvé",
+      info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+      infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+      infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+      paginate: {
+          first: "Premier",
+          last: "Dernier",
+          next: "Suivant",
+          previous: "Précédent"
+      }
+  },
     drawCallback: function(settings) {
       var api = this.api();
       api.column(0, {
@@ -386,48 +438,64 @@
   
    /*---------------------------------sorting by column myTableMembers --------------------------------------*/
   
-  $('#myTableMembers').DataTable({ 
-     pageLength: 100,
+   $('#myTableMembers').DataTable({ 
+    pageLength: 100,
     info: false,
     bLengthChange: false,
-    order: [[1, 'asc']],
-    drawCallback: function(settings) {
-      var api = this.api();
-      api.column(1, {
-        order: 'applied'
-      }).nodes();
-    },
-    columnDefs: [
-      {
-        targets: 3,
-        type: 'datetime-dd-mm-yyyy'
-      },
-      {
-        targets: 4,
-        sortable: false
-      }
-    ]
-  });
-  
-  $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
-      var b = d.split(/\D+/);
-      return new Date(b[2], b[1] - 1, b[0], 0, 0, 0);
-  };
-  
-  
-  // Apply the search
-  $('#myTableMembers thead input').on('keyup change', function() {
-    table
-      .column($(this).parent().index() + ':visible')
-      .search(this.value)
-      .draw();
-  });
-  
-  $('#myTableMembers').on('click', 'thead th', function() {
-    var colIndex = $(this).index();
-    var isAsc = $(this).hasClass('asc');
-    table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
-  });
+    language: {
+       search: "Rechercher&nbsp;:",
+       lengthMenu: "Afficher _MENU_ entrées",
+       zeroRecords: "Aucun résultat trouvé",
+       info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+       infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+       infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+       paginate: {
+           first: "Premier",
+           last: "Dernier",
+           next: "Suivant",
+           previous: "Précédent"
+       }
+   },
+   order: [[1, 'asc']],
+   drawCallback: function(settings) {
+     var api = this.api();
+     api.column(1, {
+       order: 'applied'
+     }).nodes();
+   },
+   columnDefs: [
+     {
+       targets: 3,
+       type: 'datetime-dd-mm-yyyy'
+     },
+     {
+       targets: 4,
+       sortable: false
+     }
+   ]
+ });
+ 
+ 
+ $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
+     var b = d.split(/\D+/);
+     return new Date(b[2], b[1] - 1, b[0], 0, 0, 0);
+ };
+ 
+ 
+ // Appliquer la recherche
+ $('#myTableMembers thead input').on('keyup change', function() {
+   table
+     .column($(this).parent().index() + ':visible')
+     .search(this.value)
+     .draw();
+ });
+ 
+ $('#myTableMembers').on('click', 'thead th', function() {
+   var colIndex = $(this).index();
+   var isAsc = $(this).hasClass('asc');
+   table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
+ });
+
   
   
 
@@ -510,7 +578,7 @@
 
   /*---------------------------------modal myTableMembers familybill---------------------------------------*/
 
-  $('#myTableMembers').on('click', '.familybill', function(){
+  $('#myTable').on('click', '.familybill', function(){
     $('#factureFamille').modal('show');
   
     // Get the bill ID from the clicked element
@@ -522,42 +590,70 @@
         
      url: '/admin/paiement/factureFamille/' + family_id,
      success: function(data) {
-      console.log(data.length);
-        // Insert the old bills data into the modal body
-        if (data.length = 839) {
-          noDataMessage.style.display = "block";
-      }
+      if (data === 'Aucune facture trouvée.') {
+        $('#familyBillsContainer').html('<div style="display: block; color: black; margin: auto; text-align: center; padding: 10px;">Aucune donnée disponible</div>');
+    } else {
         $('#familyBillsContainer').html(data);
+    }
      }
      });
      });
   /*---------------------------------modal--------------------------------------*/
   
    
+  $('#myTable').on('click', '.bill', function(){
   
-  $('.bill').click(function() {
+
        $('#oldBillsModal').modal('show');
      
        // Get the bill ID from the clicked element
        var user_id = $(this).data('user-id');
-       
   
         // Make an AJAX request to retrieve the old bills
         $.ajax({
            
         url: '/admin/paiement/facture/get-old-bills/' + user_id,
         success: function(data) {
-           // Insert the old bills data into the modal body
-           $('#oldBillsContainer').html(data);
-        }
+          if (data === 'Aucune facture trouvée.') {
+              $('#oldBillsContainer').html('<div style="display: block; color: black; margin: auto; text-align: center; padding: 10px;">Aucune donnée disponible</div>');
+          } else {
+              $('#oldBillsContainer').html(data);
+          }
+      }
+      
         });
-        });
+      });
   
-  
+      
       
         
       /*-------------------------------------------------------------------------------------------*/
-  
+      $(document).on('click', '.delete-bill', function(event) {
+        event.preventDefault();
+        // Récupérer l'ID de la facture à supprimer
+        var billId = $(this).data('id');
+      
+        // Afficher une boîte de dialogue pour demander la confirmation de la suppression
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
+          // Envoyer une requête AJAX pour supprimer la facture
+          fetch('/facture/' + billId, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            // Si la suppression réussit, afficher un message de confirmation et recharger la page
+            alert('La facture a été supprimée avec succès.');
+            location.reload();
+          })
+          .catch(error => console.error(error));
+        }
+      });
+      
+    
 /*------------------------------------------------------------------------------------Professionnel-----------------------------------------------------------------------------------------*/
 
         /*---------------------------------modal declarationList--------------------------------------*/
@@ -756,4 +852,14 @@ let input_str = {
      
 });
   
-  
+
+$(document).ready(function() {
+    $('#reductions').DataTable({
+      "lengthChange": false,
+      "pageLength": 10,
+      "info": false, 
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+        }
+    });
+});

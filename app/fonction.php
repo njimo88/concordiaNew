@@ -4,7 +4,7 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\shop_article;
+use App\Models\Shop_article;
 use App\Models\shop_article_1;
 use App\Models\shop_article_2;
 use App\Models\LiaisonShopArticlesBill;
@@ -14,6 +14,9 @@ use App\Models\ShopMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
+use App\Mail\SendMail;
+use App\Models\ShopReduction;
+use App\Models\LiaisonShopArticlesShopReductions;
 
 
 
@@ -177,7 +180,7 @@ function retourner_shop_article_dun_teacher($user_id, $saison) {
       
 
     }elseif($user_role>=90){
-        $shop_article = shop_article::where('saison',$saison)->get()->toArray();
+        $shop_article = Shop_article::where('saison',$saison)->get()->toArray();
         $selectedArticles = $shop_article;
         return $selectedArticles ;
     }
@@ -964,3 +967,29 @@ class ContactFormMail  extends \Illuminate\Mail\Mailable{
 
             }
 
+
+function getReducedPrice($articleId, $originalPrice) {
+    $shopReductions = LiaisonShopArticlesShopReductions::where('id_shop_article', $articleId)->get();
+
+    $reducedPrice = $originalPrice;
+    
+    foreach($shopReductions as $shopReduction) {
+        $reduction = ShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
+            ->whereNull('destroy')
+            ->where('state', 1)
+            ->whereDate('startvalidity', '<=', now())
+            ->whereDate('endvalidity', '>=', now())
+            ->first();
+        if($reduction) {
+            if($reduction->value) {
+                $reducedPrice -= $reduction->value;
+            } elseif($reduction->percentage) {
+                $reducedPrice *= (1 - ($reduction->percentage / 100));
+            }
+        }
+    }
+
+
+    return $reducedPrice;
+}
+            

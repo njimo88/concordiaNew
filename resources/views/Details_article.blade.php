@@ -110,7 +110,7 @@
           </div>
       </div>
   @endif
-<div style="background-color:white;"  class="container rounded px-2" >
+<div style="background-color:white;"  class="container rounded" >
   @if (session('success'))
     <div style="display: -webkit-inline-box !important;" class="alert alert-success mt-3 col-12">
         {{ session('success') }}
@@ -182,7 +182,12 @@
             <div class="card" style="border:0px; box-shadow: none;" >
               <div class="card-body"  style="background-color: white;     display: flow-root !important;  " >
                 <h4 class="card-title">Prix :</h4>
-                <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €
+                @if($priceToDisplay != $data->totalprice)
+                    <span style="text-decoration: line-through;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
+                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span> <br>
+                  @else
+                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
+                  @endif
                 </span>
                 @if ($data->nouveaute == 1)
                   <img style="position: absolute;
@@ -361,7 +366,7 @@
                             <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }} {{ $user->user_id }}</option>
                           @endforeach
                       </select>
-                      @if ($coursVente->value == 1)
+                      @if ($coursVente->value == 0)
                         <p style="font-weight:bold">Inscriptions inaccessibles actuellement</p>
                       @else
                         <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
@@ -475,7 +480,14 @@
               <div class="card" style="border:0px; box-shadow: none;" >
                 <div class="card-body"  style="background-color: white;     display: flow-root !important;  " >
                   <h4 class="card-title">Prix :</h4>
-                  <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €
+                  @if($priceToDisplay != $data->totalprice)
+                    <span style="font-size: large;">Prix d'origine:</span><br>
+                    <span style="text-decoration: line-through;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span><br>
+                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span>
+                  @else
+                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
+                  @endif
+
                   </span>
                   @if ($data->nouveaute == 1)
                     <img style="position: absolute;
