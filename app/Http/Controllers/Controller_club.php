@@ -19,6 +19,12 @@ class Controller_club extends Controller
     //
     function index_cours(Request $request){
 
+        
+        /*--------------------------faire l'appel------------------------------ */
+
+    
+
+
         $saison_actu = saison_active() ;
 
         $saison = $request->input('saison');
@@ -30,21 +36,28 @@ class Controller_club extends Controller
             // requete pour la saison active
         $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
           ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
+         
+       $users_saison_active = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
+          ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+          ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)
+          ->where('type_article',1)->get(); 
+  /* 
+          $users_saison_active = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
+          ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+          ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)
+          ->where('type_article',1)->where('shop_article.id_shop_article',$article_id)->get();*/
+  
+  
 
             //requete pour la saison choisie
           $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
           ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison',  $saison)->get();
 
-
-
-
-
-
-
-
-
-
-
+          $users_saison_choisie = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
+          ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+          ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)
+          ->where('type_article',1)->get();
+  
 
         /* ------------------------------------------requetes pour l'admin------------------------------*/
 
@@ -57,10 +70,27 @@ class Controller_club extends Controller
          $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
         
-        return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie'))->with('user', auth()->user()) ;
+      return view('club/cours_index_new',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie','users_saison_choisie','users_saison_active'))->with('user', auth()->user()) ;
            
 
     }
+
+
+    public function get_data_table(Request $request, $article_id){
+
+
+        return $article_id ;
+
+
+        
+    }
+
+
+
+
+
+
+
 
     function index_include(Request $request){
         

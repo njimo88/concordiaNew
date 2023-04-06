@@ -27,7 +27,6 @@ class Article_Controller extends Controller
          $requete_article_pick = Shop_article::where('saison',  $saison)->paginate(50) ;
 
         
-
         return view('Articles/MainPage_article',compact('requete_article','saison_list','saison','requete_article_pick'))->with('user', auth()->user()) ;
     }
 
@@ -40,19 +39,6 @@ class Article_Controller extends Controller
 
     
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public function TESTSAISON(Request $request){
         $la_saison =  $request->saison ;

@@ -55,9 +55,6 @@ $saison_active = saison_active() ;
 
 
 
-
-
-
 @if(session('submitted'))
        
        <div id="div1-content">
@@ -84,16 +81,19 @@ $saison_active = saison_active() ;
                                                       $my_articles [] = $data->id_shop_article ;
 
                   @endphp
-        <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+                  <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
                   <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
       
       
       
                        <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                                      
+                                     
                                       
                                     
-                                       <div id="content"></div>
+                                       <div id="content">
+
+                                       @include('club/include-page') 
+                                       </div>
                                      
          
                   </div>
@@ -297,12 +297,15 @@ $saison_active = saison_active() ;
       
       
       
-                                <!-- Button trigger modal -->
-                            
-                                <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                                                          
+                                      <!-- Button trigger modal -->
+                              
+                                      <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
+                                      
+                                    
+                                      
+
+                                                      <div id="content">  </div>
                                                 
-                                                <div id="content"></div>
                                               
                   
                             </div>
@@ -357,11 +360,6 @@ $saison_active = saison_active() ;
         </div>
       </div>
       
-
-
-
-
-
 
 
 @endif

@@ -49,7 +49,7 @@ class Prendre_Contact_Controller extends Controller
            return redirect()->back()->with('success', 'votre message a été envoyé avec succès!')->with('sent', true);
 
 
-         //  return 'ok';
+           //return 'ok';
 
 
 
