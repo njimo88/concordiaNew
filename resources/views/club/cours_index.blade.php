@@ -19,221 +19,394 @@ $saison_active = saison_active() ;
 <div class="container">
 
 
- 
-    <div class="col-md-4">  
+<div class="col-md-4">  
        
-        <label> Saison </label>
-        <form action="{{ route('include-page') }}" method="POST" >
-            @csrf
-          <select class="form-control" name="saison" id="saison">
-                   
-                   @foreach($saison_list as $data)
+       <label> Saison </label>
+       <form action="{{ route('include-page') }}" method="POST" >
+           @csrf
+         <select class="form-control" name="saison" id="saison">
+                  
+                  @foreach($saison_list as $data)
 
-                                   <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
-                   
-                   
-                    @endforeach
+                                  <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
+                  
+                  
+                   @endforeach
 
-          </select>
-          <button type="submit" id="hide-row-btn" >Submit</button>
-        
-        </form>
-    </div>
+         </select>
+         <button type="submit" id="hide-row-btn" >Submit</button>
+       
+       </form>
+   </div>
 
-    <div class="col-md-4"></div>
-    <div class="col-md-4"></div>
+   <div class="col-md-4"></div>
+   <div class="col-md-4"></div>
 
 
+   
 @if (auth()->user()->role == 40 || auth()->user()->role == 30 )
 
 
-      @php 
-              $id_teacher = auth()->user()->user_id ;
-              $my_articles = [] ;
-              $add = [] ;
-      @endphp
+@php 
+        $id_teacher = auth()->user()->user_id ;
+        $my_articles = [] ;
+        $add = [] ;
+@endphp
 
 
 
 @if(session('submitted'))
-       
-       <div id="div1-content">
-          <h1 style="text-align:center;"> 
-        
-             {{$saison}}
-         
-          
-          </h1>
-        
-        <table> 
-      
-                      <div class="d-grid gap-2">
-                  @foreach($shop_article_lesson_choisie as $data)
+ 
+ <div id="div1-content">
+    <h1 style="text-align:center;"> 
+  
+       {{$saison}}
+   
+    
+    </h1>
+  
+  <table> 
+
+                <div class="d-grid gap-2">
+            @foreach($shop_article_lesson_choisie as $data)
 
 
-                  @php $add [] = (array)json_decode($data->teacher) ; 
+            @php $add [] = (array)json_decode($data->teacher) ; 
 
-                        if (isset($add)) {
-                                foreach ($add as $teacherArray) {
-                                          foreach($teacherArray as  $t){
-                                          
-                                            if ($id_teacher === $t){
-                                                      $my_articles [] = $data->id_shop_article ;
-
-                  @endphp
-                  <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
-                  <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
-      
-      
-      
-                       <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                                     
-                                      
+                  if (isset($add)) {
+                          foreach ($add as $teacherArray) {
+                                    foreach($teacherArray as  $t){
                                     
-                                       <div id="content">
+                                      if ($id_teacher === $t){
+                                                $my_articles [] = $data->id_shop_article ;
 
-                                       @include('club/include-page') 
-                                       </div>
-                                     
-         
-                  </div>
-                      
-        @php
-                        break;
-                    }
-                      
-                        }
+            @endphp
+            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+            <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
-                        }
 
-                }
-                      
-                        $add = [] ;
-        @endphp
-      
 
-                  
-                 
-                 
-      
-                  @endforeach
-                  </div>
-                  </table>
+                               
+                                
+                              
+                 <div id="content">
+
+
+                                          
+<div class="row">  
+
+    <div class="col-6 col-md-4"> 
+              <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
+                                      @csrf
+                                          <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
+                                          <button type="submit" class="btn btn-success">Valider l'appel</button> 
+                              
+    </div>
+    <div class="col-6 col-md-4"> </div>
+    <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
+
+</div>
+<br>
+
+                                      <table class="table table-hover" style="background-color:green;"> 
+                                        <tbody>
+                                      @foreach($users_saison_active as $dt)
+
+                                                  @if($data->id_shop_article == $dt->id_shop_article)
+
+
+                                                 
+                                                        
+                                                <tr>
+                                                    
+                                                    <td>
+                                                                <div class="form-check">
+                                                                        <input name="user_id[]" value="{{$data->user_id}}" hidden>
+                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  onclick="this.value=this.checked?1:0;">
+                                                                
+                                                                        <label class="form-check-label" for="flexCheckDefault">
+                                                                                {{ $dt->name}}  {{$dt->lastname}}
+                                                                        </label>
+                                                                </div>
+                                                    
+                                                    </td>
+                                                    <td>
+                                                    <i class="fas fa-eye openmodal" style="color:blue;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-user-id="{{$dt->user_id}}"></i> 
+                                                    </td>
+                                                    <td>
+                                                        <div class="col-6 col-md-2"> {{ $dt->phone}} </div>
+                                                    </td>
+                                                    <td>
+                                                    {{ $dt->birthdate}} 
+                                                    </td>
+                                                    <td><i class="fas fa-certificate"></i><i class="fas fa-graduation-cap"></i></td>
+                                            
+
+
+                                                  </tr>
+                                                
+
+
+                                                  @endif
+
+                                      @endforeach
+
+                                      </tbody>
+                                                    </table>
+
+                                    
+                                    </div>
+                                
+                               
+   
+            </div>
+                
+  @php
+                  break;
+              }
+                
+                  }
+
+                  }
+
+          }
+                
+                  $add = [] ;
+  @endphp
+
+
+            
+           
+           
+
+            @endforeach
+            </div>
+            </table>
+
+</div>
+
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="display_info_user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Informations</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="just_display">
+        ...
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       
       </div>
-      
-      
-      </div>
-      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
 @else
-      
-      
-      
-          <div id="div1-content">
-          <h1 style="text-align:center;"> 
-         
-              {{$saison_active}}
-         
-          
-          </h1>
-        <table> 
-      
-                      <div class="d-grid gap-2">
-                      @foreach($shop_article_lesson as $data)
-
-
-                              @php $add [] = (array)json_decode($data->teacher) ; 
-
-                                    if (isset($add)) {
-                                            foreach ($add as $teacherArray) {
-                                                      foreach($teacherArray as  $t){
-                                                      
-                                                        if ($id_teacher === $t){
-                                                                  $my_articles [] = $data->id_shop_article ;
-
-                              @endphp
-                              <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
-                              <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
 
 
-                                  <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                                                  
-                                                  
+    <div id="div1-content">
+    <h1 style="text-align:center;"> 
+   
+        {{$saison_active}}
+   
+    
+    </h1>
+  <table> 
+
+                <div class="d-grid gap-2">
+                @foreach($shop_article_lesson as $data)
+
+
+                        @php $add [] = (array)json_decode($data->teacher) ; 
+
+                              if (isset($add)) {
+                                      foreach ($add as $teacherArray) {
+                                                foreach($teacherArray as  $t){
                                                 
-                                                  <div id="content"></div>
+                                                  if ($id_teacher === $t){
+                                                            $my_articles [] = $data->id_shop_article ;
+
+                        @endphp
+                        <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+                        <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+
+
+
+                        
+
+
+
+                            <div id="content">
+
+
+                                          
+<div class="row">  
+
+    <div class="col-6 col-md-4"> 
+              <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
+                                      @csrf
+                                          <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
+                                          <button type="submit" class="btn btn-success">Valider l'appel</button> 
+                              
+    </div>
+    <div class="col-6 col-md-4"> </div>
+    <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
+
+</div>
+<br>
+
+                                      <table class="table table-hover" style="background-color:green;"> 
+                                        <tbody>
+                                      @foreach($users_saison_active as $dt)
+
+                                                  @if($data->id_shop_article == $dt->id_shop_article)
+
+
+                                                 
+                                                        
+                                                <tr>
+                                                    
+                                                    <td>
+                                                                <div class="form-check">
+                                                                        <input name="user_id[]" value="{{$data->user_id}}" hidden>
+                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  onclick="this.value=this.checked?1:0;">
+                                                                
+                                                                        <label class="form-check-label" for="flexCheckDefault">
+                                                                                {{ $dt->name}}  {{$dt->lastname}}
+                                                                        </label>
+                                                                </div>
+                                                    
+                                                    </td>
+                                                    <td>
+                                                    <i class="fas fa-eye openmodal" style="color:blue;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-user-id="{{$dt->user_id}}"></i> 
+                                                    </td>
+                                                    <td>
+                                                        <div class="col-6 col-md-2"> {{ $dt->phone}} </div>
+                                                    </td>
+                                                    <td>
+                                                    {{ $dt->birthdate}} 
+                                                    </td>
+                                                    <td><i class="fas fa-certificate"></i><i class="fas fa-graduation-cap"></i></td>
+                                            
+
+
+                                                  </tr>
                                                 
 
-                              </div>
-                                  
-                              @php
-                                    break;
-                                }
-                                  
-                                    }
 
-                                    }
+                                                  @endif
+
+                                      @endforeach
+
+                                      </tbody>
+                                                    </table>
+
+                                    
+                                    </div>
+                                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </div>
+                            
+                        @php
+                              break;
+                          }
+                            
+                              }
 
                               }
-                                  
-                                    $add = [] ;
-                              @endphp
+
+                        }
+                            
+                              $add = [] ;
+                        @endphp
 
 
 
 
 
-      
-                  @endforeach
-                  </div>
-                  </table>
+
+            @endforeach
+            </div>
+            </table>
+
+</div>
+
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="display_info_user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Informations</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="just_display">
+        ...
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       
       </div>
-      
-      
-          @endif
-          
-      
-      </div>
-      
-      <script>
-          function toggleElement(id) {
-          var element = document.getElementById('my-element-' + id);
-          if (element.style.display === 'none') {
-              element.style.display = 'block';
-          } else {
-              element.style.display = 'none';
-          }
-      }
-      
-      </script>
-      
-      
-      
-      
-      <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              
-           
-            
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+    @endif
     
+
+</div>
+
+<script>
+    function toggleElement(id) {
+    var element = document.getElementById('my-element-' + id);
+    if (element.style.display === 'none') {
+        element.style.display = 'block';
+    } else {
+        element.style.display = 'none';
+    }
+}
+
+</script>
+
+
 
 @elseif (auth()->user()->role == 90 || auth()->user()->role == 100)
 
@@ -248,30 +421,134 @@ $saison_active = saison_active() ;
           
           </h1>
         
-        <table> 
+          <table> 
       
-                      <div class="d-grid gap-2">
-                  @foreach($shop_article as $data)
-                 
-                  <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
-                  <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
-      
-      
-      
-                       <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                                      
-                                      
+      <div class="d-grid gap-2">
+  @foreach($shop_article_first as $data)
+ 
+            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+            <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+
+
+
+                      <!-- Button trigger modal
+                     <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
+                    
+                    -->
+          
+
+                                      <div id="content">
+
+
+                                          
+<div class="row">  
+
+    <div class="col-6 col-md-4"> 
+              <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
+                                      @csrf
+                                          <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
+                                          <button type="submit" class="btn btn-success">Valider l'appel</button> 
+                              
+    </div>
+    <div class="col-6 col-md-4"> </div>
+    <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
+
+</div>
+<br>
+
+                                      <table class="table table-hover" style="background-color:green;"> 
+                                        <tbody>
+                                      @foreach($users_saison_active as $dt)
+
+                                                  @if($data->id_shop_article == $dt->id_shop_article)
+
+
+                                                 
+                                                        
+                                                <tr>
+                                                    
+                                                    <td>
+                                                                <div class="form-check">
+                                                                        <input name="user_id[]" value="{{$data->user_id}}" hidden>
+                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  onclick="this.value=this.checked?1:0;">
+                                                                
+                                                                        <label class="form-check-label" for="flexCheckDefault">
+                                                                                {{ $dt->name}}  {{$dt->lastname}}
+                                                                        </label>
+                                                                </div>
+                                                    
+                                                    </td>
+                                                    <td>
+                                                    <i class="fas fa-eye openmodal" style="color:blue;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-user-id="{{$dt->user_id}}"></i> 
+                                                    </td>
+                                                    <td>
+                                                        <div class="col-6 col-md-2"> {{ $dt->phone}} </div>
+                                                    </td>
+                                                    <td>
+                                                    {{ $dt->birthdate}} 
+                                                    </td>
+                                                    <td><i class="fas fa-certificate"></i><i class="fas fa-graduation-cap"></i></td>
+                                            
+
+
+                                                  </tr>
+                                                
+
+
+                                                  @endif
+
+                                      @endforeach
+
+                                      </tbody>
+                                                    </table>
+
                                     
-                                       <div id="content"></div>
-                                     
-         
-                  </div>
-      
-                  @endforeach
-                  </div>
-                  </table>
+                                    </div>
+                                
+                              
+  
+            </div>
+
+  @endforeach
+  </div>
+</table>
       
       </div>
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="display_info_user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Informations</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="just_display">
+        ...
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
       
       
       </div>
@@ -297,14 +574,79 @@ $saison_active = saison_active() ;
       
       
       
-                                      <!-- Button trigger modal -->
-                              
-                                      <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                                      
+                                      <!-- Button trigger modal
+                                     <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
                                     
-                                      
+                                    -->
+                          
 
-                                                      <div id="content">  </div>
+                                                      <div id="content">
+
+
+                                                          
+            <div class="row">  
+
+                    <div class="col-6 col-md-4"> 
+                              <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
+                                                      @csrf
+                                                          <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
+                                                          <button type="submit" class="btn btn-success">Valider l'appel</button> 
+                                              
+                    </div>
+                    <div class="col-6 col-md-4"> </div>
+                    <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
+                
+            </div>
+                <br>
+
+                                                      <table class="table table-hover" style="background-color:green;"> 
+                                                        <tbody>
+                                                      @foreach($users_saison_active as $dt)
+
+                                                                  @if($data->id_shop_article == $dt->id_shop_article)
+
+
+                                                                 
+                                                                        
+                                                                <tr>
+                                                                    
+                                                                    <td>
+                                                                                <div class="form-check">
+                                                                                        <input name="user_id[]" value="{{$data->user_id}}" hidden>
+                                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  onclick="this.value=this.checked?1:0;">
+                                                                                
+                                                                                        <label class="form-check-label" for="flexCheckDefault">
+                                                                                                {{ $dt->name}}  {{$dt->lastname}}
+                                                                                        </label>
+                                                                                </div>
+                                                                    
+                                                                    </td>
+                                                                    <td>
+                                                                    <i class="fas fa-eye openmodal" style="color:blue;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-user-id="{{$dt->user_id}}"></i> 
+                                                                    </td>
+                                                                    <td>
+                                                                        <div class="col-6 col-md-2"> {{ $dt->phone}} </div>
+                                                                    </td>
+                                                                    <td>
+                                                                    {{ $dt->birthdate}} 
+                                                                    </td>
+                                                                    <td><i class="fas fa-certificate"></i><i class="fas fa-graduation-cap"></i></td>
+                                                            
+
+
+                                                                  </tr>
+                                                                
+
+
+                                                                  @endif
+
+                                                      @endforeach
+
+                                                      </tbody>
+                                                                    </table>
+
+                                                    
+                                                    </div>
                                                 
                                               
                   
@@ -312,14 +654,39 @@ $saison_active = saison_active() ;
       
                   @endforeach
                   </div>
-                  </table>
+            </table>
       
       </div>
+
+<!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="display_info_user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Informations</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="just_display">
+        ...
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
       
           @endif
           
-      
+</form>
       </div>
       
       <script>
@@ -334,35 +701,9 @@ $saison_active = saison_active() ;
       
       </script>
       
-      
-      
-      
-      <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              
-           
-            
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      
 
 
-@endif
+      @endif
 
 
 
@@ -371,3 +712,22 @@ $saison_active = saison_active() ;
 
 
 @endsection
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

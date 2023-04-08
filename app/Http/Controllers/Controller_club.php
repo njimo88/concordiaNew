@@ -37,7 +37,7 @@ class Controller_club extends Controller
         $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
           ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
          
-       $users_saison_active = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
+       $users_saison_active = User::select('users.user_id','users.name','users.lastname','users.phone','users.birthdate','users.email','liaison_shop_articles_bills.id_shop_article')
           ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
           ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)
           ->where('type_article',1)->get(); 
@@ -70,7 +70,7 @@ class Controller_club extends Controller
          $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
         
-      return view('club/cours_index_new',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie','users_saison_choisie','users_saison_active'))->with('user', auth()->user()) ;
+      return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie','users_saison_choisie','users_saison_active'))->with('user', auth()->user()) ;
            
 
     }
