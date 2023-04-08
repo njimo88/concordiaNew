@@ -122,7 +122,7 @@ $saison_active = saison_active() ;
                                                     <td>
                                                                 <div class="form-check">
                                                                         <input name="user_id[]" value="{{$data->user_id}}" hidden>
-                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  onclick="this.value=this.checked?1:0;">
+                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault">
                                                                 
                                                                         <label class="form-check-label" for="flexCheckDefault">
                                                                                 {{ $dt->name}}  {{$dt->lastname}}
@@ -282,7 +282,7 @@ $saison_active = saison_active() ;
                                                     <td>
                                                                 <div class="form-check">
                                                                         <input name="user_id[]" value="{{$data->user_id}}" hidden>
-                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  onclick="this.value=this.checked?1:0;">
+                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  >
                                                                 
                                                                         <label class="form-check-label" for="flexCheckDefault">
                                                                                 {{ $dt->name}}  {{$dt->lastname}}
@@ -470,7 +470,7 @@ $saison_active = saison_active() ;
                                                     <td>
                                                                 <div class="form-check">
                                                                         <input name="user_id[]" value="{{$data->user_id}}" hidden>
-                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  onclick="this.value=this.checked?1:0;">
+                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=0 id="flexCheckDefault"  onclick="if(this.checked){ this.value = 1; } else { this.value = 0; }">
                                                                 
                                                                         <label class="form-check-label" for="flexCheckDefault">
                                                                                 {{ $dt->name}}  {{$dt->lastname}}
@@ -612,13 +612,14 @@ $saison_active = saison_active() ;
                                                                     
                                                                     <td>
                                                                                 <div class="form-check">
-                                                                                        <input name="user_id[]" value="{{$data->user_id}}" hidden>
-                                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  onclick="this.value=this.checked?1:0;">
-                                                                                
+                                                                                        <input name="user_id[]" value="{{$dt->user_id}}" hidden>
+                                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]" value="0" id="flexCheckDefault" hidden>
+                                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]" value="1" id="flexCheckDefault" onclick="if(this.checked){ this.value = 1; console.log('yes') ;} else {this.value = 0;console.log('no')} ">
                                                                                         <label class="form-check-label" for="flexCheckDefault">
                                                                                                 {{ $dt->name}}  {{$dt->lastname}}
                                                                                         </label>
                                                                                 </div>
+                                                                       
                                                                     
                                                                     </td>
                                                                     <td>
@@ -641,6 +642,8 @@ $saison_active = saison_active() ;
                                                                   @endif
 
                                                       @endforeach
+
+                                                      </form>
 
                                                       </tbody>
                                                                     </table>
@@ -686,7 +689,7 @@ $saison_active = saison_active() ;
       
           @endif
           
-</form>
+
       </div>
       
       <script>
@@ -706,8 +709,10 @@ $saison_active = saison_active() ;
       @endif
 
 
+  
 
 </main>
+
     
 
 

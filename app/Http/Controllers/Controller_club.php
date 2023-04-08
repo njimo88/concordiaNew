@@ -226,7 +226,7 @@ public function modif_user($id,Request $request){
 
 
 
-public function enregister_appel_method($id , Request $request){
+public function enregister_appel_method_test($id , Request $request){
 
             $appels           = new appels ;
 
@@ -234,12 +234,16 @@ public function enregister_appel_method($id , Request $request){
             $appels->date     = $request->input('date_appel');
 
     
-            $tab_user     =  (array)$request->input('user_id');
+           
+            $tab_user = (array)$request->input('user_id');
             $length_tab_user = count($tab_user);
 
             $tab_presence =  (array)$request->input('marque_presence');
             $length_tab_presence = count($tab_presence);
 
+
+
+            dd($tab_user);
 
             $ladifference = $length_tab_user - $length_tab_presence  ; // je recupere la difference de taille entre le tableau des users et le nombre d'element checked
            
@@ -260,14 +264,67 @@ public function enregister_appel_method($id , Request $request){
             }
 
             $appels->presents = $my_json ;
-         
-            $appels->save() ;
+       
+          //  $appels->save() ;
 
 
-            return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+           // return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
         
 
 }
+
+
+
+
+public function enregister_appel_method($id , Request $request){
+
+    $appels           = new appels ;
+
+    $appels->id_cours = $id ;
+    $appels->date     = $request->input('date_appel');
+    $tab_user = (array)$request->input('user_id');
+
+    $length_tab_user = count($tab_user);
+
+    $tab_presence =  (array)$request->input('marque_presence');
+  
+    $length_tab_presence = count($tab_presence);
+
+    $ladifference = $length_tab_user - $length_tab_presence  ; // je recupere la difference de taille entre le tableau des users et le nombre d'element checked
+           
+
+    // si les deux arrays sont de meme taille alors toutes les checkboxes ont ete cochees donc leurs valeurs est 1 
+
+    if ( $length_tab_user == $length_tab_presence) {
+
+        $pairedArray = array_combine($tab_user,$tab_presence );
+        $my_json  = json_encode($pairedArray,JSON_NUMERIC_CHECK);
+        
+    } 
+
+
+
+    dd($tab_presence) ;
+   
+
+  //  $appels->save() ;
+
+
+   // return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 function display_historique_method($id){
