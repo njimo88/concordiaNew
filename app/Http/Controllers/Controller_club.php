@@ -11,6 +11,7 @@ use App\Models\appels;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Laravel\Ui\Presets\Preset;
+use Illuminate\Support\Facades\DB;
 
 require_once('../app/fonction.php');
 
@@ -218,20 +219,14 @@ public function modif_user($id,Request $request){
 }
 
 
-
-
-
-
-
-
-
-
 public function enregister_appel_method_test($id , Request $request){
 
             $appels           = new appels ;
 
             $appels->id_cours = $id ;
             $appels->date     = $request->input('date_appel');
+
+            $thedate = $appels->date ;  
 
     
            
@@ -278,52 +273,112 @@ public function enregister_appel_method_test($id , Request $request){
 
 public function enregister_appel_method($id , Request $request){
 
+    $tab_presence2 = [] ;
+    $tab_presence_final = [] ;
+    $tab_presence3 = [] ;
     $appels           = new appels ;
 
     $appels->id_cours = $id ;
-    $appels->date     = $request->input('date_appel');
+     
+    $thedate  = $request->input('date_appel');
+    $appels->date = $thedate ;
+
     $tab_user = (array)$request->input('user_id');
-
-    $length_tab_user = count($tab_user);
-
     $tab_presence =  (array)$request->input('marque_presence');
-  
-    $length_tab_presence = count($tab_presence);
-
-    $ladifference = $length_tab_user - $length_tab_presence  ; // je recupere la difference de taille entre le tableau des users et le nombre d'element checked
-           
-
-    // si les deux arrays sont de meme taille alors toutes les checkboxes ont ete cochees donc leurs valeurs est 1 
-
-    if ( $length_tab_user == $length_tab_presence) {
-
-        $pairedArray = array_combine($tab_user,$tab_presence );
-        $my_json  = json_encode($pairedArray,JSON_NUMERIC_CHECK);
-        
-    } 
-
-
-
-    dd($tab_presence) ;
    
+    // Use array_keys() to extract only the keys of the array
+        $keys = array_keys($tab_presence);
 
-  //  $appels->save() ;
+    
+                foreach($tab_user as $user){
+
+                            if (in_array($user,$keys)){
+
+                               // $tab_presence2[$user]  = 1 ;
+                                $tab_presence2 = array(
+                                    $user => 1 
+                                );
+                        
+                            }else{
+
+                              //  $tab_presence2[$user]  = 0 ;
+                                $tab_presence2 = array(
+                                    $user => 0 
+                                );
+                                  
+                                }
+
+                                $tab_presence3[] =  $tab_presence2  ;
+                                $tab_presence2 = []  ;
+                   
+                   
+                }
+                           
+                $my_json  = json_encode($tab_presence3,JSON_NUMERIC_CHECK);
+
+                $new_data = [];
+
+                foreach ($tab_presence3 as $d) {
+                    foreach ($d as $key => $value) {
+                        $new_data[$key] = $value;
+                    }
+                }
+
+                // Output the new data as a JSON string
+                $my_json = json_encode($new_data);
+              
+                $appel_verif = appels::where('id_cours', $id)->where('date',$thedate)->get();
+               // dd($appel_verif);
+
+                if ($appel_verif->count() > 0) {
+                   appels::where('id_cours', $id)->where('date', $thedate)->update(['presents' => $my_json]);
+                   return redirect()->route('index_cours')->with('success', " l'appel a été modifié  avec succès");
+
+                  
+
+                }else{
+
+                   $appels->presents = $my_json ;
+     
+                   $appels->save() ;
+                   return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+
+                  
+                }
+               
+               
+
+                /*$appel_verif = appels::where('id_cours', $id)->where('date',$thedate)->get();
+
+                if ($appel_verif){
+
+                    appels::where('id_cours', $id)
+                    ->where('date', $thedate)
+                    ->update(['presents' =>  $my_json]);
+
+                    return  $appel_verif ;
+                   
+
+                }else{
+
+                   // 
+                    return 0 ;
+                   
+                   // $appels->save() ;
+                }
+                */
+                                                            
 
 
-   // return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+
+
+
+             
+
+  return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
 
 
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

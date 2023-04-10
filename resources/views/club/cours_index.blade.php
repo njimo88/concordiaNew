@@ -81,7 +81,8 @@ $saison_active = saison_active() ;
                                                 $my_articles [] = $data->id_shop_article ;
 
             @endphp
-            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{$data->stock_actuel}}/ {{$data->stock_ini}}" >
+                          
             <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
 
@@ -120,14 +121,20 @@ $saison_active = saison_active() ;
                                                 <tr>
                                                     
                                                     <td>
-                                                                <div class="form-check">
-                                                                        <input name="user_id[]" value="{{$data->user_id}}" hidden>
-                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault">
-                                                                
-                                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                                                {{ $dt->name}}  {{$dt->lastname}}
-                                                                        </label>
-                                                                </div>
+                                                    <div class="form-check">
+                                                                                        <input name="user_id[]" value="{{$dt->user_id}}" hidden>
+                                                                                         
+                                                                                       
+                                                                                         
+                                                                                          <input class="form-check-input" type="checkbox" name="marque_presence[{{$dt->user_id}}]" value=1 id="myCheckbox">
+           
+                                                                                      
+
+
+                                                                                          <label class="form-check-label" for="flexCheckDefault">
+                                                                                                {{ $dt->name}}  {{$dt->lastname}}
+                                                                                        </label>
+                                                                                </div>
                                                     
                                                     </td>
                                                     <td>
@@ -240,8 +247,8 @@ $saison_active = saison_active() ;
                                                             $my_articles [] = $data->id_shop_article ;
 
                         @endphp
-                        <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
-                        <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+                        <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{$data->stock_actuel}}/ {{$data->stock_ini}}" >
+                                       <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
 
 
@@ -270,6 +277,7 @@ $saison_active = saison_active() ;
 
                                       <table class="table table-hover" style="background-color:green;"> 
                                         <tbody>
+                                        @php $i= 0 ; @endphp
                                       @foreach($users_saison_active as $dt)
 
                                                   @if($data->id_shop_article == $dt->id_shop_article)
@@ -280,14 +288,20 @@ $saison_active = saison_active() ;
                                                 <tr>
                                                     
                                                     <td>
-                                                                <div class="form-check">
-                                                                        <input name="user_id[]" value="{{$data->user_id}}" hidden>
-                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=1 id="flexCheckDefault"  >
-                                                                
-                                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                                                {{ $dt->name}}  {{$dt->lastname}}
-                                                                        </label>
-                                                                </div>
+                                                    <div class="form-check">
+                                                                                        <input name="user_id[]" value="{{$dt->user_id}}" hidden>
+                                                                                         
+                                                                                       
+                                                                                         
+                                                                                          <input class="form-check-input" type="checkbox" name="marque_presence[{{$dt->user_id}}]" value=1 id="myCheckbox">
+           
+                                                                                      
+
+
+                                                                                          <label class="form-check-label" for="flexCheckDefault">
+                                                                                                {{ $dt->name}}  {{$dt->lastname}}
+                                                                                        </label>
+                                                                                </div>
                                                     
                                                     </td>
                                                     <td>
@@ -426,8 +440,8 @@ $saison_active = saison_active() ;
       <div class="d-grid gap-2">
   @foreach($shop_article_first as $data)
  
-            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
-            <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
+  <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{$data->stock_actuel}}/ {{$data->stock_ini}}" >
+                              <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
 
 
@@ -468,14 +482,20 @@ $saison_active = saison_active() ;
                                                 <tr>
                                                     
                                                     <td>
-                                                                <div class="form-check">
-                                                                        <input name="user_id[]" value="{{$data->user_id}}" hidden>
-                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]"  value=0 id="flexCheckDefault"  onclick="if(this.checked){ this.value = 1; } else { this.value = 0; }">
-                                                                
-                                                                        <label class="form-check-label" for="flexCheckDefault">
-                                                                                {{ $dt->name}}  {{$dt->lastname}}
-                                                                        </label>
-                                                                </div>
+                                                    <div class="form-check">
+                                                                                        <input name="user_id[]" value="{{$dt->user_id}}" hidden>
+                                                                                         
+                                                                                       
+                                                                                         
+                                                                                          <input class="form-check-input" type="checkbox" name="marque_presence[{{$dt->user_id}}]" value=1 id="myCheckbox">
+           
+                                                                                      
+
+
+                                                                                          <label class="form-check-label" for="flexCheckDefault">
+                                                                                                {{ $dt->name}}  {{$dt->lastname}}
+                                                                                        </label>
+                                                                                </div>
                                                     
                                                     </td>
                                                     <td>
@@ -568,8 +588,9 @@ $saison_active = saison_active() ;
       
                       <div class="d-grid gap-2">
                   @foreach($shop_article_first as $data)
-                 
-                            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}">
+
+                                    
+                            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{$data->stock_actuel}}/ {{$data->stock_ini}}" >
                             <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
       
       
@@ -613,9 +634,15 @@ $saison_active = saison_active() ;
                                                                     <td>
                                                                                 <div class="form-check">
                                                                                         <input name="user_id[]" value="{{$dt->user_id}}" hidden>
-                                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]" value="0" id="flexCheckDefault" hidden>
-                                                                                        <input class="form-check-input" type="checkbox" name="marque_presence[]" value="1" id="flexCheckDefault" onclick="if(this.checked){ this.value = 1; console.log('yes') ;} else {this.value = 0;console.log('no')} ">
-                                                                                        <label class="form-check-label" for="flexCheckDefault">
+                                                                                         
+                                                                                       
+                                                                                         
+                                                                                          <input class="form-check-input" type="checkbox" name="marque_presence[{{$dt->user_id}}]" value=1 id="myCheckbox">
+           
+                                                                                      
+
+
+                                                                                          <label class="form-check-label" for="flexCheckDefault">
                                                                                                 {{ $dt->name}}  {{$dt->lastname}}
                                                                                         </label>
                                                                                 </div>
@@ -650,9 +677,7 @@ $saison_active = saison_active() ;
 
                                                     
                                                     </div>
-                                                
-                                              
-                  
+                                      
                             </div>
       
                   @endforeach

@@ -9,6 +9,7 @@ use App\Http\Controllers\BlogArticle_Controller;
 use App\Models\A_Blog_Post;
 use App\Http\Controllers;
 use App\Http\Controllers\Article_Controller;
+use App\Http\Controllers\Controller_Stat;
 use App\Http\Controllers\generatePDF;
 use App\Http\Controllers\Controller_Quizz;
 use App\Http\Controllers\Controller_Communication;
@@ -350,4 +351,5 @@ Route::post('/questionnaire', [Controller_Quizz::class, 'handle_questionnaire'])
 Route::post('/questionnaire_baby', [Controller_Quizz::class, 'handle_questionnaire_baby'])->name('baby_formulaire');
 
 
-
+#-------------------------------- Statistiques ------------------------------
+Route::get('/Statistiques/Home_stat_teacher',[Controller_Stat::class, 'index'])->name('index_stat');
