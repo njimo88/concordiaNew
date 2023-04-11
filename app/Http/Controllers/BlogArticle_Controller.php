@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\A_Blog_Post;
 use App\Models\A_Categorie1;
 use App\Models\A_Categorie2;
-use App\models\Shop_article;
-use App\models\User;
+use App\Models\Shop_article;
+use App\Models\User;
 use App\Models\Shop_category;
 use Illuminate\Http\Request;
 
