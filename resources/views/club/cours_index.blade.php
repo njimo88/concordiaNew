@@ -263,11 +263,8 @@ $saison_active = saison_active() ;
 
                                           
 <div class="row">  
-   @php $var = $data->id_shop_article  ; 
+   @php $var = $data->id_shop_article  ;  @endphp
    
-  
-   @endphp
-   {{ $var }}
     <div class="col-6 col-md-4"> 
               <form action="{{route('enregistrer_appel',$var)}}" method="POST">
                
@@ -454,13 +451,10 @@ $saison_active = saison_active() ;
 
 
 
-                      <!-- Button trigger modal
-                     <a  id="load-content" href="{{route('form_appel',$data->id_shop_article)}}">Faire l'appel</a>
-                    
-                    -->
+                   
           
 
-                                      <div id="content">
+                                      <div id="content" >
 
 
                                           
