@@ -35,23 +35,18 @@ class Controller_club extends Controller
        
        
             // requete pour la saison active
-        $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
+        $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
           ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
          
        $users_saison_active = User::select('users.user_id','users.name','users.lastname','users.phone','users.birthdate','users.email','liaison_shop_articles_bills.id_shop_article')
           ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
           ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)
           ->where('type_article',1)->get(); 
-  /* 
-          $users_saison_active = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
-          ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-          ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)
-          ->where('type_article',1)->where('shop_article.id_shop_article',$article_id)->get();*/
   
   
 
             //requete pour la saison choisie
-          $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
+          $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
           ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison',  $saison)->get();
 
           $users_saison_choisie = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
