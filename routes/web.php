@@ -122,6 +122,7 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/reduction/{id}/edit', [BillsController::class, 'editReduction'])->name('edit.reduction');
     Route::put('/reduction/{id}/update', [BillsController::class, 'updateReduction'])->name('update.reduction');
     Route::post('/reduction/update_liaisons', [BillsController::class, 'updateLiaisons'])->name('update_liaisons');
+    Route::get('/get-reduced-price/{userId}/{articleId}', [BillsController::class, 'getReducedPrice']);
 
 
 

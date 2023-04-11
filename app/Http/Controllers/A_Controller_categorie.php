@@ -58,6 +58,7 @@ class A_Controller_categorie extends Controller
         
         
     $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
+    
     //step 1 : Mise à jour de stock de l'article
     MiseAjourArticle($shop);
 
@@ -65,10 +66,11 @@ class A_Controller_categorie extends Controller
     $need_member = $shop->need_member;
     $selected_user_id = $request->selected_user_id;
     $quantite = $request->qte;
+    if($request->qte == null){
+        $quantite = 1;}
     $declinaison = $request->declinaison;
     //verifier si l'article est en stock et les conditions d'achat
     //$quantite = $request->quantite;
-    
     if(verifierStockUnArticle($shop, $quantite) && countArticle($selected_user_id,$id_article) < $shop->max_per_user){
     
     
@@ -83,9 +85,12 @@ class A_Controller_categorie extends Controller
         ])->first();
 
         if ($panier) {
-            // Si le produit est déjà dans le panier, mettre à jour la quantité
+            if($shop->type_article == 2){
+                $panier->qte = $quantite;
             $panier->qte += $quantite;
-            $panier->save();
+            $panier->save();}
+            else{
+                return redirect()->back()->with('error', 'Cet article est déjà dans votre panier');}
         } else {
             // Ajouter une nouvelle ligne pour le produit
             $addcommand = new Basket();
@@ -94,34 +99,51 @@ class A_Controller_categorie extends Controller
             $addcommand->pour_user_id = $request->selected_user_id;
             $addcommand->ref = $shop->id_shop_article;
             $addcommand->qte = $quantite;
+            $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->totalprice,$selected_user_id);
+            if($addcommand->prix != $shop->totalprice){
+                $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
+                $addcommand->reduction = $description;
+            }
             $addcommand->declinaison = $declinaison;
             $addcommand->save();
+            applyFamilyDiscount();
+
         }
         
 
     if ($need_member != 0) { 
+        
+
             $result = MiseAuPanier($selected_user_id, $id_article);
             if ($result == 0) {
                 return redirect()->route('panier');}
             elseif ($result == $need_member) {
+                $shop = Shop_article::where('id_shop_article', $need_member)->firstOrFail();
             $addcommand = new Basket();
             $addcommand->user_id = auth()->user()->user_id;
             $addcommand->family_id = auth()->user()->family_id;
             $addcommand->pour_user_id = $request->selected_user_id;
             $addcommand->ref = $need_member;
             $addcommand->qte = 1;
+            $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->totalprice,$selected_user_id);
+            if($addcommand->prix != $shop->totalprice){
+                $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
+                $addcommand->reduction = $description;
+            }
             $addcommand->save();
 
             return redirect()->route('panier');
         } else {
-            //panier
-            dd($result);
+            $addcommand->prix = $result;
+            $addcommand->save();
+            return redirect()->route('panier');
         }
     }
 
     return redirect()->route('panier');
 }
     else{
+
         return redirect()->back()->with('error', 'Vous avez atteint la limite d\'achat de cet article ou il n\'est plus disponible');
     }
        
@@ -130,21 +152,27 @@ class A_Controller_categorie extends Controller
 //boutton commander
 public function commander_article($id, Request $request)
 {
+         
+        
     $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
-    MiseAjourArticle($shop);
-
+    
     //step 1 : Mise à jour de stock de l'article
+    MiseAjourArticle($shop);
 
     $id_article = $shop->id_shop_article;
     $need_member = $shop->need_member;
     $selected_user_id = $request->selected_user_id;
     $quantite = $request->qte;
+    if($request->qte == null){
+        $quantite = 1;}
     $declinaison = $request->declinaison;
-    
     //verifier si l'article est en stock et les conditions d'achat
     //$quantite = $request->quantite;
     if(verifierStockUnArticle($shop, $quantite) && countArticle($selected_user_id,$id_article) < $shop->max_per_user){
-
+    
+    
+    
+        
         // Vérifier si le produit est déjà dans le panier pour ce user
         $panier = Basket::where([
             ['user_id', auth()->user()->user_id],
@@ -154,9 +182,12 @@ public function commander_article($id, Request $request)
         ])->first();
 
         if ($panier) {
-            // Si le produit est déjà dans le panier, mettre à jour la quantité
+            if($shop->type_article == 2){
+                $panier->qte = $quantite;
             $panier->qte += $quantite;
-            $panier->save();
+            $panier->save();}
+            else{
+                return redirect()->back()->with('error', 'Cet article est déjà dans votre panier');}
         } else {
             // Ajouter une nouvelle ligne pour le produit
             $addcommand = new Basket();
@@ -165,29 +196,47 @@ public function commander_article($id, Request $request)
             $addcommand->pour_user_id = $request->selected_user_id;
             $addcommand->ref = $shop->id_shop_article;
             $addcommand->qte = $quantite;
+            $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->totalprice,$selected_user_id);
+            if($addcommand->prix != $shop->totalprice){
+                $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
+                $addcommand->reduction = $description;
+            }
             $addcommand->declinaison = $declinaison;
             $addcommand->save();
+            applyFamilyDiscount();
+
         }
+        
 
-        if ($need_member != 0) { 
+    if ($need_member != 0) { 
+        
+
             $result = MiseAuPanier($selected_user_id, $id_article);
-
             if ($result == 0) {
-                return redirect()->back()->with('success', 'Article ajouté au panier');
-            } elseif ($result == $need_member) {
+                return redirect()->route('panier');}
+                elseif ($result == $need_member) {
+                    $shop = Shop_article::where('id_shop_article', $need_member)->firstOrFail();
                 $addcommand = new Basket();
                 $addcommand->user_id = auth()->user()->user_id;
                 $addcommand->family_id = auth()->user()->family_id;
                 $addcommand->pour_user_id = $request->selected_user_id;
                 $addcommand->ref = $need_member;
                 $addcommand->qte = 1;
+                $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->totalprice,$selected_user_id);
+                if($addcommand->prix != $shop->totalprice){
+                    $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
+                    $addcommand->reduction = $description;
+                }
                 $addcommand->save();
-                return redirect()->back()->with('success', 'Article ajouté au panier');
-            } else {
-                //panier
-                dd($result);
-            }
+
+            return redirect()->route('panier');
+        } else {
+            
+            $addcommand->prix = $result;
+            $addcommand->save();
+            return redirect()->route('panier');
         }
+    }
 
         return redirect()->back()->with('success', 'Article ajouté au panier');
     } else {
@@ -469,7 +518,7 @@ public function Shop_souscategorie($id){
 
     return view('A_Shop_SousCategorie_index', compact('info', 'info_parent', 'messageContent', 'indice', 'requete', 'info2', 'article', 'shopService', 'rooms', 'a_user'))
             ->with('user', auth()->user())
-            ->with('getReducedPrice', 'getReducedPrice');
+            ->with('getReducedPriceGuest', 'getReducedPriceGuest','getFirstReductionDescriptionGuest', 'getFirstReductionDescriptionGuest');
 }
 
 
@@ -478,9 +527,10 @@ public function Handle_details( $id){
     MiseAjourStock();
     
     $articl= Shop_article::where('id_shop_article', $id)->firstOrFail();
-
-    $reducedPrice = getReducedPrice($id, $articl->totalprice);
+    $reducedPrice = getReducedPriceGuest($id, $articl->totalprice);
     $priceToDisplay = $reducedPrice ? $reducedPrice : $articl->totalprice;
+    $DescReduc = getFirstReductionDescriptionGuest($id);
+
 
     if ($articl->type_article == 2) {
         $déclinaison = shop_article_2::where('id_shop_article', $id)->select('declinaison')->firstOrFail();
@@ -509,10 +559,10 @@ public function Handle_details( $id){
         $selectedUsers = getArticleUsers($articl);
     }
     if ($articl->type_article == 2) {
-        return view('Details_article', compact('indice', 'messageContent','coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user())->with('priceToDisplay', $priceToDisplay);
+        return view('Details_article', compact('DescReduc','id','indice', 'messageContent','coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user())->with('priceToDisplay', $priceToDisplay);
 
     }
-    return view('Details_article', compact('indice','messageContent', 'coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user())->with('priceToDisplay', $priceToDisplay);
+    return view('Details_article', compact('DescReduc','id','indice','messageContent', 'coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info'))->with('user', auth()->user())->with('priceToDisplay', $priceToDisplay);
 }
 
 

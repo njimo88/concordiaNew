@@ -51,7 +51,7 @@
 
         @foreach($requete as $data)
             @if($data->id_shop_category == $indice)
-                <div class="row p-2 col-12 bg-white border border-dark  d-flex justify-content-center">
+                <div class="row p-2 bg-white border border-dark  d-flex justify-content-center">
                     <div class="col-md-6 mt-1">
                         <a style="font-weight: bold;" class="a2" cl href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}">{{ $data->title}}</a>
                         <p class="text-justify text-truncate para mb-0">
@@ -118,7 +118,7 @@
 
                                                                 if($r == $room->id_room and $norepeat == TRUE){
                                                                         echo"<br>";
-                                                                        echo " <b>Lieu: </b> <a class='a' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a>";
+                                                                        echo " <b>Lieu: </b> <small><a class='a' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a></small>";
                                                                         
                                                                         $norepeat = FALSE ;
                                                                         echo"</br>";
@@ -193,14 +193,18 @@
                                   <img style="max-height:40px;position: absolute; top: 10px; right: 30px;" src="{{ asset("/assets/images/nouveau.webp") }}" alt="">
                               @endif
                               @php
-                                  $reducedPrice = isset($getReducedPrice) ? $getReducedPrice($data->id_shop_article, $data->totalprice) : null;
+                                  $reducedPrice = isset($getReducedPriceGuest) ? $getReducedPriceGuest($data->id_shop_article, $data->totalprice) : null;
                                   $priceToDisplay = $reducedPrice ? $reducedPrice : $data->totalprice;
+                                  $DescReduc = getFirstReductionDescriptionGuest($data->id_shop_article);
                               @endphp
                               @if ($reducedPrice && $reducedPrice != $data->totalprice)
                                 <span style="text-decoration: line-through;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
                                 <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span> <br>
                               @else
                                   <span style="font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span>
+                              @endif
+                              @if ($DescReduc != null)
+                                  <span class="p-4" style="font-size: x-small; color: red;">{{ $DescReduc }}</span>
                               @endif
                               <div style="position: absolute; bottom: 5px; right: 2px;">
                                   <span style="font-size: medium; text-decoration: underline;">Saison:</span> <span style="font-size: small">{{$data->saison}}/{{$data->saison+1}}</span> 

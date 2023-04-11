@@ -2,24 +2,20 @@
 
 namespace App\Models;
 
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Shop_article;
-use App\Models\ShopReduction;
 
-class LiaisonShopArticlesShopReductions extends Model
+class LiaisonUserShopReduction extends Model
 {
     use HasFactory;
 
-    protected $table = 'liaison_shop_articles_shop_reductions';
+    protected $table = 'liaison_user_reductions';
     protected $primaryKey = 'id_liaison';
     public $timestamps = false;
 
     protected $fillable = [
-        'id_shop_article',
+        'user_id',
         'id_shop_reduction'
+        
     ];
-
-
 }

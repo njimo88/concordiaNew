@@ -56,26 +56,26 @@ public function editdata(){
     if (Auth::check()){
 
         $paniers = DB::table('basket')
-        ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-        ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
-        ->leftJoin('shop_article_2', 'shop_article_2.id_shop_article', '=', 'basket.ref')
-        ->where('basket.user_id', '=',auth()->user()->user_id)
-        ->groupBy('basket.pour_user_id','shop_article_2.declinaison','basket.declinaison',
-         'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price',
-          'shop_article.ref', 'users.name', 'users.lastname')
-        ->orderBy('basket.pour_user_id')
-        ->orderBy('basket.ref')
-        ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title',
-         'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname', 
-         DB::raw('SUM(basket.qte) as total_qte'),
-        DB::raw("JSON_UNQUOTE(JSON_EXTRACT(shop_article_2.declinaison, CONCAT('$[', basket.declinaison-1, '].', basket.declinaison, '.libelle'))) 
-        as declinaison_libelle")
-        )
-        ->get();
-    
+    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+    ->leftJoin('shop_article_2', 'shop_article_2.id_shop_article', '=', 'basket.ref')
+    ->where('basket.user_id', '=',auth()->user()->user_id)
+    ->groupBy('basket.pour_user_id','shop_article_2.declinaison','basket.declinaison',
+             'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 
+             'shop_article.image', 'basket.prix', 'shop_article.ref', 
+             'users.name', 'users.lastname', 'basket.reduction')
+    ->orderBy('basket.pour_user_id')
+    ->orderBy('basket.ref')
+    ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 
+             'shop_article.title', 'shop_article.image', 'basket.prix', 
+             'shop_article.ref as reff', 'users.name', 'users.lastname', 
+             DB::raw('SUM(basket.qte) as total_qte'),
+             DB::raw("JSON_UNQUOTE(JSON_EXTRACT(shop_article_2.declinaison, CONCAT('$[', basket.declinaison-1, '].', basket.declinaison, '.libelle'))) as declinaison_libelle"),
+             'basket.reduction')
+    ->get();
         $total = 0;
         foreach ($paniers as $panier) {
-            $total += $panier->total_qte * $panier->price;
+            $total += $panier->total_qte * $panier->prix;
         }
         // Retourner la vue avec les données récupérées
         return view('users.panier', compact('paniers','total'))->with('user', auth()->user());
@@ -90,10 +90,10 @@ public function detail_paiement($id,$nombre_cheques)
     ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
     ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
     ->where('basket.user_id', '=',auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref', 'users.name', 'users.lastname')
+    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref', 'users.name', 'users.lastname')
     ->orderBy('basket.pour_user_id')
     ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
     ->get();
 
     
@@ -121,12 +121,12 @@ public function detail_paiement($id,$nombre_cheques)
         ->leftJoin('shop_article_2', 'shop_article_2.id_shop_article', '=', 'basket.ref')
         ->where('basket.user_id', '=',auth()->user()->user_id)
         ->groupBy('basket.pour_user_id','shop_article_2.declinaison','basket.declinaison',
-         'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price',
+         'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice',
           'shop_article.ref', 'users.name', 'users.lastname')
         ->orderBy('basket.pour_user_id')
         ->orderBy('basket.ref')
         ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title',
-         'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname', 
+         'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname', 
          DB::raw('SUM(basket.qte) as total_qte'),
         DB::raw("JSON_UNQUOTE(JSON_EXTRACT(shop_article_2.declinaison, CONCAT('$[', basket.declinaison-1, '].', basket.declinaison, '.libelle'))) 
         as declinaison_libelle")
@@ -137,7 +137,7 @@ public function detail_paiement($id,$nombre_cheques)
 
     $total = 0;
     foreach ($paniers as $panier) {
-        $total += $panier->qte * $panier->price;
+        $total += $panier->qte * $panier->totalprice;
     }
 
     $nb_paiment = calculerPaiements($total,$nombre_cheques);
@@ -178,9 +178,9 @@ public function detail_paiement($id,$nombre_cheques)
         $liaison->bill_id = $bill->id;
         $liaison->href_product = $panier->reff;
         $liaison->quantity = $panier->qte;
-        $liaison->ttc = round($panier->price, 2);
+        $liaison->ttc = round($panier->totalprice, 2);
         $liaison->addressee = auth()->user()->lastname . ' ' . auth()->user()->name;
-        $liaison->sub_total = round($panier->qte * $panier->price, 2);
+        $liaison->sub_total = round($panier->qte * $panier->totalprice, 2);
         $liaison->designation = $panier->title;
         $liaison->id_shop_article = $panier->ref;
         $liaison->declinaison = $panier->declinaison;
@@ -215,7 +215,7 @@ public function detail_paiement($id,$nombre_cheques)
     $paniers = DB::table('basket')
     ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
     ->join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-    ->select('basket.qte', 'basket.ref', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname')
+    ->select('basket.qte', 'basket.ref', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname')
     ->get();
 
 
@@ -225,16 +225,16 @@ public function detail_paiement($id,$nombre_cheques)
     ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
     ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
     ->where('basket.user_id', '=',auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref', 'users.name', 'users.lastname')
+    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref', 'users.name', 'users.lastname')
     ->orderBy('basket.pour_user_id')
     ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.price', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
     ->get();
 
     $total = 0;
 
     foreach ($paniers as $panier) {
-        $total += $panier->qte * $panier->price;
+        $total += $panier->qte * $panier->totalprice;
     }
 
 
