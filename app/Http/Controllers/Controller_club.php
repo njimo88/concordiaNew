@@ -213,6 +213,7 @@ public function modif_user($id,Request $request){
         return redirect()->route('index_cours')->with('success', ' mise à jour effectuée avec succès');
 }
 
+/*
 
 public function enregister_appel_method_test($id , Request $request){
 
@@ -263,11 +264,12 @@ public function enregister_appel_method_test($id , Request $request){
 
 }
 
-
+*/
 
 
 public function enregister_appel_method($id , Request $request){
 
+   
     $tab_presence2 = [] ;
     $tab_presence_final = [] ;
     $tab_presence3 = [] ;
@@ -281,6 +283,7 @@ public function enregister_appel_method($id , Request $request){
     $tab_user = (array)$request->input('user_id');
     $tab_presence =  (array)$request->input('marque_presence');
    
+    
     // Use array_keys() to extract only the keys of the array
         $keys = array_keys($tab_presence);
 
@@ -324,7 +327,7 @@ public function enregister_appel_method($id , Request $request){
               
                 $appel_verif = appels::where('id_cours', $id)->where('date',$thedate)->get();
                // dd($appel_verif);
-
+               
                 if ($appel_verif->count() > 0) {
                    appels::where('id_cours', $id)->where('date', $thedate)->update(['presents' => $my_json]);
                    return redirect()->route('index_cours')->with('success', " l'appel a été modifié  avec succès");

@@ -90,23 +90,25 @@ $saison_active = saison_active() ;
                                
                                 
                               
-                 <div id="content">
+                 <div id="content" >
 
 
                                           
-<div class="row">  
+            <div class="row">  
 
-    <div class="col-6 col-md-4"> 
-              <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
-                                      @csrf
-                                          <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
-                                          <button type="submit" class="btn btn-success">Valider l'appel</button> 
-                              
-    </div>
-    <div class="col-6 col-md-4"> </div>
-    <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
+                <div class="col-6 col-md-4">
+                  {{$data->id_shop_article}} 
+               
+                          <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article ])}}" method="POST">
+                                                  @csrf
+                                                      <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
+                                                      <button type="submit" class="btn btn-success">Valider l'appel</button> 
+                                          
+                </div>
+                <div class="col-6 col-md-4"> </div>
+                <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
 
-</div>
+            </div>
 <br>
 
                                       <table class="table table-hover" style="background-color:green;"> 
@@ -157,7 +159,7 @@ $saison_active = saison_active() ;
                                                   @endif
 
                                       @endforeach
-
+                                      </form>
                                       </tbody>
                                                     </table>
 
@@ -261,9 +263,14 @@ $saison_active = saison_active() ;
 
                                           
 <div class="row">  
-
+   @php $var = $data->id_shop_article  ; 
+   
+  
+   @endphp
+   {{ $var }}
     <div class="col-6 col-md-4"> 
-              <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
+              <form action="{{route('enregistrer_appel',$var)}}" method="POST">
+               
                                       @csrf
                                           <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
                                           <button type="submit" class="btn btn-success">Valider l'appel</button> 
@@ -324,6 +331,8 @@ $saison_active = saison_active() ;
                                                   @endif
 
                                       @endforeach
+
+                                      </form>
 
                                       </tbody>
                                                     </table>
@@ -518,7 +527,7 @@ $saison_active = saison_active() ;
                                                   @endif
 
                                       @endforeach
-
+                                      </form>
                                       </tbody>
                                                     </table>
 

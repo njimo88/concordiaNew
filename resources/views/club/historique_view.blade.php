@@ -11,7 +11,7 @@ $saison_active = saison_active() ;
 @endphp
 <main id="main" class="main">
   <div class="row">
-    <div class="col-md-4"><a href="{{route('enregistrer_appel',$id_cours)}}"><button>Retour</button></a></div>
+    <div class="col-md-4"><a href="{{route('index_cours')}}"><button>Retour</button></a></div>
     <div class="col-md-4"></div>
     <div class="col-md-4"><a class="btn btn-primary" href=""><button id="generate-pdf">Generer PDF </button></a></div>
   
@@ -34,9 +34,11 @@ $saison_active = saison_active() ;
     <tr>
       <th>Date</th>
       @foreach($appel as $data1)
+
+          
                <th>{{$data1->date}}</th>
 
-             @php   $tab_date[] = $data1->date  ;  $num = 1; @endphp 
+       @php   $tab_date[] = $data1->date  ;  $num = 1; @endphp 
            
 
                 
@@ -46,7 +48,7 @@ $saison_active = saison_active() ;
     </tr>
   </thead>
           
-
+        
 
   <tbody>
 
@@ -55,30 +57,38 @@ $saison_active = saison_active() ;
    
             <td>{{$data->name}} {{$data->lastname}}</td>
 
-            @foreach($tab_date as $dt)
+                @foreach($tab_date as $dt)
+                <td>
+                @foreach($appel as $data1)
+                    @if( $data1->date == $dt)
 
-               @foreach(json_decode($data1->presents) as $key =>  $op)
-                @if($data->user_id == $key)
+                      @foreach(json_decode($data1->presents) as $key =>  $op)
+                              @if($key == $data->user_id)
 
-                        @if ($op == 1)
+                                  @if ($op == 1)
 
-                            <td>  <div style="color:green"> <i class="fa fa-check"></i> </div></td>
+                                              <div style="color:green"> <i class="fa fa-check"></i> </div>
 
-                        @else
+                                              @else
 
-                            <td> <div style="color:red"> <i class="fa-solid fa-xmark"></i> </div></td>
+                                              <div style="color:red"> <i class="fa-solid fa-xmark"></i> </div>
 
-                        @endif
+                                   @endif
 
 
-                @endif
 
+
+                              @endif
+                      
+                      @endforeach
+
+                    @endif
+                @endforeach
+                </td> 
               @endforeach
-
-            @endforeach
       </tr>      
 
- @endforeach
+  @endforeach
 
      
    
@@ -90,7 +100,6 @@ $saison_active = saison_active() ;
 
 
 </div>
-
 
 
 
