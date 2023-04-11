@@ -9,7 +9,9 @@ use App\Http\Controllers\BlogArticle_Controller;
 use App\Models\A_Blog_Post;
 use App\Http\Controllers;
 use App\Http\Controllers\Article_Controller;
+use App\Http\Controllers\Controller_Stat;
 use App\Http\Controllers\generatePDF;
+use App\Http\Controllers\Controller_Quizz;
 use App\Http\Controllers\Controller_Communication;
 use App\Http\Controllers\Prendre_Contact_Controller;
 
@@ -314,6 +316,11 @@ Route::middleware(['auth'])->group(function () {
 
 /*----------------------- Club - cours ------------------------------ */
 Route::get('/club/cours_index', [Controller_club::class, 'index_cours'])->name('index_cours');
+
+Route::post('/get_data_table/{article_id}', [Controller_club::class, 'get_data_table'])->name('get_data_table');
+
+
+
 Route::post('/club/include-page', [Controller_club::class, 'index_include'])->name('include-page');
 
 //Route::get('/shop_article_cours_ajax/{id}', [Controller_club::class, 'display_form_cours'])->name('form_cours');
@@ -335,8 +342,15 @@ Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_p
 
 }); 
 
-/*----------------------- Recherche ------------------------------ */
 
-Route::get('/search/blog',[SearchController::class, 'searchBlog']);
-Route::get('/search/shop', [SearchController::class, 'searchShop']);
-Route::get('/search-results', [SearchController::class, 'searchResults']);
+
+#------------------------------- QUIZZ TEST DE PERSONNALITE --------------------------------------------------------
+
+Route::get('/test_de_personnalite',[Controller_Quizz::class, 'index_quizz'])->name('index_quizz');
+Route::post('/questionnaire', [Controller_Quizz::class, 'handle_questionnaire'])->name('include_slider_questionnaire');
+
+Route::post('/questionnaire_baby', [Controller_Quizz::class, 'handle_questionnaire_baby'])->name('baby_formulaire');
+
+
+#-------------------------------- Statistiques ------------------------------
+Route::get('/Statistiques/Home_stat_teacher',[Controller_Stat::class, 'index'])->name('index_stat');

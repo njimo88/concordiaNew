@@ -11,6 +11,7 @@ use App\Models\appels;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Laravel\Ui\Presets\Preset;
+use Illuminate\Support\Facades\DB;
 
 require_once('../app/fonction.php');
 
@@ -18,6 +19,12 @@ class Controller_club extends Controller
 {
     //
     function index_cours(Request $request){
+
+        
+        /*--------------------------faire l'appel------------------------------ */
+
+    
+
 
         $saison_actu = saison_active() ;
 
@@ -28,23 +35,25 @@ class Controller_club extends Controller
        
        
             // requete pour la saison active
-        $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
+        $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
           ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
+         
+       $users_saison_active = User::select('users.user_id','users.name','users.lastname','users.phone','users.birthdate','users.email','liaison_shop_articles_bills.id_shop_article')
+          ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+          ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)
+          ->where('type_article',1)->get(); 
+  
+  
 
             //requete pour la saison choisie
-          $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
+          $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
           ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison',  $saison)->get();
 
-
-
-
-
-
-
-
-
-
-
+          $users_saison_choisie = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
+          ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+          ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)
+          ->where('type_article',1)->get();
+  
 
         /* ------------------------------------------requetes pour l'admin------------------------------*/
 
@@ -57,10 +66,27 @@ class Controller_club extends Controller
          $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
         
-        return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie'))->with('user', auth()->user()) ;
+      return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie','users_saison_choisie','users_saison_active'))->with('user', auth()->user()) ;
            
 
     }
+
+
+    public function get_data_table(Request $request, $article_id){
+
+
+        return $article_id ;
+
+
+        
+    }
+
+
+
+
+
+
+
 
     function index_include(Request $request){
         
@@ -187,29 +213,28 @@ public function modif_user($id,Request $request){
         return redirect()->route('index_cours')->with('success', ' mise à jour effectuée avec succès');
 }
 
+/*
 
-
-
-
-
-
-
-
-
-public function enregister_appel_method($id , Request $request){
+public function enregister_appel_method_test($id , Request $request){
 
             $appels           = new appels ;
 
             $appels->id_cours = $id ;
             $appels->date     = $request->input('date_appel');
 
+            $thedate = $appels->date ;  
+
     
-            $tab_user     =  (array)$request->input('user_id');
+           
+            $tab_user = (array)$request->input('user_id');
             $length_tab_user = count($tab_user);
 
             $tab_presence =  (array)$request->input('marque_presence');
             $length_tab_presence = count($tab_presence);
 
+
+
+            dd($tab_user);
 
             $ladifference = $length_tab_user - $length_tab_presence  ; // je recupere la difference de taille entre le tableau des users et le nombre d'element checked
            
@@ -230,14 +255,129 @@ public function enregister_appel_method($id , Request $request){
             }
 
             $appels->presents = $my_json ;
-         
-            $appels->save() ;
+       
+          //  $appels->save() ;
 
 
-            return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+           // return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
         
 
 }
+
+*/
+
+
+public function enregister_appel_method($id , Request $request){
+
+   
+    $tab_presence2 = [] ;
+    $tab_presence_final = [] ;
+    $tab_presence3 = [] ;
+    $appels           = new appels ;
+
+    $appels->id_cours = $id ;
+     
+    $thedate  = $request->input('date_appel');
+    $appels->date = $thedate ;
+
+    $tab_user = (array)$request->input('user_id');
+    $tab_presence =  (array)$request->input('marque_presence');
+   
+    
+    // Use array_keys() to extract only the keys of the array
+        $keys = array_keys($tab_presence);
+
+    
+                foreach($tab_user as $user){
+
+                            if (in_array($user,$keys)){
+
+                               // $tab_presence2[$user]  = 1 ;
+                                $tab_presence2 = array(
+                                    $user => 1 
+                                );
+                        
+                            }else{
+
+                              //  $tab_presence2[$user]  = 0 ;
+                                $tab_presence2 = array(
+                                    $user => 0 
+                                );
+                                  
+                                }
+
+                                $tab_presence3[] =  $tab_presence2  ;
+                                $tab_presence2 = []  ;
+                   
+                   
+                }
+                           
+                $my_json  = json_encode($tab_presence3,JSON_NUMERIC_CHECK);
+
+                $new_data = [];
+
+                foreach ($tab_presence3 as $d) {
+                    foreach ($d as $key => $value) {
+                        $new_data[$key] = $value;
+                    }
+                }
+
+                // Output the new data as a JSON string
+                $my_json = json_encode($new_data);
+              
+                $appel_verif = appels::where('id_cours', $id)->where('date',$thedate)->get();
+               // dd($appel_verif);
+               
+                if ($appel_verif->count() > 0) {
+                   appels::where('id_cours', $id)->where('date', $thedate)->update(['presents' => $my_json]);
+                   return redirect()->route('index_cours')->with('success', " l'appel a été modifié  avec succès");
+
+                  
+
+                }else{
+
+                   $appels->presents = $my_json ;
+     
+                   $appels->save() ;
+                   return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+
+                  
+                }
+               
+               
+
+                /*$appel_verif = appels::where('id_cours', $id)->where('date',$thedate)->get();
+
+                if ($appel_verif){
+
+                    appels::where('id_cours', $id)
+                    ->where('date', $thedate)
+                    ->update(['presents' =>  $my_json]);
+
+                    return  $appel_verif ;
+                   
+
+                }else{
+
+                   // 
+                    return 0 ;
+                   
+                   // $appels->save() ;
+                }
+                */
+                                                            
+
+
+
+
+
+             
+
+  return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+
+
+}
+
 
 
 function display_historique_method($id){

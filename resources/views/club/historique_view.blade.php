@@ -11,7 +11,7 @@ $saison_active = saison_active() ;
 @endphp
 <main id="main" class="main">
   <div class="row">
-    <div class="col-md-4"><a href="{{route('enregistrer_appel',$id_cours)}}"><button>Retour</button></a></div>
+    <div class="col-md-4"><a href="{{route('index_cours')}}"><button>Retour</button></a></div>
     <div class="col-md-4"></div>
     <div class="col-md-4"><a class="btn btn-primary" href=""><button id="generate-pdf">Generer PDF </button></a></div>
   
@@ -20,62 +20,86 @@ $saison_active = saison_active() ;
 
                         <h2 style="text-align:center;">Fiche de presence </h2>
 <div class="container">
+    @php
 
-<table class="table">
+        $array_user_id = [] ;
+        $array_user_presence = [] ;
+
+    @endphp
+
+
+
+<table  class="table">
   <thead>
     <tr>
-      <th scope="col">Date</th>
-      @foreach($users as $data)
-            <th scope="col">{{$data->name }} {{$data->lastname}}</th>
-            @endforeach
+      <th>Date</th>
+      @foreach($appel as $data1)
+
+          
+               <th>{{$data1->date}}</th>
+
+       @php   $tab_date[] = $data1->date  ;  $num = 1; @endphp 
+           
+
+                
+      @endforeach
+
+
     </tr>
   </thead>
+          
+        
+
   <tbody>
-  @foreach($appel as $data1)
-    <tr>
-    
-    <th scope="row">{{$data1->date}}</th>
 
-    @foreach ($present as $value) 
-        @foreach($value as $key => $val)
-
-            @if($key==$data1->date)
-                @foreach($val as $valeur)
-
-            <th scope="col"> 
-                
-            @if ($valeur == 1) 
-            
-            <div style="color:green"> <i class="fa fa-check"></i> </div>
-
-            @else
-
-            <div style="color:red"> <i class="fa-solid fa-xmark"></i> </div>
-
-
-            @endif
-
-            </th>
-
-                @endforeach
-
-            @endif
-
-        @endforeach
-
-    @endforeach
-
-  
-    </tr>
+  @foreach($users as $data)
+      <tr>
    
-    @endforeach
+            <td>{{$data->name}} {{$data->lastname}}</td>
+
+                @foreach($tab_date as $dt)
+                <td>
+                @foreach($appel as $data1)
+                    @if( $data1->date == $dt)
+
+                      @foreach(json_decode($data1->presents) as $key =>  $op)
+                              @if($key == $data->user_id)
+
+                                  @if ($op == 1)
+
+                                              <div style="color:green"> <i class="fa fa-check"></i> </div>
+
+                                              @else
+
+                                              <div style="color:red"> <i class="fa-solid fa-xmark"></i> </div>
+
+                                   @endif
+
+
+
+
+                              @endif
+                      
+                      @endforeach
+
+                    @endif
+                @endforeach
+                </td> 
+              @endforeach
+      </tr>      
+
+  @endforeach
+
      
-    
+   
+
+ 
   </tbody>
 </table>
 
 
 
+</div>
 
 
 
