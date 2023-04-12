@@ -17,46 +17,50 @@
           </ul>
       </div>
   @endif
-        <div  class="row ">
-            <div class="widget-title col-12 d-flex justify-content-between align-items-center">
-                <span><h5 style="font-weight:bold"  class="text-dark font-weight-bold">Récapitulatif :&nbsp;</h5> Total : {{ number_format($total, 2, ',', ' ') }} € TTC</span>
-            </div>
-            <div class="row d-flex justify-content-center">
-                <div style="background-color:#edeeef;" class="col-md-6 mx-3 border border-dark">
-                    <h4 class="p-3">Produits Achetés :</h4>
-                    <div class="row">
-                        @foreach ($paniers as $article)
-                            <div class="col-12 d-flex justify-content-between align-items-center">
-                                <div class="col-4 d-flex justify-content-center">
-                                    <span style="font-weight:bold" class="text-dark">{{ $article->lastname }}{{ $article->name }}</span>
-                                </div>
-                                <div class="col-4 d-flex justify-content-center">
-                                    <span>{{ $article->title }}</span>
-                                </div>
-                                <div class="col-4 d-flex justify-content-center">
-                                    <span>{{ number_format($article->price, 2, ',', ' ') }} € TTC</span>
-                                </div>
-                            </div>
-                        <hr>
-                        @endforeach
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <span class="text-success p-3" style="font-weight:bold;text-align: right;">Total : {{ number_format($total, 2, ',', ' ') }} € TTC</span>
-                    </div>
-                </div>
-                <div style="background-color:#edeeef;" class="col-md-4 mx-3 border border-dark my-auto">
-                    <h4 class="p-3">Adresse de facturation : </h4>
-                    <span class="d-flex p-3 pt-0">{{ $adresse->address }} <br> {{ $adresse->zip }} {{ $adresse->city }} <br>{{ $adresse->country }}</span>
-                </div>
-            </div>
+  <div class="row">
+    <div class="widget-title col-12 d-flex justify-content-between align-items-center">
+      <h5 class="text-dark font-weight-bold" style="font-weight:bold">Récapitulatif :&nbsp;</h5>
+      <span class="total-price">Total : {{ number_format($total, 2, ',', ' ') }} € TTC</span>
+    </div>
+    <div class="row d-flex justify-content-between">
+      <div class="col-md-7 mx-3 border border-dark" style="background-color:#edeeef;">
+        <h4 class="p-3">Produits Achetés :</h4>
+        @foreach ($paniers as $article)
+        <div class="row d-flex justify-content-between align-items-center mb-2">
+          <div class="col-12 col-sm-3 d-flex justify-content-start">
+            <span style="font-weight:bold" class="text-dark">{{ $article->lastname }}{{ $article->name }}</span>
+          </div>
+          <div class="col-12 col-sm-5 d-flex justify-content-start">
+            <span>{{ $article->title }}
+            @if ($article->reduction != null)
+            <span class="text-danger">({{ $article->reduction }})</span>
+            @endif
+            </span>
+          </div>
+          <div class="col-12 col-sm-4 d-flex justify-content-center">
+            <span>{{ number_format($article->totalprice, 2, ',', ' ') }} € TTC</span>
+          </div>
         </div>
+        <hr>
+        @endforeach
+        <div class="d-flex justify-content-end">
+          <span class="text-success p-3" style="font-weight:bold;text-align: right;">Total : {{ number_format($total, 2, ',', ' ') }} € TTC</span>
+        </div>
+      </div>
+      <div class="col-md-4 mx-3 border border-dark my-auto" style="background-color:#edeeef;">
+        <h4 class="p-3">Adresse de facturation : </h4>
+        <span class="d-flex p-3 pt-0">{{ $adresse->address }} <br> {{ $adresse->zip }} {{ $adresse->city }} <br>{{ $adresse->country }}</span>
+      </div>
+    </div>
+  </div>
+  
         <hr>
         <div class="row d-flex justify-content-center ">
             <h5 style="font-weight:bold"  class="text-dark font-weight-bold p-3">Moyens de paiement :</h5>
 
             @foreach ($Mpaiement as $Mpaiement)
                 <div  class="col-md-5  row mx-2 d-flex justify-content-center mb-5">
-                    <div style="background-color:#edeeef;" class="col-12 d-flex justify-content-center m-2 p-1 border">
+                    <div style="background-color:#edeeef;" class="col-7 d-flex justify-content-center m-2 p-1 border">
                         <img style="width : 30px" src="{{ $Mpaiement->image}}" alt=""><h5 class="mx-3">{{ $Mpaiement->payment_method}}</h5>
                     </div>
                     <div class="col-11 d-flex justify-content-center m-2">
