@@ -18,14 +18,16 @@ $saison_active = saison_active() ;
 
 <div class="container">
 
-
-<div class="col-md-4">  
+<div class="row">
+<div class="col-md-4 d-flex justify-content-end"><label> Saison </label></div>
+<div class="col-md-8">  
        
-       <label> Saison </label>
-       <form action="{{ route('include-page') }}" method="POST" >
+       
+       <form class="row" action="{{ route('include-page') }}" method="POST" >
            @csrf
+           <div class="col-6">
          <select class="form-control" name="saison" id="saison">
-                  
+         
                   @foreach($saison_list as $data)
 
                                   <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
@@ -33,15 +35,15 @@ $saison_active = saison_active() ;
                   
                    @endforeach
 
-         </select>
-         <button type="submit" id="hide-row-btn" >Soumettre</button>
+         </select> </div> <div class="col-6"> <button class=" mt-1 btn btn-sm btn-primary" type="submit" id="hide-row-btn" >Accéder</button></div>
+       
        
        </form>
    </div>
-
-   <div class="col-md-4"></div>
-   <div class="col-md-4"></div>
-
+<hr>
+   
+  
+   </div>
 
    
 @if (auth()->user()->role == 40 || auth()->user()->role == 30 )
@@ -60,7 +62,7 @@ $saison_active = saison_active() ;
  <div id="div1-content">
     <h1 style="text-align:center;"> 
   
-       {{$saison}}
+       {{$saison}} - {{$saison + 1}}
    
     
     </h1>
@@ -87,7 +89,7 @@ $saison_active = saison_active() ;
 
 
 
-                               
+           
                                 
                               
                  <div id="content" >
@@ -95,18 +97,18 @@ $saison_active = saison_active() ;
 
                                           
             <div class="row">  
-
-                <div class="col-6 col-md-4">
+                <div class="col-4 ">  <button type="submit" class="btn btn-success">Valider l'appel</button> </div>
+                <div class="col-4 ">
                
                
                           <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article ])}}" method="POST">
                                                   @csrf
-                                                      <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
-                                                      <button type="submit" class="btn btn-success">Valider l'appel</button> 
+                                                      <input type="date" class="form-control m-0" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
+                                                     
                                           
                 </div>
-                <div class="col-6 col-md-4"> </div>
-                <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
+               
+                <div class="col-4 d-flex justify-content-center" ><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
 
             </div>
 <br>
@@ -208,7 +210,7 @@ $saison_active = saison_active() ;
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
       
       </div>
     </div>
@@ -226,7 +228,8 @@ $saison_active = saison_active() ;
     <div id="div1-content">
     <h1 style="text-align:center;"> 
    
-        {{$saison_active}}
+        
+        {{$saison_active}} - {{$saison_active + 1}}
    
     
     </h1>
@@ -260,18 +263,20 @@ $saison_active = saison_active() ;
 
                                           
 <div class="row">  
-   @php $var = $data->id_shop_article  ;  @endphp
-   
-    <div class="col-6 col-md-4"> 
-              <form action="{{route('enregistrer_appel',$var)}}" method="POST">
-               
-                                      @csrf
-                                          <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
-                                          <button type="submit" class="btn btn-success">Valider l'appel</button> 
-                              
-    </div>
-    <div class="col-6 col-md-4"> </div>
-    <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
+
+          @php $var = $data->id_shop_article  ;  @endphp
+
+          <div class="col-4 "><button type="submit" class="btn btn-success">Valider l'appel</button>  </div>
+            <div class="col-4"> 
+                      <form action="{{route('enregistrer_appel',$var)}}" method="POST">
+                      
+                                              @csrf
+                                                  <input type="date" class="form-control m-0" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
+                                                  
+                                      
+            </div>
+            
+            <div class="col-4 d-flex justify-content-center"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
 
 </div>
 <br>
@@ -391,7 +396,7 @@ $saison_active = saison_active() ;
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
       
       </div>
     </div>
@@ -433,13 +438,13 @@ $saison_active = saison_active() ;
        <div id="div1-content">
           <h1 style="text-align:center;"> 
         
-             {{$saison}}
+             {{$saison}} - {{$saison + 1}}
          
           
         </div>
       
       <div class="d-grid gap-2">
-  @foreach($shop_article_first as $data)
+  @foreach($shop_article as $data)
  
   <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{(int)$data->stock_ini - (int)$data->stock_actuel }}/ {{$data->stock_ini}}" >
                               <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
@@ -449,23 +454,23 @@ $saison_active = saison_active() ;
 
                                           
 <div class="row">  
-
-    <div class="col-6 col-md-4"> 
+    <div class="col-4">  <button type="submit" class="btn btn-success">Valider l'appel</button>  </div>
+    <div class="col-4"> 
               <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
                                       @csrf
-                                          <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
-                                          <button type="submit" class="btn btn-success">Valider l'appel</button> 
+                                          <input type="date" class="form-control m-0" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
+                                         
                               
     </div>
-    <div class="col-6 col-md-4"> </div>
-    <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
+   
+    <div class="col-4 d-flex justify-content-center"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
 
 </div>
 <br>
 
                                       <table class="table table-hover" style="background-color:green;"> 
                                         <tbody>
-                                      @foreach($users_saison_active as $dt)
+                                      @foreach($users_saison_choisie as $dt)
 
                                                   @if($data->id_shop_article == $dt->id_shop_article)
 
@@ -541,7 +546,7 @@ $saison_active = saison_active() ;
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
       
       </div>
     </div>
@@ -570,7 +575,7 @@ $saison_active = saison_active() ;
           <div id="div1-content">
           <h1 style="text-align:center;"> 
          
-              {{$saison_active}}
+              {{$saison_active}} -{{$saison_active + 1}}
          
           
           </h1>
@@ -597,16 +602,16 @@ $saison_active = saison_active() ;
 
                                                           
             <div class="row">  
-
-                    <div class="col-6 col-md-4"> 
+            <div class="col-4"> <button type="submit" class="btn btn-success">Valider l'appel</button> </div>
+                    <div class="col-4"> 
                               <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
                                                       @csrf
-                                                          <input type="date" class="form-control" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
-                                                          <button type="submit" class="btn btn-success">Valider l'appel</button> 
+                                                          <input type="date" class="form-control m-0" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
+                                                          
                                               
                     </div>
-                    <div class="col-6 col-md-4"> </div>
-                    <div class="col-6 col-md-4"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
+                   
+                    <div class="col-4 d-flex justify-content-center"><button type="button" class="btn btn-secondary">  <a  href="{{route('historique_appel',$data->id_shop_article)}}">Historique des appels</a></button></div>
                 
             </div>
                 <br>
@@ -690,7 +695,7 @@ $saison_active = saison_active() ;
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
       
       </div>
     </div>
