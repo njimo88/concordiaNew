@@ -281,16 +281,16 @@ public function enregister_appel_method($id , Request $request){
     $appels->date = $thedate ;
 
     $tab_user = (array)$request->input('user_id');
-    $tab_presence =  (array)$request->input('marque_presence');
+    $tab_presence =  (array)$request->input('marque_presence'); // informations venant des checkboxes
    
     
-    // Use array_keys() to extract only the keys of the array
+    // Use array_keys() to extract only the keys of the array (on recupere les indices qui sont en fait les ID des users)
         $keys = array_keys($tab_presence);
 
     
                 foreach($tab_user as $user){
 
-                            if (in_array($user,$keys)){
+                            if (in_array($user,$keys)){          
 
                                // $tab_presence2[$user]  = 1 ;
                                 $tab_presence2 = array(

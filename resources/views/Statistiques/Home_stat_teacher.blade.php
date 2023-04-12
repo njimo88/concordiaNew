@@ -97,17 +97,15 @@ $saison_active = saison_active() ;
                           
                             @endphp 
 
-                               
-            <div class="card" style="max-width:100%">
+                            <div class="card" style="width: 130rem;">
                 <div class="card-header">
                 Statistiques des cours
                 </div>
-                <div class="card-body" >
+                <div class="card-body" style="width:75rem;">
                 
-                      <canvas id="myChart"  style="width: 150rem;">
+                      <canvas id="myChart" style="padding-right:150px;width:1000px;max-width:2000px;"></canvas>
                 </div>
-               
-    </div>
+                </div>
 
               
 

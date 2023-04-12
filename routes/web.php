@@ -353,4 +353,6 @@ Route::post('/questionnaire_baby', [Controller_Quizz::class, 'handle_questionnai
 
 
 #-------------------------------- Statistiques ------------------------------
+Route::middleware(['auth'])->group(function () {
 Route::get('/Statistiques/Home_stat_teacher',[Controller_Stat::class, 'index'])->name('index_stat');
+}); 
