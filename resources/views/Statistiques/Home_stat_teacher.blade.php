@@ -8,7 +8,7 @@ require_once('../app/fonction.php');
 $saison_active = saison_active() ;
 
 @endphp
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <main id="main" class="main">
 @if(session()->has('success'))
                 <div class="alert alert-success">
@@ -17,7 +17,7 @@ $saison_active = saison_active() ;
             @endif
 
 
-            <div class="container">
+    <div class="container">
 
             @if (auth()->user()->role == 40 || auth()->user()->role == 30 )
 
@@ -46,13 +46,13 @@ $saison_active = saison_active() ;
                                             foreach($teacherArray as  $t){
                                                         
                                                 if ($id_teacher === $t){
-                                                        array_push($my_articles,$data->title."   ".$data->stock_actuel."/".$data->stock_ini);
+                                                        array_push($my_articles,$data->title."   ".(int)$data->stock_ini - (int)$data->stock_actuel ."/".$data->stock_ini);
 
                                                         
                                                        
                                              if((int)$data->stock_ini != 0){
 
-                                                        $calcul = (int)$data->stock_actuel * 100 / (int)$data->stock_ini ;
+                                                        $calcul =round( ( (int)$data->stock_ini - (int)$data->stock_actuel ) * 100 / (int)$data->stock_ini ,0);
                                                                 if ($calcul>100){
                                                                     array_push($calcul_tab,100);
                                                                 }
@@ -97,20 +97,23 @@ $saison_active = saison_active() ;
                           
                             @endphp 
 
-                            <div class="card" style="width: 130rem;">
-                <div class="card-header">
-                Statistiques des cours
-                </div>
-                <div class="card-body" style="width:75rem;">
-                
-                      <canvas id="myChart" style="padding-right:150px;width:1000px;max-width:2000px;"></canvas>
+                 
+                     
+                   <!--   <canvas id="myChart"  style="margin-left:-120px;"  width="955" height="750"></canvas> -->
+
+                      <div class="chart-container" style="position: relative; width:100%">
+
+                                    <canvas id="myChart"  style="margin-left:-120px;" ></canvas>
+
+                      </div>
+
                 </div>
                 </div>
 
               
 
                 
-
+    </div>
 
 
 
@@ -125,22 +128,36 @@ $saison_active = saison_active() ;
 
 
                 var xValues = <?php echo json_encode($my_articles); ?>; 
+
                 var yValues = <?php echo json_encode($calcul_tab); ?>; 
                //var yValues =[100,100,100,100,100,100,100,100];
 
                 var colors = [] ;
-                var barColors = ["red", "blue","orange","brown"];
+               // var barColors = ["red", "blue","orange","brown"];
 
                 for (var i = 0; i < yValues.length; i++) {
-                    if (yValues[i] === 100) {
-                        colors.push('green');
 
-                    }else if((yValues[i] >= 60 ) && (yValues[i] <100) ){
-                        colors.push('lightgreen');
-                    }else {
-                        var randomColor = barColors[Math.floor(Math.random() * barColors.length)];
-                        colors.push(randomColor);
-                    }
+
+                    switch (yValues[i] > 0) {
+            case (yValues[i] < 20):
+                colors.push('#f2362c');
+                break;
+            case (yValues[i] >= 20 && yValues[i] < 40):
+                colors.push('#eb9c15');
+                break;
+            case (yValues[i] >= 40 && yValues[i] < 60):
+                colors.push('#dfe62c');
+                break;
+            case (yValues[i] >= 60 && yValues[i] < 80):
+                colors.push('#c9eb34');
+                break;
+            case (yValues[i] >= 80 && yValues[i] < 100):
+                colors.push('#007ebd');
+                break;
+            case (yValues[i] == 100):
+                colors.push('#7dd600');
+                break;
+        }
                         }
 
                 new Chart("myChart", {
@@ -157,19 +174,19 @@ $saison_active = saison_active() ;
                 },
                 
                 options: {
-                    responsive: true,
+                    responsive:true,
                     maintainAspectRatio: true,
                     legend: {
-                        display: true,
+                        display: false,
                         title: {
-                                    display: true,
+                                    display:false,
                                     text: 'Pourcentage'
                                 }
                                                                 
                     },
                     title: {
                     display: true,
-                    text: "Statistiques cours"
+                    text: "Statistiques des cours"
                     },
                     scales: {
                         yAxes: [{
@@ -184,24 +201,24 @@ $saison_active = saison_active() ;
                                     maxRotation: 90,
                                     minRotation: 90,
                                     maxTicksLimit: 20
-                                }
+                                },
+                               
                                 }],
                         
                         }]
                     },
                 },
-                plugins: {
-    datalabels: {
-      align: 'end',
-      anchor: 'end',
-      font: {
-        size: 14
-      },
-      color: 'black',
-      
-    }
-  },
-  minBarLength: 1 // display bars for values that are equal to 0
+               
+  minBarLength: 1, // display bars for values that are equal to 0
+  plugins: {
+            datalabels: {
+                display: false, // désactiver l'affichage des étiquettes de données
+               
+            }
+        },
+        hover: {
+            mode: null // désactiver le survol des étiquettes
+        }
                 });
 
 
