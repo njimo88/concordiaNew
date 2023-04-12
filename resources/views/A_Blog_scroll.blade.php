@@ -9,7 +9,7 @@
               @foreach($a_post as $a_article)
     
               <div class="card shadow mb-4">
-                                  <div class="card-header py-3 row d-flex justify-content-between">
+                                  <div class="p-2 row d-flex justify-content-between">
                                     <div class="col-9">
                                       <h6 class="m-0 font-weight-bold text-primary">
     
