@@ -1,15 +1,17 @@
-<body>
+<style>.post-content {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+</style>
+
+
   
-  
-    <div class="container">
-     
-     <div class="row">
-          <div id="vueParent">
               <div id="posts" next-page-url=" {{ $a_post->nextPageUrl() }}">
               @foreach($a_post as $a_article)
     
               <div class="card shadow mb-4">
-                                  <div class="p-2 row d-flex justify-content-between">
+                                  <div class="card-header py-2  d-flex justify-content-between">
                                     <div class="col-9">
                                       <h6 class="m-0 font-weight-bold text-primary">
     
@@ -84,10 +86,26 @@
     
     
     
-                                  <div style="align-items: start !important; " class="card-body">
-                                  {!!html_entity_decode($a_article->contenu) !!}
-                                  </div>
-    
+                                  <div style="align-items: start !important;" class="card-body post-content">
+                                    {!!html_entity_decode($a_article->contenu) !!}
+                                </div>
+                                <script >
+                                        $(window).on('scroll',function(){
+                                            clearTimeout(fetch);
+                                        
+                                            fetch = setTimeout(function () {
+                                                var page_url = $("#posts").attr('next-page-url');
+                                                console.log("scrolled");
+                                            // This condition is very essential //
+                                                if (page_url != null) {
+                                                    $.get(page_url, function (data) {
+                                                        $("#posts").append(data.view);
+                                                        $("#posts").attr('next-page-url', data.url);
+                                                    });
+                                                }
+                                            }, 2000);
+                                        });
+                                    </script>
     
     
               
@@ -105,10 +123,9 @@
                   
             </div>
             @endforeach      
-                     
                  
+                
               </div>
-            </div>
           
     
     
@@ -116,38 +133,8 @@
     
     
     
-        </div>
-        
-        </div>
-        </div>
-        
-              <!-- Ajout de la div pour envelopper les articles chargés -->
-              <div id="loaded-posts"></div>
-              
     
     
     
     
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-      <script >
-            $(window).on('scroll',function(){
-                clearTimeout(fetch);
-              
-                fetch = setTimeout(function () {
-                    var page_url = $("#posts").attr('next-page-url');
-                    console.log("scrolled");
-                  // This condition is very essential //
-                    if (page_url != null) {
-                        $.get(page_url, function (data) {
-                            // Ajout des articles chargés dans la div "loaded-posts"
-                            $("#loaded-posts").append(data.view);
-                            $("#posts").attr('next-page-url', data.url);
-                        });
-                    }
-                }, 2000);
-            });
-        </script>
-   
-    </body>
     

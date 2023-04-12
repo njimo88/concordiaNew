@@ -154,59 +154,31 @@
         <form class="mt-5 col-md-4" action="{{ route('update_liaisons') }}" method="POST">
             @csrf
             <input type="hidden" name="shop_reduction_id" value="{{ $shopReduction->id_shop_reduction }}">
-            <div class="border card-deck" style="height: 400px; overflow-y: scroll;">
-                <div id="list-example" class="list-group">
-                    <h5 class="p-2">Articles liés</h5>
-                    <ul class="list-group">
-                        @foreach ($checkedArticles as $shopArticle)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="shop_article[]" value="{{ $shopArticle->id_shop_article }}" checked> {{ $shopArticle->title }}
-                                </label>
-                            </li>
-                        @endforeach
-                    </ul>
-                    <hr>
-                    <h5 class="p-2">Articles non liés</h5>
-                    <ul class="list-group">
-                        @foreach ($uncheckedArticles as $shopArticle)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="shop_article[]" value="{{ $shopArticle->id_shop_article }}"> {{ $shopArticle->title }}
-                                </label>
-                            </li>
-                        @endforeach
-                    </ul>
+                <div class="border card-deck" style="height: 400px; overflow-y: scroll;">
+                    <div id="list-example" class="list-group">
+                        <h5 class="p-2">Articles liés</h5>
+                        <ul class="list-group">
+                            @foreach ($checkedArticles as $shopArticle)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="shop_article[]" value="{{ $shopArticle->id_shop_article }}" checked> {{ $shopArticle->title }}
+                                    </label>
+                                </li>
+                            @endforeach
+                        </ul>
+                        <hr>
+                        <h5 class="p-2">Articles non liés</h5>
+                        <ul class="list-group">
+                            @foreach ($uncheckedArticles as $shopArticle)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" name="shop_article[]" value="{{ $shopArticle->id_shop_article }}"> {{ $shopArticle->title }}
+                                    </label>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        
-            <div class="border card-deck mt-5" style="height: 400px; overflow-y: scroll;">
-                <div id="list-user" class="list-group">
-                    <h5 class="p-2">Utilisateurs liés</h5>
-                    <ul class="list-group">
-                        @foreach ($checkedUsers as $user)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="user[]" value="{{ $user->user_id }}" checked> {{ $user->lastname }} {{ $user->name }}
-                                </label>
-                            </li>
-                        @endforeach
-                    </ul>
-                    <hr>
-                    <h5 class="p-2">Utilisateurs non liés</h5>
-                    <ul class="list-group">
-                        @foreach ($uncheckedUsers as $user)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" name="user[]" value="{{ $user->user_id }}"> {{ $user->lastname }} {{ $user->name }}
-                                </label>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-            
-        
             <button type="submit" class="btn btn-primary mt-4">Modifier</button>
         </form>
         
@@ -220,52 +192,26 @@
         
             $('input[name="shop_article[]"]').change(function() {
                 let id = parseInt($(this).val());
-                let     if ($(this).is(':checked')) {
-        if (index === -1) {
-            shopArticles.push(id);
-        }
-    } else {
-        if (index !== -1) {
-            shopArticles.splice(index, 1);
-        }
-    }
-});
-
-let checkedUsers = {!! $checkedUsers !!};
-let uncheckedUsers = {!! $uncheckedUsers !!};
-let users = [];
-checkedUsers.forEach((user) => {
-    users.push(user.user_id);
-});
-
-$('input[name="user[]"]').change(function() {
-    let id = parseInt($(this).val());
-    let index = users.indexOf(id);
-
-    if ($(this).is(':checked')) {
-        if (index === -1) {
-            users.push(id);
-        }
-    } else {
-        if (index !== -1) {
-            users.splice(index, 1);
-        }
-    }
-});
-
-$('form').submit(function(event) {
-    $('input[name="shop_article[]"]').remove();
-    shopArticles.forEach((id) => {
-        $(this).append('<input type="hidden" name="shop_article[]" value="' + id + '">');
-    });
-
-    $('input[name="user[]"]').remove();
-    users.forEach((id) => {
-        $(this).append('<input type="hidden" name="user[]" value="' + id + '">');
-    });
-});
-
-</script>
+                let index = shopArticles.indexOf(id);
+        
+                if ($(this).is(':checked')) {
+                    if (index === -1) {
+                        shopArticles.push(id);
+                    }
+                } else {
+                    if (index !== -1) {
+                        shopArticles.splice(index, 1);
+                    }
+                }
+            });
+        
+            $('form').submit(function(event) {
+                $('input[name="shop_article[]"]').remove();
+                shopArticles.forEach((id) => {
+                    $(this).append('<input type="hidden" name="shop_article[]" value="' + id + '">');
+                });
+            });
+        </script>
         
         
     </div>
