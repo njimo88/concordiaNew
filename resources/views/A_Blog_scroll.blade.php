@@ -7,7 +7,7 @@
 
 
   
-              <div id="posts" next-page-url=" {{ $a_post->nextPageUrl() }}">
+              <div id="posts" next-page-url=" {{ $a_post->nextPageUrl() }}">  <!-- il permet de generer la prochaine page lorsque le script js s'execute -->
               @foreach($a_post as $a_article)
     
               <div class="card shadow mb-4">

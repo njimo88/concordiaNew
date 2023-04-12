@@ -97,7 +97,7 @@ $saison_active = saison_active() ;
             <div class="row">  
 
                 <div class="col-6 col-md-4">
-                  {{$data->id_shop_article}} 
+               
                
                           <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article ])}}" method="POST">
                                                   @csrf

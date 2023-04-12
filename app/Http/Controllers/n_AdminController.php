@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use App\Models\shop_article_1;
 
 require_once(app_path().'/fonction.php');
 
@@ -21,7 +22,19 @@ require_once(app_path().'/fonction.php');
 class n_AdminController extends Controller
 {
     public function index()
+
     {
+        if (auth()->user()->role == 40 || auth()->user()->role == 30){
+            $saison_actu = saison_active() ;
+
+            $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_actuel','shop_article.stock_ini')
+            ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
+            return view('Statistiques/Home_stat_teacher',compact('shop_article_lesson'))->with('user', auth()->user());
+
+        }else{
+            return view('admin.index')->with('user', auth()->user());
+        }
+
         return view('admin.index')->with('user', auth()->user());
     }
 
