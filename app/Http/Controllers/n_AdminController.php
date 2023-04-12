@@ -35,7 +35,7 @@ class n_AdminController extends Controller
             return view('admin.index')->with('user', auth()->user());
         }
 
-        return view('admin.index')->with('user', auth()->user());
+
     }
 
     public function members()

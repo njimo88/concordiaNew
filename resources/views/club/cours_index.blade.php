@@ -34,7 +34,7 @@ $saison_active = saison_active() ;
                    @endforeach
 
          </select>
-         <button type="submit" id="hide-row-btn" >Submit</button>
+         <button type="submit" id="hide-row-btn" >Soumettre</button>
        
        </form>
    </div>
@@ -65,7 +65,7 @@ $saison_active = saison_active() ;
     
     </h1>
   
-  <table> 
+ </div> 
 
                 <div class="d-grid gap-2">
             @foreach($shop_article_lesson_choisie as $data)
@@ -81,7 +81,7 @@ $saison_active = saison_active() ;
                                                 $my_articles [] = $data->id_shop_article ;
 
             @endphp
-            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{$data->stock_actuel}}/ {{$data->stock_ini}}" >
+            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{(int)$data->stock_ini - (int)$data->stock_actuel }}/ {{$data->stock_ini}}" >
                           
             <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
@@ -190,9 +190,6 @@ $saison_active = saison_active() ;
 
             @endforeach
             </div>
-            </table>
-
-</div>
 
 
 <!-- Button trigger modal -->
@@ -233,7 +230,7 @@ $saison_active = saison_active() ;
    
     
     </h1>
-  <table> 
+    </div> 
 
                 <div class="d-grid gap-2">
                 @foreach($shop_article_lesson as $data)
@@ -249,7 +246,7 @@ $saison_active = saison_active() ;
                                                             $my_articles [] = $data->id_shop_article ;
 
                         @endphp
-                        <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{$data->stock_actuel}}/ {{$data->stock_ini}}" >
+                        <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{(int)$data->stock_ini - (int)$data->stock_actuel }}/ {{$data->stock_ini}}" >
                                        <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
 
@@ -373,9 +370,9 @@ $saison_active = saison_active() ;
 
             @endforeach
             </div>
-            </table>
+          
 
-</div>
+
 
 
 <!-- Button trigger modal -->
@@ -439,20 +436,13 @@ $saison_active = saison_active() ;
              {{$saison}}
          
           
-          </h1>
-        
-          <table> 
+        </div>
       
       <div class="d-grid gap-2">
   @foreach($shop_article_first as $data)
  
-  <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{$data->stock_actuel}}/ {{$data->stock_ini}}" >
+  <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{(int)$data->stock_ini - (int)$data->stock_actuel }}/ {{$data->stock_ini}}" >
                               <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
-
-
-
-                   
-          
 
                                       <div id="content" >
 
@@ -534,9 +524,6 @@ $saison_active = saison_active() ;
 
   @endforeach
   </div>
-</table>
-      
-      </div>
 
 <!-- Button trigger modal -->
 
@@ -587,13 +574,14 @@ $saison_active = saison_active() ;
          
           
           </h1>
-        <table> 
+          </div>
+       
       
                       <div class="d-grid gap-2">
                   @foreach($shop_article_first as $data)
 
                                     
-                            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{$data->stock_actuel}}/ {{$data->stock_ini}}" >
+                            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{(int)$data->stock_ini - (int)$data->stock_actuel }}/ {{$data->stock_ini}}" >
                             <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
       
       
@@ -685,10 +673,7 @@ $saison_active = saison_active() ;
       
                   @endforeach
                   </div>
-            </table>
-      
-      </div>
-
+           
 <!-- Button trigger modal -->
 
 
