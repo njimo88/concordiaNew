@@ -97,6 +97,33 @@
                     </form>
             </div>
           </div>
+          <div class="col-lg-3">
+            <div class="card">
+                <div class="stat-widget-one">
+
+                    <div class="stat-icon dib"><img class="" src="{{ asset("assets/images/work.png") }}" alt="">
+
+                        <form class="pt-0" id="form" >
+                        
+                            <input id="checkbox7"  type="checkbox" class="checkbox">
+                            <input type="hidden" id="url" name="URL" value="/admin">
+                            <div class="stat-text" style="font-size : 12px !important;">Maintenance</div>
+                            <label for="checkbox7" class="switch">
+                                <span class="switch__circle">
+                                    <span class="switch__circle-inner"></span>
+                                </span>
+                                <span class="switch__left">Off</span>
+                                <span class="switch__right">On</span>
+                            </label>
+                                                       <input hidden="" name="redirect" value="0">
+
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
@@ -482,6 +509,11 @@ $('#checkbox3').on('change', function () {
 // Événement change pour checkbox5
 $('#checkbox5').on('change', function () {
   updateSetting($(this), 5);
+});
+
+// Événement change pour checkbox5
+$('#checkbox7').on('change', function () {
+  updateSetting($(this), 7);
 });
 
 function updateSetting(checkbox, settingId) {

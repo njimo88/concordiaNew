@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+  @media (min-width: 1600px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+</style>
 <main id="main" class="main pt-3" class="mt-0" style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height: 100vh;">
   
   @if($messageContent)
@@ -18,7 +25,7 @@
     
 
     
-<section style="padding-top:40px !important" id="portfolio" class="border border-dark portfolio sections-bg row ">
+<section id="portfolio" class="border border-dark portfolio sections-bg row py-3">
       <div class=" container" data-aos="fade-up">
         @php $memory = 0 ; @endphp 
     <nav aria-label="breadcrumb">
@@ -67,10 +74,11 @@
           
       </nav>
       <hr>
-        <div class="section-header">
-          <h2> {{$info2->name}}</h2>
-          <p>{!!$info2->description!!}</p>
+        
+        <div class="widget-title col-12 d-flex justify-content-start align-items-center">
+          <span>{{ $info2->name }}</span>
         </div>
+        <div class="px-2"><p class="px-3">{!!$info2->description!!}</p></div>
 
         <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
 
@@ -105,18 +113,18 @@
 
       </div>
     </section><!-- End Portfolio Section -->
+  </section>
+    
+</section>
 
+    </div>
     @if( $display_product == TRUE )
                          <p>  @include('A_Shop_Affichage_Article') </p>
                           
                     @endif
        
      
-    </section>
     
-  </section>
-
-      </div>
-    </main>
+                  </main>
 
 @endsection

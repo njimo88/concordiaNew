@@ -180,21 +180,29 @@
             <div class="col-md-2" >
             {{--  Affichage bloc prix  --}}
             <div class="card" style="border:0px; box-shadow: none;" >
-              <div class="card-body"  style="background-color: white;     display: flow-root !important;  " >
+              <div  class="card-body"  style="background-color: white;     display: flow-root !important;  position: relative;" >
                 <h4 class="card-title">Prix :</h4>
+                <div id="priceToDisplay">
                 @if($priceToDisplay != $data->totalprice)
                     <span style="text-decoration: line-through;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
-                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span> <br>
+                    <span  style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span>
+                    <br>
                   @else
                     <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
-                  @endif
-                </span>
+                @endif
+                @if ($DescReduc != null)
+                  <span class="px-2" style="color: red; font-size: small;">{{ $DescReduc }}</span>
+                @endif
+              </div>
                 @if ($data->nouveaute == 1)
                   <img style="position: absolute;
                   top: 20;
                   right: 0;max-height:40px;" src="{{ asset("/assets/images/New_Admin.png") }}" alt="">
                 @endif
                 <br>
+                <div style=" position: absolute;
+                bottom: 0;
+                right: 0;">
                 @if ($data->stock_actuel > $data->alert_stock)
                                 @if ($data->type_article == 0)
                                     <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponibles</span>
@@ -220,20 +228,20 @@
                                     <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
                                 @endif
                             @endif
-              </div>
+                          </div>
 
             </div>
 
 
 
             </div>
-
+          </div>
             
 
               <div class=" col-md-3">
                 
               <div class="card"   >
-                        <div class="card-body " style="display: block !important;" >
+                        <div class="card-body " style="display: block !important; position :relative" >
                         {{--  Affichage bloc reprise  --}}
                           <h4 class="card-title">Date de reprise</h4>
                           @php
@@ -251,7 +259,9 @@
 
                                         };
                           @endphp
-                          <p style='align-self: flex-end !important;' class="card-text">Saison: {{$data->saison}}/{{$data->saison+1}}</p>
+                          <div style="position: absolute; bottom: 5px; right: 2px;">
+                            <span style="font-size: medium; text-decoration: underline;">Saison:</span> <span style="font-size: small">{{$data->saison}}/{{$data->saison+1}}</span> 
+                        </div>
                         
                         </div>
 
@@ -262,7 +272,7 @@
 
               </div>
 
-              <div class=" col-md-2">     
+              <div class=" col-md-3">     
                 <div class="card" style="border:0px; box-shadow: none;">
                         <div class="card-body" style="background-color: white; display: flow-root !important; " >
 
@@ -329,7 +339,8 @@
                                                   if($r == $room->id_room and $norepeat == TRUE){
                                                     echo"</p>";
                                                     echo " <b style='align-self: flex-start !important;'>lieu: </b>" ;
-                                                    echo "<a class='a' style='font-size: small' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a>";
+                                                    echo "<a class='a' style='font-size: small' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . "<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . str_replace('-', '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $room->address) . "</a>";
+
                                                     $norepeat = FALSE ;
 
 
@@ -345,7 +356,7 @@
 
                     </div>
             </div>    
-
+            @if (Auth::check())
             <div class="col-md-2" >
               {{--  Affichage bloc prix  --}}
               <div class="card" >
@@ -361,11 +372,52 @@
                     @endif
                   @else
                       @csrf
-                      <select class="border mb-4 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
+                      <select onchange="updatePriceToDisplay()" class="border mb-4 col-12 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
+
                         @foreach ($selectedUsers as $user)
                             <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }} {{ $user->user_id }}</option>
                           @endforeach
                       </select>
+                      <script>
+                        function updatePriceToDisplay() {
+                    var select = document.getElementById("buyers");
+                    var selectedUserId = select.options[select.selectedIndex].value;
+                    var url = "/get-reduced-price/" + selectedUserId + "/" +  {{ $id }} ;
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                    var reducedPrice = JSON.parse(this.responseText);
+                    var priceHTML = "";
+                    
+                    if ({{ $data->totalprice }} != reducedPrice) {
+                    priceHTML = "<span style=\"text-decoration: line-through;\">";
+                    priceHTML += ({{ $data->totalprice }}).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+                    priceHTML += " </span>";
+                    priceHTML += "<span style=\"color: red; font-size: x-large; font-weight: bold;\">";
+                    priceHTML += reducedPrice.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+                    priceHTML += " </span>";
+                    priceHTML += "<span class='px-2' style='color: red; font-size: small;'>";
+                    priceHTML += "{{ $DescReduc }}";
+                    priceHTML += " </span>";
+                    } else {
+                    priceHTML += priceHTML += '<span style="color: red; font-size: x-large; font-weight: bold;">' + ({{ $data->totalprice }}).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+                    priceHTML += " </span>";
+                    
+                    }
+                    
+                    
+                    document.getElementById("priceToDisplay").innerHTML = priceHTML;
+                    }
+                    };
+                    xhttp.open("GET", url, true);
+                    xhttp.send();
+                    }
+                    
+                    
+                    
+                    
+                         </script>
+                        
                       @if ($coursVente->value == 0)
                         <p style="font-weight:bold">Inscriptions inaccessibles actuellement</p>
                       @else
@@ -377,6 +429,15 @@
   
               </div>
               </div>
+              @else
+              <div class="col-md-2 " >
+                <div class="card" >
+                  <div class="card-body"   style="display: block !important;">
+                <h5><u>Inscription :</u></h5>Se connecter pour s'inscrire<p><a href="{{ route("login") }}" class="btn btn-primary "><span >&nbsp;Se connecter</span></a><br>&nbsp;</p>
+              </div>
+            </div>
+            </div>
+              @endif
           </div>
      
 
@@ -478,23 +539,27 @@
               <div class="col-md-2" >
               {{--  Affichage bloc prix  --}}
               <div class="card" style="border:0px; box-shadow: none;" >
-                <div class="card-body"  style="background-color: white;     display: flow-root !important;  " >
+                <div class="card-body"  style="background-color: white;     display: flow-root !important; position :relative " >
                   <h4 class="card-title">Prix :</h4>
                   @if($priceToDisplay != $data->totalprice)
                     <span style="font-size: large;">Prix d'origine:</span><br>
                     <span style="text-decoration: line-through;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span><br>
-                    <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span>
+                    <span id="priceToDisplay" style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span>
                   @else
                     <span style="color: red; font-size: x-large; font-weight: bold;">{{ number_format($data->totalprice, 2, ',', ' ') }} €</span>
                   @endif
-
-                  </span>
+                  @if ($DescReduc != null)
+                  <span class="px-2" style="color: red; font-size: small;">{{ $DescReduc }}</span>
+                  @endif
                   @if ($data->nouveaute == 1)
                     <img style="position: absolute;
                     top: 20;
                     right: 0;max-height:40px;" src="{{ asset("/assets/images/New_Admin.png") }}" alt="">
                   @endif
                   <br>
+                  <div style=" position: absolute;
+                bottom: 0;
+                right: 0;">
                   @if ($data->stock_actuel > $data->alert_stock)
                                   @if ($data->type_article == 0)
                                       <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponibles</span>
@@ -520,6 +585,7 @@
                                       <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
                                   @endif
                               @endif
+                  </div>
                 </div>
   
               </div>
@@ -595,11 +661,52 @@
                     @else
                       <h4 class="card-title">Inscrire</h4>
                     @endif
-                        <select class="border mb-4 col-12 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
+                        <select onchange="updatePriceToDisplay()" class="border mb-4 col-12 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
+
                           @foreach ($selectedUsers as $user)
                               <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
                             @endforeach
                         </select>
+                        <script>
+                          function updatePriceToDisplay() {
+                      var select = document.getElementById("buyers");
+                      var selectedUserId = select.options[select.selectedIndex].value;
+                      var url = "/get-reduced-price/" + selectedUserId + "/" +  {{ $id }} ;
+                      var xhttp = new XMLHttpRequest();
+                      xhttp.onreadystatechange = function() {
+                      if (this.readyState == 4 && this.status == 200) {
+                      var reducedPrice = JSON.parse(this.responseText);
+                      var priceHTML = "";
+                      
+                      if ({{ $data->totalprice }} != reducedPrice) {
+                      priceHTML = "<span style=\"text-decoration: line-through;\">";
+                      priceHTML += ({{ $data->totalprice }}).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+                      priceHTML += " </span>";
+                      priceHTML += "<span style=\"color: red; font-size: x-large; font-weight: bold;\">";
+                      priceHTML += reducedPrice.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+                      priceHTML += " </span>";
+                      priceHTML = "<span class='px-2' style='color: red; font-size: small;'>";
+                      priceHTML += "{{ $DescReduc }}";
+                      priceHTML += " </span>";
+                      } else {
+                      priceHTML += priceHTML += '<span style="color: red; font-size: x-large; font-weight: bold;">' + ({{ $data->totalprice }}).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+                      priceHTML += " </span>";
+                      
+                      }
+                      
+                      
+                      document.getElementById("priceToDisplay").innerHTML = priceHTML;
+                      }
+                      };
+                      xhttp.open("GET", url, true);
+                      xhttp.send();
+                      }
+                      
+                      
+                      
+                      
+                           </script>
+                          
                         <button  data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
                     @endif
                     </span>
@@ -649,6 +756,8 @@
   
   <br>
   </main>
+  
 
+    
 
 @endsection

@@ -18,6 +18,7 @@ use PDF;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Models\ShopReduction;
 use App\Models\LiaisonShopArticlesShopReductions;
+use App\Models\LiaisonUserShopReduction;
 
 
 require_once(app_path().'/fonction.php');
@@ -52,6 +53,13 @@ class BillsController extends Controller
         $shopReductions = ShopReduction::all();
         return view('admin.shop-reduction', compact('shopReductions'));
     }
+
+    public function getReducedPrice($userId, $articleId) {
+    $articl = Shop_article::where('id_shop_article', $articleId)->firstOrFail();
+    $reducedPrice = getReducedPrice($articleId, $articl->totalprice, $userId);
+    $DescReduc = getFirstReductionDescriptionGuest($articleId,$userId);
+    return response()->json($reducedPrice);
+}
 
     public function createReduction(Request $request)
     {
@@ -91,10 +99,12 @@ class BillsController extends Controller
     public function editReduction($id)
 {
     $shopReduction = ShopReduction::find($id);
+
     $liaisons = LiaisonShopArticlesShopReductions::where('id_shop_reduction', $id)->get();
     $shopArticles =  Shop_article::where('saison', '=', saison_active())->orderBy('title')->get();
     $checkedArticles = collect();
     $uncheckedArticles = collect();
+    
     foreach ($shopArticles as $shopArticle) {
         $liaison = $liaisons->where('id_shop_article', $shopArticle->id_shop_article)->first();
         if ($liaison) {
@@ -103,10 +113,27 @@ class BillsController extends Controller
             $uncheckedArticles->push($shopArticle);
         }
     }
+
+    $liaisonsUser = LiaisonUserShopReduction::where('id_shop_reduction', $id)->get();
+    $users = User::select('user_id', 'name', 'lastname')->orderBy('name')->get();
+    $checkedUsers = collect();
+    $uncheckedUsers= collect();
+    foreach ($users as $user) {
+        $liaison = $liaisonsUser->where('user_id', $user->user_id)->first();
+        if ($liaison) {
+            $checkedUsers->push($user);
+        } else {
+            $uncheckedUsers->push($user);
+        }
+    }
+
     return view('admin.edit_reduction')->with([
+
         'shopReduction' => $shopReduction,
         'checkedArticles' => $checkedArticles,
-        'uncheckedArticles' => $uncheckedArticles
+        'uncheckedArticles' => $uncheckedArticles,
+        'checkedUsers' => $checkedUsers,
+        'uncheckedUsers' => $uncheckedUsers,
     ]);
 }
 
@@ -165,30 +192,68 @@ class BillsController extends Controller
     }
 
     public function updateLiaisons(Request $request)
-{
-    $shopReductionId = $request->input('shop_reduction_id');
-    $checkedShopArticles = $request->input('shop_article', []);
-    $existingLiaisons = LiaisonShopArticlesShopReductions::where('id_shop_reduction', $shopReductionId)->get();
-    $existingLiaisonIds = $existingLiaisons->pluck('id_liaison')->toArray();
-
-    // créer les nouvelles liaisons
-    foreach ($checkedShopArticles as $shopArticleId) {
-        if (!in_array($shopArticleId, $existingLiaisonIds)) {
-            $liaison = new LiaisonShopArticlesShopReductions();
-            $liaison->id_shop_reduction = $shopReductionId;
-            $liaison->id_shop_article = $shopArticleId;
-            $liaison->save();
+    {
+        $shopReductionId = $request->input('shop_reduction_id');
+        $checkedShopArticles = $request->input('shop_article', []);
+        $checkedUsers = $request->input('user', []);
+        
+        // Gérer les liaisons avec les articles
+        $existingArticleLiaisons = LiaisonShopArticlesShopReductions::where('id_shop_reduction', $shopReductionId)->get();
+        $existingArticleLiaisonIds = $existingArticleLiaisons->pluck('id_shop_article')->toArray();
+    
+        // créer les nouvelles liaisons d'articles
+        foreach ($checkedShopArticles as $shopArticleId) {
+            if (!in_array($shopArticleId, $existingArticleLiaisonIds)) {
+                // Vérifier si la liaison article-shop existe déjà
+                $existingLiaison = LiaisonShopArticlesShopReductions::where('id_shop_reduction', $shopReductionId)
+                    ->where('id_shop_article', $shopArticleId)
+                    ->first();
+    
+                if (!$existingLiaison) {
+                    $liaison = new LiaisonShopArticlesShopReductions();
+                    $liaison->id_shop_reduction = $shopReductionId;
+                    $liaison->id_shop_article = $shopArticleId;
+                    $liaison->save();
+                }
+            }
         }
+    
+        // supprimer les liaisons existantes d'articles qui ne sont plus cochées
+        LiaisonShopArticlesShopReductions::where('id_shop_reduction', $shopReductionId)
+        ->whereNotIn('id_shop_article', $checkedShopArticles)
+        ->delete();
+    
+        // Gérer les liaisons avec les utilisateurs
+        $existingUserLiaisons = LiaisonUserShopReduction::where('id_shop_reduction', $shopReductionId)->get();
+        $existingUserLiaisonIds = $existingUserLiaisons->pluck('user_id')->toArray();
+    
+        // créer les nouvelles liaisons d'utilisateurs
+        foreach ($checkedUsers as $userId) {
+            if (!in_array($userId, $existingUserLiaisonIds)) {
+                // Vérifier si la liaison user-shop existe déjà
+                $existingLiaison = LiaisonUserShopReduction::where('id_shop_reduction', $shopReductionId)
+                    ->where('user_id', $userId)
+                    ->first();
+    
+                if (!$existingLiaison) {
+                    $liaison = new LiaisonUserShopReduction();
+                    $liaison->id_shop_reduction = $shopReductionId;
+                    $liaison->user_id = $userId;
+                    $liaison->save();
+                }
+            }
+        }
+    
+        // supprimer les liaisons existantes d'utilisateurs qui ne sont plus cochées
+        LiaisonUserShopReduction::where('id_shop_reduction', $shopReductionId)
+        ->whereNotIn('user_id', $checkedUsers)
+        ->delete();
+    
+    
+        return redirect()->back()->with('success', 'Les liaisons ont été mises à jour avec succès.');
     }
-
-    // supprimer les liaisons existantes qui ne sont plus cochées
-    LiaisonShopArticlesShopReductions::where('id_shop_reduction', $shopReductionId)
-    ->whereNotIn('id_shop_article', $checkedShopArticles)
-    ->delete();
-
-
-    return redirect()->back()->with('success', 'Les liaisons ont été mises à jour avec succès.');
-}
+    
+    
 
 
 
