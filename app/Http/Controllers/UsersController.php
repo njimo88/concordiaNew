@@ -224,18 +224,19 @@ public function detail_paiement($id,$nombre_cheques)
     $paniers = DB::table('basket')
     ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
     ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
-    ->where('basket.user_id', '=',auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref', 'users.name', 'users.lastname')
+    ->where('basket.user_id', '=', auth()->user()->user_id)
+    ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
     ->orderBy('basket.pour_user_id')
     ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
     ->get();
 
-    $total = 0;
 
-    foreach ($paniers as $panier) {
-        $total += $panier->qte * $panier->totalprice;
-    }
+$total = 0;
+
+foreach ($paniers as $panier) {
+    $total += $panier->qte * $panier->totalprice;
+}
 
 
     $can_purchase = true;

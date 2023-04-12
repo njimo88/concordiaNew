@@ -550,7 +550,9 @@ function calculerPaiements(float $total, int $nbfois) {
     }
 
     $dernierMontant =$total - round ( $var + $premierMontant,2);
-    $paiements[] = $dernierMontant;
+    if($dernierMontant > 0){
+        $paiements[] = $dernierMontant;
+    }
     return $paiements;
 }
 
