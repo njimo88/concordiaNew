@@ -65,8 +65,18 @@ class Controller_club extends Controller
 
          $saison_list = Shop_article::select('saison')->distinct('name')->orderBy('saison', 'ASC')->get();
 
-        
-      return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie','users_saison_choisie','users_saison_active'))->with('user', auth()->user()) ;
+        /*----------------------------------------------- couleur ----------------------------*/
+        $bill_requete = DB::table('bills')
+    ->join('users', 'bills.user_id', '=', 'users.user_id')
+    ->join('liaison_shop_articles_bills', 'users.user_id', '=', 'liaison_shop_articles_bills.id_user')
+    ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+    ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.user_id', 'bills_status.status','bills_status.row_color','liaison_shop_articles_bills.id_shop_article')
+    ->orderBy('bills.date_bill', 'desc')
+    ->get();
+
+       // dd($bill_requete);
+
+     return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie','users_saison_choisie','users_saison_active'))->with('user', auth()->user()) ;
            
 
     }

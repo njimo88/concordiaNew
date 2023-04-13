@@ -115,7 +115,7 @@ $saison_active = saison_active() ;
 
                                                   @if($data->id_shop_article == $dt->id_shop_article)
 
-
+                                                                 
                                                  
                                                         
                                                 <tr>
@@ -303,7 +303,7 @@ $saison_active = saison_active() ;
 
                                                   @if($data->id_shop_article == $dt->id_shop_article)
 
-
+                                                       
                                                  
                                                         
                                                 <tr>
