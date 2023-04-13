@@ -82,7 +82,7 @@
                   </span>
               @enderror
               <div class="label">
-                <label for="password">Mot de pass</label>
+                <label for="password">Mot de passe</label>
               </div>
             </div>
             <div class="col-sm input">

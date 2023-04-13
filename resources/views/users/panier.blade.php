@@ -2,6 +2,7 @@
 
 @section('content')
 <main style="background-image: url('{{asset("/assets/images/background.png")}}');min-height:100vh;" id="main" class="main">
+    
 <div class="container">
 <div class="row" id="corps-pricipal" style=" padding:16px; justify-content:center">
     <div class=" border border-dark" style="background-color: white; padding:16px; border-radius:10px;margin-top:80px;">

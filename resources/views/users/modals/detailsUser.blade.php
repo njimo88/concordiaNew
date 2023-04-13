@@ -27,7 +27,7 @@
           <div class="card-body p-4">
             <h6>Information</h6>
             <hr class="mt-0 mb-4 text-dark">
-            <div class="row pt-1">
+            <div class="row col-12 pt-1">
               <div class="col-6 mb-3">
                 <h6>Email</h6>
                 <p class="text-muted">{{ $user->email }}</p>
@@ -39,7 +39,7 @@
             </div>
             <h6>Autres</h6>
             <hr class="mt-0 mb-4 text-dark">
-            <div class="row pt-1">
+            <div class="row col-12 pt-1">
               <div class="col-6 mb-3">
                 <h6>Age</h6>
                 <p class="text-muted">{{ \Carbon\Carbon::parse($user->birthdate)->age }} ans</p>

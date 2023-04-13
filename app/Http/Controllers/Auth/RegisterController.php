@@ -105,8 +105,8 @@ class RegisterController extends Controller
         $biggest_family_id = User::max('family_id');
         return User::create([
             'username'=> $data['email'],
-            'name' => $data['name'],
-            'lastname' => $data['lastname'],
+            'name' => strtoupper($data['name']),
+            'lastname' => ucfirst($data['lastname']),
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'phone' => $data['phone'],

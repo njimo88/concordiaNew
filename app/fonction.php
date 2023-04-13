@@ -838,10 +838,11 @@ $config = [
     'password' => "mickmickmath&67_mickmickmath&67"
 ];
 
-    
 
     Mail::mailer('smtp')->to($receiverEmail)->send(new ContactFormMail($userEmail, $message,$userName));
 }
+
+
 
 
 class ContactFormMail  extends \Illuminate\Mail\Mailable{
@@ -1224,11 +1225,11 @@ function applyFamilyDiscount()
             ->reduction_famille;
 
         // Vérifier si l'utilisateur a déjà la réduction dans son panier
-        $basket = Basket::where('user_id', auth()->user()->user_id)
+        /*$basket = Basket::where('user_id', auth()->user()->user_id)
             ->where('family_id', $family_id)
             ->where('ref', 1)
             ->first();
-        if (!$basket) {
+        if (!$basket) {*/
             // Mettre à jour le totalprice de l'article correspondant
             $shopArticle = Shop_article::find(1);
             $shopArticle->totalprice = $reduction_famille*(-1);
@@ -1244,8 +1245,84 @@ function applyFamilyDiscount()
                 'prix' => $reduction_famille*(-1),
             ]);
             $basket->save();
-        }
+       /* }*/
     }
 }
 
 
+
+
+
+
+    
+function envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill){
+
+   
+    // Set the SMTP credentials dynamically
+$config = [
+    'driver' => "smtp",
+    'host' => "smtp.ionos.fr",
+    'port' => 465,
+    'from' => ['address' => $userEmail, 'name' => $userName],
+    'encryption' => "ssl",
+    'username' => "webmaster@gym-concordia.com",
+    'password' => "mickmickmath&67_mickmickmath&67"
+];
+
+    Mail::mailer('smtp')->to($receiverEmail)->send(new BillInfoMail($userEmail, $message, $userName, $paniers, $total, $nb_paiment, $payment, $bill));
+    
+}
+
+class BillInfoMail extends \Illuminate\Mail\Mailable
+{
+
+    public $userEmail;
+    public $message;
+    public $userName;
+    public $paniers;
+    public $total;
+    public $nb_paiment;
+    public $payment;
+
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($userEmail, $message, $userName, $paniers, $total, $nb_paiment, $payment, $bill)
+    {
+        $this->userEmail = $userEmail;
+        $this->message = $message;
+        $this->userName = $userName;
+        $this->paniers = $paniers;
+        $this->total = $total;
+        $this->nb_paiment = $nb_paiment;
+        $this->payment = $payment;
+        $this->bill = $bill;
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build()
+    {
+        
+        return  $this->from($this->userEmail, $this->userName)
+                    ->view('emails.bill_info')
+                    
+                    ->subject('En attente de paiement par '.$this->payment)
+                    ->with([
+                        'userEmail' => $this->userEmail,
+                        'message' => $this->message,
+                        'userName' => $this->userName,
+                        'paniers' => $this->paniers,
+                        'total' => $this->total,
+                        'nb_paiment' => $this->nb_paiment,
+                        'payment' => $this->payment,
+                        'bill' => $this->bill,
+                            ]);
+
+    }
+}

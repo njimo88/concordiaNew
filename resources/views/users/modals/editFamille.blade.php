@@ -68,7 +68,7 @@
                     <div class="labels">
                         <label for="username">username</label>
                       </div> 
-                    <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
+                    <input @if(Route::currentRouteName() === 'users.family' || (auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id))
                     readonly @endif class="form-control" type="text" id="username" placeholder=" " class=" @error('username') is-invalid @enderror" name="username" value="{{ $n_users->username }}"  autocomplete="username" autofocus />
                     @error('username')
                         <span class="text-danger" role="alert">
@@ -81,7 +81,7 @@
             <div class="row">
                 <div class="col-md-4 input date mt-2" id='datetimepicker2'>
                     <label class="labels" for="birthdate">Naissance</label></i>
-                    <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
+                    <input @if(Route::currentRouteName() === 'users.family' || (auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id))
                     readonly @endif class="form-control"  class="datepicker" data-date-format="mm/dd/yyyy" type="date" name="birthdate" id="birthdate" class="" value="{{ $n_users->birthdate }}">
                     @error('birthdate')
                         <div class="text-danger">{{ $message }}</div>
@@ -115,7 +115,7 @@
                     <div class="labels">
                         <label for="email">Adresse Mail</label>
                     </div>
-                    <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
+                    <input @if((auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id))
                     readonly @endif class="form-control" type="email" id="email" placeholder=" " class=" @error('email') is-invalid @enderror" name="email" value="{{ $n_users->email }}"  autocomplete="email" />
                     @error('email')
                         <span class="text-danger" role="alert">
@@ -141,7 +141,6 @@
                     </div>
                     <select style="margin-top: 14px;" @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
                     disabled @endif class="form-select @error('gender') is-invalid @enderror" name="gender" id="gender" autocomplete="gender" autofocus>
-                        <option value="">--Choisir une option--</option>
                         <option value="male" {{ $n_users->gender == 'male' ? 'selected' : '' }}>Homme</option>
                         <option value="female" {{ $n_users->gender == 'female' ? 'selected' : '' }}>Femme</option>
                     </select>

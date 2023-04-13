@@ -5,6 +5,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\AddUserform;
 use App\Http\Requests\AddEnfantform;
+use App\Http\Requests\AddMemberform;
 use Illuminate\Support\Facades\Auth;
 use App\models\bills;
 use App\models\liaison_shop_articles_bills;
@@ -172,6 +173,15 @@ public function detail_paiement($id,$nombre_cheques)
     $bill->ref = "{$year}-{$billIdWithOffset}";
     
     $bill->save();
+
+    // envoi du mail à la propriétaire de la facture
+    $user = auth()->user();
+    $receiverEmail = $user->email;
+    $userName = 'Gym Concordia [Bureau]';
+    $message = "Votre facture n°{$bill->id} a été créée avec succès.";
+    $userEmail = "webmaster@gym-concordia.com";
+    envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill);
+    
     // Ajouter des lignes dans la table de liaison
     foreach ($paniers as $panier) {
         $liaison = new liaison_shop_articles_bills;
@@ -312,51 +322,57 @@ foreach ($paniers as $panier) {
     }
 
 
-public function addMember(AddUserform $request){
+public function addMember(AddMemberform $request){
     $validateData = $request->validated();
     $addMember = new User();
 
-    $addMember->name = $validateData['name'];
-    $addMember->lastname = $validateData['lastname'];
-    $addMember->email = $validateData['email'];
-    $addMember->password = bcrypt($validateData['password']);
-    $addMember->phone = $validateData['phone'];
-    $addMember->profession = $validateData['profession'];
-    $addMember->gender = $validateData['gender'];
-    $addMember->birthdate = $validateData['birthdate'];
-    $addMember->nationality = $validateData['nationality'];
-    $addMember->address = $validateData['address'];
-    $addMember->zip = $validateData['zip'];
-    $addMember->city = $validateData['city'];
-    $addMember->country = $validateData['country'];
+    $addMember->name = strtoupper($validateData['nameMem']);
+    $addMember->lastname = ucfirst($validateData['lastnameMem']);
+    $addMember->email = $validateData['emailMem'];
+    $addMember->password = bcrypt($validateData['passwordMem']);
+    $addMember->phone = $validateData['phoneMem'];
+    $addMember->profession = $validateData['professionMem'];
+    $addMember->gender = $validateData['genderMem'];
+    $addMember->birthdate = $validateData['birthdateMem'];
+    $addMember->nationality = $validateData['nationalityMem'];
+    $addMember->address = $validateData['addressMem'];
+    $addMember->zip = $validateData['zipMem'];
+    $addMember->city = $validateData['cityMem'];
+    $addMember->country = $validateData['countryMem'];
     $addMember->family_id = auth()->user()->family_id;
     $addMember->family_level = "parent";
     $addMember->save();
     return redirect()->route('users.family')->with('success', 'Le parent a été ajouté avec succès');
 }
 
-public function addEnfant(AddEnfantform $request){
-    $validateData = $request->validated();
-    $addMember = new User();
 
-    $addMember->name = $validateData['name'];
-    $addMember->lastname = $validateData['lastname'];
-    $addMember->email = $validateData['email'];
-    $addMember->password = bcrypt($validateData['password']);
-    $addMember->phone = $validateData['phone'];
-    $addMember->profession = $validateData['profession'];
-    $addMember->gender = $validateData['gender'];
-    $addMember->birthdate = $validateData['birthdate'];
-    $addMember->nationality = $validateData['nationality'];
-    $addMember->address = $validateData['address'];
-    $addMember->zip = $validateData['zip'];
-    $addMember->city = $validateData['city'];
-    $addMember->country = $validateData['country'];
-    $addMember->family_id = auth()->user()->family_id;
-    $addMember->family_level = "child";
-    $addMember->save();
-    return redirect()->route('users.family')->with('success', 'L\'enfant a été ajouté avec succès');
+
+public function addEnfant(AddEnfantform $request){
+   
+        $validateData = $request->validated();
+        $addMember = new User();
+
+        $addMember->name = strtoupper($validateData['name']);
+        $addMember->lastname = ucfirst($validateData['lastname']);
+        $addMember->email = $validateData['email'];
+        $addMember->password = bcrypt($validateData['password']);
+        $addMember->phone = $validateData['phone'];
+        $addMember->profession = $validateData['profession'];
+        $addMember->gender = $validateData['gender'];
+        $addMember->birthdate = $validateData['birthdate'];
+        $addMember->nationality = $validateData['nationality'];
+        $addMember->address = $validateData['address'];
+        $addMember->zip = $validateData['zip'];
+        $addMember->city = $validateData['city'];
+        $addMember->country = $validateData['country'];
+        $addMember->family_id = auth()->user()->family_id;
+        $addMember->family_level = "child";
+        $addMember->save();
+
+        return redirect()->route('users.family')->with('success', 'L\'enfant a été ajouté avec succès');
+           
 }
+
 
 public function editFamille(Request $request, $user_id)
     {

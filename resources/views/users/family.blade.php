@@ -2,16 +2,26 @@
 @section('content')
 <main style="width: 100vw; max-height: 300vh; min-height:100vh; background-image: url('{{asset("/assets/images/background.png")}}'); color:#fff;">
   <div  class="container justify-content-center d-flex">
+    
     <div class="col-10 mt-4 mt-lg-0 ">
+      @if($errors->any())
+    <div class="alert alert-danger mt-3">
+      Une erreur est survenue vérifiez les champs et réessayer.
+  </div>
+  @endif
+  
+    @if(session()->has('success'))
+    <div class="alert alert-success ">
+        {{ session()->get('success') }}
+    </div>
+  @endif
         <div class="row justify-content-center d-flex">
           <div style="border:0.5px solid; border-radius:20px; background : #fff;" class="col-lg-11  text-dark my-4 p-5">
             <h1>Famille de {{ $user->lastname }} {{ $user->name }}</h1>
          </div>
-         @if (session('success'))
-            <div class="alert alert-success col-11">
-                {{ session('success') }}
-            </div>
-          @endif
+         
+     
+
           <div  class="col-lg-11">
             <div class="user-dashboard-info-box  pl-3 mb-5 ">
               <table class="table manage-candidates-top">
@@ -58,7 +68,7 @@
                                 </div>
                                 <div class="candidate-list-option">
                                     <ul class="list-unstyled">
-                                    <li><i class="fa-solid fa-cake-candles"></i>{{ $n_users->birthdate }}</li>
+                                    <li><i class="fa-solid fa-cake-candles"></i><?php echo date("d/m/Y", strtotime($n_users->birthdate )); ?></li>
                                     <li><i class="fa-solid fa-envelope"></i>{{ $n_users->email }}</li>
                                     </ul>
                                 </div>

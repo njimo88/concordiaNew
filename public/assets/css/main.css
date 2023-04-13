@@ -2771,7 +2771,7 @@ p {
 
 input {
   width: 100%;
-  margin: 7px 0;
+  margin: 8px 0;
   padding: 8px 0;
   border: none;
   border-bottom: 1px solid #181824;
@@ -2789,9 +2789,9 @@ input:focus {
 .label {
   display: flex;
   position: absolute;
+  height: 100%;
   align-items: center;
   transition: 300ms ease;
-  margin-top: 15px;
 }
 
 label {
