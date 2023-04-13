@@ -18,32 +18,7 @@ $saison_active = saison_active() ;
 
 <div class="container">
 
-<div class="row">
-<div class="col-md-4 d-flex justify-content-end"><label> Saison </label></div>
-<div class="col-md-8">  
-       
-       
-       <form class="row" action="{{ route('include-page') }}" method="POST" >
-           @csrf
-           <div class="col-6">
-         <select class="form-control" name="saison" id="saison">
-         
-                  @foreach($saison_list as $data)
 
-                                  <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
-                  
-                  
-                   @endforeach
-
-         </select> </div> <div class="col-6"> <button class=" mt-1 btn btn-sm btn-primary" type="submit" id="hide-row-btn" >Accéder</button></div>
-       
-       
-       </form>
-   </div>
-<hr>
-   
-  
-   </div>
 
    
 @if (auth()->user()->role == 40 || auth()->user()->role == 30 )
@@ -58,16 +33,37 @@ $saison_active = saison_active() ;
 
 
 @if(session('submitted'))
- 
- <div id="div1-content">
-    <h1 style="text-align:center;"> 
-  
-       {{$saison}} - {{$saison + 1}}
+
+<div class="row">
+<div class="col-md-4 d-flex justify-content-end"><label> Saison </label></div>
+<div class="col-md-8">  
+       
+       
+       <form class="row" action="{{ route('include-page') }}" method="POST" >
+           @csrf
+           <div class="col-6">
+         <select class="form-control" name="saison" id="saison">
+         
+                  @foreach($saison_list as $data)
+
+                                  <option value="{{$data->saison}}" {{ $data->saison == $saison ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
+                  
+                  
+                   @endforeach
+
+         </select> </div> <div class="col-6"> <button class=" mt-1 btn btn-sm btn-primary" type="submit" id="hide-row-btn" >Accéder</button></div>
+       
+       
+       </form>
+   </div>
+<hr>
    
-    
-    </h1>
   
- </div> 
+   </div>
+
+
+
+
 
                 <div class="d-grid gap-2">
             @foreach($shop_article_lesson_choisie as $data)
@@ -115,7 +111,7 @@ $saison_active = saison_active() ;
 
                                       <table class="table table-hover" style="background-color:green;"> 
                                         <tbody>
-                                      @foreach($users_saison_active as $dt)
+                                      @foreach($users_saison_choisie as $dt)
 
                                                   @if($data->id_shop_article == $dt->id_shop_article)
 
@@ -225,15 +221,34 @@ $saison_active = saison_active() ;
 
 
 
-    <div id="div1-content">
-    <h1 style="text-align:center;"> 
+<div class="row">
+<div class="col-md-4 d-flex justify-content-end"><label> Saison </label></div>
+<div class="col-md-8">  
+       
+       
+       <form class="row" action="{{ route('include-page') }}" method="POST" >
+           @csrf
+           <div class="col-6">
+         <select class="form-control" name="saison" id="saison">
+         
+                  @foreach($saison_list as $data)
+
+                                  <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
+                  
+                  
+                   @endforeach
+
+         </select> </div> <div class="col-6"> <button class=" mt-1 btn btn-sm btn-primary" type="submit" id="hide-row-btn" >Accéder</button></div>
+       
+       
+       </form>
+   </div>
+<hr>
    
-        
-        {{$saison_active}} - {{$saison_active + 1}}
-   
-    
-    </h1>
-    </div> 
+  
+   </div>
+
+
 
                 <div class="d-grid gap-2">
                 @foreach($shop_article_lesson as $data)
@@ -434,14 +449,43 @@ $saison_active = saison_active() ;
 
 
 @if(session('submitted'))
+
+`     <div class="row">
+<div class="col-md-4 d-flex justify-content-end"><label> Saison </label></div>
+<div class="col-md-8">  
        
-       <div id="div1-content">
-          <h1 style="text-align:center;"> 
-        
-             {{$saison}} - {{$saison + 1}}
+       
+       <form class="row" action="{{ route('include-page') }}" method="POST" >
+           @csrf
+           <div class="col-6">
+         <select class="form-control" name="saison" id="saison">
          
-          
-        </div>
+                  @foreach($saison_list as $data)
+
+                                  <option value="{{$data->saison}}" {{ $data->saison == $saison ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
+                  
+                  
+                   @endforeach
+
+         </select> </div> <div class="col-6"> <button class=" mt-1 btn btn-sm btn-primary" type="submit" id="hide-row-btn" >Accéder</button></div>
+       
+       
+       </form>
+   </div>
+<hr>
+   
+  
+   </div>
+
+
+
+
+
+
+
+
+
+
       
       <div class="d-grid gap-2">
   @foreach($shop_article as $data)
@@ -555,32 +599,39 @@ $saison_active = saison_active() ;
 
 
 
-
-
-
-
-
-
-
-
-
-      
-      
       </div>
       
           @else
       
-      
-      
-          <div id="div1-content">
-          <h1 style="text-align:center;"> 
-         
-              {{$saison_active}} -{{$saison_active + 1}}
-         
           
-          </h1>
-          </div>
-       
+<div class="row">
+          <div class="col-md-4 d-flex justify-content-end"><label> Saison </label></div>
+          <div class="col-md-8">  
+                
+                
+                <form class="row" action="{{ route('include-page') }}" method="POST" >
+                    @csrf
+                    <div class="col-6">
+                  <select class="form-control" name="saison" id="saison">
+                  
+                            @foreach($saison_list as $data)
+
+                                            <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
+                            
+                            
+                            @endforeach
+
+                  </select> </div> <div class="col-6"> <button class=" mt-1 btn btn-sm btn-primary" type="submit" id="hide-row-btn" >Accéder</button></div>
+                
+                
+                </form>
+            </div>
+          <hr>
+   
+  
+   </div>
+
+ 
       
                       <div class="d-grid gap-2">
                   @foreach($shop_article_first as $data)

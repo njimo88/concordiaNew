@@ -43,7 +43,7 @@ class Controller_club extends Controller
           ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)
           ->where('type_article',1)->get(); 
   
-  
+        
 
             //requete pour la saison choisie
           $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
@@ -63,7 +63,7 @@ class Controller_club extends Controller
      
         $shop_article_first= Shop_article::where('saison', $saison_actu)->where('type_article',1)->get() ;
 
-         $saison_list = Shop_article::select('saison')->distinct('name')->get();
+         $saison_list = Shop_article::select('saison')->distinct('name')->orderBy('saison', 'ASC')->get();
 
         
       return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie','users_saison_choisie','users_saison_active'))->with('user', auth()->user()) ;
