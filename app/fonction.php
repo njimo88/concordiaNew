@@ -1327,7 +1327,7 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
     }
 }
 
-/*------------------------------------------------------------*/
+/*----------------------------Index Admin chiffre d'affaire, Reste, nbres Inscrits,--------------------------------*/
    function count_CA()
     {
       //   $this->db->query("SELECT * FROM `parametre` WHERE activate = 1"); 
@@ -1382,4 +1382,23 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
 
 
     }
+
+
+    function inscrits()
+    {
+
+        $saison = saison_active() ;
+             
+       $result = bills::select('bills.user_id')
+       ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'bills.user_id')
+       ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)->where('status',100)
+       ->where('type_article',0)->distinct() ->count('bills.user_id');
+
+
+       return  $result;
+
+
+
+    }
+
 
