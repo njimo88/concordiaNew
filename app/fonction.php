@@ -1389,13 +1389,22 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
 
         $saison = saison_active() ;
              
-       $result = bills::select('bills.user_id')
-       ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'bills.user_id')
-       ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)->where('status',100)
-       ->where('type_article',0)->distinct() ->count('bills.user_id');
+       $result = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
+       ->leftjoin('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+       ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
+       ->where('type_article',0)
+       ->where('type','facture')
+       ->where('status','>',9)
+       ->where('saison',$saison)
+       ->distinct()
+       ->count('liaison_shop_articles_bills.id_user');
 
+    /*   $result = $this->db->query("SELECT COUNT(*) as cc FROM `liaison_shop_articles_bills` LEFT JOIN `bills` 
+       ON bills.id_bill = liaison_shop_articles_bills.id_bill 
+       WHERE liaison_shop_articles_bills.id_shop_article = '$row->id_article_inscription'
+        AND bills.type = 'facture' AND bills.state != 'Commande suspendue'");  */
 
-       return  $result;
+    return  $result;
 
 
 

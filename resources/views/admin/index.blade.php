@@ -63,7 +63,7 @@ require_once('../app/fonction.php');
                          <div >
                             <div class=""> <i style=" color: #03a100 ; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-user"></i></div>
                            
-                               <h6  style="font-size:14px; text-align:left"> @php  $nbre_inscrits = inscrits(); @endphp  {{$nbre_inscrits}} </h6>
+                               <h6  style="font-size:14px; text-align:left"> @php  $nbre_inscrits = inscrits();  @endphp  {{$nbre_inscrits}} </h6>
                            
                          </div>
                       </div>
