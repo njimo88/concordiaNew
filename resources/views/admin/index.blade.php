@@ -21,7 +21,7 @@ require_once('../app/fonction.php');
                          <div class="d-flex align-items-center">
                             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"> <i style="color: #0bad00;" class="fa-solid fa-chart-line"></i></div>
                             <div class="ps-3">
-                               <h6>145</h6>
+                               <h6>       @php  $CA = count_CA() ; @endphp  {{$CA}}  €</h6>
                                <span class="text-success small pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1"></span>
                             </div>
                          </div>
@@ -36,7 +36,7 @@ require_once('../app/fonction.php');
                          <div class="d-flex align-items-center">
                             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"> <i style="font-size:15px; color: #ad0000;" class="fa fa-coins"></i></div>
                             <div class="ps-3">
-                               <h6>145</h6>
+                            <h6>       @php  $CA_reste = count_reste_CA() ; @endphp  {{$CA_reste}}  €</h6>
                                <span class="text-success small pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1"></span>
                             </div>
                          </div>

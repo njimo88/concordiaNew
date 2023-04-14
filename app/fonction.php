@@ -1326,3 +1326,60 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
 
     }
 }
+
+/*------------------------------------------------------------*/
+   function count_CA()
+    {
+      //   $this->db->query("SELECT * FROM `parametre` WHERE activate = 1"); 
+        $saison = saison_active() ;
+        $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->pluck('date_de_rentree');
+        $days = 0 ;
+       
+       // $row = $saison->row();
+
+       // $lastyear  = mktime(date("h"), date("m"), date("s"), date("m"),   date("d"),   date("Y") - 2);
+        
+      //  $result =  DB::table('bills')->where('type','facture')->where('status',100)->sum('payment_total_amount');
+     
+
+
+     $result =  DB::table('bills') ->select(DB::raw('ROUND(SUM(payment_total_amount),2) as total'))->where('type','facture')->where('status',100)->whereRaw('DATEDIFF(date_bill, ?) >= ?', [$date_de_rentree, $days])
+     ->first()
+     ->total;
+     
+     
+     //  $result = $this->db->query("SELECT ROUND(SUM(total),2) as cc FROM `bills` WHERE type = 'facture' AND state = 'Paiement accepté' AND DATEDIFF(date_add, '2022-06-26 00:00:00') >= 0");
+
+      //  $row = $result->row();
+
+
+        return  $result;
+
+    }
+
+
+   function count_reste_CA()
+    {
+
+        $saison = saison_active() ;
+        $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->pluck('date_de_rentree');
+        $days = 0 ;
+
+        //$saison = $this->db->query("SELECT * FROM `parametre` WHERE activate = 1");
+        $result =  DB::table('bills')->select(DB::raw('ROUND(SUM(payment_total_amount),2) as total'))->where('type','facture')->whereNotIn('status', [100, 90, 6, 70])->whereRaw('DATEDIFF(date_bill, ?) >= ?', [$date_de_rentree, $days])
+        ->first()
+        ->total;
+
+        //$lastyear  = mktime(date("h"), date("m"), date("s"), date("m"),   date("d"),   date("Y") - 2);
+
+      //  $result = $this->db->query("SELECT ROUND(SUM(total),2) as cc FROM `bills` WHERE type = 'facture' AND state != 'Paiement accepté' AND state != 'Commande suspendue' AND state !='Caution acceptée' AND state !='Paiement partiel' AND DATEDIFF(date_add, '2022-06-26 00:00:00') >= 0");
+
+      //  $row = $result->row();
+       // 
+
+       return  $result;
+
+
+
+    }
+
