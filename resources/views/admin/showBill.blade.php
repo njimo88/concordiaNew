@@ -118,13 +118,47 @@
           ?>
         <br>
         <span style="font-weight:bold">Référence commande </span>: {{ $bill->ref }} <br>
-        <span style="font-weight:bold">Mode de paiement </span>: {{ $bill->payment_method }} <br>
-        Paiement en 1 fois <br>
+        <span style="font-weight:bold">Mode de paiement </span>: {{ $bill->method }} <br>
+        Paiement en {{ $bill->number }} fois <br>
         <span style="font-weight:bold">Frais </span>: {{ number_format($bill->total_charges, 2, ',', ' ') }} €<br>
         <span style="font-weight:bold">Coût TTC </span>: {{ number_format($bill->payment_total_amount, 2, ',', ' ') }} €<br>
       </div>
       <div class="col-md-4 col-12 p-3">
         <h4>Détail paiement</h4>
+        <fieldset class="large-8 left">
+          <?php
+          setlocale(LC_ALL, 'fr_FR.UTF-8');
+          date_default_timezone_set('Europe/Paris');
+
+          $englishToFrench = [
+              'January' => 'janvier',
+              'February' => 'février',
+              'March' => 'mars',
+              'April' => 'avril',
+              'May' => 'mai',
+              'June' => 'juin',
+              'July' => 'juillet',
+              'August' => 'août',
+              'September' => 'septembre',
+              'October' => 'octobre',
+              'November' => 'novembre',
+              'December' => 'décembre',
+          ];
+
+          $datetime = new DateTime(now()->format('Y-m-d'));
+          $formattedMonthYear = $datetime->format('F Y');
+          $i = 1;
+
+          foreach ($nb_paiment as $paiment) {
+              echo '<b>Paiement ' . $i . '</b>: &nbsp;' . number_format($paiment, 2, ',', ' ') . ' €&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; <b>Echance : &nbsp;</b>' . $formattedMonthYear . '<br>';
+              
+              $datetime->add(new DateInterval('P1M')); // add one month to the date
+              $formattedMonthYear = $englishToFrench[$datetime->format('F')] . ' ' . $datetime->format('Y');
+              $i++;
+          }
+          ?>
+      </fieldset>
+      <br><br>
         <span style="font-weight:bold">Reste à payer : {{ number_format($bill->payment_total_amount-$bill->amount_paid, 2, ',', ' ') }} €</span> 
         <br><br><br>
         @if (auth()->user()->roles->paiement_immediat && Route::currentRouteName() === 'facture.showBill')
@@ -235,7 +269,15 @@
       @else
           <u>{{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
       @endif
-      {{ $message->message }}<hr>
+      @if ($message->somme_payé <= 0 && $message->somme_payé != null)
+      <b >Somme payée : </b><span style="font-weight : bold" class="text-danger">{{ $message->somme_payé }} €</span><br>
+      @elseif ($message->somme_payé > 0)
+        <b >Somme remboursée : </b><span style="font-weight : bold" class="text-success">{{ $message->somme_payé }} €</span><br>
+        @endif
+      {{ $message->message }}
+     
+        
+      <hr>
   @endforeach
 </div>
 

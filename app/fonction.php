@@ -19,7 +19,7 @@ use App\Models\ShopReduction;
 use App\Models\LiaisonShopArticlesShopReductions;
 use App\Models\LiaisonUserShopReduction;
 use App\Models\Basket;
-
+use App\Http\Controllers\generatePDF;
 
 
 //fonction pour afficher la famille en fonction de l'id de la famille
@@ -612,8 +612,8 @@ function printUsersBirthdayOnImage()
 
     $message = "En ce " . $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y") . ", nous souhaitons l'anniversaire à:";
     $image->text($message, $image->width() / 4.6, 130, function($font) {
-        $font->file(public_path('fonts/Pacifico-Regular.ttf'));
-        $font->size(15);
+        $font->file(public_path('fonts/DeliciousHandrawn-Regular.ttf'));
+        $font->size(17);
         $font->color('#000000');
         $font->align('left');
         $font->valign('top');
@@ -628,8 +628,8 @@ function printUsersBirthdayOnImage()
         $text = $user->name . ' ' . $user->lastname . ' (' . $age . ' ans)';
         $x = $line_count % 2 == 0 ? $image->width() / 2 : $image->width() / 5;
         $image->text($text, $x, $y, function($font) {
-            $font->file(public_path('fonts/arial.ttf'));
-            $font->size(10);
+            $font->file(public_path('fonts/AdventPro-VariableFont_wdth,wght.ttf'));
+            $font->size(13);
             $font->color('#000000');
             $font->align('left');
             $font->valign('top');
@@ -640,13 +640,24 @@ function printUsersBirthdayOnImage()
         }
     }
     
+    // Récupérer la date d'hier
+    $date = new DateTime();
+    $date->modify('-1 day');
+    $dateString = $date->format('Y-m-d');
 
+    // Supprimer l'image de la journée précédente si elle existe
+    $previousFilename = $dateString . '-birthday.jpg';
+    if (file_exists(public_path('assets/images/' . $previousFilename))) {
+        unlink(public_path('assets/images/' . $previousFilename));
+    }
 
 
     // Sauvegarde de l'image modifiée
     $date = new DateTime();
     $dateString = $date->format('Y-m-d');
     $filename = $dateString . "-birthday.jpg";
+    $image->encode('png', 100);
+
     $image->save(public_path('assets/images/' . $filename));
 
 }

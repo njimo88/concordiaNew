@@ -75,7 +75,6 @@ class A_ControllerBlog extends Controller
 }
 
     public function a_fetchPost(Request $request){
-        
         $a_post = A_Blog_Post::latest('date_post')->paginate(3);
         $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
         $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();

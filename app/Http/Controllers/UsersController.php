@@ -7,8 +7,8 @@ use App\Http\Requests\AddUserform;
 use App\Http\Requests\AddEnfantform;
 use App\Http\Requests\AddMemberform;
 use Illuminate\Support\Facades\Auth;
-use App\models\bills;
-use App\models\liaison_shop_articles_bills;
+use App\Models\bills;
+use App\Models\liaison_shop_articles_bills;
 use App\Models\old_bills;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -140,7 +140,6 @@ public function detail_paiement($id,$nombre_cheques)
     foreach ($paniers as $panier) {
         $total += $panier->qte * $panier->totalprice;
     }
-
     $nb_paiment = calculerPaiements($total,$nombre_cheques);
 
 
@@ -151,6 +150,7 @@ public function detail_paiement($id,$nombre_cheques)
     $bill->user_id = auth()->user()->user_id;
     $bill->date_bill = date('Y-m-d H:i:s');
     $bill->type = "facture";
+    $bill->number = $nombre_cheques;
     $bill->payment_method = $id;
     if ($id == 3){
         $bill->status = 32;

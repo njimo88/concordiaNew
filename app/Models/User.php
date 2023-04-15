@@ -11,10 +11,10 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Traits\HasPermissions;
 use App\Models\Role;
 use App\Models\Basket;
+use Illuminate\Contracts\Auth\CanResetPassword;
 
 
-
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPassword
 {
     
     use HasApiTokens, HasFactory, Notifiable;
@@ -50,6 +50,7 @@ class User extends Authenticatable
         'created_at',
         'updated_at',
         'licenceFFGYM',
+        'initial_password',
     ];
 
     public function roles()

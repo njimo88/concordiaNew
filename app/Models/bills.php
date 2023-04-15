@@ -21,6 +21,7 @@ class bills extends Model
         'ref',
         'total_charges',
         'amount_paid',
+        'number',
 
     ];
 
