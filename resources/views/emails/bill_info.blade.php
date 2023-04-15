@@ -76,7 +76,7 @@
         <div class="row">
             <div class=" p-3" style=" background-color: white; padding:16px; border-radius:10px">
                 Bonjour <b>{{ auth()->user()->lastname }} {{ auth()->user()->name }}</b>&nbsp;&nbsp;&nbsp;&nbsp;(Commande n°{{ $bill->ref }} ),<br><br>
-                Nous avons bien enregistré votre commande #2023-20490 du @php english()@endphp  (NB : Celle-ci ne sera validée qu'à la réception de votre paiement).<br><br>
+                Nous avons bien enregistré votre commande #{{ $bill->ref }} du @php english()@endphp  (NB : Celle-ci ne sera validée qu'à la réception de votre paiement).<br><br>
                 Vous avez choisi de régler votre commande par Espèces, merci de nous transmettre votre règlement :<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;- D'un montant total de <b>{{ number_format($total, 2, ',', ' ') }} €</b> &nbsp;&nbsp;&nbsp;&nbsp;        <br>&nbsp;&nbsp;&nbsp;&nbsp;- A l'ordre de <b>"Gym Concordia"</b><br><br>Mode de paiement : <b>{{ $payment }}</b><br>En cas d'envoi, merci de le transmettre à cette adresse : <b>Trésorier Gym Concordia - 30, Rue de gambsheim - 67300 Schiltigheim</b><br><br>
                 <fieldset class="large-8 left">

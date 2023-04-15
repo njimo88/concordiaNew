@@ -55,6 +55,9 @@
 
           
         </div>
+        <div class="d-flex justify-content-center my-2">
+          <a href="{{ route('username.reminder') }}">Identifiant oublié ?</a>
+        </div>
         @if (Route::has('password.request'))
         <div class="d-flex justify-content-center my-2">
           <a  href="{{ route('password.request') }}">

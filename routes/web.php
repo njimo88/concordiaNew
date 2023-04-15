@@ -14,6 +14,8 @@ use App\Http\Controllers\generatePDF;
 use App\Http\Controllers\Controller_Quizz;
 use App\Http\Controllers\Controller_Communication;
 use App\Http\Controllers\Prendre_Contact_Controller;
+use App\Http\Controllers\A_Controller;
+use App\Http\Controllers\Auth\ForgotUsernameController;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -356,3 +358,9 @@ Route::post('/questionnaire_baby', [Controller_Quizz::class, 'handle_questionnai
 Route::middleware(['auth'])->group(function () {
 Route::get('/Statistiques/Home_stat_teacher',[Controller_Stat::class, 'index'])->name('index_stat');
 }); 
+#-------------------------------- RESEET ------------------------------
+
+Route::get('/username/reminder', [ForgotUsernameController::class, 'showRequestForm'])->name('username.reminder');
+Route::post('/username/reminder', [ForgotUsernameController::class, 'sendUsernameEmail'])->name('username.email');
+
+

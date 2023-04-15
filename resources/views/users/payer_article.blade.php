@@ -165,7 +165,7 @@
                                 event.preventDefault(); // Empêcher le comportement par défaut du lien
                                 var nombre_virment = document.getElementById('nombre_virment').value; // Récupérer la valeur sélectionnée
                                 var url = '{{ route('detail_paiement', ['id' => 6, 'nombre_cheques' => ':nombre_virment']) }}';
-                                url = url.replace(':nombre_cheques', nombre_virment); // Remplacer la valeur de la variable dans l'URL
+                                url = url.replace(':nombre_virment', nombre_virment); // Remplacer la valeur de la variable dans l'URL
                                 window.location.href = url; // Rediriger vers la page detail_paiement avec le nombre de chèques sélectionné
                             });
                         </script>
@@ -182,3 +182,5 @@
 </main>
 
 @endsection
+
+

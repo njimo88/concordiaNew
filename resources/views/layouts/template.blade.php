@@ -124,6 +124,22 @@
             </div>
 
         </div>
+        <div class="col-lg-3">
+          <div class="card">
+              <div class="stat-widget-one row">
+                  <div class="stat-icon dib col-4">
+                      <i class="fa fa-pencil-alt" style="color: #2770e6;"></i>
+                  </div>
+                  <div class="col-8 ">
+                    <span class="stat-text" style="font-size : 12px !important;">Article de blog</span><br>
+                      <a href="{{ route('edit_blog_index', ['id' => 1]) }}" class="btn btn-primary btn-sm mt-1">Editer</a>
+                  </div>
+                  
+              </div>
+          </div>
+      </div>
+      
+      
          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>

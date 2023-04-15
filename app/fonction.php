@@ -19,7 +19,7 @@ use App\Models\ShopReduction;
 use App\Models\LiaisonShopArticlesShopReductions;
 use App\Models\LiaisonUserShopReduction;
 use App\Models\Basket;
-
+use App\Http\Controllers\generatePDF;
 
 
 //fonction pour afficher la famille en fonction de l'id de la famille
@@ -612,8 +612,8 @@ function printUsersBirthdayOnImage()
 
     $message = "En ce " . $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y") . ", nous souhaitons l'anniversaire à:";
     $image->text($message, $image->width() / 4.6, 130, function($font) {
-        $font->file(public_path('fonts/Pacifico-Regular.ttf'));
-        $font->size(15);
+        $font->file(public_path('fonts/DeliciousHandrawn-Regular.ttf'));
+        $font->size(17);
         $font->color('#000000');
         $font->align('left');
         $font->valign('top');
@@ -628,8 +628,8 @@ function printUsersBirthdayOnImage()
         $text = $user->name . ' ' . $user->lastname . ' (' . $age . ' ans)';
         $x = $line_count % 2 == 0 ? $image->width() / 2 : $image->width() / 5;
         $image->text($text, $x, $y, function($font) {
-            $font->file(public_path('fonts/arial.ttf'));
-            $font->size(10);
+            $font->file(public_path('fonts/AdventPro-VariableFont_wdth,wght.ttf'));
+            $font->size(13);
             $font->color('#000000');
             $font->align('left');
             $font->valign('top');
@@ -640,13 +640,24 @@ function printUsersBirthdayOnImage()
         }
     }
     
+    // Récupérer la date d'hier
+    $date = new DateTime();
+    $date->modify('-1 day');
+    $dateString = $date->format('Y-m-d');
 
+    // Supprimer l'image de la journée précédente si elle existe
+    $previousFilename = $dateString . '-birthday.jpg';
+    if (file_exists(public_path('assets/images/' . $previousFilename))) {
+        unlink(public_path('assets/images/' . $previousFilename));
+    }
 
 
     // Sauvegarde de l'image modifiée
     $date = new DateTime();
     $dateString = $date->format('Y-m-d');
     $filename = $dateString . "-birthday.jpg";
+    $image->encode('png', 100);
+
     $image->save(public_path('assets/images/' . $filename));
 
 }
@@ -1324,5 +1335,204 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
                         'bill' => $this->bill,
                             ]);
 
+    }
+}
+
+function updateStatusMail($userEmail, $message, $receiverEmail, $userName,$bill){
+
+   
+    // Set the SMTP credentials dynamically
+$config = [
+    'driver' => "smtp",
+    'host' => "smtp.ionos.fr",
+    'port' => 465,
+    'from' => ['address' => $userEmail, 'name' => $userName],
+    'encryption' => "ssl",
+    'username' => "webmaster@gym-concordia.com",
+    'password' => "mickmickmath&67_mickmickmath&67"
+];
+
+
+if($bill->status < 70){
+    
+    Mail::mailer('smtp')->to($receiverEmail)->send(new updateStatusNopdf($userEmail, $message, $userName, $bill));
+}else{
+   // Générer les PDF
+   $pdfController = new generatePDF();
+   /*$factureContent = $pdfController->generatePDFfacture($bill->id);*/
+   $reductionFiscaleContent = $pdfController->generatePDFreduction_FiscaleOutput($bill->id);
+   $factureContent = $pdfController->generatePDFfactureOutput($bill->id);
+
+   
+    // Enregistrer les PDF dans des fichiers temporaires
+    $facturePath = storage_path('temp/facture_'.$bill->id.'.pdf');
+    $reductionFiscalePath = storage_path('temp/reduction_fiscale_'.$bill->id.'.pdf');
+
+    // Créer le répertoire temp s'il n'existe pas
+    $tempDir = storage_path('temp');
+    if (!File::exists($tempDir)) {
+        File::makeDirectory($tempDir);
+    }
+   File::put($facturePath, $factureContent);
+   File::put($reductionFiscalePath, $reductionFiscaleContent);
+   
+   // Envoyer l'e-mail
+   Mail::mailer('smtp')->to($receiverEmail)->send(new updateStatus($userEmail, $message, $userName, $bill, $reductionFiscalePath, $facturePath));
+   
+   // Supprimer les fichiers temporaires
+   File::delete($reductionFiscalePath);
+    File::delete($facturePath);
+}
+}
+class updateStatusNopdf extends \Illuminate\Mail\Mailable
+{
+
+    public $userEmail;
+    public $message;
+    public $userName;
+    public $bill;
+  
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($userEmail, $message, $userName,$bill)
+    {
+        $this->userEmail = $userEmail;
+        $this->message = $message;
+        $this->userName = $userName;
+        $this->bill = $bill;
+       
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build() {
+        return $this->from($this->userEmail, $this->userName)
+                    ->view('emails.updateStatusmail')
+                    ->subject($this->bill->bill_status.' - Commande :'.$this->bill->ref)
+                    ->with([
+                        'userEmail' => $this->userEmail,
+                        'message' => $this->message,
+                        'userName' => $this->userName,
+                        'bill' => $this->bill,
+                    ]) ;
+    }
+}
+
+
+class updateStatus extends \Illuminate\Mail\Mailable
+{
+
+    public $userEmail;
+    public $message;
+    public $userName;
+    public $bill;
+    public $reductionFiscalePath;
+    public $facturePath;
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($userEmail, $message, $userName,$bill,$reductionFiscalePath,$facturePath)
+    {
+        $this->userEmail = $userEmail;
+        $this->message = $message;
+        $this->userName = $userName;
+        $this->bill = $bill;
+        $this->reductionFiscalePath = $reductionFiscalePath;
+        $this->facturePath = $facturePath;
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build() {
+        return $this->from($this->userEmail, $this->userName)
+                    ->view('emails.updateStatusmail')
+                    ->subject($this->bill->bill_status.' - Commande :'.$this->bill->ref)
+                    ->with([
+                        'userEmail' => $this->userEmail,
+                        'message' => $this->message,
+                        'userName' => $this->userName,
+                        'bill' => $this->bill,
+                    ])
+                    ->attach($this->facturePath, [
+                        'as' => 'facture_'.$this->bill->id.'.pdf',
+                        'mime' => 'application/pdf',
+                    ])
+                    ->attach($this->reductionFiscalePath, [
+                        'as' => 'reduction_fiscale_'.$this->bill->id.'.pdf',
+                        'mime' => 'application/pdf',
+                    ]);
+    }
+}
+
+
+function HistoriqueMail($userEmail, $message, $receiverEmail, $userName,$bill, $messageEnvoye){
+
+   
+    // Set the SMTP credentials dynamically
+$config = [
+    'driver' => "smtp",
+    'host' => "smtp.ionos.fr",
+    'port' => 465,
+    'from' => ['address' => $userEmail, 'name' => $userName],
+    'encryption' => "ssl",
+    'username' => "webmaster@gym-concordia.com",
+    'password' => "mickmickmath&67_mickmickmath&67"
+];
+   Mail::mailer('smtp')->to($receiverEmail)->send(new HistoriqueMailForm($userEmail, $message, $userName, $bill, $messageEnvoye));
+   
+  
+
+}
+class HistoriqueMailForm extends \Illuminate\Mail\Mailable
+{
+
+    public $userEmail;
+    public $message;
+    public $userName;
+    public $bill;
+    public $messageEnvoye;
+  
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($userEmail, $message, $userName,$bill, $messageEnvoye)
+    {
+        $this->userEmail = $userEmail;
+        $this->message = $message;
+        $this->userName = $userName;
+        $this->bill = $bill;
+        $this->messageEnvoye = $messageEnvoye;
+       
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build() {
+        return $this->from($this->userEmail, $this->userName)
+                    ->view('emails.addShopMessage')
+                    ->subject('Important - Commande :'.$this->bill->ref)
+                    ->with([
+                        'userEmail' => $this->userEmail,
+                        'message' => $this->message,
+                        'userName' => $this->userName,
+                        'bill' => $this->bill,
+                        'messageEnvoye' => $this->messageEnvoye,
+                    ]) ;
     }
 }

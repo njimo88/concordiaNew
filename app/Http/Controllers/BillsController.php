@@ -293,6 +293,31 @@ class BillsController extends Controller
         $bill = bills::find($id);
         $bill->status = $request->status;
         $bill->save();
+
+        $bill = DB::table('bills')
+        ->leftJoin('bills_status', 'bills.status', '=', 'bills_status.id')
+        ->leftJoin('users', 'bills.user_id', '=', 'users.user_id')
+        ->select('bills.*', 'bills_status.status as bill_status', 'users.name', 'users.lastname')
+        ->where('bills.id', $id)
+        ->first();
+
+        $shopMessage = new ShopMessage();
+        $shopMessage->message = $bill->bill_status;
+        $shopMessage->date = now();
+        $shopMessage->id_bill = $bill->id;
+        $shopMessage->id_customer = $bill->user_id;
+        $shopMessage->id_admin = auth()->user()->user_id;
+        $shopMessage->state = 'Privé';
+        $shopMessage->somme_payé = $bill->payment_total_amount;
+        $shopMessage->save();
+            
+        $user = User::find($bill->user_id);
+        $receiverEmail = $user->email;
+        $userName = 'Gym Concordia [Bureau]';
+        $message = "Votre facture n°{$bill->id} a été créée avec succès.";
+        $userEmail = "webmaster@gym-concordia.com";
+        updateStatusMail($userEmail, $message, $receiverEmail, $userName, $bill);
+
         return  redirect()->back()->with('success', 'Le statut de la facture n°'.$id.' a été modifié avec succès');
     }
     public function getOldBills($user_id)
@@ -369,8 +394,9 @@ class BillsController extends Controller
         $bill = DB::table('bills')
         ->join('users', 'bills.user_id', '=', 'users.user_id')
         ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+        ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
         ->where('bills.id', $id)
-        ->select('bills.*', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate')
+        ->select('bills.*', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate', 'bills_payment_method.payment_method as method')
         ->first();
 
         
@@ -394,12 +420,12 @@ class BillsController extends Controller
         $messages = DB::table('shop_messages')
         ->join('users', 'shop_messages.id_customer', '=', 'users.user_id')
         ->where('shop_messages.id_bill', $id)
-        ->select('shop_messages.message', 'shop_messages.date', 'users.name', 'users.lastname','shop_messages.id_customer','shop_messages.id_admin','shop_messages.state')
+        ->select('shop_messages.message', 'shop_messages.date', 'shop_messages.somme_payé', 'users.name', 'users.lastname','shop_messages.id_customer','shop_messages.id_admin','shop_messages.state')
         ->orderBy('shop_messages.date', 'asc')
         ->get();
-              
+        $nb_paiment = calculerPaiements($bill->payment_total_amount,$bill->number);
         
-            return view('admin.showBill', compact('bill', 'shop', 'status', 'designation','messages'))->with('user', auth()->user());
+            return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages'))->with('user', auth()->user());
             
     }
 
@@ -418,6 +444,17 @@ class BillsController extends Controller
         $shopMessage->state = $request->input('comment_visibility');
         $shopMessage->somme_payé = $request->input('somme_payé');
         $shopMessage->save();
+
+        if ($shopMessage->state == 'Public') {
+            $user = User::find($bill->user_id);
+            $messageEnvoye = $shopMessage->message;
+            $receiverEmail = $user->email;
+            $userName = 'Gym Concordia [Bureau]';
+            $message = "Votre facture n°{$bill->id} a été créée avec succès.";
+            $userEmail = "webmaster@gym-concordia.com";
+            HistoriqueMail($userEmail, $message, $receiverEmail, $userName,$bill, $messageEnvoye);
+        }
+     
       
         return redirect()->back();
       }
