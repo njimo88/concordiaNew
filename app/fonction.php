@@ -1418,7 +1418,6 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
     return  $result;
 
 
-
     }
 
 
