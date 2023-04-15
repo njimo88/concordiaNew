@@ -21,7 +21,9 @@ require_once('../app/fonction.php');
                          <div>
                              <i  style="color: #0bad00; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa-solid fa-chart-line"></i></div>
                            
-                               <h6 style="font-size:14px; text-align:left">       @php  $CA = count_CA() ;  @endphp  {{$CA}} </h6>
+                             
+                               <h6  style="font-size:14px; text-align:left">   @php   $CA = count_CA() ;  $formatted_number = number_format($CA, 2, '.', ','); @endphp {{$formatted_number}}€</h6>
+                       
                          </div>
                       </div>
                    </div>
@@ -34,7 +36,7 @@ require_once('../app/fonction.php');
                          <div >
                             <i style=" color: #ad0000; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-coins"></i></div>
                             
-                        <h6  style="font-size:14px; text-align:left">       @php  $CA_reste = count_reste_CA() ; @endphp  {{$CA_reste}}  €</h6>
+                        <h6  style="font-size:14px; text-align:left">   @php  $CA_reste = count_reste_CA() ; $formatted_number = number_format($CA_reste, 2, '.', ','); @endphp {{$formatted_number}}€</h6>
                           
                          </div>
                       </div>
@@ -103,63 +105,37 @@ require_once('../app/fonction.php');
 <div class="row">
 
 
-<div class="col-12 col-md-6">
+<div class="col-12 col-md-8">
+
+@php
+
+      $years = array();
+      
+      $stat_values_per_year = array();
+
+      for ($i = 2015; $i <= 2025; $i++) {
+
+         $years[] = $i; // add each year to the array
+
+         $stat_values_per_year[] = nbr_inscrits_based_on_date($i) ; // get the number of subscribers by year
+
+      }
+
+     // dd($stat_values_per_year);
 
 
-         <div class="card info-card sales-card">
+@endphp
 
-                              <div class="card-body" style="min-height: 87px;">
-                                 <h5 class="card-title"></span></h5>
-                                 <div class="d-flex align-items-center">
-                              
-                                    <div class="ps-3">
-                                    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-         
-                                    </div>
-                                 </div>
-                              </div>
-         </div>
+<canvas id="myChart" style="width:100%;"></canvas>
 
-
-
-
-
-
-
+     
 </div>
 
 
 
-<div class="col-12 col-md-6">
+<div class="col-12 col-md-4">
 
-
-
-<div class="card info-card sales-card">
-
-<div class="card-body" style="min-height: 87px;">
-   <h5 class="card-title"></span></h5>
-   <div class="d-flex align-items-center">
-
-      <div class="ps-3">
-      <canvas id="chart" style="width:100%;max-width:600px"></canvas>
-
-      </div>
-   </div>
-</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+<canvas id="chart" ></canvas>
 
 </div>
 
@@ -184,8 +160,12 @@ require_once('../app/fonction.php');
     </section>
     
 <script>
-const xValues = [50,60,70,80,90,100,110,120,130,140,150];
-const yValues = [7,8,8,9,9,9,10,11,14,14,15];
+
+const xValues = <?php echo json_encode($years); ?>; 
+const yValues = <?php echo json_encode($stat_values_per_year); ?>; 
+
+
+
 
 new Chart("myChart", {
   type: "line",
@@ -207,6 +187,22 @@ new Chart("myChart", {
   }
 });
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <script>
 var x_Values = ["Italy", "France", "Spain", "USA", "Argentina"];

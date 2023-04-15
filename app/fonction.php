@@ -1411,3 +1411,51 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
     }
 
 
+
+    function nbr_inscrits_based_on_date($saison)
+    {
+            // Date de rentree saison actuelle
+       $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->first('date_de_rentree');
+       $date_de_rentree_value = $date_de_rentree->date_de_rentree;
+
+          // modification de l'annee de la date du jour en fonction de la saison passee en parametre
+          // Date de rentree saison passee en parametre 
+
+       $original_date = new DateTime($date_de_rentree_value);
+       $new_date = $original_date->setDate($saison, $original_date->format('m'), $original_date->format('d'))->format('Y-m-d');
+
+
+        // Annee de la saison actuelle
+       $saison_active = saison_active() ;
+
+        // date d'aujourd'hui
+        $date_today = date("Y-m-d");
+
+      
+        // requete pour avoir le nombre de user inscrit au cours d'une saison donnee
+             
+       $result = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
+       ->leftjoin('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+       ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
+       ->where('type_article',0)
+       ->where('type','facture')
+       ->where('status','>',9)
+       ->where('saison',$saison)
+       ->whereBetween('date_bill', [$new_date,$date_today])
+       ->distinct()
+       ->count('liaison_shop_articles_bills.id_user');
+
+    /*   $result = $this->db->query("SELECT COUNT(*) as cc FROM `liaison_shop_articles_bills` LEFT JOIN `bills` 
+       ON bills.id_bill = liaison_shop_articles_bills.id_bill 
+       WHERE liaison_shop_articles_bills.id_shop_article = '$row->id_article_inscription'
+        AND bills.type = 'facture' AND bills.state != 'Commande suspendue'");  */
+       
+     
+    return  $result;
+ 
+
+
+
+    }
+
+
