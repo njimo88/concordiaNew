@@ -1338,6 +1338,91 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
     }
 }
 
+/*----------------------------Index Admin chiffre d'affaire, Reste, nbres Inscrits,--------------------------------*/
+   function count_CA()
+    {
+      //   $this->db->query("SELECT * FROM `parametre` WHERE activate = 1"); 
+        $saison = saison_active() ;
+        $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->pluck('date_de_rentree');
+        $days = 0 ;
+       
+       // $row = $saison->row();
+
+       // $lastyear  = mktime(date("h"), date("m"), date("s"), date("m"),   date("d"),   date("Y") - 2);
+        
+      //  $result =  DB::table('bills')->where('type','facture')->where('status',100)->sum('payment_total_amount');
+     
+
+
+     $result =  DB::table('bills') ->select(DB::raw('ROUND(SUM(payment_total_amount),2) as total'))->where('type','facture')->where('status',100)->whereRaw('DATEDIFF(date_bill, ?) >= ?', [$date_de_rentree, $days])
+     ->first()
+     ->total;
+     
+     
+     //  $result = $this->db->query("SELECT ROUND(SUM(total),2) as cc FROM `bills` WHERE type = 'facture' AND state = 'Paiement accepté' AND DATEDIFF(date_add, '2022-06-26 00:00:00') >= 0");
+
+      //  $row = $result->row();
+
+
+        return  $result;
+
+    }
+
+
+   function count_reste_CA()
+    {
+
+        $saison = saison_active() ;
+        $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->pluck('date_de_rentree');
+        $days = 0 ;
+
+        //$saison = $this->db->query("SELECT * FROM `parametre` WHERE activate = 1");
+        $result =  DB::table('bills')->select(DB::raw('ROUND(SUM(payment_total_amount),2) as total'))->where('type','facture')->whereNotIn('status', [100, 90, 6, 70])->whereRaw('DATEDIFF(date_bill, ?) >= ?', [$date_de_rentree, $days])
+        ->first()
+        ->total;
+
+        //$lastyear  = mktime(date("h"), date("m"), date("s"), date("m"),   date("d"),   date("Y") - 2);
+
+      //  $result = $this->db->query("SELECT ROUND(SUM(total),2) as cc FROM `bills` WHERE type = 'facture' AND state != 'Paiement accepté' AND state != 'Commande suspendue' AND state !='Caution acceptée' AND state !='Paiement partiel' AND DATEDIFF(date_add, '2022-06-26 00:00:00') >= 0");
+
+      //  $row = $result->row();
+       // 
+
+       return  $result;
+
+
+
+    }
+
+
+    function inscrits()
+    {
+
+        $saison = saison_active() ;
+             
+       $result = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
+       ->leftjoin('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+       ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
+       ->where('type_article',0)
+       ->where('type','facture')
+       ->where('status','>',9)
+       ->where('saison',$saison)
+       ->distinct()
+       ->count('liaison_shop_articles_bills.id_user');
+
+    /*   $result = $this->db->query("SELECT COUNT(*) as cc FROM `liaison_shop_articles_bills` LEFT JOIN `bills` 
+       ON bills.id_bill = liaison_shop_articles_bills.id_bill 
+       WHERE liaison_shop_articles_bills.id_shop_article = '$row->id_article_inscription'
+        AND bills.type = 'facture' AND bills.state != 'Commande suspendue'");  */
+
+    return  $result;
+
+
+
+    }
+
+
+
 function updateStatusMail($userEmail, $message, $receiverEmail, $userName,$bill){
 
    

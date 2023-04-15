@@ -67,12 +67,12 @@ class Controller_club extends Controller
 
         /*----------------------------------------------- couleur ----------------------------*/
         $bill_requete = DB::table('bills')
-    ->join('users', 'bills.user_id', '=', 'users.user_id')
-    ->join('liaison_shop_articles_bills', 'users.user_id', '=', 'liaison_shop_articles_bills.id_user')
-    ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-    ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.user_id', 'bills_status.status','bills_status.row_color','liaison_shop_articles_bills.id_shop_article')
-    ->orderBy('bills.date_bill', 'desc')
-    ->get();
+        ->join('users', 'bills.user_id', '=', 'users.user_id')
+        ->join('liaison_shop_articles_bills', 'users.user_id', '=', 'liaison_shop_articles_bills.id_user')
+        ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+        ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.user_id', 'bills_status.status','bills_status.row_color','liaison_shop_articles_bills.id_shop_article')
+        ->orderBy('bills.date_bill', 'desc')
+        ->get();
 
        // dd($bill_requete);
 

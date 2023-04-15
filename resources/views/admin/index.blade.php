@@ -11,98 +11,89 @@ require_once('../app/fonction.php');
 
     <section class="section dashboard">
 
-      <div class="row">
+      <div class="row d-flex justify-contetnt-center p-0">
          
-      <div class="col-6 col-md-4">
-                   <div class="card info-card sales-card">
+      <div class="col-6 col-md-2 p-0 "style="margin:0px -7px" >
+                   <div class="card info-card sales-card p-3">
 
-                      <div class="card-body">
-                         <h5 class="card-title">Chiffre d'affaire</h5>
-                         <div class="d-flex align-items-center">
-                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"> <i style="color: #0bad00;" class="fa-solid fa-chart-line"></i></div>
-                            <div class="ps-3">
-                               <h6>145</h6>
-                               <span class="text-success small pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1"></span>
-                            </div>
+                      <div class="card-body pt-4" style="min-height: 87px;">
+                         <h5 style="font-size:15px;">Chiffre d'affaire</h5>
+                         <div>
+                             <i  style="color: #0bad00; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa-solid fa-chart-line"></i></div>
+                           
+                               <h6 style="font-size:14px; text-align:left">       @php  $CA = count_CA() ;  @endphp  {{$CA}} </h6>
                          </div>
                       </div>
                    </div>
-                </div>
-                <div class="col-6 col-md-4">
-                   <div class="card info-card sales-card">
+                
+                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
+                   <div class="card info-card sales-card p-3">
 
-                      <div class="card-body">
-                         <h5 class="card-title">Reste</h5>
-                         <div class="d-flex align-items-center">
-                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"> <i style="font-size:15px; color: #ad0000;" class="fa fa-coins"></i></div>
-                            <div class="ps-3">
-                               <h6>145</h6>
-                               <span class="text-success small pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1"></span>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-                <div class="col-6 col-md-4">
-                   <div class="card info-card sales-card">
-
-                      <div class="card-body">
-                         <h5 class="card-title">Saison active</h5>
-                         <div class="d-flex align-items-center">
-                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"> <i style="font-size:15px; color: #2770e6;" class="fa fa-calendar-check "></i></div>
+                      <div class="card-body pt-4" style="min-height: 87px;">
+                         <h5 style="font-size:15px;">Reste</h5>
+                         <div >
+                            <i style=" color: #ad0000; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-coins"></i></div>
                             
-                               <h6 style="font-size:large;">{{$saison_actu}} - {{$saison_actu + 1}}</h6>
-                               <span class="text-success small pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1"></span>
+                        <h6  style="font-size:14px; text-align:left">       @php  $CA_reste = count_reste_CA() ; @endphp  {{$CA_reste}}  €</h6>
+                          
+                         </div>
+                      </div>
+                   </div>
+                
+                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
+                   <div class="card info-card sales-card p-3">
+
+                      <div class="card-body pt-4" style="min-height: 87px;">
+                         <h5 style="font-size:15px;">Saison active</h5>
+                         <div>
+                            <div class=""> <i style="color: #2770e6; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-calendar-check "></i></div>
+                            
+                               <h6  style="font-size:14px; text-align:left">{{$saison_actu}} - {{$saison_actu + 1}}</h6>
+                         
+                         </div>
+                      </div>
+                   </div>
+                </div>
+
+                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
+                   <div class="card info-card sales-card p-3">
+
+                      <div class="card-body pt-4" style="min-height: 87px;">
+                         <h5 style="font-size:15px;">Inscrits</h5>
+                         <div >
+                            <div class=""> <i style=" color: #03a100 ; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-user"></i></div>
+                           
+                               <h6  style="font-size:14px; text-align:left"> @php  $nbre_inscrits = inscrits();  @endphp  {{$nbre_inscrits}} </h6>
                            
                          </div>
                       </div>
                    </div>
                 </div>
+                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
+                   <div class="card info-card sales-card p-3">
 
-                <div class="col-6 col-md-4">
-                   <div class="card info-card sales-card">
-
-                      <div class="card-body">
-                         <h5 class="card-title">Inscrits</h5>
-                         <div class="d-flex align-items-center">
-                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"> <i style="font-size:15px; color: #03a100" class="fa fa-user"></i></div>
-                            <div class="ps-3">
-                               <h6 >145</h6>
-                               <span class="text-success small pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1"></span>
-                            </div>
+                      <div class="card-body pt-4" style="min-height: 87px;">
+                         <h5 style="font-size:15px;">Déterm. Section </h5>
+                         <div >
+                            <i style=" color: #a900d4; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-question "></i> </div>
+                          
+                               <h6  style="font-size:14px; text-align:left">145</h6>
+                           
                          </div>
                       </div>
                    </div>
-                </div>
-                <div class="col-6 col-md-4">
-                   <div class="card info-card sales-card">
+                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
+                   <div class="card info-card sales-card p-3">
 
-                      <div class="card-body">
-                         <h5 class="card-title">Déterm. Section </h5>
-                         <div class="d-flex align-items-center">
-                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"><i style="font-size:15px; color: #a900d4;" class="fa fa-question"></i> </div>
-                            <div class="ps-3">
-                               <h6>145</h6>
-                               <span class="text-success small pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1"></span>
-                            </div>
+                      <div class="card-body pt-4" style="min-height: 87px;">
+                         <h5 style="font-size:15px;">Pages Visitées</h5>
+                         <div >
+                            <i style=" color: #e60000;font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-eye"></i></div>
+                          
+                               <h6  style="font-size:14px; text-align:left">{{ session('page_counter', 0) }}</h6>
+                           
                          </div>
                       </div>
-                   </div>
-                </div>
-                <div class="col-6 col-md-4">
-                   <div class="card info-card sales-card">
-
-                      <div class="card-body">
-                         <h5 class="card-title">Pages Visitées</h5>
-                         <div class="d-flex align-items-center">
-                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center"> <i style="font-size:15px; color: #e60000;" class="fa fa-eye"></i></div>
-                            <div class="ps-3">
-                               <h6>145</h6>
-                               <span class="text-success small pt-1 fw-bold"></span> <span class="text-muted small pt-2 ps-1"></span>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
                 </div>
                 
              
@@ -117,7 +108,7 @@ require_once('../app/fonction.php');
 
          <div class="card info-card sales-card">
 
-                              <div class="card-body">
+                              <div class="card-body" style="min-height: 87px;">
                                  <h5 class="card-title"></span></h5>
                                  <div class="d-flex align-items-center">
                               
@@ -145,7 +136,7 @@ require_once('../app/fonction.php');
 
 <div class="card info-card sales-card">
 
-<div class="card-body">
+<div class="card-body" style="min-height: 87px;">
    <h5 class="card-title"></span></h5>
    <div class="d-flex align-items-center">
 

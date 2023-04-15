@@ -38,7 +38,9 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\CheckFirstLoginOfDay::class,
             \App\Http\Middleware\MaintenanceMode::class,
+            \App\Http\Middleware\PageCounterMiddleware::class
         ],
+
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
