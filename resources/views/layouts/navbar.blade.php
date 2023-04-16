@@ -340,7 +340,7 @@ use Illuminate\Support\Facades\Route;
                   
                 </li>
                 <li class="dropdown">
-                  <a href="#"><span><img src="{{ asset("/assets/images/Reglements.png") }}" width="24">&nbsp;Mentions Légales</span></a>
+                  <a href="{{route('index_mentions_legales')}}"><span><img src="{{ asset("/assets/images/Reglements.png") }}" width="24">&nbsp;Mentions Légales</span></a>
                 </li>
                 <li class="dropdown">
                   <a href="#" class="liens"  data-toggle="modal" data-target="#contactModal"><span><img src="{{ asset("/assets/images/message.png") }}" width="24">&nbsp;Prendre contact</span></a>

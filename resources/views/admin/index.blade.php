@@ -92,9 +92,12 @@ require_once('../app/fonction.php');
                          <div >
                             <i style=" color: #e60000;font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-eye"></i></div>
                           
-                               <h6  style="font-size:14px; text-align:left">{{ session('page_counter', 0) }}</h6>
-                           
-                         </div>
+                               <h6  style="font-size:14px; text-align:left">{{ session('visitor_count', 0) }}</h6>
+                               @foreach(Session::get('page_count_array', []) as $page => $count)
+                              <p>{{ $page }}: {{ $count }}</p>
+                           @endforeach
+                                                      
+                </div>
                       </div>
                 </div>
                 
@@ -208,14 +211,22 @@ new Chart("myChart", {
 
 
 <script>
-var x_Values = ["Italy", "France", "Spain", "USA", "Argentina"];
+var x_Values = ['categorie-1','gym-feminine','vac-scolaires','petite-enfance','loisirs','4-5-ans-ecole-de-gym','stages-loisir','gym-rytmique','tions Legales',];
 var y_Values = [55, 49, 44, 24, 15];
 var barColors = [
-  "#b91d47",
-  "#00aba9",
-  "#2b5797",
-  "#e8c3b9",
-  "#1e7145"
+   
+                'rgb(3, 232, 252)',
+                'rgb(252, 223, 3)',
+                'rgb(252, 3, 3)',
+                'rgb(3, 252, 36)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 0, 204)',
+                'rgb(255, 145, 0)',
+                'rgb(179, 0, 255)',
+                'rgb(0, 255, 208)',
+                'rgb(255, 221, 0)',
+                'rgb(150, 150, 150)'
+
 ];
 
 new Chart("chart", {

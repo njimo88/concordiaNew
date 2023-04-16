@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Session;
+
 class PageCounterMiddleware
 {
     /**
@@ -16,7 +18,7 @@ class PageCounterMiddleware
      */
     public function handle($request, Closure $next)
             {
-              
+              /*
                 $sessionKey = 'page_counter';
                 $currentMonth = date('n'); // get the current month (1-12)
 
@@ -34,6 +36,45 @@ class PageCounterMiddleware
                 }
             
                 return $next($request);
-            }
+          
+            */
+
+                        // Get the page count array from the session
+                    $pageCountArray = Session::get('page_count_array', []);
+
+                    
+                        // Get the visitor count from the session
+                    $count = Session::get('visitor_count', 0);
+                    
+                    
+                        // Get the current page URL
+                    $currentPage = $request->url();
+
+                    // Increment the page count or add a new key-value pair
+                    if (array_key_exists($currentPage, $pageCountArray)) {
+                        $pageCountArray[$currentPage]++;
+                    } else {
+                        $pageCountArray[$currentPage] = 1;
+                    }
+
+                      
+                      // Increment the visitor count
+                    $count++;
+
+                      
+                        // Store the updated page count array in the session
+                     Session::put('page_count_array', $pageCountArray);
+
+                
+                    // Store the updated visitor count in the session
+                    Session::put('visitor_count', $count);
+                     
+                
+                    // Continue with the request
+                    return $next($request);
+
+
+
+        }
 
 }
