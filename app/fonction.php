@@ -1418,206 +1418,54 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
     return  $result;
 
 
-
     }
 
 
 
-function updateStatusMail($userEmail, $message, $receiverEmail, $userName,$bill){
-
-   
-    // Set the SMTP credentials dynamically
-$config = [
-    'driver' => "smtp",
-    'host' => "smtp.ionos.fr",
-    'port' => 465,
-    'from' => ['address' => $userEmail, 'name' => $userName],
-    'encryption' => "ssl",
-    'username' => "webmaster@gym-concordia.com",
-    'password' => "mickmickmath&67_mickmickmath&67"
-];
-
-
-if($bill->status < 70){
-    
-    Mail::mailer('smtp')->to($receiverEmail)->send(new updateStatusNopdf($userEmail, $message, $userName, $bill));
-}else{
-   // Générer les PDF
-   $pdfController = new generatePDF();
-   /*$factureContent = $pdfController->generatePDFfacture($bill->id);*/
-   $reductionFiscaleContent = $pdfController->generatePDFreduction_FiscaleOutput($bill->id);
-   $factureContent = $pdfController->generatePDFfactureOutput($bill->id);
-
-   
-    // Enregistrer les PDF dans des fichiers temporaires
-    $facturePath = storage_path('temp/facture_'.$bill->id.'.pdf');
-    $reductionFiscalePath = storage_path('temp/reduction_fiscale_'.$bill->id.'.pdf');
-
-    // Créer le répertoire temp s'il n'existe pas
-    $tempDir = storage_path('temp');
-    if (!File::exists($tempDir)) {
-        File::makeDirectory($tempDir);
-    }
-   File::put($facturePath, $factureContent);
-   File::put($reductionFiscalePath, $reductionFiscaleContent);
-   
-   // Envoyer l'e-mail
-   Mail::mailer('smtp')->to($receiverEmail)->send(new updateStatus($userEmail, $message, $userName, $bill, $reductionFiscalePath, $facturePath));
-   
-   // Supprimer les fichiers temporaires
-   File::delete($reductionFiscalePath);
-    File::delete($facturePath);
-}
-}
-class updateStatusNopdf extends \Illuminate\Mail\Mailable
-{
-
-    public $userEmail;
-    public $message;
-    public $userName;
-    public $bill;
-  
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct($userEmail, $message, $userName,$bill)
+    function nbr_inscrits_based_on_date($saison)
     {
-        $this->userEmail = $userEmail;
-        $this->message = $message;
-        $this->userName = $userName;
-        $this->bill = $bill;
+            // Date de rentree saison actuelle
+       $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->first('date_de_rentree');
+       $date_de_rentree_value = $date_de_rentree->date_de_rentree;
+
+          // modification de l'annee de la date du jour en fonction de la saison passee en parametre
+          // Date de rentree saison passee en parametre 
+
+       $original_date = new DateTime($date_de_rentree_value);
+       $new_date = $original_date->setDate($saison, $original_date->format('m'), $original_date->format('d'))->format('Y-m-d');
+
+
+        // Annee de la saison actuelle
+       $saison_active = saison_active() ;
+
+        // date d'aujourd'hui
+        $date_today = date("Y-m-d");
+
+      
+        // requete pour avoir le nombre de user inscrit au cours d'une saison donnee
+             
+       $result = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
+       ->leftjoin('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+       ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
+       ->where('type_article',0)
+       ->where('type','facture')
+       ->where('status','>',9)
+       ->where('saison',$saison)
+       ->whereBetween('date_bill', [$new_date,$date_today])
+       ->distinct()
+       ->count('liaison_shop_articles_bills.id_user');
+
+    /*   $result = $this->db->query("SELECT COUNT(*) as cc FROM `liaison_shop_articles_bills` LEFT JOIN `bills` 
+       ON bills.id_bill = liaison_shop_articles_bills.id_bill 
+       WHERE liaison_shop_articles_bills.id_shop_article = '$row->id_article_inscription'
+        AND bills.type = 'facture' AND bills.state != 'Commande suspendue'");  */
        
+     
+    return  $result;
+ 
+
+
+
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build() {
-        return $this->from($this->userEmail, $this->userName)
-                    ->view('emails.updateStatusmail')
-                    ->subject($this->bill->bill_status.' - Commande :'.$this->bill->ref)
-                    ->with([
-                        'userEmail' => $this->userEmail,
-                        'message' => $this->message,
-                        'userName' => $this->userName,
-                        'bill' => $this->bill,
-                    ]) ;
-    }
-}
 
-
-class updateStatus extends \Illuminate\Mail\Mailable
-{
-
-    public $userEmail;
-    public $message;
-    public $userName;
-    public $bill;
-    public $reductionFiscalePath;
-    public $facturePath;
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct($userEmail, $message, $userName,$bill,$reductionFiscalePath,$facturePath)
-    {
-        $this->userEmail = $userEmail;
-        $this->message = $message;
-        $this->userName = $userName;
-        $this->bill = $bill;
-        $this->reductionFiscalePath = $reductionFiscalePath;
-        $this->facturePath = $facturePath;
-    }
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build() {
-        return $this->from($this->userEmail, $this->userName)
-                    ->view('emails.updateStatusmail')
-                    ->subject($this->bill->bill_status.' - Commande :'.$this->bill->ref)
-                    ->with([
-                        'userEmail' => $this->userEmail,
-                        'message' => $this->message,
-                        'userName' => $this->userName,
-                        'bill' => $this->bill,
-                    ])
-                    ->attach($this->facturePath, [
-                        'as' => 'facture_'.$this->bill->id.'.pdf',
-                        'mime' => 'application/pdf',
-                    ])
-                    ->attach($this->reductionFiscalePath, [
-                        'as' => 'reduction_fiscale_'.$this->bill->id.'.pdf',
-                        'mime' => 'application/pdf',
-                    ]);
-    }
-}
-
-
-function HistoriqueMail($userEmail, $message, $receiverEmail, $userName,$bill, $messageEnvoye){
-
-   
-    // Set the SMTP credentials dynamically
-$config = [
-    'driver' => "smtp",
-    'host' => "smtp.ionos.fr",
-    'port' => 465,
-    'from' => ['address' => $userEmail, 'name' => $userName],
-    'encryption' => "ssl",
-    'username' => "webmaster@gym-concordia.com",
-    'password' => "mickmickmath&67_mickmickmath&67"
-];
-   Mail::mailer('smtp')->to($receiverEmail)->send(new HistoriqueMailForm($userEmail, $message, $userName, $bill, $messageEnvoye));
-   
-  
-
-}
-class HistoriqueMailForm extends \Illuminate\Mail\Mailable
-{
-
-    public $userEmail;
-    public $message;
-    public $userName;
-    public $bill;
-    public $messageEnvoye;
-  
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct($userEmail, $message, $userName,$bill, $messageEnvoye)
-    {
-        $this->userEmail = $userEmail;
-        $this->message = $message;
-        $this->userName = $userName;
-        $this->bill = $bill;
-        $this->messageEnvoye = $messageEnvoye;
-       
-    }
-
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build() {
-        return $this->from($this->userEmail, $this->userName)
-                    ->view('emails.addShopMessage')
-                    ->subject('Important - Commande :'.$this->bill->ref)
-                    ->with([
-                        'userEmail' => $this->userEmail,
-                        'message' => $this->message,
-                        'userName' => $this->userName,
-                        'bill' => $this->bill,
-                        'messageEnvoye' => $this->messageEnvoye,
-                    ]) ;
-    }
-}

@@ -21,7 +21,9 @@ require_once('../app/fonction.php');
                          <div>
                              <i  style="color: #0bad00; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa-solid fa-chart-line"></i></div>
                            
-                               <h6 style="font-size:14px; text-align:left">       @php  $CA = count_CA() ;  @endphp  {{$CA}} </h6>
+                             
+                               <h6  style="font-size:14px; text-align:left">   @php   $CA = count_CA() ;  $formatted_number = number_format($CA, 2, '.', ','); @endphp {{$formatted_number}}€</h6>
+                       
                          </div>
                       </div>
                    </div>
@@ -34,7 +36,7 @@ require_once('../app/fonction.php');
                          <div >
                             <i style=" color: #ad0000; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-coins"></i></div>
                             
-                        <h6  style="font-size:14px; text-align:left">       @php  $CA_reste = count_reste_CA() ; @endphp  {{$CA_reste}}  €</h6>
+                        <h6  style="font-size:14px; text-align:left">   @php  $CA_reste = count_reste_CA() ; $formatted_number = number_format($CA_reste, 2, '.', ','); @endphp {{$formatted_number}}€</h6>
                           
                          </div>
                       </div>
@@ -90,9 +92,12 @@ require_once('../app/fonction.php');
                          <div >
                             <i style=" color: #e60000;font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-eye"></i></div>
                           
-                               <h6  style="font-size:14px; text-align:left">{{ session('page_counter', 0) }}</h6>
-                           
-                         </div>
+                               <h6  style="font-size:14px; text-align:left">{{ session('visitor_count', 0) }}</h6>
+                               @foreach(Session::get('page_count_array', []) as $page => $count)
+                              <p>{{ $page }}: {{ $count }}</p>
+                           @endforeach
+                                                      
+                </div>
                       </div>
                 </div>
                 
@@ -103,63 +108,46 @@ require_once('../app/fonction.php');
 <div class="row">
 
 
-<div class="col-12 col-md-6">
+<div class="col-12 col-md-8">
+
+@php
+
+      $years = array();
+      
+      $stat_values_per_year = array();
+
+      for ($i = 2015; $i <= 2025; $i++) {
+
+         $years[] = $i; // add each year to the array
+
+         $stat_values_per_year[] = nbr_inscrits_based_on_date($i) ; // get the number of subscribers by year
+
+      }
+
+     // dd($stat_values_per_year);
 
 
-         <div class="card info-card sales-card">
+@endphp
+      
 
-                              <div class="card-body" style="min-height: 87px;">
-                                 <h5 class="card-title"></span></h5>
-                                 <div class="d-flex align-items-center">
-                              
-                                    <div class="ps-3">
-                                    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-         
-                                    </div>
-                                 </div>
-                              </div>
-         </div>
-
-
-
-
-
-
-
+               
+                  <h5 style="font-size:15px;">Inscrits par saison</h5>
+                  
+                  
+               <canvas id="myChart" style="width:100%;"></canvas>
 </div>
 
+           
 
-
-<div class="col-12 col-md-6">
-
-
-
-<div class="card info-card sales-card">
-
-<div class="card-body" style="min-height: 87px;">
-   <h5 class="card-title"></span></h5>
-   <div class="d-flex align-items-center">
-
-      <div class="ps-3">
-      <canvas id="chart" style="width:100%;max-width:600px"></canvas>
-
-      </div>
-   </div>
-</div>
-</div>
+            
 
 
 
 
+<div class="col-12 col-md-4">
 
 
-
-
-
-
-
-
-
+<canvas id="chart" ></canvas>
 
 </div>
 
@@ -184,39 +172,61 @@ require_once('../app/fonction.php');
     </section>
     
 <script>
-const xValues = [50,60,70,80,90,100,110,120,130,140,150];
-const yValues = [7,8,8,9,9,9,10,11,14,14,15];
+
+const xValues = <?php echo json_encode($years); ?>; 
+const yValues = <?php echo json_encode($stat_values_per_year); ?>; 
+
+
+
 
 new Chart("myChart", {
   type: "line",
   data: {
     labels: xValues,
     datasets: [{
-      fill: false,
-      lineTension: 0,
-      backgroundColor: "rgba(0,0,255,1.0)",
-      borderColor: "rgba(0,0,255,0.1)",
+      label: '',
       data: yValues
     }]
   },
   options: {
-    legend: {display: false},
-    scales: {
-      yAxes: [{ticks: {min: 6, max:16}}],
-    }
+   
   }
 });
 </script>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
-var x_Values = ["Italy", "France", "Spain", "USA", "Argentina"];
+var x_Values = ['categorie-1','gym-feminine','vac-scolaires','petite-enfance','loisirs','4-5-ans-ecole-de-gym','stages-loisir','gym-rytmique','tions Legales',];
 var y_Values = [55, 49, 44, 24, 15];
 var barColors = [
-  "#b91d47",
-  "#00aba9",
-  "#2b5797",
-  "#e8c3b9",
-  "#1e7145"
+   
+                'rgb(3, 232, 252)',
+                'rgb(252, 223, 3)',
+                'rgb(252, 3, 3)',
+                'rgb(3, 252, 36)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 0, 204)',
+                'rgb(255, 145, 0)',
+                'rgb(179, 0, 255)',
+                'rgb(0, 255, 208)',
+                'rgb(255, 221, 0)',
+                'rgb(150, 150, 150)'
+
 ];
 
 new Chart("chart", {
