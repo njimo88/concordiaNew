@@ -49,12 +49,14 @@ class PageCounterMiddleware
                     
                         // Get the current page URL
                     $currentPage = $request->url();
+                                    // Get the current page path
+                    $currentPath = $request->path();
 
                     // Increment the page count or add a new key-value pair
-                    if (array_key_exists($currentPage, $pageCountArray)) {
-                        $pageCountArray[$currentPage]++;
+                    if (array_key_exists($currentPath, $pageCountArray)) {
+                        $pageCountArray[$currentPath]++;
                     } else {
-                        $pageCountArray[$currentPage] = 1;
+                        $pageCountArray[$currentPath] = 1;
                     }
 
                       

@@ -1,8 +1,11 @@
 @extends('layouts.template')
 
 @section('content')
+@php
 require_once('../app/fonction.php');
 
+require_once(app_path().'/fonction.php');
+@endphp
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <main id="main" class="main">
@@ -92,9 +95,30 @@ require_once('../app/fonction.php');
                          <div >
                             <i style=" color: #e60000;font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-eye"></i></div>
                           
+
+                           @php
+
+                                 // un tableau avec les chemins de certaines pages specifiques
+
+                                 $top_10_cate = ['Categorie_front','SubCategorie_front/1206','SubCategorie_front/2','SubCategorie_front/100','SubCategorie_front/120','SubCategorie_front/1004','SubCategorie_front/201','SubCategorie_front/1204','Mentions',]; 
+                                 $top_10_visiteurs = array() ; 
+                            @endphp
+
+
+
                                <h6  style="font-size:14px; text-align:left">{{ session('visitor_count', 0) }}</h6>
                                @foreach(Session::get('page_count_array', []) as $page => $count)
-                              <p>{{ $page }}: {{ $count }}</p>
+                                  
+                                    @if (in_array($page,$top_10_cate))
+                                         
+                                            @php  $top_10_visiteurs[] = $count ; @endphp
+
+                                    @endif    
+
+                                  
+                                   
+                                    
+
                            @endforeach
                                                       
                 </div>
@@ -212,7 +236,7 @@ new Chart("myChart", {
 
 <script>
 var x_Values = ['categorie-1','gym-feminine','vac-scolaires','petite-enfance','loisirs','4-5-ans-ecole-de-gym','stages-loisir','gym-rytmique','tions Legales',];
-var y_Values = [55, 49, 44, 24, 15];
+var y_Values = <?php echo json_encode($top_10_visiteurs); ?>; 
 var barColors = [
    
                 'rgb(3, 232, 252)',
