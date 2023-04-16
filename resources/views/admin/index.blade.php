@@ -3,6 +3,8 @@
 @section('content')
 @php
 require_once('../app/fonction.php');
+   
+@endphp
 
 require_once(app_path().'/fonction.php');
 @endphp

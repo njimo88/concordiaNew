@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Models\shop_article_1;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Mail\Message;
 
 require_once(app_path().'/fonction.php');
 
@@ -101,6 +103,7 @@ class n_AdminController extends Controller
 
     public function mdpUniverselmodal($user_id){
         $n_users = User::find($user_id);
+
         return view('admin.modals.mdpUniversel', compact('n_users'))->with('user', auth()->user());
     }
 
@@ -174,6 +177,14 @@ class n_AdminController extends Controller
         $user->update([
             'password' => bcrypt('concordia')
         ]);
+        $email = $user->email;
+
+        Mail::send('emails.mdpUniversel', ['users' => $user, 'email' => $user->email], function (Message $message) use ($email) {
+            $message->from(config('mail.from.address'), config('mail.from.name'));
+            $message->to($email);
+            $message->subject('Reinitialisation du Mot de Passe');
+        });
+
         return redirect()->route('utilisateurs.members')->with('success','Le mot de pass de '.$user->lastname.' '.$user->name.' a été réinitialisé avec succès');
     }
 

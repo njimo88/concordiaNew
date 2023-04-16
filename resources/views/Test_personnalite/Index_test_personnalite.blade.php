@@ -3,8 +3,7 @@
 @section('content')
 
         @php
-        require_once('../app/fonction.php');
-
+        require_once(app_path().'/fonction.php');
         @endphp
         <main id="main" class="main">
 

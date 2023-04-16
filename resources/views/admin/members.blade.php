@@ -73,10 +73,8 @@
                                 <div class="row d-flex">
                                     <!-- Button trigger modal -->
                                     <div class="col-12 add_flex justify-content-center mt-4">
-                                        <div class="text-center pt-3 pb-2">
-                                            <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
-                                                alt="Check" width="60">
-                                            <h2 class="my-4">Factures Famille</h2>
+                                        <div class="text-start pt-3 pb-2">
+                                            <h1 class="my-4">Factures Famille</h1>
                                             </div>
                                     </div>
                                     <div  class="row modal-body overflow-x" id="familyBillsContainer">

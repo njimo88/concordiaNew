@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-require_once('../app/fonction.php');
+require_once(app_path().'/fonction.php');
 
 class Prendre_Contact_Controller extends Controller
 {
