@@ -1,7 +1,10 @@
 @extends('layouts.template')
 
 @section('content')
+@php
 require_once('../app/fonction.php');
+   
+@endphp
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

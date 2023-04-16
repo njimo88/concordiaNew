@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Laravel\Ui\Presets\Preset;
 use Illuminate\Support\Facades\DB;
 
-require_once('../app/fonction.php');
+require_once(app_path().'/fonction.php');
 
 class Controller_club extends Controller
 {

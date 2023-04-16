@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-require_once('../app/fonction.php');
+require_once(app_path().'/fonction.php');
 
 
 class Controller_Communication extends Controller

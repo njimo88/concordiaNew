@@ -5,7 +5,7 @@
 
 @php
 
-require_once('../app/fonction.php');
+require_once(app_path().'/fonction.php');
 $saison_active = saison_active() ;
 
 @endphp

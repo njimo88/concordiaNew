@@ -12,7 +12,7 @@ use App\Models\shop_article_0;
 use App\Models\shop_article_1;
 use App\Models\shop_article_2;
 use Illuminate\Http\Request;
-require_once('../app/fonction.php');
+require_once(app_path().'/fonction.php');
 class Article_Controller extends Controller
 
 {
