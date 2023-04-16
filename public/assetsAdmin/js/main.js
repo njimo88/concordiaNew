@@ -579,6 +579,30 @@ $('#myTable').on('click', 'thead th', function() {
   /*---------------------------------modal myTableMembers familybill---------------------------------------*/
 
   $('#myTable').on('click', '.familybill', function(){
+    console.log('test');
+    $('#factureFamille').modal('show');
+  
+    // Get the bill ID from the clicked element
+    var family_id = $(this).data('family-id');
+    
+  
+     // Make an AJAX request to retrieve the old bills
+     $.ajax({
+        
+     url: '/admin/paiement/factureFamille/' + family_id,
+     success: function(data) {
+      if (data === 'Aucune facture trouvée.') {
+        $('#familyBillsContainer').html('<div style="display: block; color: black; margin: auto; text-align: center; padding: 10px;">Aucune donnée disponible</div>');
+    } else {
+        $('#familyBillsContainer').html(data);
+    }
+     }
+     });
+     });
+
+     
+  $('#myTableMembers').on('click', '.familybill', function(){
+    console.log('test');
     $('#factureFamille').modal('show');
   
     // Get the bill ID from the clicked element
@@ -863,3 +887,68 @@ $(document).ready(function() {
         }
     });
 });
+
+
+
+/*my table Sort-------------------------------------------------------------------*/
+$('#myTableArticle').DataTable({
+  info: false,
+    bLengthChange: false,
+    paging: false, // Désactiver la pagination
+    lengthChange: false, 
+    language: {
+      search: "Rechercher&nbsp;:",
+      lengthMenu: "Afficher _MENU_ entrées",
+      zeroRecords: "Aucun résultat trouvé",
+      info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+      infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+      infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+      paginate: {
+          first: "Premier",
+          last: "Dernier",
+          next: "Suivant",
+          previous: "Précédent"
+      }
+  },
+  order: [],
+  drawCallback: function(settings) {
+    var api = this.api();
+    api.column(0, {
+      order: 'applied'
+    }).nodes();
+  },
+  columnDefs: [
+    {
+      targets: 2,
+      type: 'datetime-dd-mm-yyyy'
+    },{
+      targets: 4,
+      type: 'datetime-dd-mm-yyyy'
+    }
+  ]
+});
+
+ 
+$.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
+    var b = d.split(/\D/);
+    return new Date(b[2], b[1] - 1, b[0], b[3], b[4], b[5]);
+};
+
+
+
+
+
+// Apply the search
+$('#myTableArticle thead input').on('keyup change', function() {
+  table
+    .column($(this).parent().index() + ':visible')
+    .search(this.value)
+    .draw();
+});
+
+$('#myTableArticle').on('click', 'thead th', function() {
+  var colIndex = $(this).index();
+  var isAsc = $(this).hasClass('asc');
+  table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
+});
+/*my table end-------------------------------------------------------------------*/

@@ -373,12 +373,21 @@ class BillsController extends Controller
     public function family($family_id)
     {
         $bill = DB::table('bills')
-        ->join('users', 'bills.user_id', '=', 'users.user_id')
-        ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-        ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-        ->where('bills.family_id', $family_id)
-         ->select('bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.image as image', 'users.name', 'users.lastname')
-        ->get();
+    ->join('users', 'bills.user_id', '=', 'users.user_id')
+    ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+    ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+    ->where('bills.family_id', $family_id)
+    ->select('bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.image as image', 'users.name', 'users.lastname')
+    ->get();
+
+    foreach ($bill as $b) {
+        $b->liaisons = DB::table('liaison_shop_articles_bills')
+            ->join('users', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+            ->where('bill_id', $b->id)
+            ->select('liaison_shop_articles_bills.*', 'users.name as liaison_user_name', 'users.lastname as liaison_user_lastname')
+            ->get();
+    }
+    
 
         if ($bill->isEmpty()) {
             return 'Aucune facture trouvée.';

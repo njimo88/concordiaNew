@@ -26,13 +26,11 @@ $date = Carbon::now();
 //echo date("d/m/Y", strtotime($date));
  
  ?>
-              <div class="row d-flex justify-content-between pt-5">
+              <div class="row d-flex justify-content-between p-2">
                 <div class="col-md-6">
                   <h1>Modification d'un billet de blog</h1>
                 </div>
-                <div class="col-6 d-flex justify-content-end px-4">
-                        <a href="{{route('index')}}"><button class="btn btn-warning">Retour</button></a>
-                </div>
+                
               </div>
 
 @foreach($blog as $data1)
@@ -41,15 +39,19 @@ $date = Carbon::now();
 
             
 
-                  
-            <div class="row">
-                <div class="row">
-            <div data-alert class="alert alert-info">{{$data1->status}}</div>
+<div class="row d-flex justify-content-between">
+  <div data-alert class="alert alert-info mb-3 col-6">{{$data1->status}}</div>
+  <div class="text-end col-6">
+    <a target="_blank" href="{{ route('Simple_Post', ['id' => $data1->id_blog_post_primaire]) }}" class="btn btn-dark rounded-pill px-4 py-2">
+      View Post
+    </a>
+  </div>
+</div>
+
+
                  <div class="row">
 
-            <div>
 
-<div class="container mt-5">
 
 <form  method="POST" action="{{route('edit_blog',$Id)}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
         @csrf
@@ -99,7 +101,7 @@ $date = Carbon::now();
 
 <br>
 
-  <div class="row pt-5" >
+  <div class="row pt-3" >
     <div class="col-sm-4" style="background-color:LightGreen; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;">
 
       <div class="col-md-12">

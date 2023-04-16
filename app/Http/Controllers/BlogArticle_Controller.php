@@ -19,9 +19,11 @@ class BlogArticle_Controller extends Controller
     {
         $requete_article = Shop_article::paginate(50) ;
         $requete_blog  =   A_Blog_Post::paginate(50) ;
-        //$requete_user  =   User::select('user_id','name')->get();
-         $requete_user = DB::table('users')
-        ->join('blog_posts', 'blog_posts.id_user', '=', 'users.user_id')->paginate(50);
+        $requete_user = DB::table('users')
+        ->join('blog_posts', 'blog_posts.id_user', '=', 'users.user_id')
+        ->orderBy('blog_posts.date_post', 'desc') 
+        ->paginate(50);
+
 
         return view('BlogArticle_Backoffice/BlogArticle_index',compact('requete_blog','requete_article','requete_user'))->with('user', auth()->user()) ;
 
@@ -34,7 +36,6 @@ class BlogArticle_Controller extends Controller
         $blog  =  A_Blog_Post::where('id_blog_post_primaire', $id)->get();
         $Categorie1 = A_Categorie1::get() ;
         $Categorie2 = A_Categorie2::get() ;
-
         return view('BlogArticle_Backoffice/BlogArticle_edit_blog',compact('blog','Categorie2','Categorie1','Id'))->with('user', auth()->user()) ;
 
     }

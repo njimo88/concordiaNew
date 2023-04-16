@@ -8,7 +8,16 @@
                     {{ session()->get('success') }}
                 </div>
             @endif
-        
+            <div class="pagetitle">
+                <h1>Liste des articles</h1>
+                <nav>
+                   <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                      <li class="breadcrumb-item">Blog</li>
+                      <li class="breadcrumb-item active">Articles</li>
+                   </ol>
+                </nav>
+             </div>     
 
 <div class="container">
 	<div class="row">
@@ -17,13 +26,13 @@
     <div class="table-responsive">
     
 
-                        <table style="width:100%;" id="myTable" class="table table-bordred table-striped">
+                        <table style="width:100%;" id="myTableArticle" class="table table-bordred table-striped">
                               <thead>
                    
                    
                      <th>Titre</th>
-                     <th>Date de publication</th>
                      <th>Auteur</th>
+                     <th>Date de publication</th>
                      <th>Dernier éditeur </th>
                      <th>Date de modification</th>
                      <th>Statut</th>
@@ -36,15 +45,16 @@
                             <tbody>
                                
                                 @foreach($requete_user as $data)
-    <tr >
+    <tr style="background-color: {{ getAuthorColor($data->lastname, $data->name) }};">
       
         <td>{{$data->titre}}</td>
 
-        <td><?php echo date("d/m/Y à H:i", strtotime($data->date_post)); ?></td>
+        
       
-        <td>{{$data->name}}</td>
+        <td>{{$data->lastname}} {{$data->name}}</td>
+        <td><?php echo date("d/m/Y à H:i", strtotime($data->date_post)); ?></td>
            
-        <td>{{$data->name}}</td>
+        <td>{{$data->lastname}} {{$data->name}}</td>
 
     
         <td><?php echo date("d/m/Y à H:i", strtotime($data->updated_at)); ?></td>
