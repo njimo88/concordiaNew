@@ -130,8 +130,17 @@
 </main>  
 <script>
   function chooseProfileImage(user_id) {
-    $('#user-input-' + user_id).click();
+    const currentImageUrl = $('#user-img-' + user_id).attr('src');
+    console.log(currentImageUrl);
+    const frozenDirectory = '/uploads/users/froze'; 
+console.log(frozenDirectory);
+    if (currentImageUrl.includes(frozenDirectory)) {
+        alert("L'upload d'image est désactivé pour cet utilisateur.");
+    } else {
+        $('#user-input-' + user_id).click();
+    }
 }
+
 
 
 $('input[id^="user-input-"]').on('change', function () {
