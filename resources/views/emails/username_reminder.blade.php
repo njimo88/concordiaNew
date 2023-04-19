@@ -14,7 +14,7 @@
         Voici l'ensemble des personnes présentes dans notre base de données qui sont associées au mail {{ $email }} : <br><br>
         
         @foreach ($users as $user)
-        {{ $user->lastname }} {{ $user->name }} ({{ $user->family_level }})  a comme nom d'utilisateur : {{ $user->username }} <br> 
+        {{ $user->lastname }} {{ $user->name }} ({{ $user->family_level }})  a comme nom d'utilisateur : <b>{{ $user->username }}</b><br><br>
         @endforeach
         Si vous éprouvez des difficultés de connexion, n'hésitez pas à contacter le bureau de l'association par téléphone ou email.
         <br>

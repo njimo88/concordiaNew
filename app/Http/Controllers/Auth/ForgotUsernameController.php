@@ -29,7 +29,7 @@ class ForgotUsernameController extends Controller
         Mail::send('emails.username_reminder', ['users' => $users, 'email' => $email], function (Message $message) use ($email) {
             $message->from(config('mail.from.address'), config('mail.from.name'));
             $message->to($email);
-            $message->subject('Rappel d\'identifiant');
+            $message->subject('Rappel Identifiants [Gym Concordia]');
         });
         
 

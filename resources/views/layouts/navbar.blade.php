@@ -172,11 +172,11 @@ use Illuminate\Support\Facades\Route;
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
       @guest
       <a href="{{ route('A_blog') }}" class="logo d-flex align-items-center">
-        <img style="max-width: 75px !important" src="{{ asset('assets\images\gym.png') }}" alt="">
+        <img style="max-width: 200px !important" src="{{ asset('assets\images\LogoHB.png') }}" alt="">
       </a>
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="{{ route('A_blog') }}"><span><img src="{{ asset("/assets/images/Accueil.png") }}" width="24">&nbsp;Acceuil</span></a></li>
+          <li><a href="{{ route('A_blog') }}"><span><img src="{{ asset("/assets/images/Accueil.png") }}" width="24">&nbsp;Accueil</span></a></li>
           <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Club.png") }}" width="24">&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
             <ul>
               <li class="dropdown">
@@ -315,11 +315,11 @@ use Illuminate\Support\Facades\Route;
         <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
       @else
         <a href="{{ route('A_blog') }}" class="logo d-flex align-items-center">
-          <img style="max-width: 100px !important" src="{{ asset('assets\images\gym.png') }}" alt="">
+          <img style="max-width: 200px !important" src="{{ asset('assets\images\LogoHB.png') }}" alt="">
         </a>
         <nav id="navbar" class="navbar">
           <ul>
-            <li><a href="{{ route('A_blog') }}"><span><img src="{{ asset("/assets/images/Accueil.png") }}" width="24">&nbsp;Acceuil</span></a></li>
+            <li><a href="{{ route('A_blog') }}"><span><img src="{{ asset("/assets/images/Accueil.png") }}" width="24">&nbsp;Accueil</span></a></li>
             <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Club.png") }}" width="24">&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
               <ul>
                 <li class="dropdown">
@@ -455,7 +455,7 @@ use Illuminate\Support\Facades\Route;
                 <img style="max-height: 35px" class="rounded-circle" src="{{ asset('assets\images\user.jpg') }}" alt="male">
              @elseif (auth()->user()->gender == 'female')
                 <img style="max-height: 35px" class="rounded-circle" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
-             @endif{{ auth()->user()->name }}</span> <i class="bi bi-chevron-down dropdown-indicator"></i>
+             @endif <span style="font-weight: 100">{{ auth()->user()->lastname }} </span>{{ auth()->user()->name }}</span> <i class="bi bi-chevron-down dropdown-indicator"></i>
               </a>
               
               <ul>

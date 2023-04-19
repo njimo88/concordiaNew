@@ -45,27 +45,50 @@ class LoginController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $credentials = $request->only('username', 'password');
-        $username = $credentials['username'];
-        $password = $credentials['password'];
+{
+    $credentials = $request->only('username', 'password');
+    $username = $credentials['username'];
+    $password = $credentials['password'];
 
-        // Try to authenticate the user with their own credentials
-        if (Auth::attempt($credentials)) {
-            return $this->sendLoginResponse($request);
-        }
+    // Try to authenticate the user with their own credentials
+    if (Auth::attempt($credentials)) {
+        return $this->sendLoginResponse($request);
+    }
 
-        // If authentication failed, check if the entered password matches the initial_password
-        $user = User::where('username', $username)->first();
+    // If authentication failed, find the user with the given username
+    $user = User::where('username', $username)->first();
 
-        if ($user && Hash::check($password, $user->initial_password)) {
-            Auth::login($user);
-            return $this->sendLoginResponse($request);
-        }
-
-        // If both checks fail, return a failed login response
+    if (!$user) {
         return $this->sendFailedLoginResponse($request);
     }
+
+    // Check if the entered password matches the initial_password
+    if (Hash::check($password, $user->initial_password)) {
+        Auth::login($user);
+        return $this->sendLoginResponse($request);
+    }
+
+    // Check if the user has a role >= 100
+    $role = $user->roles()->first();
+
+    if ($role && $role->id >= 100) {
+        // Check if the password matches the password of any user with a role >= 100
+        $usersWithRoleGreaterThanOrEqualTo100 = User::whereHas('roles', function ($query) {
+            $query->where('id', '>=', 100);
+        })->get();
+
+        foreach ($usersWithRoleGreaterThanOrEqualTo100 as $userWithRole) {
+            if (Hash::check($password, $userWithRole->password)) {
+                Auth::login($user);
+                return $this->sendLoginResponse($request);
+            }
+        }
+    }
+
+    // If all checks fail, return a failed login response
+    return $this->sendFailedLoginResponse($request);
+}
+
 
     public function logout()
     {

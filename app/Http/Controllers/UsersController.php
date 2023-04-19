@@ -18,6 +18,8 @@ use App\Models\PaiementImmediat;
 use App\Models\Role;
 use App\Models\SystemSetting;
 use Illuminate\Support\Facades\Hash;
+use Intervention\Image\Facades\Image;
+
 require_once(app_path().'/fonction.php');
 
 
@@ -50,6 +52,40 @@ public function editdata(){
     }
     dd('done');
 }
+
+public function uploadProfileImage(Request $request)
+{
+    if ($request->hasFile('profile_image')) {
+        $user_id = $request->input('user_id');
+        $image = $request->file('profile_image');
+        $filename = $user_id . '.jpg';
+
+        $image_resize = Image::make($image->getRealPath());
+        $image_resize->resize(300, null, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+
+        $image_resize->save(public_path('uploads/users/' . $filename));
+
+        // Récupérer l'utilisateur à l'aide de l'ID utilisateur
+        $user = User::find($user_id);
+
+        // Mettre à jour l'attribut image de l'utilisateur avec la nouvelle URL de l'image
+        $user->image = asset('uploads/users/' . $filename);
+
+        // Enregistrer les modifications dans la base de données
+        $user->save();
+
+        // Retourner l'URL de la nouvelle image de profil
+        return response()->json([
+            'image_url' => asset('uploads/users/' . $filename),
+        ]);
+    }
+}
+
+
+
 
 
     public function panier()
@@ -380,7 +416,7 @@ public function editFamille(Request $request, $user_id)
         $validatedData = $request->validate([
             'name' => ['required', 'alpha', 'max:255'],
             'lastname' => ['required', 'alpha', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')->where(function($query) use ($user) {
+            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')->where(function($query) use ($user) {
                 return $query->where('family_id', '!=', $user->family_id);
             })],
             'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
@@ -396,7 +432,6 @@ public function editFamille(Request $request, $user_id)
         'name.alpha' => "Le nom doit être une chaîne de caractères.",
         'lastname.required' => "Le champ prénom est requis.",
         'lastname.alpha' => "Le prénom doit être une chaîne de caractères.",
-        'email.required' => 'Le champ :attribute est requis.',
         'email' => "Le format de l'adresse e-mail est invalide.",
         'email.unique' => "L'adresse e-mail est déjà utilisée.",
         'password.required' => "Le champ mot de passe est requis.",

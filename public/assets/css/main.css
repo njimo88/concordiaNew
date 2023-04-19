@@ -2737,8 +2737,9 @@ section {
 }
 
 .form-heading img {
-  width: 100px;
+  width: 300px;
   height: auto;
+  margin-bottom: 20px;
 }
 
 .form-heading p {
@@ -3151,4 +3152,8 @@ button:hover {
   -webkit-transform: scale(1.2); /* Safari 3-8 */
   transform: scale(1.2);
   }
+
+  .imgcursor:hover{
+    cursor: pointer;
+    }
 /*------------------------------------------------END paiment page ----------------------------------------------------------------*/

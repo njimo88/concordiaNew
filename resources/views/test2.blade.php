@@ -13,7 +13,7 @@
       </a>
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="{{ route('A_blog') }}">Acceuil</a></li>
+          <li><a href="{{ route('A_blog') }}">Accueil</a></li>
           <li class="dropdown"><a href="#"><span>Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
             <ul>
               <li><a href="#">Le Club</a></li>
@@ -69,7 +69,7 @@
       </a>
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="{{ route('A_blog') }}">Acceuil</a></li>
+          <li><a href="{{ route('A_blog') }}">Accueil</a></li>
           <li class="dropdown"><a href="#"><span>Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
             <ul>
               <li><a href="#">Le Club</a></li>

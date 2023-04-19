@@ -11,8 +11,8 @@
         Madame, Monsieur,<br><br>
 
 Vous avez demandé un changement de mot de passe sur notre site : gym-concordia.com<br>
-Vous retrouverez ci-dessous le mot de passe provisoire :<br>
-Nouveau Mot de Passe : {{ $password }}<br>
+Vous retrouverez ci-dessous le mot de passe provisoire :<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp; Nouveau Mot de Passe : <b>{{ $password }}</b><br>
 Si vous n'avez jamais demandé de modification, il se peut que quelqu'un essaye d'usurper votre compte. Veuillez contacter l'administrateur du site pour sécuriser votre accès.<br>
 <br><br>
 Cordialement,<br><br>

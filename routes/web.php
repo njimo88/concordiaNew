@@ -56,6 +56,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users/family/addEnfant', [App\Http\Controllers\UsersController::class, 'addEnfant'])->name('users.addEnfant');
     Route::put('/users/family/editFamille/{user_id}', [App\Http\Controllers\UsersController::class, 'editFamille'])->name('users.editFamille');
     Route::get('/users/family/detailsUser/{user_id}', [App\Http\Controllers\UsersController::class, 'detailsUser']);
+    Route::post('/upload/{user}', [UsersController::class, 'uploadImage']);
+    Route::post('/uploadProfileImage', [UsersController::class, 'uploadProfileImage'])->name('uploadProfileImage');
+
+
     Route::get('/modif', [App\Http\Controllers\UsersController::class, 'editdata']);
 
     Route::get('/users/profils', [App\Http\Controllers\UsersController::class, 'edit'])->name('users.edit-profil');
