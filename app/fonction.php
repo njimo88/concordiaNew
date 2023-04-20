@@ -1455,14 +1455,34 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
        ->distinct()
        ->count('liaison_shop_articles_bills.id_user');
 
+
+
+       $result_old_bills = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
+       ->leftjoin('old_bills', 'liaison_shop_articles_bills.bill_id', '=', 'old_bills.id')
+       ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
+       ->where('type_article',0)
+       ->where('type','facture')
+       ->where('status','>',9)
+       ->where('saison',$saison)
+       ->whereBetween('date_bill', [$new_date,$date_today])
+       ->distinct()
+       ->count('liaison_shop_articles_bills.id_user');
+
+
+       $final_result =  $result +  $result_old_bills  ;
+
+
+
+
+
+
     /*   $result = $this->db->query("SELECT COUNT(*) as cc FROM `liaison_shop_articles_bills` LEFT JOIN `bills` 
        ON bills.id_bill = liaison_shop_articles_bills.id_bill 
        WHERE liaison_shop_articles_bills.id_shop_article = '$row->id_article_inscription'
         AND bills.type = 'facture' AND bills.state != 'Commande suspendue'");  */
        
      
-    return  $result;
- 
+    return   $final_result ;
 
 
 

@@ -175,6 +175,8 @@ require_once(app_path().'/fonction.php');
 
 <canvas id="chart" ></canvas>
 
+
+
 </div>
 
 
