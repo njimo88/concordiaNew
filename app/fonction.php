@@ -1428,6 +1428,12 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
        $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->first('date_de_rentree');
        $date_de_rentree_value = $date_de_rentree->date_de_rentree;
 
+
+
+
+
+
+
           // modification de l'annee de la date du jour en fonction de la saison passee en parametre
           // Date de rentree saison passee en parametre 
 
@@ -1484,8 +1490,17 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
      
     return   $final_result ;
 
-
-
     }
+
+
+    function generateArray($start, $end, $step) {
+        $array = array();
+        for ($i = $start; $i <= $end; $i += $step) {
+          $array[] = $i;
+        }
+        return $array;
+      }
+
+
 
 

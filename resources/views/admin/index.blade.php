@@ -118,10 +118,12 @@ require_once(app_path().'/fonction.php');
                                     @endif    
 
                                   
-                                   
-                                    
+                                  
+                                  
 
                            @endforeach
+
+                        @php // dd($top_10_visiteurs)  ; @endphp
                                                       
                 </div>
                       </div>
@@ -139,18 +141,16 @@ require_once(app_path().'/fonction.php');
 @php
 
       $years = array();
-      
+      $years  = generateArray($annee_creation,$annee_actu,1);
       $stat_values_per_year = array();
 
-      for ($i = 2015; $i <= 2025; $i++) {
-
-         $years[] = $i; // add each year to the array
+      foreach ($years as $i) {
 
          $stat_values_per_year[] = nbr_inscrits_based_on_date($i) ; // get the number of subscribers by year
 
       }
 
-     // dd($stat_values_per_year);
+    
 
 
 @endphp
@@ -207,6 +207,7 @@ const yValues = <?php echo json_encode($stat_values_per_year); ?>;
 
 
 
+
 new Chart("myChart", {
   type: "line",
   data: {
@@ -229,18 +230,11 @@ new Chart("myChart", {
 
 
 
-
-
-
-
-
-
-
-
-
 <script>
+    
 var x_Values = ['categorie-1','gym-feminine','vac-scolaires','petite-enfance','loisirs','4-5-ans-ecole-de-gym','stages-loisir','gym-rytmique','tions Legales',];
-var y_Values = <?php echo json_encode($top_10_visiteurs); ?>; 
+//var y_Values = <?php echo json_encode($top_10_visiteurs); ?>; 
+var y_Values = [55, 49, 44, 24, 15,2,2,2,2];
 var barColors = [
    
                 'rgb(3, 232, 252)',

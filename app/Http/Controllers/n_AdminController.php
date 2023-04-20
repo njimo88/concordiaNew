@@ -34,7 +34,26 @@ class n_AdminController extends Controller
             return view('Statistiques/Home_stat_teacher',compact('shop_article_lesson'))->with('user', auth()->user());
 
         }else{
-            return view('admin.index')->with('user', auth()->user());
+            // evolution du graphe nbre inscrit en annee glissante sur 10 ans
+                    $annee_actu = saison_active() ; // recupere l'annee de la saison active
+                    // recupere l'annee du debut des activites de l'association (au depart 2015)
+                    $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->first('value');
+                    $annee_creation = $date_de_rentree->value;
+
+                    // la difference entre l'annee de la saison actuelle et celle de la saison encore
+                    $diff_year = $annee_actu - $annee_creation ;
+
+                    // si l'ecart entre les deux annees est superieures a 10 alors on fait une
+                    // requete qui va incrementer d'une unite l'annee de creation pour qu'on reste toujours sur 10 ans d'ecart dans la BD 
+                    if ($diff_year>10){
+                        DB::table('system')->where('name', 'date_de_rentree')->increment('value');
+                    }
+                   
+                   
+
+                   
+
+            return view('admin.index',compact('annee_creation','annee_actu'))->with('user', auth()->user());
         }
 
 
