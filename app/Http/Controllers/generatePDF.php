@@ -17,13 +17,19 @@ class generatePDF extends Controller
     public function generatePDFreduction_FiscaleOutput($id)
     {
         // Récupération des informations de facture
-        $bill = DB::table('bills')
+        $billsQuery = DB::table('bills')
             ->join('users', 'bills.user_id', '=', 'users.user_id')
             ->join('bills_status', 'bills.status', '=', 'bills_status.id')
             ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
             ->where('bills.id', $id)
-            ->select('bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate')
-            ->first();
+            ->select('bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate');
+        $oldBillsQuery = DB::table('old_bills')
+            ->join('users', 'old_bills.user_id', '=', 'users.user_id')
+            ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+            ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+            ->where('old_bills.id', $id)
+            ->select('old_bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate');
+        $bill = $billsQuery->union($oldBillsQuery)->first();
         
         // Chargement de l'image de fond
         $image = Image::make(public_path('assets/images/Page-CERFA-1.png'));
@@ -125,19 +131,25 @@ class generatePDF extends Controller
          }
          
          // Send the merged PDF to the browser for download
-         return $pdf->Output('generatePDF.pdf', 'S');
+         return $pdf->Output('Facture-'.$bill->id.'.pdf', 'S');
     }
 
     public function generatePDFreduction_Fiscale($id)
     {
         // Récupération des informations de facture
-        $bill = DB::table('bills')
+        $billsQuery = DB::table('bills')
             ->join('users', 'bills.user_id', '=', 'users.user_id')
             ->join('bills_status', 'bills.status', '=', 'bills_status.id')
             ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
             ->where('bills.id', $id)
-            ->select('bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate')
-            ->first();
+            ->select('bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate');
+        $oldBillsQuery = DB::table('old_bills')
+            ->join('users', 'old_bills.user_id', '=', 'users.user_id')
+            ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+            ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+            ->where('old_bills.id', $id)
+            ->select('old_bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate');
+        $bill = $billsQuery->union($oldBillsQuery)->first();
         
         // Chargement de l'image de fond
         $image = Image::make(public_path('assets/images/Page-CERFA-1.png'));
@@ -239,20 +251,26 @@ class generatePDF extends Controller
          }
          
          // Send the merged PDF to the browser for download
-         $pdf->Output('generatePDF.pdf', 'D');
+         $pdf->Output('RedFiscale-'.$bill->id.'.pdf', 'D');
     }
 
     
     public function generatePDFfacture($id)
 {
     // Récupération des informations de facture
-    $bill = DB::table('bills')
-        ->join('users', 'bills.user_id', '=', 'users.user_id')
-        ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-        ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-        ->where('bills.id', $id)
-        ->select('bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate')
-        ->first();
+    $billsQuery = DB::table('bills')
+            ->join('users', 'bills.user_id', '=', 'users.user_id')
+            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+            ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+            ->where('bills.id', $id)
+            ->select('bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate');
+        $oldBillsQuery = DB::table('old_bills')
+            ->join('users', 'old_bills.user_id', '=', 'users.user_id')
+            ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+            ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+            ->where('old_bills.id', $id)
+            ->select('old_bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate');
+        $bill = $billsQuery->union($oldBillsQuery)->first();
 
     // Récupération des informations de produits
     $shop = DB::table('liaison_shop_articles_bills')
@@ -412,7 +430,7 @@ class generatePDF extends Controller
 
     // Conversion de l'image modifiée en PDF
     $pdf = PDF::loadHTML('<img src="data:image/' . $image->mime . ';base64,' . base64_encode($image->encode()) . '">');
-    return $pdf->download('bill.pdf');}
+    return $pdf->download('Facture-'.$bill->id.'.pdf');}
 
 
     elseif ($shop->count() > 7 && $shop->count() < 23) {
@@ -659,7 +677,7 @@ for ($pageIndex = 1; $pageIndex <= $pageCount2; $pageIndex++) {
 }
 
 // Send the merged PDF to the browser for download
-$pdf->Output('bill.pdf', 'D');
+$pdf->Output('Facture-'.$bill->id.'.pdf', 'D');
 
 
 
@@ -981,7 +999,7 @@ for ($pageIndex = 1; $pageIndex <= $pageCount2; $pageIndex++) {
 }
 
 // Send the merged PDF to the browser for download
-$pdf->Output('bill.pdf', 'D');
+$pdf->Output('Facture-'.$bill->id.'.pdf', 'D');
 
 
  
@@ -992,13 +1010,20 @@ $pdf->Output('bill.pdf', 'D');
 public function generatePDFfactureOutput($id)
 {
     // Récupération des informations de facture
-    $bill = DB::table('bills')
-        ->join('users', 'bills.user_id', '=', 'users.user_id')
-        ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-        ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-        ->where('bills.id', $id)
-        ->select('bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate')
-        ->first();
+    $billsQuery = DB::table('bills')
+            ->join('users', 'bills.user_id', '=', 'users.user_id')
+            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+            ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+            ->where('bills.id', $id)
+            ->select('bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate');
+        $oldBillsQuery = DB::table('old_bills')
+            ->join('users', 'old_bills.user_id', '=', 'users.user_id')
+            ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+            ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+            ->where('old_bills.id', $id)
+            ->select('old_bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate');
+
+        $bill = $billsQuery->union($oldBillsQuery)->first();
 
     // Récupération des informations de produits
     $shop = DB::table('liaison_shop_articles_bills')
@@ -1156,7 +1181,7 @@ public function generatePDFfactureOutput($id)
 
     // Conversion de l'image modifiée en PDF
     $pdf = PDF::loadHTML('<img src="data:image/' . $image->mime . ';base64,' . base64_encode($image->encode()) . '">');
-    return $pdf->download('bill.pdf');}
+    return $pdf->download('Facture-'.$bill->id.'.pdf');}
 
 
     elseif ($shop->count() > 7 && $shop->count() < 23) {
@@ -1403,7 +1428,7 @@ for ($pageIndex = 1; $pageIndex <= $pageCount2; $pageIndex++) {
 }
 
 // Send the merged PDF to the browser for download
-$pdf->Output('bill.pdf', 'D');
+$pdf->Output('Facture-'.$bill->id.'.pdf', 'D');
 
 
 
@@ -1727,7 +1752,7 @@ for ($pageIndex = 1; $pageIndex <= $pageCount2; $pageIndex++) {
 }
 
 // Send the merged PDF to the browser for download
-$pdf->Output('bill.pdf', 'D');
+$pdf->Output('Facture-'.$bill->id.'.pdf', 'D');
 
 
  

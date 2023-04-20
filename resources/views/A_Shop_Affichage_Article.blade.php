@@ -118,7 +118,8 @@
 
                                                                 if($r == $room->id_room and $norepeat == TRUE){
                                                                         echo"<br>";
-                                                                        echo " <b>Lieu: </b> <small><a class='a' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a></small>";
+                                                                        echo "<b>Lieu:</b> <small style='font-size: 13px;'><a href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a></small>";
+
                                                                         
                                                                         $norepeat = FALSE ;
                                                                         echo"</br>";

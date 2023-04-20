@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<main class="main" id="main"  style="background-image: url('{{asset("/assets/images/background.png")}}')">
+<main class="main" id="main"  style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height:100vh;">
 
 
 <div style="background-color: white;" class="container  justify-content-center">
@@ -172,8 +172,8 @@
         <h3 class="my-2">Détail Facture</h3> <hr>
       </div>
     </div>
-
-    <table id="" style="width: 98%; margin:0px auto !important"  class="table ">
+    @if (count($shop) > 0)
+    <table id="" style="width: 98%; margin:0px auto !important"  class="table">
       <thead>
           <th > <a>Désignation</a></th>
           <th ><a>Quantité</a></th>
@@ -225,6 +225,16 @@
           
       </tbody>
   </table>
+  @else
+    <div class="row ">
+        <div class="col-12 d-flex justify-content-center ">
+            <h4 class="mt-4 ">Aucune information disponible.</h4>
+        </div>
+    </div>
+@endif
+  @if (auth()->user()->role > 5)
+    
+  
   <div class="row border border-dark my-5 mx-2">
     <div class="col-12 d-flex justify-content-center border-bottom -border-dark bg-secondary">
       <h3 class="my-2">Historique des modification :</h3> <hr>
@@ -299,9 +309,10 @@
     </form>
   </div>
   
-
+  @endif
   
 </div>
+
 <div style="height: 25px"></div>
 </main>
 @endsection
