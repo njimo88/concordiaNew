@@ -6,7 +6,7 @@
 <div class="py-5" style="min-height:100vh; background-image: url('{{asset("/assets/images/background.png")}}'); color:#fff;">
     <div class="container border border-dark" style=" background : #fff">
         <div class="row d-flex justify-content-center">
-            <div class="col-11 d-flex justify-content-between   text-dark my-4 p-5">
+            <div class="col-11 d-flex justify-content-between   text-dark p-4">
                 <div>
                     <h1>Liste des factures/Devis</h1>
                 </div>
@@ -38,14 +38,14 @@
                                                 </div>
                                         @endif
                                     </div>
-                                    <form>
-                                        <div class="form-check">
+                                    <form class="row mb-3">
+                                        <div class="form-check col-1">
                                             <input class="form-check-input" type="checkbox" value="" id="factureCheckbox" checked>
                                             <label class="form-check-label" for="factureCheckbox">
                                                 Facture
                                             </label>
                                         </div>
-                                        <div class="form-check">
+                                        <div class="form-check col-2">
                                             <input class="form-check-input" type="checkbox" value="" id="devisCheckbox" checked>
                                             <label class="form-check-label" for="devisCheckbox">
                                                 Devis
@@ -53,7 +53,7 @@
                                         </div>
                                     </form>
                                     <div class="overflow-x">
-                                        <table style=" border: 1px solid ;background : #fff;" id="myTable"  class="table cust-datatable dataTable no-footer">
+                                        <table style=" border: 1px solid ;background : #fff;" id="myTablefacture"  class="table cust-datatable dataTable no-footer">
                                             <thead>
                                                 <th style="min-width:50px;"> <a>ID Facture</a></th>
                                                 <th style="min-width:150px;"><a>Nom</a></th>

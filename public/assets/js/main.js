@@ -370,6 +370,66 @@ $('#myTable').on('click', 'thead th', function() {
   table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
 });
 /*my table end-------------------------------------------------------------------*/
+/*my table myTablefacture-------------------------------------------------------------------*/
+$('#myTablefacture').DataTable({
+  pageLength: 100,
+  info: false,
+  "language": {
+    "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+  },
+  bLengthChange: false,
+  searching: false, 
+  order: [[1, 'asc']],
+  drawCallback: function(settings) {
+    var api = this.api();
+    api.column(0, {
+      order: 'applied'
+    }).nodes();
+  },
+  columnDefs: [
+    {
+      targets: 3,
+      type: 'datetime-dd-mm-yyyy'
+    },{
+      targets: 4,
+      type: 'payment-total-amount'
+    }
+  ],
+  "language": {
+    "paginate": {
+      "previous": '<button type="button" class="btn btn-light mb-4"><i class="fa-solid fa-chevron-left"></i></button>',
+      "next": '<button type="button" class="btn btn-light mb-4"><i class="fa-solid fa-chevron-right"></i></button>'
+    }
+  }
+});
+
+
+
+$.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
+    var b = d.split(/\D/);
+    return new Date(b[2], b[1] - 1, b[0], b[3], b[4], b[5]);
+};
+
+$.fn.dataTable.ext.type.order['payment-total-amount-pre'] = function ( d ) {
+  return parseFloat(d.replace(' ', '').replace(',', '.'));
+};
+
+
+
+// Apply the search
+$('#myTablefacture thead input').on('keyup change', function() {
+  table
+    .column($(this).parent().index() + ':visible')
+    .search(this.value)
+    .draw();
+});
+
+$('#myTablefacture').on('click', 'thead th', function() {
+  var colIndex = $(this).index();
+  var isAsc = $(this).hasClass('asc');
+  table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
+});
+/*my table end-------------------------------------------------------------------*/
 
 /*Factures/Devis-------------------------------------------------------------------*/
 

@@ -349,7 +349,7 @@ foreach ($paniers as $panier) {
 
 
     public function family(){
-        $n_users = User::where('family_id', Auth::user()->family_id)->get();
+        $n_users = User::where('family_id', Auth::user()->family_id)->orderBy('family_level', 'desc')->get();
             if (is_null($n_users)) {
                 return view('users.family')->with('user', auth()->user());
             } else {

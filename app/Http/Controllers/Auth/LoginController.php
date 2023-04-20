@@ -68,22 +68,20 @@ class LoginController extends Controller
         return $this->sendLoginResponse($request);
     }
 
-    // Check if the user has a role >= 100
-    $role = $user->roles()->first();
+ 
+    
+    // Check if the password matches the password of any user with a role >= 100
+    $usersWithRoleGreaterThanOrEqualTo100 = User::whereHas('roles', function ($query) {
+        $query->where('id', '>=', 100);
+    })->get();
 
-    if ($role && $role->id >= 100) {
-        // Check if the password matches the password of any user with a role >= 100
-        $usersWithRoleGreaterThanOrEqualTo100 = User::whereHas('roles', function ($query) {
-            $query->where('id', '>=', 100);
-        })->get();
-
-        foreach ($usersWithRoleGreaterThanOrEqualTo100 as $userWithRole) {
-            if (Hash::check($password, $userWithRole->password)) {
-                Auth::login($user);
-                return $this->sendLoginResponse($request);
-            }
+    foreach ($usersWithRoleGreaterThanOrEqualTo100 as $userWithRole) {
+        if (Hash::check($password, $userWithRole->password)) {
+            Auth::login($user);
+            return $this->sendLoginResponse($request);
         }
     }
+    
 
     // If all checks fail, return a failed login response
     return $this->sendFailedLoginResponse($request);

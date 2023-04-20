@@ -1,5 +1,17 @@
 @extends('layouts.app')
 @section('content')
+
+<style>
+  .parent-row {
+      background-color: #EAF7D9; 
+  }
+  
+  .child-row {
+      background-color: #D6EAF8; 
+  }
+</style>
+
+
 <main style="width: 100vw; max-height: 300vh; min-height:100vh; background-image: url('{{asset("/assets/images/background.png")}}'); color:#fff;">
   <div  class="container justify-content-center d-flex">
     
@@ -39,7 +51,7 @@
                       </div>
                         <!-- Modal -->
                         @include('users.modals.editFamille')
-                        <tr style=" background : #fff; border:0.5px solid; border-radius:20px;" class="candidates-list row my-2  ">
+                        <tr class="candidates-list row my-2 {{ $n_users->family_level == 'parent' ? 'parent-row' : 'child-row' }}" style="border:0.5px solid; border-radius:20px;">
                             <td style="border-bottom-width: 0 !important;" class="title col-10 p-4">
                               <div class="thumb">
                                 @if($n_users->image)
