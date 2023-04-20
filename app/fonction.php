@@ -209,6 +209,7 @@ function retourner_buyers_dun_shop_article($id_shop_article) {
 
 //fonctions pour afficher les dates
 function fetchDayy($date){
+
     $lejour = ( new DateTime($date) )->format('l');
 
   $jour_semaine = array(
@@ -221,6 +222,19 @@ function fetchDayy($date){
 "Dimanche" => "Sunday"
 
   );
+
+        
+        foreach ($jour_semaine as $key => $value){
+
+            if ($value == $lejour) {
+                    return $key ;
+            }
+
+        }
+  
+
+
+
 
 }
 
