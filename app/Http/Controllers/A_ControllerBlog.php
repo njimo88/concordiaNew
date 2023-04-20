@@ -97,7 +97,7 @@ class A_ControllerBlog extends Controller
                     ];
             }
 
-            
+            printUsersBirthdayOnImage();
       return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2','post'))->with('user', auth()->user());
 }
 

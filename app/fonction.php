@@ -10,6 +10,7 @@ use App\Models\shop_article_2;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
 use App\Models\bills;
+use App\Models\old_bills;
 use App\Models\ShopMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -573,7 +574,7 @@ function getUsersBirthdayToday()
         ->join('shop_article', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article.id_shop_article')
         ->whereIn('shop_article.saison', [$saison, $saison-1]) // saison courante ou précédente
         ->where('shop_article.type_article', '=', 0) // Type article 0 = article de saison
-        ->select('users.*')
+        ->select('users.*')->orderBy('users.birthdate', 'desc')
         ->distinct()
         ->get();
 
@@ -609,36 +610,96 @@ function printUsersBirthdayOnImage()
 
     $currentDayOfWeek = $daysOfWeek[strftime('%u')%7];
     $currentMonth = $months[strftime('%m')-1%12];
+    $message = "MERCREPi 19 PECEMBRE 2023";
 
-    $message = "En ce " . $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y") . ", nous souhaitons l'anniversaire à:";
-    $image->text($message, $image->width() / 4.6, 130, function($font) {
-        $font->file(public_path('fonts/DeliciousHandrawn-Regular.ttf'));
+    // Ajout du deuxième message
+    $message = $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y");
+
+// Ajout du deuxième message
+$annivMessage = "Nous Souhaitons un joyeux anniversaire";
+
+    
+    $startX = 380;
+    $endX = 623;
+    
+    // Calculate the width of the message
+    $bbox = imagettfbbox(13, 0, public_path('fonts/Kraash Black.ttf'), $message);
+    $messageWidth = abs($bbox[4] - $bbox[0]);
+    
+    // Calculate the x-position to center the text
+    $textX = ($startX + $endX - $messageWidth) / 2;
+    
+    // Add the text to the image
+    $image->text($message, $textX, 86, function($font) {
+        $font->file(public_path('fonts/Kraash Black.ttf'));
+        $font->size(13);
+        $font->color('#000000');
+        $font->align('left');
+        $font->valign('top');
+    });
+    $startX = 350;
+    // Calculez la largeur du message d'anniversaire
+    $annivBbox = imagettfbbox(7.5, 0, public_path('fonts/Kraash Black.ttf'), $annivMessage);
+    $annivMessageWidth = abs($annivBbox[4] - $annivBbox[0]);
+    
+    // Calculez la position x pour centrer le texte d'anniversaire
+    $annivTextX = ($startX + $endX - $annivMessageWidth) / 2;
+    
+    // Ajoutez le texte d'anniversaire à l'image
+    $image->text($annivMessage, $annivTextX, 110, function($font) {
+        $font->file(public_path('fonts/Kraash Black.ttf'));
+        $font->size(7);
+        $font->color('#000000');
+        $font->align('left');
+        $font->valign('top');
+    });
+    
+    
+
+
+
+    $y = 150;
+$line_count = 0;
+$user_index = 0;
+
+foreach ($users as $index => $user) {
+    $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
+    $text = $user->name . ' ' . $user->lastname . ' (' . $age . ' ans)';
+    
+    if ($user_index == 0) {
+        $x = $image->width() / 2.7;
+        
+    } else {
+        $x = ($line_count % 2 == 0) ? $image->width() / 6.8 : $image->width() / 1.7;
+    }
+
+    $image->text($text, $x, $y, function($font) {
+        $font->file(public_path('fonts/Grilcbto.ttf'));
         $font->size(17);
         $font->color('#000000');
         $font->align('left');
         $font->valign('top');
     });
+    if ($user_index == 0) {
+        $y += 22;
 
-
-
-    $y = 165;
-    $line_count = 0;
-    foreach ($users as $index => $user) {
-        $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
-        $text = $user->name . ' ' . $user->lastname . ' (' . $age . ' ans)';
-        $x = $line_count % 2 == 0 ? $image->width() / 2 : $image->width() / 5;
-        $image->text($text, $x, $y, function($font) {
-            $font->file(public_path('fonts/AdventPro-VariableFont_wdth,wght.ttf'));
-            $font->size(13);
-            $font->color('#000000');
-            $font->align('left');
-            $font->valign('top');
-        });
+        
+    }
+    if ($user_index > 0) {
         $line_count++;
-        if ($line_count % 2 == 0) {
-            $y += 16;
+    }
+
+    if ($line_count % 2 == 0 && $user_index > 0) {
+        if ($user_index == 1) {
+            $y += 40; // Increase the gap after the first user
+        } else {
+            $y += 22;
         }
     }
+
+    $user_index++;
+}
+
     
     // Récupérer la date d'hier
     $date = new DateTime();
@@ -669,7 +730,10 @@ function updateTotalCharges($bill_id) {
     foreach ($messages as $message) {
         $total_payed += $message->somme_payé; 
     }
-    $bill = bills::find($bill_id); 
+    $bill = bills::find($bill_id);
+    if (!$bill) {
+        $bill = old_bills::find($bill_id);
+    }
     $bill->amount_paid = $total_payed; 
     $bill->save(); 
     return $total_payed;

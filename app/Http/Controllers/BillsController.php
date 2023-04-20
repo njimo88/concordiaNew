@@ -400,13 +400,22 @@ class BillsController extends Controller
     {
         updateTotalCharges($id);
 
-        $bill = DB::table('bills')
-        ->join('users', 'bills.user_id', '=', 'users.user_id')
-        ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-        ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-        ->where('bills.id', $id)
-        ->select('bills.*', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate', 'bills_payment_method.payment_method as method')
-        ->first();
+        $billsQuery = DB::table('bills')
+            ->join('users', 'bills.user_id', '=', 'users.user_id')
+            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+            ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+            ->where('bills.id', $id)
+            ->select('bills.*', 'bills_status.row_color', 'bills_status.status as bill_status', 'users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country', 'users.birthdate', 'bills_payment_method.payment_method as method');
+
+        $oldBillsQuery = DB::table('old_bills')
+            ->join('users', 'old_bills.user_id', '=', 'users.user_id')
+            ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+            ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+            ->where('old_bills.id', $id)
+            ->select('old_bills.*', 'bills_status.row_color', 'bills_status.status as bill_status', 'users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country', 'users.birthdate', 'bills_payment_method.payment_method as method');
+
+        $bill = $billsQuery->union($oldBillsQuery)->first();
+
 
         
         $shop = DB::table('liaison_shop_articles_bills')
