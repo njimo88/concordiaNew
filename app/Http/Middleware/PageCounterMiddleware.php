@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Session;
+use App\Models\statistiques_visites;
 
 class PageCounterMiddleware
 {
@@ -36,13 +37,62 @@ class PageCounterMiddleware
                 }
             
                 return $next($request);
+
+------------------------------------- reset chaque annee -------------
+
+                            // Get the current year and month
+                            $currentYear = date('Y');
+               
+
+                            // Check if a row exists for the current page and year
+                            $existingRow = statistiques_visites::where('page', $currentPath)
+                                ->where('annee', $currentYear)
+                                ->first();
+
+
+
+                                if ($existingRow) {
+                                    // If a row exists, update the existing row
+                                    $existingRow->nbre_visitors += $count;
+                                    $existingRow->save();
+                                } else {
+                                    // If a row does not exist, create a new row with the current year and month
+                                    statistiques_visites::create([
+                                        'page' => $currentPath,
+                                        'nbre_visitors' => $count,
+                                        'annee' => $currentYear,
+                                       
+                                    ]);
+                                }
+
+                                // Check if the year has changed
+                            $previousYear = Session::get('previous_year');
+                            if ($previousYear !== $currentYear) {
+                            
+                                $previousPageCountArray = Session::get('previous_page_count_array', []);
+                                $previousVisitorCount = Session::get('previous_visitor_count', 0);
+                                // Save the previous year's page count array and visitor count to a file or database
+                                // ...
+                                // Clear the page count array and visitor count for the new year
+                                Session::forget('page_count_array');
+                                Session::forget('visitor_count');
+                                // Update the "previous_year" session variable
+                                Session::put('previous_year', $currentYear);
+                                // Save the current page count and visitor count as the first entry for the new year
+                                statistiques_visites::create([
+                                    'page' => $currentPath,
+                                    'nbre_visitors' => $count,
+                                    'annee' => $currentYear,
+                                ]) ;
+
+                            }
+
           
             */
 
                         // Get the page count array from the session
                     $pageCountArray = Session::get('page_count_array', []);
 
-                    
                         // Get the visitor count from the session
                     $count = Session::get('visitor_count', 0);
                     
@@ -70,13 +120,52 @@ class PageCounterMiddleware
                 
                     // Store the updated visitor count in the session
                     Session::put('visitor_count', $count);
-                     
-                
-                    // Continue with the request
-                    return $next($request);
 
+
+                     
+                   /* 
+                    // Save the result to the database
+                      $statistiqueVisite = new statistiques_visites();
+                      $statistiqueVisite->page = $currentPath;
+                      $statistiqueVisite->nbre_visitors = $count;
+                      $statistiqueVisite->annee = date('Y');
+                      $statistiqueVisite->save();
+
+                                            another way 
+
+                    // Save the result to the database
+
+                                            $statistiqueVisite = statistiques_visites::updateOrCreate(
+                                                ['page' => $currentPath],
+                                                ['nbre_visitors' => $count, 'annee' => date('Y')]
+                                            );
+                      
+
+                      */
+
+                                            // Update the visitor count in the database
+
+                                                        $statistiqueVisite = statistiques_visites::where('page', $currentPath)
+                                                        ->where('annee', date('Y'))
+                                                        ->increment('nbre_visitors', 1);
+
+                                            // If the page is being visited for the first time this month, create a new entry in the database
+                                                        if ($statistiqueVisite == 0) {
+                                                        statistiques_visites::create([
+                                                            'page' => $currentPath,
+                                                            'nbre_visitors' => 1,
+                                                            'annee' => date('Y')
+                                                    
+                                                        ]);
+
+                                                    }
+                                                          
+                                               // dd( $pageCountArray);
+                                                    
+                                                    // Continue with the request
+                                              return $next($request);
 
 
         }
 
-}
+    }
