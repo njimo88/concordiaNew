@@ -1579,6 +1579,73 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
         return $array;
       }
 
+// pour pouvoir remplacer l'url path par le nom de page pour les stats
+function put_label($url){
+        
+    $translate_tab = array(
+    "/" => "index",
+    "Categorie_front" => "Nos catégories",
+    "SubCategorie_front/1" => "Inscriptions 2022-2023",
+    "SubCategorie_front/2" => "Stages Vacances",
+    "SubCategorie_front/3" => "Evénements/Prestations",
+    "SubCategorie_front/4" => "Dons à l'Association",
+    "SubCategorie_front/5" => "Boutique",
+
+    "SubCategorie_front/200" => "Vacances Eté",
+    "SubCategorie_front/201" => "Petites Vacances",
+    "SubCategorie_front/202" => "Stages Semaine - 5-9 ans",
+    "SubCategorie_front/203" => "Stages Semaine - + 10 ans",
+    "SubCategorie_front/204" => "Stages Journée - 5-9 ans",
+
+    "SubCategorie_front/100"   => "Petite Enfance",
+    "SubCategorie_front/1001" => "Mini-BabyGym (1 An)",
+    "SubCategorie_front/1002" => "Baby Gym (2 Ans)",
+    "SubCategorie_front/1003" => "Eveil Gymnique (3 Ans)",
+    "SubCategorie_front/1004" => "Ecole de Gym (4-5 Ans)",
+
+
+    "SubCategorie_front/120"   => "Loisirs",
+    "SubCategorie_front/1200" => "Aérobic Sportive",
+    "SubCategorie_front/1201" => "Fitness Kids",
+    "SubCategorie_front/1202" => "Gym Acrobatique",
+    "SubCategorie_front/1203" => "Parkour Jeunes",
+    "SubCategorie_front/1204" => "Gym Rythmique",
+    "SubCategorie_front/1205" => "Gym Masculine",
+    "SubCategorie_front/1206" => "Gym Féminine",
+    "SubCategorie_front/1207" => "Arts du Cirque",
+
+    "SubCategorie_front/130"   => "Adultes",
+    "SubCategorie_front/1300" => "Renf. Musculaire",
+    "SubCategorie_front/1301" =>  "Séances Cardio CAF",
+    "SubCategorie_front/1303" => "Zumba",
+    "SubCategorie_front/1304" => "Séances [Visio]",
+    "SubCategorie_front/1305" => "Pilates",
+    "SubCategorie_front/1306" => "Step CAF",
+    "SubCategorie_front/1307" => "Cross Training",
+    "SubCategorie_front/1308" => "Aerobic Fitness",
+
+    "SubCategorie_front/140"   => "Marche Nordique",
+    "SubCategorie_front/1501"   => "Séniors",
+    "SubCategorie_front/1502"   => "Handi-Gym",
+    "SubCategorie_front/1503"   => "Sport Santé",
+    "SubCategorie_front/1504"   => "Yoga",
+    "SubCategorie_front/1505"   => "Stretching",
+    "SubCategorie_front/1506"   => "Attente",
+    
+    );
+
+
+    foreach ($translate_tab as $key => $value) {
+        
+                if ($key == $url){
+                    return $value ;
+                }
+
+    }
+
+
+
+}
 
 
 

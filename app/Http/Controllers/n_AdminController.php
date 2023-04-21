@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\shop_article_1;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Message;
+use App\Models\statistiques_visites;
 
 require_once(app_path().'/fonction.php');
 
@@ -49,11 +50,14 @@ class n_AdminController extends Controller
                         DB::table('system')->where('name', 'date_de_rentree')->increment('value');
                     }
                    
+                    $visitorCount = statistiques_visites::where('page', '=', '/')->first();
+                    $nbre_visit = $visitorCount->nbre_visitors ;
+
+                    $get_stat_pages = statistiques_visites::where('page', '!=', '/')->orderBy('nbre_visitors', 'desc')
+                    ->limit(10)->get();
                    
 
-                   
-
-            return view('admin.index',compact('annee_creation','annee_actu'))->with('user', auth()->user());
+                   return view('admin.index',compact('annee_creation','annee_actu','nbre_visit','get_stat_pages'))->with('user', auth()->user());
         }
 
 

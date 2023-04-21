@@ -17,8 +17,7 @@ class PageCounterMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next)
-            {
+    
               /*
                 $sessionKey = 'page_counter';
                 $currentMonth = date('n'); // get the current month (1-12)
@@ -88,7 +87,9 @@ class PageCounterMiddleware
                             }
 
           
-            */
+            */public function handle($request, Closure $next)
+
+                 {
 
                         // Get the page count array from the session
                     $pageCountArray = Session::get('page_count_array', []);
@@ -142,23 +143,45 @@ class PageCounterMiddleware
                       
 
                       */
+                        // Check if there is an existing row for the current year and page
+                                $statistiqueVisite = statistiques_visites::where('page', $currentPath)
+                                ->where('annee', date('Y'))
+                                ->first();
 
-                                            // Update the visitor count in the database
+                            if ($statistiqueVisite) {
+                                // If there is an existing row for the current year and page, update the visitor count
+                                $statistiqueVisite->nbre_visitors += 1;
+                                $statistiqueVisite->save();
+                            } else {
+                                // If there is no existing row for the current year and page, create a new row
+                                statistiques_visites::create([
+                                    'page' => $currentPath,
+                                    'nbre_visitors' => 1,
+                                    'annee' => date('Y'),
+                                ]);
+                            }
+
+
+
+
+
+
+
+
+
+
+
+
+                                            /* Update the visitor count in the database
 
                                                         $statistiqueVisite = statistiques_visites::where('page', $currentPath)
                                                         ->where('annee', date('Y'))
                                                         ->increment('nbre_visitors', 1);
 
-                                            // If the page is being visited for the first time this month, create a new entry in the database
-                                                        if ($statistiqueVisite == 0) {
-                                                        statistiques_visites::create([
-                                                            'page' => $currentPath,
-                                                            'nbre_visitors' => 1,
-                                                            'annee' => date('Y')
-                                                    
-                                                        ]);
+                                                        */
 
-                                                    }
+                                            // If the page is being visited for the first time this month, create a new entry in the database
+                                                      
                                                           
                                                // dd( $pageCountArray);
                                                     
