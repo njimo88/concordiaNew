@@ -79,12 +79,6 @@ Route::post('/generatePDFreduction_Fiscale/{id}', [generatePDF::class, 'generate
 });
 
 
-
-
-
-
-
-
     /*-----------Panier----------*/
     Route::middleware(['auth'])->group(function () {
     Route::get('/panier', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
@@ -163,8 +157,13 @@ Route::middleware(['auth', 'role:20'])->group(function () {
 
 
 /*---------------------------------ABBé------------------------------------------*/
-Route::get('/', [A_ControllerBlog::class, 'a_fetchPost'])->name('A_blog');
+
+Route::get('/', [A_ControllerBlog::class, 'a_fetchPost'])->name('A_blog')->middleware('visitor.counter');
 Route::get('/home', [A_ControllerBlog::class, 'a_fetchPost']);
+
+Route::middleware(['PageCounterMiddleware'])->group(function () {
+
+
 Route::get('/anniversaire', [A_ControllerBlog::class, 'anniversaire'])->name('anniversaire');
 Route::get('/Simple_Post/{id}', [A_ControllerBlog::class, 'Simple_Post'])->name('Simple_Post');
 Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_par_cat1'])->name('A_blog_par_categorie1');
@@ -172,7 +171,7 @@ Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_pa
 Route::get('/questionnaire', [A_ControllerBlog::class, 'questionnaire'])->name('questionnaire');
 Route::get('/determinesection/count', [A_ControllerBlog::class, 'countdeterminesection'])->name('countdeterminesection');
 
-
+});
 
 /*---------------------------------Shop en backoffice------------------------------------------*/
 Route::middleware(['auth'])->group(function () {
@@ -196,12 +195,19 @@ Route::get('category-subcategory/remove/{id_shop_category}', [A_Controller_categ
 
 /*---------------------------------Shop en front office------------------------------------------*/
 
+Route::middleware(['PageCounterMiddleware'])->group(function () {
+
 Route::get('/Categorie_front', [A_Controller_categorie::class, 'MainShop'])->name('index_categorie');
 Route::get('/SubCategorie_front/{id}', [A_Controller_categorie::class, 'Shop_souscategorie'])->name('sous_categorie');
 Route::get('/details_article/{id}', [A_Controller_categorie::class, 'Handle_details'])->name('details_article');
 Route::put('/commander_article/{id}', [A_Controller_categorie::class, 'commander_article'])->name('commander_article');
 Route::put('/Passer_au_paiement/{id}', [A_Controller_categorie::class, 'Passer_au_paiement'])->name('Passer_au_paiement');
 Route::get('/commanderModal/{shop_id}/{user_id}', [A_Controller_categorie::class, 'commanderModal']);
+
+});
+
+
+
 
 //Route::get('/test', [A_Controller_categorie::class, 'JsonProcess2']);
 
@@ -288,10 +294,12 @@ Route::post('/BlogArticle_category/edit/{id}',[BlogArticle_Controller::class, 'e
 }); 
 
 /*----------------------------- Mention legales -------------------------------------------------- */
+Route::middleware(['PageCounterMiddleware'])->group(function () {
+
 Route::get('/Mentions', [Controller_mention_legales::class, 'index'])->name('index_mentions_legales');
 Route::get('/Politique_de_confidentialite', [Controller_mention_legales::class, 'index_politique'])->name('index_politique');
 
-
+});
 
 
 Route::middleware(['auth'])->group(function () {
