@@ -79,12 +79,6 @@ Route::post('/generatePDFreduction_Fiscale/{id}', [generatePDF::class, 'generate
 });
 
 
-
-
-
-
-
-
     /*-----------Panier----------*/
     Route::middleware(['auth'])->group(function () {
     Route::get('/panier', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
@@ -301,7 +295,7 @@ Route::post('/BlogArticle_category/edit/{id}',[BlogArticle_Controller::class, 'e
 
 /*----------------------------- Mention legales -------------------------------------------------- */
 Route::middleware(['PageCounterMiddleware'])->group(function () {
-    
+
 Route::get('/Mentions', [Controller_mention_legales::class, 'index'])->name('index_mentions_legales');
 Route::get('/Politique_de_confidentialite', [Controller_mention_legales::class, 'index_politique'])->name('index_politique');
 

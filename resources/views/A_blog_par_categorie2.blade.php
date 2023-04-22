@@ -2,74 +2,93 @@
 
 @section('content')
 
-  <div class="container">
- 
-        <div class="row">
 
-       
+<main id="main" class="main">
 
-        @foreach($a_requete1 as $i)
-                
-          
-            @php
-
-            /* we use json_decode to make this transformation : JSON arrays become PHP numeric arrays */
-
-                $a_monjson = json_decode($i->categorie2) ;
-               
-              
-            @endphp 
    
 
+                
+                                    @foreach($a_requete1 as $i)
+
+                                    <div class="container">
+
+                                    <div class="row"> 
+
+                                    <div class="card">
+                                          <div class="card-header">
+
+                                                            @php
+
+                                            /* we use json_decode to make this transformation : JSON arrays become PHP numeric arrays */
+
+                                                
+                                                $a_monjson = json_decode($i->categorie2) ;
 
 
-                    @foreach($a_monjson as $j)
-                    
-                            
-                        @if(in_array($j,[$a_result]))
-                    
-                               
-                                @foreach($a_categorie2 as $c)   
+                                            @endphp
 
-                                    @if($c->Id_categorie2 == $a_result)
-                                            <div class="container">
 
-                                            <a href="{{route('A_blog_par_categorie2', ['id' => $a_result])}}"> <img src='{{ $c->image }}'>  </a>
+                                            
+                                @foreach($a_monjson as $j)
+                                    
+                                    @if(in_array($j,[$a_result]))
+                                
+                                    
+                                            @foreach($a_categorie2 as $c)   
 
-                                           </div> 
+                                                @if($c->Id_categorie2 == $a_result)
+                                                
+                                        
+                                                        <h6 class="m-0 font-weight-bold text-primary">
+                                                                        
+                                                                        <a href="{{route('A_blog_par_categorie2', ['id' => $a_result])}}"> <img src='{{ $c->image }}'>  </a>
+                                                        </h6>
+                                                @endif
+
+                                            @endforeach
+
+
                                     @endif
 
                                 @endforeach
-                     
-                   
-                        <div class="container"> 
-                                <div class="page-header">
-                                 <h1>  {{$i->titre}}</h1>      
-                                </div>
-                                                
-                        </div> 
-     
-                         <div class="well" >{!! html_entity_decode($i->contenu) !!}
-                              
-                        </div>
-                        <hr>
-                        <div class="container">
-                        <p>{{$i->date_post}}</p>
-                        </div>
-                @endif
+                                          </div>
 
-                
-                
-            @endforeach 
-           
-           
-               
-        @endforeach
-      
-		
+
+                                          <div class="card-body">
+
+                                            <h5 class="card-title"> {{$i->titre}} </h5>
+                                           
+                                            <div class="well"> {!! html_entity_decode($i->contenu) !!} </div>
+
+                                            </div>          
+
+                                            <p class="card-title">{{$i->date_post}}</p> 
+
+                                </div>
+
+
+
+
+                </div>
+
+
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  
+
+    @endforeach
+
+    <div class="clearfix"></div>
+<div class="d-flex justify-content-center">
+{!!   $a_requete1->links() !!}
+
+
+</div> 
+
+</main>
+
+
 @endsection
+
+
+
+    
+

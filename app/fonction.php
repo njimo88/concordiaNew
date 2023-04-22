@@ -1641,9 +1641,10 @@ function put_label($url){
                     return $value ;
                 }
 
+
     }
 
-
+    return $url;
 
 }
 
