@@ -1,4 +1,3 @@
-
 <style type="text/css">
 	table.border_1_solid_black td {
 		border: 1px solid black;
@@ -49,30 +48,30 @@
 	}
 
 
-	function bloqueHeuresConges(pNum, pValue) {
+function bloqueHeuresConges(pNum, pValue) {
 
-		if (document.getElementById('Conges[' + pNum + ']').checked == true) {
-			document.getElementById('Heures[' + pNum + ']').value = pValue;
-			if (document.getElementById('Maladie[' + pNum + ']').checked == true) {
-				document.getElementById('Maladie[' + pNum + ']').checked = false;
-				document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - 1;
-				document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById('TotalHeuresMaladiePrises').value - document.getElementById('Heures[' + pNum + ']').value;
-			};
-			document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - 1;
-			document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - (-1);
-			document.getElementById('Heures[' + pNum + ']').setAttribute('readonly', 'true');
-			document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#77B5FE');
-			calculTotal(pNum);
+	if (document.getElementById('Conges[' + pNum + ']').checked == true) {
+		document.getElementById('Heures[' + pNum + ']').value = pValue;
+		if (document.getElementById('Maladie[' + pNum + ']').checked == true) {
+			document.getElementById('Maladie[' + pNum + ']').checked = false;
+			document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - 1;
+			document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById('TotalHeuresMaladiePrises').value - document.getElementById('Heures[' + pNum + ']').value;
 		};
-		if (document.getElementById('Conges[' + pNum + ']').checked == false) {
-			document.getElementById('Heures[' + pNum + ']').value = pValue;
-			document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - (-1);
-			document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - 1;
-			document.getElementById('Heures[' + pNum + ']').removeAttribute('readonly');
-			document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#FFFFFF;');
-			calculTotal(pNum);
-		};
-	}
+		document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - 1;
+		document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - (-1);
+		document.getElementById('Heures[' + pNum + ']').setAttribute('readonly', 'true');
+		document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#77B5FE');
+		calculTotal(pNum);
+	};
+	if (document.getElementById('Conges[' + pNum + ']').checked == false) {
+		document.getElementById('Heures[' + pNum + ']').value = pValue;
+		document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - (-1);
+		document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - 1;
+		document.getElementById('Heures[' + pNum + ']').removeAttribute('readonly');
+		document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#FFFFFF;');
+		calculTotal(pNum);
+	};
+}
 
 
 	function bloqueHeuresMaladie(pNum, pValue) {
@@ -102,95 +101,6 @@
 </script>
 
 <?php
-use Illuminate\Support\Facades\DB;
-
-// Vacances Scolaires
-function VacancesScolaires($datedujour)
-{
-	$retour = FALSE;
-
-	$year = date("Y", $datedujour);
-
-	//2020-2021
-	$toussaint[2020]   = array(mktime(0, 0, 0, 10,  24,  2020), mktime(0, 0, 0, 11,  8,  2020)); //ok
-	$noel[2020] = array(mktime(0, 0, 0, 12,  19,  2020), mktime(0, 0, 0, 1,  3,  2021)); //ok
-	$hiver[2021]   = array(mktime(0, 0, 0, 2,  4,  2021), mktime(0, 0, 0, 2,  20,  2021)); //ok
-	$printemps[2021] = array(mktime(0, 0, 0, 4,  10,  2021), mktime(0, 0, 0, 4,  26,  2021)); //ok
-	$ete[2021] = array(mktime(0, 0, 0, 6,  28,  2021), mktime(0, 0, 0, 9,  6,  2021)); //ok
-
-	//2021-2022
-	$toussaint[2021]   = array(mktime(0, 0, 0, 10,  23,  2021), mktime(0, 0, 0, 11,  8,  2021)); //ok
-	$noel[2021] = array(mktime(0, 0, 0, 12,  18,  2021), mktime(0, 0, 0, 1,  2,  2022)); //ok
-	$hiver[2022]   = array(mktime(0, 0, 0, 2,  5,  2022), mktime(0, 0, 0, 2,  21,  2022)); //ok
-	$printemps[2022] = array(mktime(0, 0, 0, 4,  9,  2022), mktime(0, 0, 0, 4,  24,  2022)); //ok
-	$ete[2022]  = array(mktime(0, 0, 0, 7,  7,  2022), mktime(0, 0, 0, 8,  31,  2022)); //ok
-
-	//2022-2023
-	$toussaint[2022]   = array(mktime(0, 0, 0, 10,  23,  2022), mktime(0, 0, 0, 11,  8,  2022)); //ok
-	$noel[2022] = array(mktime(0, 0, 0, 12,  17,  2022), mktime(0, 0, 0, 1,  2,  2023)); //ok
-	$hiver[2023]   = array(mktime(0, 0, 0, 2,  5,  2023), mktime(0, 0, 0, 2,  21,  2023)); //ok
-	$printemps[2023] = array(mktime(0, 0, 0, 4,  9,  2023), mktime(0, 0, 0, 4,  25,  2023)); //ok
-	$ete[2023]  = array(mktime(0, 0, 0, 7,  7,  2023), mktime(0, 0, 0, 8,  31,  2023)); //ok
-
-	//2022-2023
-	$toussaint[2023]   = array(mktime(0, 0, 0, 10,  23,  2021), mktime(0, 0, 0, 11,  8,  2021)); //ok
-	$noel[2023] = array(mktime(0, 0, 0, 12,  18,  2021), mktime(0, 0, 0, 1,  2,  2022)); //ok
-	$hiver[2024]   = array(mktime(0, 0, 0, 2,  5,  2022), mktime(0, 0, 0, 2,  21,  2022)); //ok
-	$printemps[2024] = array(mktime(0, 0, 0, 4,  9,  2022), mktime(0, 0, 0, 4,  25,  2022)); //ok
-	$ete[2024]  = array(mktime(0, 0, 0, 7,  7,  2022), mktime(0, 0, 0, 8,  31,  2022)); //ok
-
-	if (($datedujour >= $noel[$year - 1][0]) && ($datedujour <= $noel[$year - 1][1])) $retour = TRUE;  // noel n-1
-	if (($datedujour >= $hiver[$year][0]) && ($datedujour <= $hiver[$year][1])) $retour = TRUE;  // hiver
-	if (($datedujour >= $printemps[$year][0]) && ($datedujour <= $printemps[$year][1])) $retour = TRUE;  // printemps
-	if (($datedujour >= $ete[$year][0]) && ($datedujour <= $ete[$year][1])) $retour = TRUE;  // ete
-	if (($datedujour >= $toussaint[$year][0]) && ($datedujour <= $toussaint[$year][1])) $retour = TRUE;  // toussaint
-	if (($datedujour >= $noel[$year][0]) && ($datedujour <= $noel[$year][1])) $retour = TRUE;  // noel
-
-	return $retour;
-};
-
-//Jours Fériés
-function JourFerie($datedujour)
-{
-	$retour = FALSE;
-
-	$year = date("Y", $datedujour);
-
-	$easterDate  = easter_date($year);
-	$easterDay   = date('j', $easterDate);
-	$easterMonth = date('n', $easterDate);
-	$easterYear   = date('Y', $easterDate);
-
-	// Dates Fixes
-	if ($datedujour == mktime(0, 0, 0, 1,  1,  $year)) $retour = TRUE;  // 1er janvier
-	if ($datedujour == mktime(0, 0, 0, 5,  1,  $year)) $retour = TRUE;	// Fête du travail
-	if ($datedujour == mktime(0, 0, 0, 5,  8,  $year)) $retour = TRUE;  // Victoire des alliés
-	if ($datedujour == mktime(0, 0, 0, 7,  14, $year)) $retour = TRUE;  // Fête nationale
-	if ($datedujour == mktime(0, 0, 0, 8,  15, $year)) $retour = TRUE; // Assomption
-	if ($datedujour == mktime(0, 0, 0, 11,  1,  $year)) $retour = TRUE; // Toussaint
-	if ($datedujour == mktime(0, 0, 0, 11,  11,  $year)) $retour = TRUE; // Armistice
-	if ($datedujour == mktime(0, 0, 0, 12,  25,  $year)) $retour = TRUE; // Noel
-	if ($datedujour == mktime(0, 0, 0, 12,  26,  $year)) $retour = TRUE; // St Etienne
-
-	// Dates variables
-	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay - 2,  $easterYear)) $retour = TRUE;
-	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay + 1,  $easterYear)) $retour = TRUE;
-	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay + 39, $easterYear)) $retour = TRUE;
-	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay + 50, $easterYear)) $retour = TRUE;
-
-	return $retour;
-};
-
-function ColorFont($datedujour)
-{
-	$colordufont = "#FFFFFF";
-	$numdujour = date("w", $datedujour);
-	if (VacancesScolaires($datedujour)) $colordufont = "#AFAFAF";
-	if (($numdujour == 0) || ($numdujour == 6)) $colordufont = "#FFFF00";
-	if (JourFerie($datedujour)) $colordufont = "#FF4500";
-
-	return $colordufont;
-};
 
 function AfficheMois ( $mois , $annee , $user_id )
 {	$servername = "localhost";
@@ -292,8 +202,6 @@ function AfficheMois ( $mois , $annee , $user_id )
 		};
 	};
 
-
-
 	$demande_on = '';
 	$demande_on_1 = '';
 
@@ -301,7 +209,6 @@ function AfficheMois ( $mois , $annee , $user_id )
 		$demande_on = ' readonly ';
 		$demande_on_1 = ' hidden="hidden" ';
 	};
-
 
 	$resultatrenvoye .= '<form action="' . route('Professionnels.declaration', $user_id) . '" method="post">';
 				$resultatrenvoye .= csrf_field();
@@ -316,7 +223,6 @@ function AfficheMois ( $mois , $annee , $user_id )
 
 	$resultatrenvoye .= '<div align="center"><table border="5px" width="80%><tbody align="left"><tr><td>';
 	$resultatrenvoye .= '<table align="center">';
-
 
 	if (!file_exists($fichier_csv)) {
 		$resultatrenvoye .= '<tbody><tr><td><input style="background-color: #ffc107; color: black" type="submit" name="Statut" value="Sauvegarder">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -493,13 +399,11 @@ $VolumeHebdo = $VariableBDD[3];
 	$resultatrenvoye .= '<div align="center"><table border="5px" width="80%><tbody align="left"><tr><td>';
 	$resultatrenvoye .= '<table align="center"><tbody><tr><td bgcolor="#FF0000" color="white"><h1>Validez-vous cette déclaration d\'heures pour ' . $Moislettres[$mois] . ' ' . $annee . ' ?&nbsp;</h1></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="Statut" value="Valider">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="Statut" value="Enregistrer">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="Statut" value="Refuser"></td></tr></tbody></table><hr>';
 
-
 	$resultatrenvoye .= '<h1>' . $NomEmploye . ' ' . $PrenomEmploye . ' - Mois de ' . $Moislettres[$mois] . ' ' . $annee . '</h1><br>';
 	$resultatrenvoye .= '<table><tbody><tr><td>Mois de <b>' . $Moislettres[$mois] . ' ' . $annee . '</b> - </td><td id="totalheuredynamique">' . $TotalHeures . '</td><td> Heures réalisées</td></tr>';
 	$resultatrenvoye .= '<tr><td colspan="3"> Jours de Congés pris : ' . $TotalCongespris . ' jours (soit ' . $TotalConges . ' jours restant)</td></tr><tr><td colspan="3">Jours de Maladie pris : ' . $TotalMaladiepris . ' jours (soit ' . $TotalHeuresMaladieprises . ' heures)</p></td></tr></tbody></table><br><hr>';
 	$resultatrenvoye .= '<p>Saison ' . $saison . '-' . $saisonplusun . ' : Du 1er Août ' . $saison . ' au 31 Juillet ' . $saisonplusun . '<br>';
 	$resultatrenvoye .= 'Cumul période jusqu\'au 1er ' . $Moislettres[$mois] . ' ' . $annee . ' (non inclus) : ' . $OldHeuresRealisees . ' heures réalisées / ' . $TotalMensueldu . ' heures dues</p><hr>';
-
 
 	$resultatrenvoye .= '<table id="tab" rowspacing=5><tbody>';
 	$resultatrenvoye .= '<tr height="20px"><th class="col_1">Date</th><th class="col_2">H Théo.</th><th class="col_2">H Réal.</th><th class="col_2">Congés</th><th class="col_2">Maladie</th><th class="col_3">Remarque</th></tr>';
@@ -515,7 +419,6 @@ $VolumeHebdo = $VariableBDD[3];
 			$colorchecked = '#FF4500';
 		};
 
-	
 		$cachecase = 'type="checkbox"';
 		if (($i + $ajout + 5) % 7 == 6) $cachecase = 'type="hidden" value="0"';
 		if (JourFerie(mktime(0, 0, 0, $mois, $i, $annee))) $cachecase = 'type="hidden" value="0" ';
@@ -554,7 +457,6 @@ $VolumeHebdo = $VariableBDD[3];
 
 	$resultatrenvoye .= '</tbody></table>';
 	$resultatrenvoye .= '</td></tr></tbody></table></div></form>';
-
 
 
 
@@ -1032,75 +934,119 @@ function newSeason($mois)
 ?>
 
 <!---------------------------------------------------------------------------------------------code------------------------------------------------------------------------------------->
-<div class="row">
-    <div class="col-12" align="center">
-        <a href="{{ route('Professionnels.gestion') }}"> <img  style="height: 100px " src="{{ asset('assets/images/logo.png') }}" alt=""></a> 
-    </div>
-</div>
-@if (isset($idemploye))
-    @if ($idemploye != '')
-        <?php $idemploye = $idemploye; ?>
-    @endif
-@endif
+@extends('layouts.template')
 
-@if (isset($user_id))
-    @if ($user_id != '')
-        <?php $idemploye = $user_id; ?>
-    @endif
-@else
-    <?php $idemploye = $id_user; ?>
-@endif
+@section('content')
+@php
 
-<?php $mois_etudie = getLastMonth($idemploye); ?>
-<?php $an = getYear($idemploye); ?>
+	require_once(app_path().'/ProfessionelFonction.php');
+	$date = "2023-04-22";
+	$timestamp = strtotime($date);
+	$couleur = ColorFont($timestamp);
 
-@if(isset($_POST['Statut']))
-    @if($_POST['Statut'] == "Sauvegarder")
-        <?php Sauvegarde($mois_etudie, $an, $idemploye, $_POST); ?>
-        <?php echo AfficheMois($mois_etudie, $an, $idemploye); ?>
-    @elseif($_POST['Statut'] == "Soumettre")
-        <?php $action = "Soumettre"; ?>
-        <?php Soumettre($mois_etudie, $an, $idemploye, $_POST, $action); ?>
-    @elseif($_POST['Statut'] == "Reinitialiser")
-        <?php Efface($mois_etudie, $an, $idemploye); ?>
-        <?php echo AfficheMois($mois_etudie, $an, $idemploye); ?>
-    @elseif($_POST['Statut'] == "Annule Demande")
-        <?php Efface_admin($mois_etudie, $an, $idemploye); ?>
-        <?php echo AfficheMois($mois_etudie, $an, $idemploye); ?>
-    @elseif($_POST['Statut'] == "Valider")
-        <?php $action = "Modifier"; ?>
-        <?php Soumettre($mois_etudie, $an, $idemploye, $_POST, $action); ?>
-        <?php $valeurpdf = AfficheMois($mois_etudie, $an, $idemploye); ?>
-        <?php $valeurrenvoye = AfficheMois_valide($mois_etudie, $an, $idemploye, $valeurpdf); ?>
-        <?php $valeurpdfrenvoye = templatePDF($mois_etudie, $an, $idemploye, $valeurrenvoye); ?>
-        <?php Savepdf($_POST['mois'], $_POST['annee'], $_POST['user_id'], $valeurpdfrenvoye); ?>
-        <?php Envoi_mail($_POST['mois'], $_POST['annee'], $_POST['user_id'], $_POST['user']); ?>
-        <?php updateBDD($_POST, $_POST['user_id'], $mois_etudie); ?>
-        <div style="text-align:center; background-color: red; width: 80%; margin-bottom: 30px; color: white; height: 50px;">
-            <p style="font-size: 20px; margin-left: 10%; margin-top: 5px;">
-                Vous avez validé la déclaration d'heure du {{ $mois }}/{{ $annee }}
-            </p>
-            <a style="color: black; width: 40%; margin-left: 30%;" class="button" href="{{ url('/admin/Professionnels/gestion') }}">
-                Retour à l'accueil
-            </a>
-        </div>
-    @elseif ($status == 'AttenteValidation')
-        <?php $valeurpdf = AfficheMois($mois_etudie, $an, $idemploye); ?>
-        {!! AfficheMois_valide($mois_etudie, $an, $idemploye, $valeurpdf) !!}
-    @elseif ($status == 'Enregistrer')
-        <?php
-            $action = 'Modifier';
-            Soumettre($mois_etudie, $an, $idemploye, $_POST, $action);
-            $valeurpdf = AfficheMois($mois_etudie, $an, $idemploye);
-        ?>
-        {!! AfficheMois_valide($mois_etudie, $an, $idemploye, $valeurpdf) !!}
-    @elseif ($status == 'Refuser')
-        <?php
-            $fichier_demande_csv = public_path('employee_documents/3-validation/' . $_POST['user_id'] . '-' . $_POST['annee'] . '-' . $_POST['mois'] . '.csv');
-            unlink($fichier_demande_csv);
-        ?>
-    @endif
-@else
-        {!! AfficheMois($mois_etudie, $an, $idemploye) !!}
-@endif
+@endphp
+<main class="main" id="main">
+<form action="#" method="post">
+	<input type="hidden" name="mois" value="MOIS_VALUE">
+	<input type="hidden" name="annee" value="ANNEE_VALUE">
+	<input type="hidden" name="user_id" value="USER_ID_VALUE">
+	<input type="hidden" name="email" value="EMAIL_EMPLOYE_VALUE">
+
+	<div align="center">
+		<table border="5px" width="80%">
+			<tbody align="left">
+				<tr>
+					<td>
+						<table align="center">
+							<tbody>
+								<tr>
+									<td class="mx-3">
+										<button class="btn btn-info">Sauvegarder</button>
+									</td>
+										<td class="">
+											<button class="btn btn-danger mx-5">Reinitialiser</button>
+										</td>
+										<td class="mx-3">
+											<button class="btn btn-success">Valider</button>
+										</td>
+								</tr>
+							</tbody>
+						</table>
+						<hr>
+
+						<h1>{{ $pro->firstname }} {{ $pro->lastname }} - Mois de MOIS_LETTRES_VALUE ANNEE_VALUE</h1>
+						<h3>Saison SAISON_VALUE-SAISONPLUSUN_VALUE : Du 1er Août SAISON_VALUE au 31 Juillet SAISONPLUSUN_VALUE</h3>
+						<p>Cumul période jusqu'au 1er MOIS_LETTRES_VALUE ANNEE_VALUE (inclus) : OLD_HEURES_REALISEES_VALUE heures réalisées / TOTAL_MENSUEL_DU_VALUE heures dues</p>
+						<hr>
+						<table border="0">
+							<tbody>
+								<tr>
+									<td>
+										<p>Mois de <b>MOIS_LETTRES_VALUE ANNEE_VALUE</b> - </td>
+									<td> <input type="text" style="text-align:center; width: 50px;" id="HeuresTotal" value="TOTAL_HEURES_VALUE" name="HeuresTotal" size="5" readonly></td>
+									<td>
+										<p> Heures réalisées</p>
+									</td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<td>
+										<p> Jours de Congés pris</td>
+									<td> <input type="text" style="text-align:center;" id="JoursCongesPris" name="JoursCongesPris" value="TOTAL_CONGES_PRIS_VALUE" size="2" readonly></td>
+									<td>
+										<p> jours (soit </p>
+									</td>
+									<td><input type="text" style="text-align:center;" id="JoursCongesRestant" name="JoursCongesRestant" value="TOTAL_CONGES_VALUE" size="2" readonly></td>
+									<td>
+									<p> jours restant)</p>
+									</td>
+									</tr>
+									<tr>
+									<td>
+									<p> Jours de Maladie pris</td>
+									<td> <input type="text" style="text-align:center;" id="JoursMaladiePris" name="JoursMaladiePris" value="TOTAL_MALADIE_PRIS_VALUE" size="2" readonly></td>
+									<td>
+									<p> jours (soit </p>
+									</td>
+									<td><input type="text" style="text-align:center;" id="TotalHeuresMaladiePrises" name="TotalHeuresMaladiePrises" value="TOTAL_HEURES_MALADIE_PRISES_VALUE" size="2" readonly></td>
+									<td>
+									<p> heures)</p>
+									</td>
+									</tr>
+									</tbody>
+									</table>
+									<hr>
+									<table id="tab" border="1">
+										<tbody>
+											<tr>
+												<th class="col_1">Date</th>
+												<th class="col_2">H Théo.</th>
+												<th class="col_2">H Réal.</th>
+												<th class="col_2">Congés</th>
+												<th class="col_2">Maladie</th>
+												<th class="col_3">Remarque</th>
+											</tr>
+			
+											<!-- You can repeat the following block for each row in the table -->
+											<tr style="background-color: ROW_BACKGROUND_COLOR">
+												<td class="col_1">DATE_VALUE</td>
+												<td class="col_2">HEURES_THEORIQUES_VALUE</td>
+												<td class="col_2"><input READONLY_ATTRIBUTE type="text" style="text-align:center; background-color:CELL_BACKGROUND_COLOR;" size="3" value="NB_HEURES_EXTRAIT_VALUE" id="Heures[INDEX]" name="Heures[INDEX]" onkeyup="calculTotal(INDEX)" /></td>
+												<td class="col_2"><input label="Conges" name="Conges[INDEX]" id="Conges[INDEX]" onchange="bloqueHeuresConges(INDEX, HEURES_THEORIQUES_VALUE)" TYPE_ATTRIBUTE CONGES_CHECKED_VALUE></td>
+												<td class="col_2"><input type="checkbox" label="Maladie" name="Maladie[INDEX]" id="Maladie[INDEX]" onchange="bloqueHeuresMaladie(INDEX, HEURES_THEORIQUES_VALUE)" MALADIE_CHECKED_VALUE></td>
+												<td class="col_3"><input type="text" size="100%" style="background-color:ROW_BACKGROUND_COLOR" name="Remarque[INDEX]" value="NB_REM_EXTRAIT_VALUE"></td>
+											</tr>
+											<!-- End of the repeated block -->
+			
+										</tbody>
+									</table>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</form>
+		</main>	
+@endsection
 

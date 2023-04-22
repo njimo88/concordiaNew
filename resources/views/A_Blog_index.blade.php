@@ -1,6 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+  .icon-image {
+  height: 80px;
+  width: auto;
+}
+
+.icon-box-custom-height {
+  height: 30px !important;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+</style>
 <!-- header Content -->
 <section style="background-image: url('{{asset("/assets/images/background.png")}}')" id="hero" class="hero">
     <div class="container position-relative">
@@ -18,38 +32,49 @@
         </div>
       </div>
     </div>
-  
+    
     <div style="background-image: url('{{asset("/assets/images/background.png")}}');" class="icon-boxes position-relative">
       <div class="container position-relative">
-          <div class="row mt-5">
-            <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 col-6" data-aos="fade-up" data-aos-delay="100">
-              <div class="icon-box">
-                <div class="icon "><i class="bi bi-easel"></i></div>
-                <h4 class="title"><a href="{{ route('questionnaire') }}">Je choisis ma section</a></h4>
-              </div>
-            </div>
-          
-            <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 col-6" data-aos="fade-up" data-aos-delay="200">
-              <div class="icon-box">
-                <div class="icon"><i class="bi bi-envelope"></i></div>
-                <h4 class="title"><a href="">Nous contacter</a></h4>
-              </div>
-            </div>
-          
-            <div class="col-md-6 col-lg-3 mb-4 mb-md-0 col-6" data-aos="fade-up" data-aos-delay="300">
-              <div class="icon-box">
-                <div class="icon"><i class="bi bi-question"></i></div>
-                <h4 class="title"><a href="">Questions Fréquentes</a></h4>
-              </div>
-            </div>
-          
-            <div class="col-md-6 col-lg-3 col-6" data-aos="fade-up" data-aos-delay="500">
-              <div class="icon-box">
-                <div class="icon"><i class="bi bi-info-circle"></i></div>
-                <h4 class="title"><a href="">Je te dis plus tard</a></h4>
-              </div>
-            </div>
-          </div>
+        <div class="row mt-5">
+  <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 col-6" data-aos="fade-up" data-aos-delay="100">
+    
+    <div class="icon-box d-flex align-items-center" style="background-color: red; padding: 5px;">
+      <img src="{{ asset('assets/images/1.png') }}" alt="" class="icon-image">
+      <h4 class="title" style="color: white; margin: 5px;"><a href="{{ route('questionnaire') }}">Je choisis ma section</a></h4>
+    </div>
+  
+  </div>
+</a>
+  <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 col-6" data-aos="fade-up" data-aos-delay="200">
+    <a href="">
+    <div class="icon-box d-flex align-items-center" style="background-color: #E5E500; padding: 5px;">
+      <img src="{{ asset('assets/images/2.png') }}" alt="" class="icon-image">
+      <h4 class="title" style="color: white; margin: 13px;"><a href="">Nous contacter</a></h4>
+    </div>
+  </a>
+  </div>
+
+  <div class="col-md-6 col-lg-3 col-6" data-aos="fade-up" data-aos-delay="300">
+    <a href="">
+    <div class="icon-box d-flex align-items-center" style="background-color: blue; padding: 5px;">
+      <img src="{{ asset('assets/images/3.png') }}" alt="" class="icon-image">
+      <h4 class="title" style="color: white; margin: 0;"><a href="">Questions Fréquentes</a></h4>
+    </div>
+  </a>
+  </div>
+
+  <div class="col-md-6 col-lg-3 col-6" data-aos="fade-up" data-aos-delay="500">
+    <a href="">
+    <div class="icon-box d-flex align-items-center" style="background-color: green; padding: 5px;">
+      <img src="{{ asset('assets/images/4.png') }}" alt="" class="icon-image">
+      <h4 class="title" style="color: white; margin: 4px;"><a href="">Je te dis plus tard</a></h4>
+    </div>
+  </a>
+  </div>
+</div>
+
+        
+        
       </div>
     </div>
   

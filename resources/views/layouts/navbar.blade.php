@@ -49,7 +49,28 @@ use Illuminate\Support\Facades\Route;
     padding: 20px;
 }
               </style>
+ <style>
+  .logo-container {
+    position: relative;
+    width: 200px;
+    height: 100px;
+  }
 
+  .logo-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 1;
+  }
+
+  .logo-container img:last-child {
+    z-index: 2;
+  }
+
+</style>
  <!-- Search Modal -->
  <div class="modal fade" id="search-modal" tabindex="-1" role="dialog" aria-labelledby="search-modal-label" aria-modal="true">
   <div class="modal-dialog modal-lg">
@@ -171,9 +192,16 @@ use Illuminate\Support\Facades\Route;
 
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
       @guest
+     
       <a href="{{ route('A_blog') }}" class="logo d-flex align-items-center">
-        <img style="max-width: 200px !important" src="{{ asset('assets\images\LogoHB.png') }}" alt="">
+        <div class="logo-container">
+          <img src="{{ asset('assets\images\LogoHB.png') }}" alt="">
+          <img src="{{ asset('assets\images\NumTel-960px.png') }}" style="display:none;" alt="">
+        </div>
       </a>
+      
+      
+      
       <nav id="navbar" class="navbar">
         <ul>
           <li><a href="{{ route('A_blog') }}"><span><img src="{{ asset("/assets/images/Accueil.png") }}" width="24">&nbsp;Accueil</span></a></li>
@@ -707,6 +735,39 @@ use Illuminate\Support\Facades\Route;
   
   
   
+    </script>
+    <script>
+    $(document).ready(function() {
+  var logoContainer = $('.logo-container');
+  var logoWidth = logoContainer.width();
+  var logoImages = logoContainer.find('img');
+  var currentImageIndex = 0;
+  
+  // Fonction pour changer l'image et faire l'animation
+  function changeLogoImage() {
+    // Si c'est la première image, la cacher et afficher la deuxième image
+    if (currentImageIndex == 0) {
+      logoImages.eq(currentImageIndex).fadeOut(500, function() {
+        // Changer l'image actuelle
+        currentImageIndex++;
+        logoImages.eq(currentImageIndex).fadeIn(500);
+      });
+    }
+    // Si c'est la deuxième image, la cacher et afficher à nouveau le logo
+    else {
+      logoImages.eq(currentImageIndex).fadeOut(500, function() {
+        // Changer l'image actuelle
+        currentImageIndex = 0;
+        logoImages.eq(currentImageIndex).fadeIn(500);
+      });
+    }
+  }
+  
+  // Lancer l'animation toutes les 5 secondes
+  setInterval(changeLogoImage, 5000);
+});
+
+
     </script>
 @endif
 

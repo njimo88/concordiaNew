@@ -276,8 +276,8 @@ private function getPeriode($path)
 public function declarationHeures($id)
     {
         $user_id = $id;
-        
-        return view('admin.professionnels.declarationHeures',compact('user_id'))->with('user', auth()->user());
+        $pro = Professionnels::where('id_user', $user_id)->first();
+        return view('admin.professionnels.declarationHeures',compact('user_id','pro'));
     }
 
     public function declaration($id, Request $request)

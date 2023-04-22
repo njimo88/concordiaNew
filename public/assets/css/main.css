@@ -2015,7 +2015,8 @@ section {
 
 .hero .icon-box .title {
   font-weight: 700;
-  font-size: 24px;
+  font-size: 19px;
+  color: #000;
 }
 
 .hero .icon-box .title a {
