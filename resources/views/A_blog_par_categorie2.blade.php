@@ -78,7 +78,7 @@
 
    
 
-{!!   $a_requete1->links() !!}
+{!!   $a_requete1->links(pagination::bootstrap-4) !!}
 
 
 

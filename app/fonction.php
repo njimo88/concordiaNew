@@ -1648,5 +1648,34 @@ function put_label($url){
 
 }
 
+/* -------------------- add colors --------------------- */
+
+function color_de_row($id_article, $id_user){
+
+    
+
+
+    $result = DB::table('liaison_shop_articles_bills')->select('bills_status.row_color')
+    ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+    ->join('bills_status','bills_status.id', '=', 'bills.status')
+    ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
+    ->where('liaison_shop_articles_bills.id_shop_article',$id_article)
+    ->where('liaison_shop_articles_bills.id_user',$id_user)
+    ->first();
+
+            if ($result) {
+
+                return $result->row_color;
+
+            } else {
+
+                return 'Lime';
+
+                // handle the case where the query did not return any results
+            }
+
+
+}
+
 
 

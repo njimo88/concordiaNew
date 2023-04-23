@@ -45,7 +45,7 @@
                             <tbody>
                                
                                 @foreach($requete_user as $data)
-    <tr style="background-color: {{ getAuthorColor($data->lastname, $data->name) }};">
+    <tr>
       
         <td>{{$data->titre}}</td>
 
