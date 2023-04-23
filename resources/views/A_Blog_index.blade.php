@@ -38,7 +38,7 @@
         <div class="row mt-5">
   <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 col-6" data-aos="fade-up" data-aos-delay="100">
     
-    <div class="icon-box d-flex align-items-center" style="background-color: red; padding: 5px;">
+    <div class="icon-box d-flex align-items-center" style="background-color: #cc0000; padding: 5px;">
       <img src="{{ asset('assets/images/1.png') }}" alt="" class="icon-image">
       <h4 class="title" style="color: white; margin: 5px;"><a href="{{ route('questionnaire') }}">Je choisis ma section</a></h4>
     </div>
@@ -47,7 +47,7 @@
 </a>
   <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 col-6" data-aos="fade-up" data-aos-delay="200">
     <a href="">
-    <div class="icon-box d-flex align-items-center" style="background-color: #E5E500; padding: 5px;">
+    <div class="icon-box d-flex align-items-center" style="background-color: #e0be00; padding: 5px;">
       <img src="{{ asset('assets/images/2.png') }}" alt="" class="icon-image">
       <h4 class="title" style="color: white; margin: 13px;"><a href="">Nous contacter</a></h4>
     </div>
@@ -56,7 +56,7 @@
 
   <div class="col-md-6 col-lg-3 col-6" data-aos="fade-up" data-aos-delay="300">
     <a href="">
-    <div class="icon-box d-flex align-items-center" style="background-color: blue; padding: 5px;">
+    <div class="icon-box d-flex align-items-center" style="background-color: #2626f7; padding: 5px;">
       <img src="{{ asset('assets/images/3.png') }}" alt="" class="icon-image">
       <h4 class="title" style="color: white; margin: 0;"><a href="">Questions Fréquentes</a></h4>
     </div>

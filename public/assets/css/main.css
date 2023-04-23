@@ -2020,7 +2020,7 @@ section {
 }
 
 .hero .icon-box .title a {
-  color: #000;
+  color: #fff;
   transition: 0.3s;
 }
 
@@ -2040,7 +2040,7 @@ section {
 
 .hero .icon-box:hover .title a,
 .hero .icon-box:hover .icon {
-  color: #fff;
+  color: #352f2f;
 }
 
 /*--------------------------------------------------------------
