@@ -51,12 +51,22 @@
           @endif
               <div style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif" class="mb-3 row d-flex justify-content-between">
                   <div class="col-md-5 p-4 col-12">
-                      <select  class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" @if(!auth()->user()->roles->changer_status_facture || Route::currentRouteName() !== 'facture.showBill'
-                        ) disabled @endif>
+                    @if(!auth()->user()->roles->changer_status_facture || Route::currentRouteName() !== 'facture.showBill')
+                    <select disabled class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
+                      @foreach($status as $s)
+                          @if($s->id == $bill->status)
+                              <option value="{{ $s->id }}" selected role="option">{{ $s->status }}</option>
+                          @endif
+                      @endforeach
+                  </select>
+                  
+                    @else
+                      <select  class="border col-md-12 form-select @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" >
                           @foreach($status as $status)
                               <option value="{{ $status->id }}" {{ $bill->status == $status->id ? 'selected' : '' }} role="option">{{ $status->status }}</option>
                           @endforeach
                       </select>
+                    @endif
                   </div> 
                   @if (auth()->user()->roles->changer_status_facture && Route::currentRouteName() === 'facture.showBill')
                   <div class="col-md-2 p-4 col-10 d-flex justify-content-center ">
@@ -150,12 +160,13 @@
           $i = 1;
 
           foreach ($nb_paiment as $paiment) {
-              echo '<b>Paiement ' . $i . '</b>: &nbsp;' . number_format($paiment, 2, ',', ' ') . ' €&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; <b>Echance : &nbsp;</b>' . $formattedMonthYear . '<br>';
+    $formattedMonthYear = $englishToFrench[$datetime->format('F')] . ' ' . $datetime->format('Y');
+    echo '<b>Paiement ' . $i . '</b>: &nbsp;' . number_format($paiment, 2, ',', ' ') . ' €&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; <b>Echéance : &nbsp;</b>' . $formattedMonthYear . '<br>';
               
-              $datetime->add(new DateInterval('P1M')); // add one month to the date
-              $formattedMonthYear = $englishToFrench[$datetime->format('F')] . ' ' . $datetime->format('Y');
-              $i++;
-          }
+    $datetime->add(new DateInterval('P1M')); // add one month to the date
+    $i++;
+}
+
           ?>
       </fieldset>
       <br><br>
@@ -197,12 +208,22 @@
                             <img style="height: 70px" src="{{ $shop->image }}"  alt="">
                         </div>
                         <div class="col-md-6 col-12">
-                            <select name="designation"  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox" @if(!auth()->user()->roles->changer_designation_facture || Route::currentRouteName() !== 'facture.showBill') disabled @endif>
+                          @if(!auth()->user()->roles->changer_designation_facture || Route::currentRouteName() !== 'facture.showBill')
+                          <select disabled name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
+                            @foreach($designation as $title)
+                                @if($title == $shop->designation)
+                                    <option value="{{ $title }}" role="option" selected>{{ $title }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                          @else
+                            <select name="designation"  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
                                 <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
                                 @foreach($designation as $title)
                                     <option value="{{ $title }}" role="option">{{ $title }}</option>
                                 @endforeach
                             </select>
+                          @endif
                         </div>
                         @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
                         <div class="col-md-2 col-12">

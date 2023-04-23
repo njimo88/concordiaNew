@@ -153,22 +153,14 @@ public function detail_paiement($id,$nombre_cheques)
         return redirect()->back()->withErrors([$error_msg]);
     }else{
         $paniers = DB::table('basket')
-        ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-        ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
-        ->leftJoin('shop_article_2', 'shop_article_2.id_shop_article', '=', 'basket.ref')
-        ->where('basket.user_id', '=',auth()->user()->user_id)
-        ->groupBy('basket.pour_user_id','shop_article_2.declinaison','basket.declinaison',
-         'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice',
-          'shop_article.ref', 'users.name', 'users.lastname')
-        ->orderBy('basket.pour_user_id')
-        ->orderBy('basket.ref')
-        ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title',
-         'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname', 
-         DB::raw('SUM(basket.qte) as total_qte'),
-        DB::raw("JSON_UNQUOTE(JSON_EXTRACT(shop_article_2.declinaison, CONCAT('$[', basket.declinaison-1, '].', basket.declinaison, '.libelle'))) 
-        as declinaison_libelle")
-        )
-        ->get();
+    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+    ->where('basket.user_id', '=', auth()->user()->user_id)
+    ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
+    ->orderBy('basket.pour_user_id')
+    ->orderBy('basket.ref')
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'basket.declinaison', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->get();
 
         $payment = DB::table('bills_payment_method')->where('id', '=', $id)->first()->payment_method;
 
@@ -177,7 +169,6 @@ public function detail_paiement($id,$nombre_cheques)
         $total += $panier->qte * $panier->totalprice;
     }
     $nb_paiment = calculerPaiements($total,$nombre_cheques);
-
 
     if($paniers->count() == 0){
         return redirect()->route('panier');}
@@ -236,7 +227,6 @@ public function detail_paiement($id,$nombre_cheques)
 
     DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
     MiseAjourStock();
-
     return view('users.detail_paiement', compact('paniers','total','payment','nb_paiment','bill'))->with('user', auth()->user());
 }
 

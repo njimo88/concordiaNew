@@ -413,11 +413,6 @@ function display_historique_method($id){
       //$present = json_encode($present,JSON_NUMERIC_CHECK) ;
 
       
-    return view('club/historique_view',compact('id_cours','appel','users','present'))->with('user', auth()->user()) ;
-
- 
+    return view('club/historique_view',compact('id_cours','appel','users','present'))->with('user', auth()->user());
 }
-
-
- 
 }

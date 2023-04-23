@@ -356,6 +356,14 @@ class generatePDF extends Controller
         $font->valign('top');
     });
 
+    $image->text("En ".$bill->number." fois", 108, 829, function($font)  {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size(16);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+
     // Coordonnées de la première ligne de produit
     $x = 35;
     $y = 334;
@@ -647,7 +655,13 @@ $image2->text(	$payment_total_amount, 581, 755, function($font)  {
     $font->align('left');
     $font->valign('top');
 });
-
+$image2->text("En ".$bill->number." fois", 108, 755, function($font)  {
+    $font->file(public_path('fonts/arial.ttf'));
+    $font->size(16);
+    $font->color('#00000');
+    $font->align('left');
+    $font->valign('top');
+});
 
 
 
@@ -963,6 +977,13 @@ $font->valign('top');
 });
 
 
+$image2->text("En ".$bill->number." fois", 108, 755, function($font)  {
+    $font->file(public_path('fonts/arial.ttf'));
+    $font->size(16);
+    $font->color('#00000');
+    $font->align('left');
+    $font->valign('top');
+});
 
 
 $pdf1 = PDF::loadHTML('<img src="data:image/' . $image->mime . ';base64,' . base64_encode($image->encode()) . '">');
