@@ -76,12 +76,12 @@
 
     @endforeach
 
-    <div class="clearfix"></div>
-<div class="d-flex justify-content-center">
+   
+
 {!!   $a_requete1->links() !!}
 
 
-</div> 
+
 
 </main>
 
