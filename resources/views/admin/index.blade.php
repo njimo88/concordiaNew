@@ -106,16 +106,7 @@ require_once(app_path().'/fonction.php');
 
                            @endphp
 
-                               
-
-                            
-
-
-
-
-                          
-
-
+                              
 
                                <h6  style="font-size:14px; text-align:left">{{$nbre_visit}}</h6>
 

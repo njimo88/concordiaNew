@@ -91,14 +91,20 @@ $saison_active = saison_active() ;
                  <div id="content" >
 
 
+                
                                           
             <div class="row">  
-                <div class="col-4 ">  <button type="submit" class="btn btn-success">Valider l'appel</button> </div>
+           
+                <div class="col-4 ">  
+
+                  <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article ])}}" method="POST">
+                                                      @csrf
+                  <button type="submit" class="btn btn-success">Valider l'appel</button> 
+
+                </div>
                 <div class="col-4 ">
                
                
-                          <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article ])}}" method="POST">
-                                                  @csrf
                                                       <input type="date" class="form-control m-0" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
                                                      
                                           
@@ -280,12 +286,17 @@ $saison_active = saison_active() ;
 <div class="row">  
 
           @php $var = $data->id_shop_article  ;  @endphp
+         
 
-          <div class="col-4 "><button type="submit" class="btn btn-success">Valider l'appel</button>  </div>
+          <div class="col-4 ">
+              <form action="{{route('enregistrer_appel',$var)}}" method="POST">
+                          
+                          @csrf
+                <button type="submit" class="btn btn-success">Valider l'appel</button> 
+          
+          </div>
             <div class="col-4"> 
-                      <form action="{{route('enregistrer_appel',$var)}}" method="POST">
-                      
-                                              @csrf
+                    
                                                   <input type="date" class="form-control m-0" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
                                                   
                                       
@@ -498,10 +509,15 @@ $saison_active = saison_active() ;
 
                                           
 <div class="row">  
-    <div class="col-4">  <button type="submit" class="btn btn-success">Valider l'appel</button>  </div>
-    <div class="col-4"> 
-              <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
+
+    <div class="col-4">  
+    <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
                                       @csrf
+      <button type="submit" class="btn btn-success">Valider l'appel</button> 
+    
+    </div>
+    <div class="col-4"> 
+             
                                           <input type="date" class="form-control m-0" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
                                          
                               
@@ -653,10 +669,15 @@ $saison_active = saison_active() ;
 
                                                           
             <div class="row">  
-            <div class="col-4"> <button type="submit" class="btn btn-success">Valider l'appel</button> </div>
-                    <div class="col-4"> 
-                              <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
+           
+            <div class="col-4"> 
+            <form action="{{route('enregistrer_appel',['id'=>$data->id_shop_article])}}" method="POST">
                                                       @csrf
+              <button type="submit" class="btn btn-success">Valider l'appel</button>
+            
+            </div>
+                    <div class="col-4"> 
+                            
                                                           <input type="date" class="form-control m-0" name="date_appel" value="<?php echo date('Y-m-d'); ?>">
                                                           
                                               
