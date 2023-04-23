@@ -23,8 +23,6 @@ class Controller_club extends Controller
         
         /*--------------------------faire l'appel------------------------------ */
 
-    
-
 
         $saison_actu = saison_active() ;
 
@@ -98,10 +96,6 @@ class Controller_club extends Controller
 
 
 
-
-
-
-
     function index_include(Request $request){
         
         $saison = $_POST['saison'];
@@ -124,7 +118,7 @@ class Controller_club extends Controller
    
 
     public function display_form_cours($id)
-{
+      {
     // Retrieve the data for the specified ID from the database
     $shop_article = Shop_Article::find($id);
     $buyers = Donne_User_article_Paye($id);
@@ -136,7 +130,7 @@ class Controller_club extends Controller
   //  return view('/shop_article_cours_ajax', compact('user','buyers','requete_articles'))->with('user', auth()->user());
 
 
-}
+  } 
 
 public function form_appel_method($id){
 

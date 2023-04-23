@@ -51,7 +51,13 @@ class n_AdminController extends Controller
                     }
                    
                     $visitorCount = statistiques_visites::where('page', '=', '/')->first();
-                    $nbre_visit = $visitorCount->nbre_visitors ;
+                            if($visitorCount){
+                                
+                                $nbre_visit = $visitorCount->nbre_visitors ;
+                            }else{
+                                $nbre_visit = 0 ;
+                            }
+               
 
                     $get_stat_pages = statistiques_visites::where('page', '!=', '/')->orderBy('nbre_visitors', 'desc')
                     ->limit(10)->get();
