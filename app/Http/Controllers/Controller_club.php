@@ -23,8 +23,6 @@ class Controller_club extends Controller
         
         /*--------------------------faire l'appel------------------------------ */
 
-    
-
 
         $saison_actu = saison_active() ;
 
@@ -45,9 +43,6 @@ class Controller_club extends Controller
           ->where('type_article',1)->get(); 
 
      
-  
-  
-        
 
             //requete pour la saison choisie
           $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
@@ -69,14 +64,7 @@ class Controller_club extends Controller
 
          $saison_list = Shop_article::select('saison')->distinct('name')->orderBy('saison', 'ASC')->get();
 
-        /*----------------------------------------------- couleur ----------------------------*/
-        $bill_requete = DB::table('bills')
-        ->join('users', 'bills.user_id', '=', 'users.user_id')
-        ->join('liaison_shop_articles_bills', 'users.user_id', '=', 'liaison_shop_articles_bills.id_user')
-        ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-        ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.user_id', 'bills_status.status','bills_status.row_color','liaison_shop_articles_bills.id_shop_article')
-        ->orderBy('bills.date_bill', 'desc')
-        ->get();
+       
 
        // dd( $users_saison_active_test);
 
@@ -94,10 +82,6 @@ class Controller_club extends Controller
 
         
     }
-
-
-
-
 
 
 
@@ -124,7 +108,7 @@ class Controller_club extends Controller
    
 
     public function display_form_cours($id)
-{
+      {
     // Retrieve the data for the specified ID from the database
     $shop_article = Shop_Article::find($id);
     $buyers = Donne_User_article_Paye($id);
@@ -136,7 +120,7 @@ class Controller_club extends Controller
   //  return view('/shop_article_cours_ajax', compact('user','buyers','requete_articles'))->with('user', auth()->user());
 
 
-}
+  } 
 
 public function form_appel_method($id){
 
@@ -429,11 +413,6 @@ function display_historique_method($id){
       //$present = json_encode($present,JSON_NUMERIC_CHECK) ;
 
       
-    return view('club/historique_view',compact('id_cours','appel','users','present'))->with('user', auth()->user()) ;
-
- 
+    return view('club/historique_view',compact('id_cours','appel','users','present'))->with('user', auth()->user());
 }
-
-
- 
 }

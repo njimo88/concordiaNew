@@ -83,18 +83,19 @@ echo $formattedDate;
                     $i = 1;
 
                     foreach ($nb_paiment as $paiment) {
-                        echo '<b>Paiement ' . $i . '</b>: &nbsp;' . number_format($paiment, 2, ',', ' ') . ' €&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; <b>Echance : &nbsp;</b>' . $formattedMonthYear . '<br>';
-                        
-                        $datetime->add(new DateInterval('P1M')); // add one month to the date
-                        $formattedMonthYear = $englishToFrench[$datetime->format('F')] . ' ' . $datetime->format('Y');
-                        $i++;
-                    }
+    $formattedMonthYear = $englishToFrench[$datetime->format('F')] . ' ' . $datetime->format('Y');
+    echo '<b>Paiement ' . $i . '</b>: &nbsp;' . number_format($paiment, 2, ',', ' ') . ' €&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp; <b>Echéance : &nbsp;</b>' . $formattedMonthYear . '<br>';
+              
+    $datetime->add(new DateInterval('P1M')); // add one month to the date
+    $i++;
+}
+
                     ?>
                 </fieldset>
                 
                 
                 <hr>
-                Pour consulter votre commande : <a href="{{ route('facture.showBill',$bill->id) }}">cliquer sur ce lien</a><br>
+                Pour consulter votre commande : <a href="{{ route('user.showBill',$bill->id) }}">cliquer sur ce lien</a><br>
             </div>
         </div>
     </div>
