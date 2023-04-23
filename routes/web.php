@@ -376,3 +376,8 @@ Route::get('/username/reminder', [ForgotUsernameController::class, 'showRequestF
 Route::post('/username/reminder', [ForgotUsernameController::class, 'sendUsernameEmail'])->name('username.email');
 
 
+/*----------------------- Recherche ------------------------------ */
+
+Route::get('/search/blog',[SearchController::class, 'searchBlog']);
+Route::get('/search/shop', [SearchController::class, 'searchShop']);
+Route::get('/search-results', [SearchController::class, 'searchResults']);
