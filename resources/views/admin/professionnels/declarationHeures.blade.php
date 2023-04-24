@@ -944,6 +944,112 @@ function newSeason($mois)
 	$timestamp = strtotime($date);
 	$couleur = ColorFont($timestamp);
 
+	$monthsInFrench = [
+    1 => 'Janvier',
+    2 => 'Février',
+    3 => 'Mars',
+    4 => 'Avril',
+    5 => 'Mai',
+    6 => 'Juin',
+    7 => 'Juillet',
+    8 => 'Août',
+    9 => 'Septembre',
+    10 => 'Octobre',
+    11 => 'Novembre',
+    12 => 'Décembre',
+];
+
+$HeuresTheoriques = array(
+    $pro->lundi,
+    $pro->mardi,
+    $pro->mercredi,
+    $pro->jeudi,
+    $pro->vendredi,
+    $pro->samedi,
+    $pro->dimanche
+);
+
+$mois 	= 	($pro->LastDeclarationMonth+1)%12;
+$annee = $pro->LastDeclarationYear;
+$VolumeMensueldu = round($pro->VolumeHebdo * 52 / 12, 2);
+	if (($pro->LastDeclarationMonth+1)%12 >= 8) {
+		$NbMoisPeriode = ($pro->LastDeclarationMonth+1)%12 - 8;
+	} else {
+		$NbMoisPeriode = ($pro->LastDeclarationMonth+1)%12 + 4;
+	}
+	$TotalMensueldu = $VolumeMensueldu * $NbMoisPeriode;
+
+	function daysInMonth($month, $year) {
+    return date("t", mktime(0, 0, 0, $month, 1, $year));
+}
+
+// Returns the sum of all weekday values in a given month
+function sumWeekdayValues($month, $year, $pro) {
+    $daysInMonth = daysInMonth($month, $year);
+    $totalSum = 0;
+
+    for ($day = 1; $day <= $daysInMonth; $day++) {
+        $weekday = date('l', mktime(0, 0, 0, $month, $day, $year));
+
+        switch ($weekday) {
+            case 'Monday':
+                $totalSum += $pro->Lundi;
+                break;
+            case 'Tuesday':
+                $totalSum += $pro->Mardi;
+                break;
+            case 'Wednesday':
+                $totalSum += $pro->Mercredi;
+                break;
+            case 'Thursday':
+                $totalSum += $pro->Jeudi;
+                break;
+            case 'Friday':
+                $totalSum += $pro->Vendredi;
+                break;
+            case 'Saturday':
+                $totalSum += $pro->Samedi;
+                break;
+            case 'Sunday':
+                $totalSum += $pro->Dimanche;
+                break;
+        }
+    }
+
+    return $totalSum;
+}
+
+$monthNames = [
+        1 => 'Janvier',
+        2 => 'Février',
+        3 => 'Mars',
+        4 => 'Avril',
+        5 => 'Mai',
+        6 => 'Juin',
+        7 => 'Juillet',
+        8 => 'Août',
+        9 => 'Septembre',
+        10 => 'Octobre',
+        11 => 'Novembre',
+        12 => 'Décembre'
+    ];
+
+    $dayNames = [
+        'Monday' => 'Lundi',
+        'Tuesday' => 'Mardi',
+        'Wednesday' => 'Mercredi',
+        'Thursday' => 'Jeudi',
+        'Friday' => 'Vendredi',
+        'Saturday' => 'Samedi',
+        'Sunday' => 'Dimanche'
+    ];
+
+$TotalHeures = sumWeekdayValues($mois, $annee, $pro);
+$TotalCongespris = 0;
+$TotalConges = $pro->SoldeConges + 2.5;
+$TotalHeuresMaladieprises = 0;
+$TotalMaladiepris = 0 ;
+	
 @endphp
 <main class="main" id="main">
 <form action="#" method="post">
@@ -974,16 +1080,16 @@ function newSeason($mois)
 						</table>
 						<hr>
 
-						<h1>{{ $pro->firstname }} {{ $pro->lastname }} - Mois de MOIS_LETTRES_VALUE ANNEE_VALUE</h1>
-						<h3>Saison SAISON_VALUE-SAISONPLUSUN_VALUE : Du 1er Août SAISON_VALUE au 31 Juillet SAISONPLUSUN_VALUE</h3>
-						<p>Cumul période jusqu'au 1er MOIS_LETTRES_VALUE ANNEE_VALUE (inclus) : OLD_HEURES_REALISEES_VALUE heures réalisées / TOTAL_MENSUEL_DU_VALUE heures dues</p>
+						<b><h1>{{ $pro->firstname }} {{ $pro->lastname }} - Mois de {{ $monthsInFrench[($pro->LastDeclarationMonth+1)%12] }} {{ $pro->LastDeclarationYear }}</h1>
+						<h3>Saison {{ $pro->Saison }}-{{ $pro->Saison+1 }} : Du 1er Août {{ $pro->Saison }} au 31 Juillet {{ $pro->Saison+1 }}</h3></b>
+						<p>Cumul période jusqu'au 1er {{ $monthsInFrench[($pro->LastDeclarationMonth+1)%12] }} {{ $pro->LastDeclarationYear }} (inclus) : {{ $pro->OldHeuresRealisees }} heures réalisées / {{ $TotalMensueldu }} heures dues</p>
 						<hr>
 						<table border="0">
 							<tbody>
 								<tr>
 									<td>
-										<p>Mois de <b>MOIS_LETTRES_VALUE ANNEE_VALUE</b> - </td>
-									<td> <input type="text" style="text-align:center; width: 50px;" id="HeuresTotal" value="TOTAL_HEURES_VALUE" name="HeuresTotal" size="5" readonly></td>
+										<p>Mois de <b>{{ $monthsInFrench[($pro->LastDeclarationMonth+1)%12] }} {{ $pro->LastDeclarationYear }}</b> - </td>
+									<td> <input type="text" style="text-align:center; width: 50px;" id="HeuresTotal" value="{{ $TotalHeures }}" name="HeuresTotal" size="5" readonly></td>
 									<td>
 										<p> Heures réalisées</p>
 									</td>
@@ -993,11 +1099,11 @@ function newSeason($mois)
 								<tr>
 									<td>
 										<p> Jours de Congés pris</td>
-									<td> <input type="text" style="text-align:center;" id="JoursCongesPris" name="JoursCongesPris" value="TOTAL_CONGES_PRIS_VALUE" size="2" readonly></td>
+									<td> <input type="text" style="text-align:center;" id="JoursCongesPris" name="JoursCongesPris" value="{{ $TotalCongespris }}" size="2" readonly></td>
 									<td>
 										<p> jours (soit </p>
 									</td>
-									<td><input type="text" style="text-align:center;" id="JoursCongesRestant" name="JoursCongesRestant" value="TOTAL_CONGES_VALUE" size="2" readonly></td>
+									<td><input type="text" style="text-align:center;" id="JoursCongesRestant" name="JoursCongesRestant" value="{{ $TotalConges }}" size="2" readonly></td>
 									<td>
 									<p> jours restant)</p>
 									</td>
@@ -1005,11 +1111,11 @@ function newSeason($mois)
 									<tr>
 									<td>
 									<p> Jours de Maladie pris</td>
-									<td> <input type="text" style="text-align:center;" id="JoursMaladiePris" name="JoursMaladiePris" value="TOTAL_MALADIE_PRIS_VALUE" size="2" readonly></td>
+									<td> <input type="text" style="text-align:center;" id="JoursMaladiePris" name="JoursMaladiePris" value="{{ $TotalMaladiepris }}" size="2" readonly></td>
 									<td>
 									<p> jours (soit </p>
 									</td>
-									<td><input type="text" style="text-align:center;" id="TotalHeuresMaladiePrises" name="TotalHeuresMaladiePrises" value="TOTAL_HEURES_MALADIE_PRISES_VALUE" size="2" readonly></td>
+									<td><input type="text" style="text-align:center;" id="TotalHeuresMaladiePrises" name="TotalHeuresMaladiePrises" value="{{ $TotalHeuresMaladieprises }}" size="2" readonly></td>
 									<td>
 									<p> heures)</p>
 									</td>
@@ -1017,28 +1123,41 @@ function newSeason($mois)
 									</tbody>
 									</table>
 									<hr>
-									<table id="tab" border="1">
+									<table id="tab" class="table table-bordered">
 										<tbody>
 											<tr>
-												<th class="col_1">Date</th>
-												<th class="col_2">H Théo.</th>
-												<th class="col_2">H Réal.</th>
-												<th class="col_2">Congés</th>
-												<th class="col_2">Maladie</th>
-												<th class="col_3">Remarque</th>
+												<th class="col-2">Date</th>
+												<th class="col-1">H Théo.</th>
+												<th class="col-1">H Réal.</th>
+												<th class="col-1">Congés</th>
+												<th class="col-1">Maladie</th>
+												<th class="col-6">Remarque</th>
 											</tr>
-			
-											<!-- You can repeat the following block for each row in the table -->
-											<tr style="background-color: ROW_BACKGROUND_COLOR">
-												<td class="col_1">DATE_VALUE</td>
-												<td class="col_2">HEURES_THEORIQUES_VALUE</td>
-												<td class="col_2"><input READONLY_ATTRIBUTE type="text" style="text-align:center; background-color:CELL_BACKGROUND_COLOR;" size="3" value="NB_HEURES_EXTRAIT_VALUE" id="Heures[INDEX]" name="Heures[INDEX]" onkeyup="calculTotal(INDEX)" /></td>
-												<td class="col_2"><input label="Conges" name="Conges[INDEX]" id="Conges[INDEX]" onchange="bloqueHeuresConges(INDEX, HEURES_THEORIQUES_VALUE)" TYPE_ATTRIBUTE CONGES_CHECKED_VALUE></td>
-												<td class="col_2"><input type="checkbox" label="Maladie" name="Maladie[INDEX]" id="Maladie[INDEX]" onchange="bloqueHeuresMaladie(INDEX, HEURES_THEORIQUES_VALUE)" MALADIE_CHECKED_VALUE></td>
-												<td class="col_3"><input type="text" size="100%" style="background-color:ROW_BACKGROUND_COLOR" name="Remarque[INDEX]" value="NB_REM_EXTRAIT_VALUE"></td>
+											<?php
+												$daysInMonth = date('t', mktime(0, 0, 0, $mois, 1, $annee));
+												for ($day = 1; $day <= $daysInMonth; $day++) {
+													$date = mktime(0, 0, 0, $mois, $day, $annee);
+													$weekday = date('l', $date);
+													$formattedDate = $dayNames[$weekday] . ' ' . $day . ' ' . $monthNames[$mois] . ' ' . $annee;
+													$color = ColorFont($date);
+											?>
+											<tr style="background-color: {{ $color }};">
+												<td class="col_1">{{ $formattedDate }}</td>
+												<td class="col_2">HEURES</td>
+												<td class="col_2">
+													<input READONLY_ATTRIBUTE type="text" style="text-align:center; background-color:CELL_BACKGROUND_COLOR;" size="3" value="NB_HEURES_EXTRAIT_VALUE" id="Heures[{{ $day }}]" name="Heures[{{ $day }}]" onkeyup="calculTotal({{ $day }})" />
+												</td>
+												<td class="col_2">
+													<input label="Conges" name="Conges[{{ $day }}]" id="Conges[{{ $day }}]" onchange="bloqueHeuresConges({{ $day }}, HEURES_THEORIQUES_VALUE)" TYPE_ATTRIBUTE CONGES_CHECKED_VALUE>
+												</td>
+												<td class="col_2">
+													<input type="checkbox" label="Maladie" name="Maladie[{{ $day }}]" id="Maladie[{{ $day }}]" onchange="bloqueHeuresMaladie({{ $day }}, HEURES_THEORIQUES_VALUE)" MALADIE_CHECKED_VALUE>
+												</td>
+												<td class="col_3" style="width: 60%;">
+													<input type="text" style="background-color:ROW_BACKGROUND_COLOR; width: 100%;" name="Remarque[{{ $day }}]" value="NB_REM_EXTRAIT_VALUE">
+												</td>
 											</tr>
-											<!-- End of the repeated block -->
-			
+											<?php } ?>
 										</tbody>
 									</table>
 								</td>
