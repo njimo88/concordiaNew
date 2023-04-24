@@ -246,6 +246,11 @@ foreach($Shop_article as $value1){
                             <tbody>
                             @php
                                 $json_cate = json_decode($value1->categories) ;  
+                                if ($json_cate){
+
+                                }else{
+                                    $json_cate = [];  
+                                }
                                 
                             @endphp
 
@@ -580,6 +585,11 @@ foreach($Shop_article as $value1){
                             <tbody>
                             @php
                                 $json_cate = json_decode($value1->categories) ;  
+                                if ($json_cate){
+
+                                }else{
+                                    $json_cate = [];  
+                                }
                                 
                             @endphp
 
@@ -935,10 +945,14 @@ foreach($Shop_article as $value1){
                      </thead>
                      <tbody>
                      @php
-                         $json_cate = json_decode($value1->categories) ; 
-                          
-                         
-                     @endphp
+                                $json_cate = json_decode($value1->categories) ;  
+                                if ($json_cate){
+
+                                }else{
+                                    $json_cate = [];  
+                                }
+                                
+                            @endphp
 
                      
                          
