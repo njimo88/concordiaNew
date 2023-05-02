@@ -58,8 +58,8 @@ function JourFerie($datedujour)
 	if ($datedujour == mktime(0, 0, 0, 12,  26,  $year)) $retour = TRUE; // St Etienne
 
 	// Dates variables
-	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay - 2,  $easterYear)) $retour = TRUE;
-	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay + 1,  $easterYear)) $retour = TRUE;
+	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay - 1,  $easterYear)) $retour = TRUE;
+	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay +2,  $easterYear)) $retour = TRUE;
 	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay + 39, $easterYear)) $retour = TRUE;
 	if ($datedujour == mktime(0, 0, 0, $easterMonth, $easterDay + 50, $easterYear)) $retour = TRUE;
 

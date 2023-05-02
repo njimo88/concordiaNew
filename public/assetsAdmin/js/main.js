@@ -952,3 +952,4 @@ $('#myTableArticle').on('click', 'thead th', function() {
   table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
 });
 /*my table end-------------------------------------------------------------------*/
+

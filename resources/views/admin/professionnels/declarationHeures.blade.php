@@ -21,84 +21,19 @@
 		line-height: 15px;
 		width: 950px
 	}
-</style>
 
-<script language="javascript">
-	function calculTotal(pNum) {
-		var nbLignes = document.getElementById("tab").rows.length;
-		document.getElementById('HeuresTotal').value = 0;
-		for (i = 1; i < nbLignes; i++) {
-			var ChaineReplace = document.getElementById('Heures[' + i + ']').value;
-			document.getElementById('HeuresTotal').value = parseFloat(document.getElementById('HeuresTotal').value) + parseFloat(ChaineReplace.replace(',', '.'));
-		};
-	}
-
-	function modifyTotal(pNum) {
-		var nbLignes = document.getElementById("tab").rows.length;
-
-		var int = 0;
-		document.getElementById('HeuresTotal').value = 0;
-		for (i = 1; i < nbLignes; i++) {
-			var ChaineReplace = document.getElementById('Heures[' + i + ']').value;
-			int = int + parseFloat(ChaineReplace.replace(',', '.'));
-			//document.getElementById('totalheuredynamique').innerHTML = parseFloat(document.getElementById('HeuresTotal').value) + parseFloat(ChaineReplace.replace(',','.'));
-			document.getElementById('HeuresTotal').value = int;
-			document.getElementById('totalheuredynamique').innerHTML = int;
-		};
-	}
-
-
-function bloqueHeuresConges(pNum, pValue) {
-
-	if (document.getElementById('Conges[' + pNum + ']').checked == true) {
-		document.getElementById('Heures[' + pNum + ']').value = pValue;
-		if (document.getElementById('Maladie[' + pNum + ']').checked == true) {
-			document.getElementById('Maladie[' + pNum + ']').checked = false;
-			document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - 1;
-			document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById('TotalHeuresMaladiePrises').value - document.getElementById('Heures[' + pNum + ']').value;
-		};
-		document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - 1;
-		document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - (-1);
-		document.getElementById('Heures[' + pNum + ']').setAttribute('readonly', 'true');
-		document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#77B5FE');
-		calculTotal(pNum);
-	};
-	if (document.getElementById('Conges[' + pNum + ']').checked == false) {
-		document.getElementById('Heures[' + pNum + ']').value = pValue;
-		document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - (-1);
-		document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - 1;
-		document.getElementById('Heures[' + pNum + ']').removeAttribute('readonly');
-		document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#FFFFFF;');
-		calculTotal(pNum);
-	};
+	.conges:checked ~ .heure input[type=text],
+.maladie:checked ~ .heure input[type=text] {
+  background-color: #77b5fe; /* Fond bleu pour les jours de congé */
 }
 
+.maladie:checked ~ .heure input[type=text] {
+  background-color: #fd6c9e; /* Fond rose pour les jours de maladie */
+}
 
-	function bloqueHeuresMaladie(pNum, pValue) {
+</style>
 
-		if (document.getElementById('Maladie[' + pNum + ']').checked == true) {
-			if (document.getElementById('Conges[' + pNum + ']').checked == true) {
-				document.getElementById('Conges[' + pNum + ']').checked = false;
-				document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - (-1);
-				document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - 1;
-			};
-			document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - (-1);
-			document.getElementById('Heures[' + pNum + ']').value = pValue;
-			document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById('TotalHeuresMaladiePrises').value - (-document.getElementById('Heures[' + pNum + ']').value);
-			document.getElementById('Heures[' + pNum + ']').setAttribute('readonly', 'true');
-			document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#FD6C9E;');
-			calculTotal(pNum);
-		};
-		if (document.getElementById('Maladie[' + pNum + ']').checked == false) {
-			document.getElementById('Heures[' + pNum + ']').value = pValue;
-			document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById('TotalHeuresMaladiePrises').value - document.getElementById('Heures[' + pNum + ']').value;
-			document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - 1;
-			document.getElementById('Heures[' + pNum + ']').removeAttribute('readonly');
-			document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#FFFFFF;');
-			calculTotal(pNum);
-		};
-	}
-</script>
+
 
 <?php
 
@@ -557,7 +492,7 @@ $VolumeHebdo = $VariableBDD[3];
 
 	$resultatpdfrenvoye = '';
 	$resultatpdfrenvoye .= '<h1>' . $NomEmploye . ' ' . $PrenomEmploye . ' - Mois de ' . $Moislettres[$mois] . ' ' . $annee . '</h1>';
-	$resultatpdfrenvoye .= '<p>Mois de <b>' . $Moislettres[$mois] . ' ' . $annee . '</b> - ' . $TotalHeures . ' Heures réalisées<br>';
+	$resultatpdfrenvoye .= '<p>Mois de <b>' . $mois. ' ' . $annee . '</b> - ' . $TotalHeures . ' Heures réalisées<br>';
 	$resultatpdfrenvoye .= ' Jours de Congés pris : ' . $TotalCongespris . ' jours (soit ' . $TotalConges . ' jours restant) <br> Jours de Maladie pris : ' . $TotalMaladiepris . ' jours (soit ' . $TotalHeuresMaladieprises . ' heures)</p><hr>';
 	$resultatpdfrenvoye .= '<p>Saison ' . $saison . '-' . $saisonplusun . ' : Du 1er Août ' . $saison . ' au 31 Juillet ' . $saisonplusun . '<br>';
 	$OldHeuresRealisees_a = $OldHeuresRealisees + $TotalHeures;
@@ -944,20 +879,7 @@ function newSeason($mois)
 	$timestamp = strtotime($date);
 	$couleur = ColorFont($timestamp);
 
-	$monthsInFrench = [
-    1 => 'Janvier',
-    2 => 'Février',
-    3 => 'Mars',
-    4 => 'Avril',
-    5 => 'Mai',
-    6 => 'Juin',
-    7 => 'Juillet',
-    8 => 'Août',
-    9 => 'Septembre',
-    10 => 'Octobre',
-    11 => 'Novembre',
-    12 => 'Décembre',
-];
+
 
 $HeuresTheoriques = array(
     $pro->lundi,
@@ -969,8 +891,9 @@ $HeuresTheoriques = array(
     $pro->dimanche
 );
 
-$mois 	= 	($pro->LastDeclarationMonth+1)%12;
-$annee = $pro->LastDeclarationYear;
+$mois 	= 	$pro->LastDeclarationMonth;
+$annee 	= 	$pro->LastDeclarationYear;
+
 $VolumeMensueldu = round($pro->VolumeHebdo * 52 / 12, 2);
 	if (($pro->LastDeclarationMonth+1)%12 >= 8) {
 		$NbMoisPeriode = ($pro->LastDeclarationMonth+1)%12 - 8;
@@ -980,7 +903,7 @@ $VolumeMensueldu = round($pro->VolumeHebdo * 52 / 12, 2);
 	$TotalMensueldu = $VolumeMensueldu * $NbMoisPeriode;
 
 	function daysInMonth($month, $year) {
-    return date("t", mktime(0, 0, 0, $month, 1, $year));
+    return date("t", mktime(0, 0, 0, $month+1, 1, $year));
 }
 
 // Returns the sum of all weekday values in a given month
@@ -989,8 +912,7 @@ function sumWeekdayValues($month, $year, $pro) {
     $totalSum = 0;
 
     for ($day = 1; $day <= $daysInMonth; $day++) {
-        $weekday = date('l', mktime(0, 0, 0, $month, $day, $year));
-
+        $weekday = date('l', mktime(0, 0, 0, $month+1, $day, $year));
         switch ($weekday) {
             case 'Monday':
                 $totalSum += $pro->Lundi;
@@ -1020,19 +942,21 @@ function sumWeekdayValues($month, $year, $pro) {
 }
 
 $monthNames = [
-        1 => 'Janvier',
-        2 => 'Février',
-        3 => 'Mars',
-        4 => 'Avril',
-        5 => 'Mai',
-        6 => 'Juin',
-        7 => 'Juillet',
-        8 => 'Août',
-        9 => 'Septembre',
-        10 => 'Octobre',
-        11 => 'Novembre',
-        12 => 'Décembre'
+	0 => 'Janvier',
+    1 => 'Février',
+    2 => 'Mars',
+    3 => 'Avril',
+    4 => 'Mai',
+    5 => 'Juin',
+    6 => 'Juillet',
+    7 => 'Août',
+    8 => 'Septembre',
+    9 => 'Octobre',
+    10 => 'Novembre',
+    11 => 'Décembre',
     ];
+
+
 
     $dayNames = [
         'Monday' => 'Lundi',
@@ -1046,17 +970,17 @@ $monthNames = [
 
 $TotalHeures = sumWeekdayValues($mois, $annee, $pro);
 $TotalCongespris = 0;
-$TotalConges = $pro->SoldeConges + 2.5;
+$TotalConges = $pro->SoldeConges +2.5;
 $TotalHeuresMaladieprises = 0;
 $TotalMaladiepris = 0 ;
 	
 @endphp
 <main class="main" id="main">
-<form action="#" method="post">
-	<input type="hidden" name="mois" value="MOIS_VALUE">
-	<input type="hidden" name="annee" value="ANNEE_VALUE">
-	<input type="hidden" name="user_id" value="USER_ID_VALUE">
-	<input type="hidden" name="email" value="EMAIL_EMPLOYE_VALUE">
+<form action="" method="post">
+	@csrf
+	<input type="hidden" name="mois" value="{{ $mois }}">
+	<input type="hidden" name="annee" value="{{ $annee }}">
+	<input type="hidden" name="user_id" value="{{ $pro->id_user }}">
 
 	<div align="center">
 		<table border="5px" width="80%">
@@ -1066,30 +990,34 @@ $TotalMaladiepris = 0 ;
 						<table align="center">
 							<tbody>
 								<tr>
+									@if (!isset($declaration) || $declaration->soumis != 1)
 									<td class="mx-3">
-										<button class="btn btn-info">Sauvegarder</button>
+										<button class="btn btn-info" id="save-btn" type="button">Sauvegarder</button>
 									</td>
-										<td class="">
-											<button class="btn btn-danger mx-5">Reinitialiser</button>
-										</td>
-										<td class="mx-3">
-											<button class="btn btn-success">Valider</button>
-										</td>
+									<td class="">
+										<button class="btn btn-danger mx-5" type="button" onclick="resetForm()">Reinitialiser</button>
+									</td>
+									<td class="mx-3">
+										<button class="btn btn-success" id="valider-btn" type="button">Valider</button>
+									</td>
+									@endif
 								</tr>
 							</tbody>
 						</table>
 						<hr>
 
-						<b><h1>{{ $pro->firstname }} {{ $pro->lastname }} - Mois de {{ $monthsInFrench[($pro->LastDeclarationMonth+1)%12] }} {{ $pro->LastDeclarationYear }}</h1>
+						<b><h1>{{ $pro->firstname }} {{ $pro->lastname }} - Mois de {{ $monthNames[$mois] }} {{ $annee }}</h1>
 						<h3>Saison {{ $pro->Saison }}-{{ $pro->Saison+1 }} : Du 1er Août {{ $pro->Saison }} au 31 Juillet {{ $pro->Saison+1 }}</h3></b>
-						<p>Cumul période jusqu'au 1er {{ $monthsInFrench[($pro->LastDeclarationMonth+1)%12] }} {{ $pro->LastDeclarationYear }} (inclus) : {{ $pro->OldHeuresRealisees }} heures réalisées / {{ $TotalMensueldu }} heures dues</p>
+						<p>Cumul période jusqu'au 1er {{ $monthNames[$mois] }} {{ $annee }} (inclus) : {{ $pro->OldHeuresRealisees }} heures réalisées / {{ $TotalMensueldu }} heures dues</p>
 						<hr>
 						<table border="0">
 							<tbody>
 								<tr>
 									<td>
-										<p>Mois de <b>{{ $monthsInFrench[($pro->LastDeclarationMonth+1)%12] }} {{ $pro->LastDeclarationYear }}</b> - </td>
-									<td> <input type="text" style="text-align:center; width: 50px;" id="HeuresTotal" value="{{ $TotalHeures }}" name="HeuresTotal" size="5" readonly></td>
+										<p>Mois de <b>{{ $monthNames[$mois] }} {{ $annee }}</b> - </td>
+									<td>
+										<input type="text" style="text-align:center; width: 50px;" id="HeuresTotal" value="{{ isset($declaration) ? $declaration->heures_realisees : $TotalHeures }}" name="HeuresTotal" size="5" readonly>
+									</td>
 									<td>
 										<p> Heures réalisées</p>
 									</td>
@@ -1099,32 +1027,41 @@ $TotalMaladiepris = 0 ;
 								<tr>
 									<td>
 										<p> Jours de Congés pris</td>
-									<td> <input type="text" style="text-align:center;" id="JoursCongesPris" name="JoursCongesPris" value="{{ $TotalCongespris }}" size="2" readonly></td>
+									<td>
+										<input type="text" style="text-align:center;" id="JoursCongesPris" name="JoursCongesPris" value="{{ isset($declaration) ? $declaration->jours_conges : $TotalCongespris }}" size="2" readonly>
+									</td>
 									<td>
 										<p> jours (soit </p>
 									</td>
-									<td><input type="text" style="text-align:center;" id="JoursCongesRestant" name="JoursCongesRestant" value="{{ $TotalConges }}" size="2" readonly></td>
 									<td>
-									<p> jours restant)</p>
+										<input type="text" style="text-align:center;" id="JoursCongesRestant" name="JoursCongesRestant" value="{{ isset($declaration) ? $TotalConges-$declaration->jours_conges : $TotalConges }}" size="2" readonly>
 									</td>
-									</tr>
-									<tr>
 									<td>
-									<p> Jours de Maladie pris</td>
-									<td> <input type="text" style="text-align:center;" id="JoursMaladiePris" name="JoursMaladiePris" value="{{ $TotalMaladiepris }}" size="2" readonly></td>
-									<td>
-									<p> jours (soit </p>
+										<p> jours restant)</p>
 									</td>
-									<td><input type="text" style="text-align:center;" id="TotalHeuresMaladiePrises" name="TotalHeuresMaladiePrises" value="{{ $TotalHeuresMaladieprises }}" size="2" readonly></td>
+								</tr>
+								<tr>
 									<td>
-									<p> heures)</p>
+										<p> Jours de Maladie pris</td>
+									<td>
+										<input type="text" style="text-align:center;" id="JoursMaladiePris" name="JoursMaladiePris" value="{{ isset($declaration) ? $declaration->jours_maladie : $TotalMaladiepris }}" size="2" readonly>
 									</td>
-									</tr>
-									</tbody>
+									<td>
+										<p> jours (soit </p>
+									</td>
+									<td>
+										<input type="text" style="text-align:center;" id="TotalHeuresMaladiePrises" name="TotalHeuresMaladiePrises" value="{{ isset($declaration) ? $TotalHeuresMaladieprises : $TotalHeuresMaladieprises }}" size="2" readonly>
+									</td>
+									<td>
+										<p> heures)</p>
+									</td>
+								</tr>
+							</tbody>
+							
 									</table>
 									<hr>
-									<table id="tab" class="table table-bordered">
-										<tbody>
+									<table class="table table-bordered" id="tab">
+										<thead>
 											<tr>
 												<th class="col-2">Date</th>
 												<th class="col-1">H Théo.</th>
@@ -1133,33 +1070,79 @@ $TotalMaladiepris = 0 ;
 												<th class="col-1">Maladie</th>
 												<th class="col-6">Remarque</th>
 											</tr>
-											<?php
-												$daysInMonth = date('t', mktime(0, 0, 0, $mois, 1, $annee));
-												for ($day = 1; $day <= $daysInMonth; $day++) {
-													$date = mktime(0, 0, 0, $mois, $day, $annee);
+										</thead>
+										<tbody>
+											@php
+											
+											  $daysInMonth = date('t', mktime(0, 0, 0, $mois+1, 1, $annee));
+											@endphp
+											@if(isset($declaration))
+											@for ($day = 1; $day <= $daysInMonth; $day++)
+											@php
+												$date = mktime(0, 0, 0, $mois+1, $day, $annee);
+												
 													$weekday = date('l', $date);
 													$formattedDate = $dayNames[$weekday] . ' ' . $day . ' ' . $monthNames[$mois] . ' ' . $annee;
 													$color = ColorFont($date);
-											?>
+													$weekdayValue = $dayNames[$weekday];
+													$weekdayValue = $pro->$weekdayValue;
+											  $details = isset($declaration) ? $declaration->details[$day - 1] : null;
+											@endphp
 											<tr style="background-color: {{ $color }};">
-												<td class="col_1">{{ $formattedDate }}</td>
-												<td class="col_2">HEURES</td>
-												<td class="col_2">
-													<input READONLY_ATTRIBUTE type="text" style="text-align:center; background-color:CELL_BACKGROUND_COLOR;" size="3" value="NB_HEURES_EXTRAIT_VALUE" id="Heures[{{ $day }}]" name="Heures[{{ $day }}]" onkeyup="calculTotal({{ $day }})" />
-												</td>
-												<td class="col_2">
-													<input label="Conges" name="Conges[{{ $day }}]" id="Conges[{{ $day }}]" onchange="bloqueHeuresConges({{ $day }}, HEURES_THEORIQUES_VALUE)" TYPE_ATTRIBUTE CONGES_CHECKED_VALUE>
-												</td>
-												<td class="col_2">
-													<input type="checkbox" label="Maladie" name="Maladie[{{ $day }}]" id="Maladie[{{ $day }}]" onchange="bloqueHeuresMaladie({{ $day }}, HEURES_THEORIQUES_VALUE)" MALADIE_CHECKED_VALUE>
-												</td>
-												<td class="col_3" style="width: 60%;">
-													<input type="text" style="background-color:ROW_BACKGROUND_COLOR; width: 100%;" name="Remarque[{{ $day }}]" value="NB_REM_EXTRAIT_VALUE">
-												</td>
+											  <td class="col-2">{{ $formattedDate }}</td>
+											  <td style="text-align: center !important" class="col-1 align-middle text-center">{{ $weekdayValue }}</td>
+											  <td class="col-1">
+												<input type="text" class="form-control text-center bg-light" size="3" id="Heures[{{ $day }}]" name="Heures[{{ $day }}]" onkeyup="calculTotal({{ $day }})"
+												value="{{ $details ? $details['heures'] : $weekdayValue }}" {{ $declaration && $declaration->soumis == 1 ? 'readonly' : '' }}/>
+											  </td>
+											  <td style="text-align: center !important" class="col-1 align-middle text-center">
+												<input type="checkbox" label="Conges" name="Conges[{{ $day }}]" id="Conges[{{ $day }}]" onchange="bloqueHeuresConges({{ $day }}, {{ $weekdayValue }})" class="form-check-input"
+												@if ($details && $details['conges']) checked @endif {{ $declaration && $declaration->soumis == 1 ? 'disabled' : '' }}/>
+											  </td>
+											  <td  style="text-align: center !important" class="col-1 align-middle text-center">
+												<input type="checkbox" label="Maladie" name="Maladie[{{ $day }}]" id="Maladie[{{ $day }}]" onchange="bloqueHeuresMaladie({{ $day }}, {{ $weekdayValue }})" class="form-check-input"
+												@if ($details && $details['maladie']) checked @endif {{ $declaration && $declaration->soumis == 1 ? 'disabled' : '' }}/>
+											  </td>
+											  <td class="col-6" style="width: 60%;">
+												<input type="text" class="form-control" style="background-color: ROW_BACKGROUND_COLOR; width: 100%;" name="Remarque[{{ $day }}]"
+												value="{{ $details ? $details['remarque'] : '' }}" {{ $declaration && $declaration->soumis == 1 ? 'readonly' : '' }}/>
+											  </td>
 											</tr>
-											<?php } ?>
-										</tbody>
+										  @endfor
+										  
+											@else
+													@for ($day = 1; $day <= $daysInMonth; $day++)
+													@php
+													$date = mktime(0, 0, 0, $mois+1, $day, $annee);
+													$weekday = date('l', $date);
+													$formattedDate = $dayNames[$weekday] . ' ' . $day . ' ' . $monthNames[$mois] . ' ' . $annee;
+													$color = ColorFont($date);
+													$weekdayValue = $dayNames[$weekday];
+													$weekdayValue = $pro->$weekdayValue;
+													@endphp
+													<tr style="background-color: {{ $color }};">
+													<td class="col-2">{{ $formattedDate }}</td>
+													<td style="text-align: center !important" class="col-1 align-middle text-center">{{ $weekdayValue }}</td>
+													<td class="col-1">
+														<input type="text" class="form-control text-center bg-light" size="3" id="Heures[{{ $day }}]" name="Heures[{{ $day }}]" onkeyup="calculTotal({{ $day }})" value="{{ $weekdayValue }}" />
+													</td>
+													<td style="text-align: center !important" class="col-1 align-middle text-center">
+														<input type="checkbox" label="Conges" name="Conges[{{ $day }}]" id="Conges[{{ $day }}]"  onchange="bloqueHeuresConges({{ $day }}, {{ $weekdayValue }})" class="form-check-input">
+													</td>
+													<td  style="text-align: center !important" class="col-1 align-middle text-center">
+														<input type="checkbox" label="Maladie" name="Maladie[{{ $day }}]" id="Maladie[{{ $day }}]"  onchange="bloqueHeuresMaladie({{ $day }}, {{ $weekdayValue }})" class="form-check-input">
+													</td>
+													<td class="col-6" style="width: 60%;">
+														<input type="text" class="form-control" style="background-color: ROW_BACKGROUND_COLOR; width: 100%;" name="Remarque[{{ $day }}]" value="">
+													</td>
+													</tr>
+													
+												@endfor
+											@endif
+										  </tbody>
+										  
 									</table>
+									
 								</td>
 							</tr>
 						</tbody>
@@ -1167,5 +1150,228 @@ $TotalMaladiepris = 0 ;
 				</div>
 			</form>
 		</main>	
+		<script>
+	
+			document.getElementById('save-btn').addEventListener('click', saveDeclaration);
+			document.getElementById('valider-btn').addEventListener('click', validerDeclaration);
+			
+			async function validerDeclaration() {
+				const annee = @json($annee);
+				const mois = @json($mois);
+			
+			  const details = [];
+			  const daysInMonth = new Date(annee, mois+1, 0).getDate();
+			  const totalHeures = document.getElementById('HeuresTotal').value;
+			  const totalConges = document.getElementById('JoursCongesPris').value;
+			  const totalMaladie = document.getElementById('JoursMaladiePris').value;
+			
+			
+			  for (let day = 1; day <= daysInMonth; day++) {
+				const heures = document.getElementById(`Heures[${day}]`).value;
+				const conges = document.getElementById(`Conges[${day}]`).checked;
+				const maladie = document.getElementById(`Maladie[${day}]`).checked;
+				const remarque = document.querySelector(`[name="Remarque[${day}]"]`).value;
+			
+				details.push({
+				  day,
+				  heures,
+				  conges,
+				  maladie,
+				  remarque,
+				});
+			  }
+			
+			  const response = await fetch('/validateInfo', {
+				method: 'POST',
+				headers: {
+				  'Content-Type': 'application/json',
+				  'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+				},
+				body: JSON.stringify({
+				  user_id: document.querySelector('input[name="user_id"]').value,
+				  annee: document.querySelector('input[name="annee"]').value,
+				  mois: document.querySelector('input[name="mois"]').value,
+				  details,
+				  totalHeures,
+				  totalConges,
+				  totalMaladie,
+				}),
+			  });
+			  if (response.ok) {
+				alert('Declaration validated successfully!');
+				location.reload();
+			  } else {
+				alert('An error occurred while validating the declaration.');
+			  }
+			}
+			
+						async function saveDeclaration() {
+				const annee = @json($annee);
+				const mois = @json($mois);
+			
+			  const details = [];
+			  const daysInMonth = new Date(annee, mois+1, 0).getDate();
+			  const totalHeures = document.getElementById('HeuresTotal').value;
+			  const totalConges = document.getElementById('JoursCongesPris').value;
+			  const totalMaladie = document.getElementById('JoursMaladiePris').value;
+			
+			
+			  for (let day = 1; day <= daysInMonth; day++) {
+				console.log(day);
+
+				const heures = document.getElementById(`Heures[${day}]`).value;
+				const conges = document.getElementById(`Conges[${day}]`).checked;
+				const maladie = document.getElementById(`Maladie[${day}]`).checked;
+				const remarque = document.querySelector(`[name="Remarque[${day}]"]`).value;
+			
+				details.push({
+				  day,
+				  heures,
+				  conges,
+				  maladie,
+				  remarque,
+				});
+			  }
+			
+			  const response = await fetch('/insertInfo', {
+				method: 'POST',
+				headers: {
+				  'Content-Type': 'application/json',
+				  'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+				},
+				body: JSON.stringify({
+				  user_id: document.querySelector('input[name="user_id"]').value,
+				  annee: document.querySelector('input[name="annee"]').value,
+				  mois: document.querySelector('input[name="mois"]').value,
+				  details,
+				  totalHeures,
+				  totalConges,
+				  totalMaladie,
+				}),
+			  });
+			  if (response.ok) {
+				alert('Declaration saved successfully!');
+			  } else {
+				alert('An error occurred while saving the declaration.');
+			  }
+			}
+			function calculTotal(pNum) {
+				const table = document.querySelector('.table');
+				const nbLignes = table.querySelectorAll('tbody tr').length;
+				document.getElementById('HeuresTotal').value = 0;
+			
+				for (let i = 1; i < nbLignes; i++) {
+					const ChaineReplace = document.getElementById(`Heures[${i}]`).value;
+					document.getElementById('HeuresTotal').value = parseFloat(document.getElementById('HeuresTotal').value) + parseFloat(ChaineReplace.replace(',', '.'));
+				}
+			}
+			
+			function resetForm() {
+				document.querySelector('form').reset();
+			
+				const dayCount = {{ $daysInMonth }};
+				
+				for (let day = 1; day <= dayCount; day++) {
+					console.log(day);
+					const heuresInput = document.getElementById(`Heures[${day}]`);
+					const congesCheckbox = document.getElementById(`Conges[${day}]`);
+					const maladieCheckbox = document.getElementById(`Maladie[${day}]`);
+					const remarqueInput = document.querySelector(`[name="Remarque[${day}]"]`);
+			
+					const heuresTheo = document.querySelector(`.table tbody tr:nth-child(${day}) td:nth-child(2)`).textContent.trim();
+					heuresInput.value = heuresTheo;
+					congesCheckbox.checked = false;
+					maladieCheckbox.checked = false;
+					remarqueInput.value = '';
+			
+					// Recalculez les totaux
+					calculTotal(day);
+				}
+				document.getElementById('JoursCongesPris').value = 0;
+				document.getElementById('JoursMaladiePris').value = 0;
+			}
+			</script>
+		<script language="javascript">
+			function calculTotal(pNum) {
+				var nbLignes = document.getElementById("tab").rows.length;
+				document.getElementById('HeuresTotal').value = 0;
+				for (i = 1; i < nbLignes; i++) {
+					var ChaineReplace = document.getElementById('Heures[' + i + ']').value;
+					document.getElementById('HeuresTotal').value = parseFloat(document.getElementById('HeuresTotal').value) + parseFloat(ChaineReplace.replace(',', '.'));
+				};
+			}
+		
+			function modifyTotal(pNum) {
+				var nbLignes = document.getElementById("tab").rows.length;
+		
+				var int = 0;
+				document.getElementById('HeuresTotal').value = 0;
+				for (i = 1; i < nbLignes; i++) {
+					var ChaineReplace = document.getElementById('Heures[' + i + ']').value;
+					int = int + parseFloat(ChaineReplace.replace(',', '.'));
+					//document.getElementById('totalheuredynamique').innerHTML = parseFloat(document.getElementById('HeuresTotal').value) + parseFloat(ChaineReplace.replace(',','.'));
+					document.getElementById('HeuresTotal').value = int;
+					document.getElementById('totalheuredynamique').innerHTML = int;
+				};
+			}
+		
+		
+		function bloqueHeuresConges(pNum, pValue) {
+		
+			if (document.getElementById('Conges[' + pNum + ']').checked == true) {
+				document.getElementById('Heures[' + pNum + ']').value = pValue;
+				document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#77B5FE');
+				if (document.getElementById('Maladie[' + pNum + ']').checked == true) {
+					document.getElementById('Maladie[' + pNum + ']').checked = false;
+					document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - 1;
+					document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById('TotalHeuresMaladiePrises').value - document.getElementById('Heures[' + pNum + ']').value;
+				};
+				document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - 1;
+				document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - (-1);
+				document.getElementById('Heures[' + pNum + ']').setAttribute('readonly', 'true');
+				document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#77B5FE !important');
+				calculTotal(pNum);
+			};
+			if (document.getElementById('Conges[' + pNum + ']').checked == false) {
+				document.getElementById('Heures[' + pNum + ']').value = pValue;
+				document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#FFFFFF !important;');
+				document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - (-1);
+				document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - 1;
+				document.getElementById('Heures[' + pNum + ']').removeAttribute('readonly');
+				document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#FFFFFF !important;');
+				calculTotal(pNum);
+			};
+		}
+		
+		
+			function bloqueHeuresMaladie(pNum, pValue) {
+				
+		
+				if (document.getElementById('Maladie[' + pNum + ']').checked == true) {
+					if (document.getElementById('Conges[' + pNum + ']').checked == true) {
+						document.getElementById('Conges[' + pNum + ']').checked = false;
+						document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value - (-1);
+						document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - 1;
+					};
+					document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - (-1);
+					document.getElementById('Heures[' + pNum + ']').value = pValue;
+					document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById('TotalHeuresMaladiePrises').value - (-document.getElementById('Heures[' + pNum + ']').value);
+					document.getElementById('Heures[' + pNum + ']').setAttribute('readonly', 'true');
+					document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#FD6C9E !important;');
+					calculTotal(pNum);
+					console.log(document.getElementById('TotalHeuresMaladiePrises').value);
+				};
+				if (document.getElementById('Maladie[' + pNum + ']').checked == false) {
+					document.getElementById('Heures[' + pNum + ']').value = pValue;
+					document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById('TotalHeuresMaladiePrises').value - document.getElementById('Heures[' + pNum + ']').value;
+					document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - 1;
+					document.getElementById('Heures[' + pNum + ']').removeAttribute('readonly');
+					document.getElementById('Heures[' + pNum + ']').setAttribute('style', 'text-align:center; background-color:#FFFFFF !important;');
+					calculTotal(pNum);
+				};
+			}
+		</script>
+
+
 @endsection
 

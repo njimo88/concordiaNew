@@ -143,6 +143,14 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::post('/admin/Professionnels/gestion/modifySM',  [ProfessionnelsController::class, 'modifySM'])->name('proffesional.modifySM');
     Route::post('/admin/Professionnels/gestion/simuleSalary',  [ProfessionnelsController::class, 'simuleSalary'])->name('proffesional.simuleSalary');
     Route::get('/valider-heures', [ProfessionnelsController::class, 'valideHeure'])->name('proffesional.valideHeure');
+    Route::post('/insertInfo', [ProfessionnelsController::class, 'saveDeclaration'])->name('saveDeclaration');
+    Route::post('/engistrerDeclaration', [ProfessionnelsController::class, 'engistrerDeclaration'])->name('engistrerDeclaration');
+    Route::post('/validateInfo', [ProfessionnelsController::class, 'validerDeclaration'])->name('validerDeclaration');
+    Route::get('/voir_declaration/{declaration_id}', [ProfessionnelsController::class, 'voir_declaration'])->name('voir_declaration');
+    Route::post('/refuser-declaration', [ProfessionnelsController::class, 'refuserDeclaration']);
+    Route::post('/valider-declaration', [ProfessionnelsController::class, 'validerDec']);
+
+
     /*----------------------- END Professionnels ------------------------------ */
     Route::put('/admin/members/mdpUniversel/{user_id}', [n_AdminController::class, 'mdpUniversel'])->name('admin.mdpUniversel');
     Route::get('/admin/members/mdpUniverselmodal/{user_id}', [n_AdminController::class, 'mdpUniverselmodal']);
@@ -381,3 +389,5 @@ Route::post('/username/reminder', [ForgotUsernameController::class, 'sendUsernam
 Route::get('/search/blog',[SearchController::class, 'searchBlog']);
 Route::get('/search/shop', [SearchController::class, 'searchShop']);
 Route::get('/search-results', [SearchController::class, 'searchResults']);
+
+

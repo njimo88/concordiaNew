@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cart;
 use App\Models\CalculSalaire;
 use App\Models\BasketAn;
+use App\Models\Declaration;
 use Illuminate\Support\Facades\Storage;
 
 require_once(app_path().'/fonction.php');
@@ -30,6 +31,123 @@ class ProfessionnelsController extends Controller
         $pro = Professionnels::all();
         return view('admin.professionnels.gestion',compact('pro','users'))->with('user', auth()->user());
     }
+
+
+    public function refuserDeclaration(Request $request)
+{
+    $declaration_id = $request->input('declaration_id'); 
+    $declaration = Declaration::find($declaration_id);
+    if ($declaration) {
+        $declaration->soumis = 0;
+        $declaration->save();
+        return redirect('/valider-heures')->with('success', 'La déclaration a été refusée.');
+    } else {
+        return redirect('/valider-heures')->with('error', 'La déclaration n\'a pas été trouvée.');
+    }
+}
+
+
+    public function validerDeclaration(Request $request)
+{
+    $validated = $request->validate([
+        'user_id' => 'required|integer',
+        'annee' => 'required|integer',
+        'mois' => 'required|integer',
+        'details' => 'required|array',
+        'totalHeures' => 'required|numeric',
+        'totalConges' => 'required|numeric',    
+        'totalMaladie' => 'required|numeric',
+    ]);
+
+    $declaration = Declaration::firstOrNew(
+        [
+            'user_id' => $validated['user_id'],
+            'annee' => $validated['annee'],
+            'mois' => $validated['mois'],
+        ]
+    );
+
+
+
+    $declaration->soumis = 1;
+    $declaration->heures_realisees = $validated['totalHeures'];
+    $declaration->jours_conges = $validated['totalConges'];
+    $declaration->jours_maladie = $validated['totalMaladie'];
+    $declaration->details = $validated['details'];
+
+    $declaration->save();
+
+    return response()->json(['status' => 'success', 'declaration' => $declaration]);
+}
+
+    public function validerDec(Request $request){
+        $declaration_id = $request->input('declaration_id'); 
+        $declaration = Declaration::find($declaration_id);
+        $pro = Professionnels::where('id_user', $declaration->user_id)->first();
+        $pro->SoldeConges = $pro->SoldeConges + 2.5;
+        $pro->LastDeclarationMonth = ($pro->LastDeclarationMonth + 1)%12;
+        if ($pro->LastDeclarationMonth == 0) {
+            $pro->LastDeclarationYear = $pro->LastDeclarationYear + 1;
+        }
+        $pro->save();
+        $declaration->valider = 1;
+        $declaration->save();
+        return redirect('/valider-heures')->with('success', 'La déclaration a été validée.');
+
+    }
+
+
+    public function saveDeclaration(Request $request)
+{
+    $validated = $request->validate([
+        'user_id' => 'required|integer',
+        'annee' => 'required|integer',
+        'mois' => 'required|integer',
+        'details' => 'required|array',
+        'totalHeures' => 'required|numeric',
+        'totalConges' => 'required|numeric',    
+        'totalMaladie' => 'required|numeric',
+    ]);
+
+    $declaration = Declaration::updateOrCreate(
+        [
+            'user_id' => $validated['user_id'],
+            'annee' => $validated['annee'],
+            'mois' => $validated['mois'],
+
+        ],
+        [
+            'heures_realisees' => $validated['totalHeures'],
+            'jours_conges' => $validated['totalConges'],
+            'jours_maladie' => $validated['totalMaladie'],
+            'details' => $validated['details'],
+        ]
+    );
+
+    return response()->json(['status' => 'success', 'declaration' => $declaration]);
+}
+
+public function engistrerDeclaration(Request $request)
+{
+    $validated = $request->validate([
+        'user_id' => 'required|integer',
+        'annee' => 'required|integer',
+        'mois' => 'required|integer',
+        'details' => 'required|array',
+    ]);
+
+    $declaration = Declaration::firstOrNew(
+        [
+            'user_id' => $validated['user_id'],
+            'annee' => $validated['annee'],
+            'mois' => $validated['mois'],
+        ]
+    );
+
+    $declaration->details_admin = $validated['details'];
+    $declaration->save();
+    return response()->json(['status' => 'success', 'declaration' => $declaration]);
+}
 
    
 
@@ -274,11 +392,25 @@ private function getPeriode($path)
 }
 
 public function declarationHeures($id)
-    {
-        $user_id = $id;
-        $pro = Professionnels::where('id_user', $user_id)->first();
-        return view('admin.professionnels.declarationHeures',compact('user_id','pro'));
+{
+    $user_id = $id;
+    $pro = Professionnels::where('id_user', $user_id)->first();
+    
+    // Check if the professional has a row in the declarations table
+    $declaration = Declaration::where('user_id', $user_id)
+    ->where('mois',  $pro->LastDeclarationMonth)
+    ->where('annee',  $pro->LastDeclarationYear)
+    ->first();
+    // Pass the declaration data to the view if it exists
+    if ($declaration) {
+        return view('admin.professionnels.declarationHeures', compact('user_id', 'pro', 'declaration'));
     }
+    
+
+    // Display the simple view if no declaration data exists
+    return view('admin.professionnels.declarationHeures', compact('user_id', 'pro'));
+}
+
 
     public function declaration($id, Request $request)
     {
@@ -337,16 +469,29 @@ function checkFile()
 
 public function valideHeure()
     {
-        $array_professionals = $this->checkFile();
-        $totalItems = 0; 
+       $declaration = Declaration::where('soumis', 1)
+       ->where('valider', 0)
+       ->join('users', 'users.user_id', '=', 'declarations.user_id')
+       ->select('users.name', 'users.lastname','declarations.*')
+       ->get();
 
-        return view('admin.professionnels.valider_heures', [
-            'array_professionals' => $array_professionals,
-            'totalItems' => $totalItems,
-            'pageName' => 'Valider les heures',
-        ]);
+         return view('admin.professionnels.valider_heures',compact('declaration'));
+        
     }
 
+    public function voir_declaration ($declaration_id)
+    {
+    
+    $declaration = Declaration::where('id', $declaration_id)->first();
+    $user_id = $declaration->user_id;
+    $pro = Professionnels::where('id_user', $user_id)->first();
+    return view('admin.professionnels.voir_declaration', compact('user_id', 'pro', 'declaration'));
+    
+}
 
 
 }
+
+
+
+    
