@@ -2,7 +2,10 @@
 
 @section('content')
 
-
+@php
+use Illuminate\Pagination\Paginator;
+    
+@endphp
 <main id="main" class="main">
 
    
@@ -76,7 +79,7 @@
     @endforeach
 
 
-{!!   $a_requete1->links(pagination::bootstrap-4) !!}
+{!!   $a_requete1->links() !!}
 
 
 

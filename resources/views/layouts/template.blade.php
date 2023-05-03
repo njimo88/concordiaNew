@@ -438,9 +438,12 @@
                      @if ( auth()->user()->roles->estAutoriserDeRedigerArticle)
                         <li> <a href="{{route('index_article_redaction')}}"> <i style="color: #0ef9de" class="fa-solid fa-pen"></i><span>Rédiger un article</span> </a></li>
                      @endif
-                     @if ( auth()->user()->roles->estAutoriserDeGererSlider)
-                        <li> <a href="forms-editors.html"> <i style="color: #0ef9de" class="fa-sharp fa-regular fa-images"></i><span>Gérer le slider</span> </a></li>
-                     @endif
+                     
+                      {{-- @if (auth()->user()->roles->estAutoriserDeGererSlider)
+                          <li> <a href="forms-editors.html"> <i style="color: #0ef9de" class="fa-sharp fa-regular fa-images"></i><span>Gérer le slider</span> </a></li>
+                      @endif  --}}
+                     
+                  
                      @if ( auth()->user()->roles->estAutoriserDeVoirCategories)
                         <li> <a href="{{route('index_article_category')}}"> <i style="color: #0ef9de" class="fa-solid fa-list-ol"></i><span>Catégories</span> </a></li>
                      @endif
