@@ -16,7 +16,7 @@
               margin-bottom: 10px !important;
               box-shadow: 3px 3px 3px #5c5c5c !important;
               " class="card shadow mb-4">
-                                  <div class="card-header py-2  d-flex justify-content-between">
+                                  <div style="background-color: #A9BCF5 !important" class="card-header py-2  d-flex justify-content-between">
                                     <div class="col-9 d-flex align-items-center">
                                       <h6 class="m-0 font-weight-bold text-primary">
     
@@ -35,7 +35,7 @@
     
                                         @endphp  
                                                       
-                                                          <a href="{{route('A_blog_par_categorie1', ['id' => $i])}}"> <img src='{{ $j->image }}'>  </a>
+                                                          <a  href="{{route('A_blog_par_categorie1', ['id' => $i])}}"> <img src='{{ $j->image }}'>  </a>
                                         @php
                                                       }
                                                   }
@@ -45,7 +45,7 @@
     
                                         @endphp   
     
-                                            <a href="{{ route('Simple_Post',$a_article->id_blog_post_primaire) }}">{{$a_article->titre}}</a>
+                                            <a style="color : #084B8A !important" href="{{ route('Simple_Post',$a_article->id_blog_post_primaire) }}">{{$a_article->titre}}</a>
     
                                         @php
     
@@ -100,9 +100,9 @@
                                         $mois = $mois_francais[$date->format('m')];
                                     @endphp
                                     <div class="col-lg-3 d-flex justify-content-end">
-                                        <font class="news-small" style="color: #717878; text-shadow: 1px 1px 1px #ffffff; font-size: 5px !important;">
+                                        <font class="news-small" style=" text-shadow: 1px 1px 1px #ffffff; font-size: 5px !important;">
                                             <p class="m-0" style="font-size: 13px; text-align :end">Publié par 
-                                                <a href="#" data-toggle="modal" data-target="#mailModal" 
+                                                <a style="color : #1c3e70 !important;font-weight : bold;" href="#" data-toggle="modal" data-target="#mailModal" 
                                                    data-firstnamesend="{{$a_article->name}}" 
                                                    data-lastnamesend="{{$a_article->lastname}}" 
                                                    data-mailsend="{{$a_article->email}}" 
@@ -123,7 +123,7 @@
     
     
     
-                                  <div style="align-items: start !important;" class="card-body post-content">
+                                  <div style="align-items: start !important; background-color : #FFFFFF !important" class="card-body post-content">
                                     {!!html_entity_decode($a_article->contenu) !!}
                                 </div>
                                 <script >

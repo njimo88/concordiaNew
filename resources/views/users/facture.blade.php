@@ -69,7 +69,7 @@
                                                     <tr data-bill-type="{{ $bills->type }}" style="background-color: {{ $bills->row_color}}"> 
                                                         <td>
                                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Afficher Facture">
-                                                                <a type="button" class=" user-link a text-black "  href="{{ route('user.showBill', ['id' => $bills->id]) }}">{{ intval($bills->id) }}</i></a>
+                                                                <a type="button" target="_blank" class=" user-link a text-black "  href="{{ route('user.showBill', ['id' => $bills->id]) }}">{{ intval($bills->id) }}</i></a>
                                                             </span>
                                                         </td>
                                                         <td style="font-weight : bold;">{{ $user->lastname}}</td> 

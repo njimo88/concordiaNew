@@ -69,7 +69,6 @@ $saison_active = saison_active() ;
 
             @foreach($shop_article_lesson_choisie as $data)
 
-
             @php $add [] = (array)json_decode($data->teacher) ; 
 
                
@@ -514,7 +513,6 @@ $saison_active = saison_active() ;
       
       <div class="d-grid gap-2">
   @foreach($shop_article as $data)
- 
   <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{(int)$data->stock_ini - (int)$data->stock_actuel }}/ {{$data->stock_ini}}" >
                               <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
 
@@ -637,8 +635,8 @@ $saison_active = saison_active() ;
       
           
 <div class="row">
-          <div class="col-md-4 d-flex justify-content-end"><label> Saison </label></div>
-          <div class="col-md-8">  
+          <div class="col-md-4 d-flex justify-content-end mb-3"><label> Saison </label></div>
+          <div class="col-md-8 mb-3">  
                 
                 
                 <form class="row" action="{{ route('include-page') }}" method="POST" >
@@ -664,14 +662,34 @@ $saison_active = saison_active() ;
    </div>
 
  
+   <style>
+    .input-container {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+      background-color: #e3e3e3;
       
-                      <div class="d-grid gap-2">
+    }
+  
+    .input-container img {
+    }
+  
+    .input-container input {
+      border: none;
+      outline: none;
+      padding: 0.375rem;
+      background-color: #e3e3e3;
+    }
+  </style>
+                      <div class="d-grid gap-4">
                   @foreach($shop_article_first as $data)
-
                                     
-                            <input readonly  onclick="toggleElement('{{ $data->id_shop_article }}')"  class="btn btn-secondary"  value="{{$data->title}}   {{(int)$data->stock_ini - (int)$data->stock_actuel }}/ {{$data->stock_ini}}" >
-                            <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
-      
+                  <div class="input-container">
+                    <img class="px-2" style="height: 30px " src="{{ asset('assets/images/logo-admin-list.png') }}" alt="vvvvvvvvvvvvvvv">
+                    <input readonly onclick="toggleElement('{{ $data->id_shop_article }}')" class="btn m-0" style="font-weight: bold; text-align: left;" value="{{$data->title}}   ({{(int)$data->stock_ini - (int)$data->stock_actuel }}/ {{$data->stock_ini}})">
+                  </div>
+                  <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
       
       
                                       <!-- Button trigger modal

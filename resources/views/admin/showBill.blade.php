@@ -35,7 +35,7 @@
           </div>
           @endif          
           <div class="col-2 d-flex justify-content-end" >
-            <a href="{{ url()->previous() }}" class="my-custom-btn btn btn-primary my-4">Retour  <img src="{{ asset("assets\images\a-gauche.png") }}" alt=""></a>
+            <a href="{{ route('') }}" class="my-custom-btn btn btn-primary my-4">Retour  <img src="{{ asset("assets\images\a-gauche.png") }}" alt=""></a>
           </div>
       </div>
         
@@ -299,17 +299,16 @@
           <u><b><span style="color:red;">(Privé)</span></b> {{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
       @else
           <u>{{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
-      @endif
-      @if ($message->somme_payé <= 0 && $message->somme_payé != null)
-      <b >Somme payée : </b><span style="font-weight : bold" class="text-danger">{{ $message->somme_payé }} €</span><br>
-      @elseif ($message->somme_payé > 0)
-        <b >Somme remboursée : </b><span style="font-weight : bold" class="text-success">{{ $message->somme_payé }} €</span><br>
-        @endif
-      {{ $message->message }}
-     
-        
-      <hr>
-  @endforeach
+          @endif
+          @if ($message->somme_payé <= 0 && $message->somme_payé != null)
+          <b >Somme payée : </b><span style="font-weight : bold" class="text-danger">{{ $message->somme_payé }} €</span><br>
+          @elseif ($message->somme_payé > 0)
+            <b >Somme remboursée : </b><span style="font-weight : bold" class="text-success">{{ $message->somme_payé }} €</span><br>
+            @endif
+          {!! html_entity_decode(nl2br(e($message->message))) !!}
+            
+          <hr>
+          @endforeach
 </div>
 
 

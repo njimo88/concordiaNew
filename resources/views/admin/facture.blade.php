@@ -109,7 +109,7 @@
                                         <td>
                                             @if (auth()->user()->roles->supprimer_edit_facture)
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Afficher Facture">
-                                                <a type="button" class=" user-link a text-black "  href="{{ route('facture.showBill', ['id' => $bills->id]) }}">{{ intval($bills->id) }}</i></a>
+                                                <a type="button" target="_blank" class=" user-link a text-black "  href="{{ route('facture.showBill', ['id' => $bills->id]) }}">{{ intval($bills->id) }}</i></a>
                                               </span>
                                             @else
                                                 {{ intval($bills->id) }}

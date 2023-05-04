@@ -124,50 +124,47 @@
       </div>
     </div>
     
-    <div style="background-image: url('{{asset("/assets/images/background.png")}}');" class="icon-boxes position-relative">
+    <style>
+      .icon-box {
+        padding: 5px;
+        display: flex !important;
+        align-items: center !important;
+        height: 30px !important;
+        justify-content: center !important;
+      }
+    </style>
+    
+    <div class="icon-boxes position-relative" style="background-image: url('{{asset("/assets/images/background.png")}}');">
       <div class="container position-relative">
         <div class="row mt-5">
-  <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 col-6" data-aos="fade-up" data-aos-delay="100">
-    
-    <div class="icon-box d-flex align-items-center" style="background-color: #cc0000; padding: 5px;">
-      <img src="{{ asset('assets/images/1.png') }}" alt="" class="icon-image">
-      <h4 class="title" style="color: white; margin: 5px;"><a href="{{ route('questionnaire') }}">Je choisis ma section</a></h4>
-    </div>
-  
-  </div>
-</a>
-  <div class="col-md-6 col-lg-3 mb-4 mb-lg-0 col-6" data-aos="fade-up" data-aos-delay="200">
-    <a href="" data-toggle="modal" data-target="#contactModal">
-    <div class="icon-box d-flex align-items-center" style="background-color: #e0be00; padding: 5px;">
-      <img src="{{ asset('assets/images/2.png') }}" alt="" class="icon-image">
-      <h4 class="title" style="color: white; margin: 13px;"><a href="" data-toggle="modal" data-target="#contactModal">Nous contacter</a></h4>
-    </div>
-  </a>
-  </div>
-
-  <div class="col-md-6 col-lg-3 col-6" data-aos="fade-up" data-aos-delay="300">
-    <a href="{{ route('Simple_Post',13019) }}">
-    <div class="icon-box d-flex align-items-center" style="background-color: #2626f7; padding: 5px;">
-      <img src="{{ asset('assets/images/3.png') }}" alt="" class="icon-image">
-      <h4 class="title" style="color: white; margin: 0;"><a href="{{ route('Simple_Post',13019) }}">Questions Fréquentes</a></h4>
-    </div>
-  </a>
-  </div>
-
-  <div class="col-md-6 col-lg-3 col-6" data-aos="fade-up" data-aos-delay="500">
-    <a href="">
-    <div class="icon-box d-flex align-items-center" style="background-color: green; padding: 5px;">
-      <img src="{{ asset('assets/images/4.png') }}" alt="" class="icon-image">
-      <h4 class="title" style="color: white; margin: 4px;"><a href="">Je te dis plus tard</a></h4>
-    </div>
-  </a>
-  </div>
-</div>
-
-        
-        
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex align-items-center" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon-box" style="background-color: #cc0000;">
+              <img src="{{ asset('assets/images/1.png') }}" alt="" class="icon-image">
+              <h4 class="title" style="color: white; margin: 5px;"><a href="{{ route('questionnaire') }}">Je choisis ma section</a></h4>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon-box" style="background-color: #e0be00;">
+              <img src="{{ asset('assets/images/2.png') }}" alt="" class="icon-image">
+              <h4 class="title" style="color: white; margin: 13px;"><a href="" data-toggle="modal" data-target="#contactModal">Nous contacter</a></h4>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon-box" style="background-color: #2626f7;">
+              <img src="{{ asset('assets/images/3.png') }}" alt="" class="icon-image">
+              <h4 class="title" style="color: white; margin: 0;"><a href="{{ route('Simple_Post',13019) }}">Questions Fréquentes</a></h4>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="500">
+            <div class="icon-box" style="background-color: green;">
+              <img src="{{ asset('assets/images/4.png') }}" alt="" class="icon-image">
+              <h4 class="title" style="color: white; margin: 4px;"><a href="">Je te dis plus tard</a></h4>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    
   
     </div>
   </section>

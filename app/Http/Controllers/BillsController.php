@@ -423,7 +423,9 @@ class BillsController extends Controller
         ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
         ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
         ->where('bills.id', '=', $id)
-        ->get();
+        ->orderBy('designation', 'asc')
+        ->get()
+        ;
 
         $status = DB::table('bills_status')
         ->select('id','status')
