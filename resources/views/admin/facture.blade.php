@@ -1,8 +1,6 @@
 @extends('layouts.template')
 
 @section('content')
-
-
 <main id="main" class="main">
     @if(session()->has('success'))
     <div class="alert alert-success">{{ session('success') }}</div>

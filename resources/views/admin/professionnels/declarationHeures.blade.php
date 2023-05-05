@@ -975,6 +975,11 @@ $TotalHeuresMaladieprises = 0;
 $TotalMaladiepris = 0 ;
 	
 @endphp
+<style>
+	input[type="checkbox"][name^="Maladie"][id^="Maladie"]:checked {
+	  background-color: #FD6C9E;
+	}
+  </style>
 <main class="main" id="main">
 <form action="" method="post">
 	@csrf
@@ -1012,48 +1017,48 @@ $TotalMaladiepris = 0 ;
 						<hr>
 						<table border="0">
 							<tbody>
-								<tr>
-									<td>
-										<p>Mois de <b>{{ $monthNames[$mois] }} {{ $annee }}</b> - </td>
-									<td>
-										<input type="text" style="text-align:center; width: 50px;" id="HeuresTotal" value="{{ isset($declaration) ? $declaration->heures_realisees : $TotalHeures }}" name="HeuresTotal" size="5" readonly>
+								<tr >
+									<td class="m-2 p-2">
+										<p class="m-0">Mois de <b>{{ $monthNames[$mois] }} {{ $annee }}</b> - </td>
+									<td >
+										<input class="m-0" type="text" style="text-align:center; width: 50px;" id="HeuresTotal" value="{{ isset($declaration) ? $declaration->heures_realisees : $TotalHeures }}" name="HeuresTotal" size="5" readonly>
 									</td>
 									<td>
-										<p> Heures réalisées</p>
+										<p class="m-0"> Heures réalisées</p>
 									</td>
 									<td></td>
 									<td></td>
 								</tr>
 								<tr>
+									<td class="m-2 p-2">
+										<p class="m-0"> Jours de Congés pris</td>
 									<td>
-										<p> Jours de Congés pris</td>
-									<td>
-										<input type="text" style="text-align:center;" id="JoursCongesPris" name="JoursCongesPris" value="{{ isset($declaration) ? $declaration->jours_conges : $TotalCongespris }}" size="2" readonly>
+										<input class="m-0" type="text" style="text-align:center;" id="JoursCongesPris" name="JoursCongesPris" value="{{ isset($declaration) ? $declaration->jours_conges : $TotalCongespris }}" size="2" readonly>
 									</td>
 									<td>
-										<p> jours (soit </p>
+										<p class="m-0"> jours (soit </p>
 									</td>
 									<td>
-										<input type="text" style="text-align:center;" id="JoursCongesRestant" name="JoursCongesRestant" value="{{ isset($declaration) ? $TotalConges-$declaration->jours_conges : $TotalConges }}" size="2" readonly>
+										<input class="m-0" type="text" style="text-align:center;" id="JoursCongesRestant" name="JoursCongesRestant" value="{{ isset($declaration) ? $TotalConges-$declaration->jours_conges : $TotalConges }}" size="2" readonly>
 									</td>
 									<td>
-										<p> jours restant)</p>
+										<p class="m-0"> jours restant)</p>
 									</td>
 								</tr>
 								<tr>
+									<td class="m-2 p-2">
+										<p class="m-0"> Jours de Maladie pris</td>
 									<td>
-										<p> Jours de Maladie pris</td>
-									<td>
-										<input type="text" style="text-align:center;" id="JoursMaladiePris" name="JoursMaladiePris" value="{{ isset($declaration) ? $declaration->jours_maladie : $TotalMaladiepris }}" size="2" readonly>
+										<input class="m-0" type="text" style="text-align:center;" id="JoursMaladiePris" name="JoursMaladiePris" value="{{ isset($declaration) ? $declaration->jours_maladie : $TotalMaladiepris }}" size="2" readonly>
 									</td>
 									<td>
-										<p> jours (soit </p>
+										<p class="m-0"> jours (soit </p>
 									</td>
 									<td>
-										<input type="text" style="text-align:center;" id="TotalHeuresMaladiePrises" name="TotalHeuresMaladiePrises" value="{{ isset($declaration) ? $TotalHeuresMaladieprises : $TotalHeuresMaladieprises }}" size="2" readonly>
+										<input class="m-0" type="text" style="text-align:center;" id="TotalHeuresMaladiePrises" name="TotalHeuresMaladiePrises" value="{{ isset($declaration) ? $TotalHeuresMaladieprises : $TotalHeuresMaladieprises }}" size="2" readonly>
 									</td>
 									<td>
-										<p> heures)</p>
+										<p class="m-0"> heures)</p>
 									</td>
 								</tr>
 							</tbody>
@@ -1089,10 +1094,10 @@ $TotalMaladiepris = 0 ;
 											  $details = isset($declaration) ? $declaration->details[$day - 1] : null;
 											@endphp
 											<tr style="background-color: {{ $color }};">
-											  <td class="col-2">{{ $formattedDate }}</td>
+											  <td class="col-2 align-middle text-center">{{ $formattedDate }}</td>
 											  <td style="text-align: center !important" class="col-1 align-middle text-center">{{ $weekdayValue }}</td>
 											  <td class="col-1">
-												<input type="text" class="form-control text-center bg-light" size="3" id="Heures[{{ $day }}]" name="Heures[{{ $day }}]" onkeyup="calculTotal({{ $day }})"
+												<input type="text" class="form-control m-0 text-center bg-light" size="3" id="Heures[{{ $day }}]" name="Heures[{{ $day }}]" onkeyup="calculTotal({{ $day }})"
 												value="{{ $details ? $details['heures'] : $weekdayValue }}" {{ $declaration && $declaration->soumis == 1 ? 'readonly' : '' }}/>
 											  </td>
 											  <td style="text-align: center !important" class="col-1 align-middle text-center">
@@ -1100,11 +1105,11 @@ $TotalMaladiepris = 0 ;
 												@if ($details && $details['conges']) checked @endif {{ $declaration && $declaration->soumis == 1 ? 'disabled' : '' }}/>
 											  </td>
 											  <td  style="text-align: center !important" class="col-1 align-middle text-center">
-												<input type="checkbox" label="Maladie" name="Maladie[{{ $day }}]" id="Maladie[{{ $day }}]" onchange="bloqueHeuresMaladie({{ $day }}, {{ $weekdayValue }})" class="form-check-input"
+												<input  type="checkbox" label="Maladie" name="Maladie[{{ $day }}]" id="Maladie[{{ $day }}]" onchange="bloqueHeuresMaladie({{ $day }}, {{ $weekdayValue }})" class="form-check-input"
 												@if ($details && $details['maladie']) checked @endif {{ $declaration && $declaration->soumis == 1 ? 'disabled' : '' }}/>
 											  </td>
 											  <td class="col-6" style="width: 60%;">
-												<input type="text" class="form-control" style="background-color: ROW_BACKGROUND_COLOR; width: 100%;" name="Remarque[{{ $day }}]"
+												<input type="text" class="form-control m-0" style="background-color: ROW_BACKGROUND_COLOR; width: 100%;" name="Remarque[{{ $day }}]"
 												value="{{ $details ? $details['remarque'] : '' }}" {{ $declaration && $declaration->soumis == 1 ? 'readonly' : '' }}/>
 											  </td>
 											</tr>
@@ -1121,10 +1126,10 @@ $TotalMaladiepris = 0 ;
 													$weekdayValue = $pro->$weekdayValue;
 													@endphp
 													<tr style="background-color: {{ $color }};">
-													<td class="col-2">{{ $formattedDate }}</td>
+													<td class="col-2 align-middle text-center">{{ $formattedDate }}</td>
 													<td style="text-align: center !important" class="col-1 align-middle text-center">{{ $weekdayValue }}</td>
 													<td class="col-1">
-														<input type="text" class="form-control text-center bg-light" size="3" id="Heures[{{ $day }}]" name="Heures[{{ $day }}]" onkeyup="calculTotal({{ $day }})" value="{{ $weekdayValue }}" />
+														<input type="text" class="form-control m-0 text-center bg-light" size="3" id="Heures[{{ $day }}]" name="Heures[{{ $day }}]" onkeyup="calculTotal({{ $day }})" value="{{ $weekdayValue }}" />
 													</td>
 													<td style="text-align: center !important" class="col-1 align-middle text-center">
 														<input type="checkbox" label="Conges" name="Conges[{{ $day }}]" id="Conges[{{ $day }}]"  onchange="bloqueHeuresConges({{ $day }}, {{ $weekdayValue }})" class="form-check-input">
@@ -1133,7 +1138,7 @@ $TotalMaladiepris = 0 ;
 														<input type="checkbox" label="Maladie" name="Maladie[{{ $day }}]" id="Maladie[{{ $day }}]"  onchange="bloqueHeuresMaladie({{ $day }}, {{ $weekdayValue }})" class="form-check-input">
 													</td>
 													<td class="col-6" style="width: 60%;">
-														<input type="text" class="form-control" style="background-color: ROW_BACKGROUND_COLOR; width: 100%;" name="Remarque[{{ $day }}]" value="">
+														<input type="text" class="form-control m-0" style="background-color: ROW_BACKGROUND_COLOR; width: 100%;" name="Remarque[{{ $day }}]" value="">
 													</td>
 													</tr>
 													

@@ -16,8 +16,7 @@ $saison_active = saison_active() ;
             @endif
 
 
-<div class="container">
-
+<section>
 
 
    
@@ -836,7 +835,7 @@ $saison_active = saison_active() ;
 
 
   
-
+    </section>
 </main>
 
     

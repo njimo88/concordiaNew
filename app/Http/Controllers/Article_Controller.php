@@ -23,7 +23,6 @@ class Article_Controller extends Controller
        
          $saison_list = Shop_article::select('saison')->distinct('name')->get();
          $requete_article = Shop_article::where('saison',$S_active)->paginate(50) ;
-
          $requete_article_pick = Shop_article::where('saison',  $saison)->paginate(50) ;
 
         

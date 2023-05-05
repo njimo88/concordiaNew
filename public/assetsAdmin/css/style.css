@@ -1556,7 +1556,7 @@
 }
 
 #myTable_filter  {
-  width: 50%;
+  width: 30%;
   display: flex;
   align-items: left !important;
   position: relative;
@@ -1564,14 +1564,14 @@
   padding: 0px 4px;
 }
 #myTable_filter input {
-  border: 1px solid #e5e5e5;
-  border-radius: 50px;
+  border: 1px solid black;
   margin-left: 8px;
   height: 34px;
   width: 100%;
   padding: 0px 25px 0px 10px;
   transition: all .6s ease;
 }
+
 
 #myTableMembers_filter  {
   width: 50%;

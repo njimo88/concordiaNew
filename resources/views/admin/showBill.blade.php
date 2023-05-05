@@ -34,9 +34,7 @@
             </form>
           </div>
           @endif          
-          <div class="col-2 d-flex justify-content-end" >
-            <a href="{{ route('') }}" class="my-custom-btn btn btn-primary my-4">Retour  <img src="{{ asset("assets\images\a-gauche.png") }}" alt=""></a>
-          </div>
+          
       </div>
         
         <hr>

@@ -320,7 +320,8 @@ $('#myTable').DataTable({
     paging: false, // Désactiver la pagination
     lengthChange: false, 
     language: {
-      search: "Rechercher&nbsp;:",
+      search: "",
+      searchPlaceholder: "Rechercher...",
       lengthMenu: "Afficher _MENU_ entrées",
       zeroRecords: "Aucun résultat trouvé",
       info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
@@ -332,7 +333,7 @@ $('#myTable').DataTable({
           next: "Suivant",
           previous: "Précédent"
       }
-  },
+    },
   order: [],
   drawCallback: function(settings) {
     var api = this.api();
@@ -348,7 +349,8 @@ $('#myTable').DataTable({
       targets: 4,
       type: 'numeric-comma'
     }
-  ]
+  ],
+  dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 });
 
  
@@ -378,6 +380,73 @@ $('#myTable').on('click', 'thead th', function() {
   table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
 });
 /*my table end-------------------------------------------------------------------*/
+/*myTableArticle Sort-------------------------------------------------------------------*/
+$('#myTableArticle').DataTable({
+  info: false,
+    bLengthChange: false,
+    paging: false, // Désactiver la pagination
+    lengthChange: false, 
+    language: {
+      search: "",
+      searchPlaceholder: "Rechercher...",
+      lengthMenu: "Afficher _MENU_ entrées",
+      zeroRecords: "Aucun résultat trouvé",
+      info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+      infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+      infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+      paginate: {
+          first: "Premier",
+          last: "Dernier",
+          next: "Suivant",
+          previous: "Précédent"
+      }
+    },
+  order: [],
+  drawCallback: function(settings) {
+    var api = this.api();
+    api.column(0, {
+      order: 'applied'
+    }).nodes();
+  },
+  columnDefs: [
+    {
+      targets: 3,
+      type: 'datetime-dd-mm-yyyy'
+    },{
+      targets: 4,
+      type: 'numeric-comma'
+    }
+  ],
+  dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+});
+
+ 
+$.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
+    var b = d.split(/\D/);
+    return new Date(b[2], b[1] - 1, b[0], b[3], b[4], b[5]);
+};
+
+
+$.fn.dataTable.ext.type.order['numeric-comma-pre'] = function ( d ) {
+  
+  return parseFloat(d.replace(' ', '').replace(',', '.'));
+};
+
+
+// Apply the search
+$('#myTableArticle thead input').on('keyup change', function() {
+  table
+    .column($(this).parent().index() + ':visible')
+    .search(this.value)
+    .draw();
+});
+
+$('#myTableArticle').on('click', 'thead th', function() {
+  var colIndex = $(this).index();
+  var isAsc = $(this).hasClass('asc');
+  table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
+});
+/*myTableArticle end-------------------------------------------------------------------*/
   
   
   $('#myTableabb').on('click', 'thead th', function() {

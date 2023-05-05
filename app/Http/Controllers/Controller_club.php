@@ -39,7 +39,8 @@ class Controller_club extends Controller
            $users_saison_active = User::select('users.user_id','users.name','users.lastname','users.phone','users.birthdate','users.email','liaison_shop_articles_bills.id_shop_article')
           ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
           ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)
-          ->where('type_article',1)
+          ->whereIn('type_article',[0,1])
+          ->distinct('users.user_id')
           ->orderBy('users.name', 'ASC')
           ->get(); 
 

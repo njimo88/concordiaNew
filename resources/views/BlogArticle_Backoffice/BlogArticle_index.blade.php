@@ -19,7 +19,7 @@
                 </nav>
              </div>     
 
-<div class="container">
+<section>
 	<div class="row">
 		
         
@@ -75,8 +75,8 @@
 </div>          
             </div>
             
-        </div>
-
+        
+        </section>
 </main>
 
 
