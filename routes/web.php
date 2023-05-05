@@ -14,6 +14,7 @@ use App\Http\Controllers\generatePDF;
 use App\Http\Controllers\Controller_Quizz;
 use App\Http\Controllers\Controller_Communication;
 use App\Http\Controllers\Prendre_Contact_Controller;
+use App\Http\Controllers\RolesController;
 use App\Http\Controllers\A_Controller;
 use App\Http\Controllers\Auth\ForgotUsernameController;
 
@@ -390,4 +391,10 @@ Route::get('/search/blog',[SearchController::class, 'searchBlog']);
 Route::get('/search/shop', [SearchController::class, 'searchShop']);
 Route::get('/search-results', [SearchController::class, 'searchResults']);
 
+
+/*----------------------- Gestion des roles  ------------------------------ */
+
+Route::get('/roles',[RolesController::class, 'indexRoles'])->name('index_roles');
+Route::get('/roles/{id}',[RolesController::class, 'editRoles'])->name('edit_roles_index');
+Route::post('/modif_roles',[RolesController::class, 'editMethod'])->name('edit_method');
 
