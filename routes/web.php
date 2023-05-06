@@ -395,6 +395,11 @@ Route::get('/search-results', [SearchController::class, 'searchResults']);
 /*----------------------- Gestion des roles  ------------------------------ */
 
 Route::get('/roles',[RolesController::class, 'indexRoles'])->name('index_roles');
-Route::get('/roles/{id}',[RolesController::class, 'editRoles'])->name('edit_roles_index');
-Route::post('/modif_roles',[RolesController::class, 'editMethod'])->name('edit_method');
+
+Route::post('/roles/{id}',[RolesController::class, 'modif_les_roles'])->name('modif_roles');
+
+Route::post('/creation',[RolesController::class, 'creation_roles'])->name('creation_roles');
+
+Route::get('/delete/{id}',[RolesController::class, 'methode_delete'])->name('delete_role');
+
 
