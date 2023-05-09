@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller_mention_legales;
 use App\Http\Controllers\A_ControllerAdmin;
 use App\Http\Controllers\BlogArticle_Controller;
 use App\Models\A_Blog_Post;
+use App\Http\Controllers\Member_History_Controller;
 use App\Http\Controllers;
 use App\Http\Controllers\Article_Controller;
 use App\Http\Controllers\Controller_Stat;
@@ -14,6 +15,7 @@ use App\Http\Controllers\generatePDF;
 use App\Http\Controllers\Controller_Quizz;
 use App\Http\Controllers\Controller_Communication;
 use App\Http\Controllers\Prendre_Contact_Controller;
+use App\Http\Controllers\RolesController;
 use App\Http\Controllers\A_Controller;
 use App\Http\Controllers\Auth\ForgotUsernameController;
 
@@ -389,5 +391,28 @@ Route::post('/username/reminder', [ForgotUsernameController::class, 'sendUsernam
 Route::get('/search/blog',[SearchController::class, 'searchBlog']);
 Route::get('/search/shop', [SearchController::class, 'searchShop']);
 Route::get('/search-results', [SearchController::class, 'searchResults']);
+
+
+/*----------------------- Gestion des roles  ------------------------------ */
+Route::middleware(['auth'])->group(function () {
+Route::get('/roles',[RolesController::class, 'indexRoles'])->name('index_roles');
+
+Route::post('/roles/{id}',[RolesController::class, 'modif_les_roles'])->name('modif_roles');
+
+Route::post('/creation',[RolesController::class, 'creation_roles'])->name('creation_roles');
+
+Route::get('/delete/{id}',[RolesController::class, 'methode_delete'])->name('delete_role');
+}); 
+
+/*--------------------- Member history --------------------------------------- */
+Route::middleware(['auth'])->group(function () {
+Route::get('/member_history',[Member_History_Controller::class, 'index'])->name('index');
+
+Route::post('/member_history',[Member_History_Controller::class, 'save_history'])->name('save_history');
+
+
+Route::get('/member_historique',[Member_History_Controller::class, 'consult_historique'])->name('consult_historique');
+Route::post('/member_historique',[Member_History_Controller::class, 'history_include_data'])->name('consult_historique_post');
+}); 
 
 

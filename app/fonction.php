@@ -9,6 +9,7 @@ use App\Models\shop_article_1;
 use App\Models\shop_article_2;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_category;
+use App\Models\member_history;
 use App\Models\bills;
 use App\Models\old_bills;
 use App\Models\ShopMessage;
@@ -1679,3 +1680,42 @@ function color_de_row($id_article, $id_user){
 
 
 
+/*----------------- fonction pour sauvegarder historiques des membres -------------- */
+
+function History_member($saison){
+
+   
+
+    $id_produit_inscription = DB::table('parametre')->where('saison', $saison)->value('id_article_inscription');
+    
+    $result = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_shop_article','users.name','users.lastname','users.user_id','users.birthdate',)
+    ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+    ->join('users','users.user_id','=','liaison_shop_articles_bills.id_user')
+    ->where('liaison_shop_articles_bills.id_shop_article',$id_produit_inscription)
+    ->where('bills.status','>',50)
+    ->get();
+    
+
+
+    foreach ($result as $value) {
+
+        $member_history = new member_history ; // creation d'une nouvelle instance a chaque iteration
+
+        $member_history->id_user =  $value->user_id;
+        $member_history->nom =  $value->name;
+        $member_history->prenom =  $value->lastname;
+        $member_history->date_naissance =  $value->birthdate;
+        $member_history->saison = $saison;
+
+        $member_history->save();
+
+
+    }
+
+    return redirect()->back()->with('user', auth()->user())->with('success', 'Opération reussie');
+
+    
+    
+
+
+}

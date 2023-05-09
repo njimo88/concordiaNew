@@ -60,7 +60,7 @@
         <td><?php echo date("d/m/Y à H:i", strtotime($data->updated_at)); ?></td>
         <td>{{$data->status}}</td>
         <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a href="{{route('edit_blog_index',['id' => $data->id_blog_post_primaire])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier ce billet de blog ?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><a href="{{route('delete_blog',['id' => $data->id_blog_post_primaire])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimerce billet de blog ?');" ><i class="bi bi-trash"></i></button></a></p></td>
+        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><a href="{{route('delete_blog',['id' => $data->id_blog_post_primaire])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer ce billet de blog ?');" ><i class="bi bi-trash"></i></button></a></p></td>
     
     </tr>
     @endforeach
