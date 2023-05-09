@@ -20,73 +20,39 @@ require_once(app_path().'/fonction.php');
 
 class Controller_Communication extends Controller
 {
-   function index(Request $request){
+   function index(Request $request)
+   {
 
 
-   $saison = $request->input('saison'); // saison selectionne 
+        $saison_list = Shop_article::select('saison')->distinct('name')->orderBy('saison', 'desc')->get();
 
-   $saison_actu = saison_active() ;
-
-   $saison_list = Shop_article::select('saison')->distinct('name')->get();
-
-   // ----------------------- requete liee a la saison actuelle ---------------------------------------------
-    $users = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article','shop_article.title')->distinct()
-    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-    ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)->get();
-
-
-      $shop_article = Shop_article::select('*')->where('saison', $saison_actu)->distinct('id_shop_article')->get();
-      $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
-        ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
-
-
-     $users_lesson = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article','shop_article.title','shop_article_1.teacher')->distinct()
-    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-    ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
-    ->join('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
-
-    ->where('shop_article.type_article',1)
-    ->where('saison', $saison_actu)->get();
-
-    $uuser =  $users ;
-
-    $uusers_lesson = $users_lesson ;
-
-    //---------------------------------------------------------------------------------------------
-
-
-     // ----------------------- requete liee a la saison choisie ---------------------------------------------
-     $users_pick = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article','shop_article.title')->distinct()
-     ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-     ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)->get();
- 
- 
-       $shop_article_pick = Shop_article::select('*')->where('saison', $saison)->distinct('id_shop_article')->get();
-
-       $shop_article_lesson_pick=  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article')
-         ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison)->get();
- 
- 
-      $users_lesson_pick = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article','shop_article.title','shop_article_1.teacher')->distinct()
-     ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-     ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
-     ->join('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
- 
-     ->where('shop_article.type_article',1)
-     ->where('saison', $saison)->get();
- 
-    
- 
-     //---------------------------------------------------------------------------------------------
- 
         
+        $user = Auth::user();
+        if ($user->role >= 90) {
+            $shop_articles = Shop_article::where('type_article', '=', 1)
+                             ->orderBy('saison', 'desc')
+                             ->orderBy('title', 'asc')
+                             ->get();
 
-    //   return view('Communication/new_email',compact('shop_article','uuser','data'))->with('user', auth()->user()) ;
-   // return sendEmailToUser(140,'MONSIEUR FERANDEL',[10,22,33]);
-     //   dd($shop_article_lesson);
-   return view('Communication/page_envoi_de_mail',compact('shop_article','uuser','shop_article_lesson','uusers_lesson','saison_list','saison_actu','users_pick','shop_article_pick','shop_article_lesson_pick','users_lesson_pick','saison'))->with('user', auth()->user()) ;
+            } else {
+                $shop_articles = Shop_article::leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
+                                            ->where('shop_article.type_article', '=', 1)
+                                            ->whereRaw('JSON_CONTAINS(shop_article_1.teacher, \'["' . $user->id . '"]\')')
+                                            ->orderBy('saison', 'desc')
+                                            ->orderBy('shop_article.title', 'asc')
+                                            ->get();
+            }
+
+        return view('Communication/page_envoi_de_mail', compact('shop_articles','saison_list'));
    
 }
+
+public function getBuyersForShopArticle($id) {
+    $buyersIds = retourner_buyers_dun_shop_article($id);
+    $buyers = User::whereIn('user_id', $buyersIds)->select('user_id', 'name', 'lastname')->orderBy('name')->get();
+    return response()->json($buyers);
+}
+
 
 function display_by_saison(Request $request){
         
