@@ -375,6 +375,11 @@ Route::post('/questionnaire', [Controller_Quizz::class, 'handle_questionnaire'])
 
 Route::post('/questionnaire_baby', [Controller_Quizz::class, 'handle_questionnaire_baby'])->name('baby_formulaire');
 
+Route::post('/questionnaire_25_et_40_ans', [Controller_Quizz::class, 'handle_questionnaire_25_et_40'])->name('questionnaire_25_et_40');
+
+Route::post('/questionnaire_6_et_14', [Controller_Quizz::class, 'handle_questionnaire_6_et_14'])->name('questionnaire_6_et_14');
+
+
 
 #-------------------------------- Statistiques ------------------------------
 Route::middleware(['auth'])->group(function () {
