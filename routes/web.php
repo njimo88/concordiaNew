@@ -18,6 +18,7 @@ use App\Http\Controllers\Prendre_Contact_Controller;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\A_Controller;
 use App\Http\Controllers\Auth\ForgotUsernameController;
+use App\Http\Controllers\MaintenanceController;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -47,7 +48,7 @@ Route::get('/test', function () {
 
 });
 
-
+Route::get('/passwordd', [App\Http\Controllers\UsersController::class, 'passwordd']);
 
 Auth::routes();
 
@@ -317,6 +318,8 @@ Route::middleware(['auth'])->group(function () {
 /*------------------------------ Communication ----------------------------------------- */
 Route::get('/Communication', [Controller_Communication::class, 'index'])->name('index_communication');
 Route::get('/get-buyers-for-shop-article/{id}',[Controller_Communication::class, 'getBuyersForShopArticle']);
+Route::post('/get-emails',[Controller_Communication::class, 'getEmails']);
+Route::post('/send-emails', [Controller_Communication::class, 'sendEmails']);
 
 
 Route::get('/Communication/get_info/{article_id}', [Controller_Communication::class, 'get_info'])->name('get_communication');
@@ -329,6 +332,7 @@ Route::get('/Commnication/email_page',[Controller_Communication::class,'email_pa
 
 Route::post('/display_saison',[Controller_Communication::class,'display_by_saison'])->name('display_by_saison') ;
 
+Route::get('/Communication/historique',[Controller_Communication::class,'historique'])->name('historique') ;
 
 
 }); 
@@ -402,11 +406,16 @@ Route::post('/roles/{id}',[RolesController::class, 'modif_les_roles'])->name('mo
 Route::post('/creation',[RolesController::class, 'creation_roles'])->name('creation_roles');
 
 Route::get('/delete/{id}',[RolesController::class, 'methode_delete'])->name('delete_role');
+Route::get('/GestionSalles',[RolesController::class, 'index_salle'])->name('index_salle');
+Route::delete('/suprimer_salle/{id}',[RolesController::class, 'destroy'])->name('rooms.destroy');
+Route::get('/modifier_salle/{id}',[RolesController::class, 'edit'])->name('rooms.edit');
+Route::put('/modifier_salle/{id}',[RolesController::class, 'update'])->name('rooms.update');
+
 }); 
 
 /*--------------------- Member history --------------------------------------- */
 Route::middleware(['auth'])->group(function () {
-Route::get('/member_history',[Member_History_Controller::class, 'index'])->name('index');
+Route::get('/member_history',[Member_History_Controller::class, 'index'])->name('history_index');
 
 Route::post('/member_history',[Member_History_Controller::class, 'save_history'])->name('save_history');
 
@@ -416,3 +425,5 @@ Route::post('/member_historique',[Member_History_Controller::class, 'history_inc
 }); 
 
 
+/*---------------------------------Maintenance------------------------------------------*/
+Route::post('/verify-password', [MaintenanceController::class, 'verifyPassword'])->name('verify_password');

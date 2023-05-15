@@ -52,14 +52,17 @@
 <main class="main" id="main">
   <div class="container">
       <div class="row justify-content-center">
-          <div class="col-md-8">
+          <div class="col-12">
               <div class="card">
-                  <div class="card-header">
-                      <h3>Envoyer un e-mail</h3>
-                  </div>
+                  
                   <div class="card-body">
-                    <form>
-                      <div class="form-group">
+                    
+                    <form class="row">
+                      <div class="card-header d-flex justify-content-between">
+                        <h3>Envoyer un e-mail</h3>
+                        <button id="send-button" type="submit" class="btn btn-primary">Envoyer</button>
+                      </div>
+                      <div class="form-group col-4">
                         <label for="saison">Saison :</label>
                         <div class="input-group">
                           <select class="form-select" id="saison-select">
@@ -70,7 +73,8 @@
                           
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div class="form-group col-8">
+                        <label for="saison">Groupes :</label>
                         <div class="input-group">
                           <select class="form-select" id="shop-articles" style="max-height: 300px; overflow-y: auto;">
                             @foreach($shop_articles as $shop_article)
@@ -82,8 +86,8 @@
                       </div>
 
                       <div class="form-group mt-3">
-                        <div class="row">
-                            <div class="col-md-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-4 border border-dark py-2">
                                 <label>Utilisateurs :</label>
                                 <a href="#" class="list-group-item">
                                   <input type="checkbox" class="form-check-input mx-2" id="check-all-unselected">
@@ -96,7 +100,7 @@
                                 <button type="button" class="btn btn-primary mx-auto" id="move-to-selected"><i class="fa-solid fa-angle-right"></i></button>
                                 <button type="button" class="btn btn-primary mx-auto mt-2" id="move-to-unselected"><i class="fa-solid fa-angle-left"></i></button>
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4 border border-dark py-2">
                                 <label>Utilisateurs sélectionnés :</label>
                                 <a href="#" class="list-group-item">
                                   <input type="checkbox" class="form-check-input mx-2" id="check-all-selected">
@@ -108,10 +112,13 @@
                         </div>
                     </div>
                       <div class="form-group mt-3">
-                        <label for="message">Message :</label>
-                        <textarea class="form-control" id="message" rows="5"></textarea>
+                        <label>Titre </label>
+                      <textarea style="height: 40px;" type="text" name="titre" class="form-control" required></textarea>
+                      <br>
+                    <label></label>
+                      <textarea name="editor1"  id="ckeditor" class="form-control" required></textarea>
                       </div>
-                      <button type="submit" class="btn btn-primary">Envoyer</button>
+                      
                     </form>
                   </div>
               </div>
@@ -162,18 +169,20 @@
                       const listItem = document.createElement('a');
                       listItem.href = '#';
                       listItem.classList.add('list-group-item');
-  
+                      listItem.dataset.id = buyer.user_id; // Add the user ID to the data-id attribute
+
                       const checkbox = document.createElement('input');
                       checkbox.type = 'checkbox';
                       checkbox.classList.add('form-check-input', 'mx-2');
                       listItem.appendChild(checkbox);
-  
+
                       const buyerName = document.createElement('span');
                       buyerName.textContent = buyer.lastname + ' ' + buyer.name;
                       listItem.appendChild(buyerName);
-  
+
                       unselectedUsers.appendChild(listItem);
                   });
+
               });
               checkAllUnselected.checked = false;
             checkAllSelected.checked = false;
@@ -224,6 +233,53 @@
             checkbox.checked = checkAllSelected.checked;
         });
     });
+
+    const sendButton = document.getElementById('send-button');
+
+sendButton.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    // Get the IDs of the selected users
+    const selectedUserIds = Array.from(selectedUsers.querySelectorAll('a.list-group-item')).map(user => user.dataset.id);
+    // Get the email subject and content from the form inputs
+    const subject = document.querySelector('textarea[name="titre"]').value;
+    const content = CKEDITOR.instances.ckeditor.getData();
+
+    // Request the emails of the selected users from the server
+    fetch('/get-emails', {
+    method: 'POST',
+    headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        userIds: selectedUserIds
+    })
+})
+
+    .then(response => response.json())
+    .then(emails => {
+      fetch('/send-emails', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+    },
+    body: JSON.stringify({
+        emails: emails,
+        subject: subject,
+        content: content
+    })
+})
+.then(response => response.json())
+.then(data => {
+    alert(data.message);
+});
+
+
+    });
+});
+
 });
 </script>
   

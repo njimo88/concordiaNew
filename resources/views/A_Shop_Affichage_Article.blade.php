@@ -227,11 +227,12 @@
                                 <div class="row justify-content-end">
                                     <div class="col-5 d-flex justify-content-end p-0">
                                         @if ($data->stock_actuel > $data->alert_stock)
-                                            <a href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}" style="background-color: #28a745 !important;" class="btn  btn-success col-12" type="button">S'inscrire</a>
+                                            <a href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}" style="background-color: #28a745 !important;" class="btn  btn-success col-12" type="button">{{ $data->type_article == 1 ? "S'inscrire" : "Commander" }}</a>
                                         @elseif ($data->stock_actuel > 0 && $data->stock_actuel <= $data->alert_stock)
-                                            <a href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}" class="btn  btn-warning col-12" type="button">S'inscrire</a>
+                                            <a href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}" class="btn  btn-warning col-12" type="button">{{ $data->type_article == 1 ? "S'inscrire" : "Commander" }}</a>
                                         @endif
-                                        </div>
+                                    </div>
+                                    
                                     <div class="col-5 d-flex justify-content-end p-0">
                                         <a href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}" class="btn  btn-primary col-11" type="button">Details</a>
                                         </div>

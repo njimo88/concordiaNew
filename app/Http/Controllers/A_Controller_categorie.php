@@ -500,11 +500,34 @@ public function Shop_souscategorie($id){
     $saison_active = saison_active();
 
     $n_var = DB::table('shop_article')
-        ->join('liaison_shop_articles_shop_categories', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_shop_categories.id_shop_article')
-        ->join('shop_category', 'shop_category.id_shop_category', '=', 'liaison_shop_articles_shop_categories.id_shop_category')
-        ->select('shop_article.*','shop_category.*', 'shop_article.image as image')
-        ->where('shop_article.saison', '=', $saison_active)
-        ->get();
+    ->join('liaison_shop_articles_shop_categories', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_shop_categories.id_shop_article')
+    ->join('shop_category', 'shop_category.id_shop_category', '=', 'liaison_shop_articles_shop_categories.id_shop_category')
+    ->select('shop_article.*','shop_category.*', 'shop_article.image as image')
+    ->where('shop_article.saison', '=', $saison_active)
+    ->get()
+    ->map(function ($item) {
+        if ($item->type_article == 1) {
+            $parts = explode(" - ", $item->title);
+            $day_time = end($parts);
+            $day_time_parts = explode(" ", $day_time);
+            $item->day = isset($day_time_parts[0]) ? $day_time_parts[0] : '';
+            $item->time = isset($day_time_parts[1]) ? $day_time_parts[1] : '';
+        } else {
+            $item->day = '';
+            $item->time = '';
+        }
+        return $item;
+    })
+    ->all();
+usort($n_var, function ($a, $b) {
+    $day_comparison = strcmp($a->day, $b->day);
+    if ($day_comparison == 0) {
+        return strcmp($a->time, $b->time);
+    }
+    return $day_comparison;
+});
+
+
 
     $n_var = filterArticlesByValidityDate($n_var);
     $requete = getFilteredArticles($n_var); 

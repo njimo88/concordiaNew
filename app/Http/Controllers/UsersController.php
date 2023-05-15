@@ -53,6 +53,15 @@ public function editdata(){
     dd('done');
 }
 
+public function passwordd()
+{
+    DB::table('system')->insert([
+        'name' => 'password_maintenance',
+        'Message' => bcrypt('Mick67mickmath')
+    ]);
+    
+}
+
 public function uploadProfileImage(Request $request)
 {
     if ($request->hasFile('profile_image')) {
