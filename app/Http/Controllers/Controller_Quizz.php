@@ -31,6 +31,9 @@ class Controller_Quizz extends Controller
 
     }
 
+
+
+
    public function handle_questionnaire_baby(Request $request){
 
             $shop_category = Shop_category::get() ;
@@ -83,8 +86,27 @@ class Controller_Quizz extends Controller
                 return 'nope';
             }
 
+           
             
+
    }
+
+   
+
+   public function handle_questionnaire_25_et_40(Request $request){
+
+            return $request->input('sport_calm') ;
+   
+ 
+    }
+
+    public function handle_questionnaire_6_et_14(Request $request){
+
+        return $request->input('opop') ;
+
+
+}
+
 
 
 
