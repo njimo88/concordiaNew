@@ -11,21 +11,24 @@ class MaintenanceMode
 {
     public function handle(Request $request, Closure $next)
     {
-        if (DB::table('system')->where('name', 'maintenance')->value('value') == 1) {
-            $maintenanceMode = true;
-            $allowedIps = DB::table('maintenances')->pluck('ip_address')->toArray();
+        if ($request->route()->getName() !== 'verify_password') {
+            if (DB::table('system')->where('name', 'maintenance')->value('value') == 1) {
+                $maintenanceMode = true;
+                $allowedIps = DB::table('maintenances')->pluck('ip_address')->toArray();
 
-            if (in_array($request->ip(), $allowedIps)) {
-                $maintenanceMode = false;
-            }
+                if (in_array($request->ip(), $allowedIps)) {
+                    $maintenanceMode = false;
+                }
 
-            if ($maintenanceMode) {
-                return response()
-                    ->view('maintenance')
-                    ->header('Retry-After', 60);
+                if ($maintenanceMode) {
+                    return response()
+                        ->view('maintenance')
+                        ->header('Retry-After', 60);
+                }
             }
         }
 
         return $next($request);
     }
 }
+

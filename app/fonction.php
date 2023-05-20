@@ -630,8 +630,8 @@ function printUsersBirthdayOnImage()
     // Ajout du deuxième message
     $message = $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y");
 
-// Ajout du deuxième message
-$annivMessage = "Nous Souhaitons un joyeux anniversaire";
+    // Ajout du deuxième message
+    $annivMessage = "Nous Souhaitons un joyeux anniversaire";
 
     
     $startX = 380;
@@ -679,7 +679,7 @@ $user_index = 0;
 
 foreach ($users as $index => $user) {
     $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
-    $text = $user->name . ' ' . $user->lastname . ' (' . $age . ' ans)';
+    $text = $user->lastname . ' ' . $user->name . ' (' . $age . ' ans)';
     
     if ($user_index == 0) {
         $x = $image->width() / 2.7;

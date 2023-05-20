@@ -22,6 +22,7 @@ class Controller_club extends Controller
 
         
         /*--------------------------faire l'appel------------------------------ */
+        ini_set('memory_limit', '512M');
 
 
         $saison_actu = saison_active() ;

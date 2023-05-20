@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Role; 
+use App\Models\Room;
 
 class RolesController extends Controller
 {
@@ -21,6 +22,35 @@ class RolesController extends Controller
        return view('roles/roles_index',compact('roles'))->with('user', auth()->user());
 
 
+    }
+
+    public function index_salle(){
+            
+        $rooms = Room::orderBy('name', 'asc')->get();
+        return view('admin/roomsIndex', ['rooms' => $rooms]);
+
+    }
+
+    public function destroy($id)
+    {
+        $room = Room::findOrFail($id);
+        $room->delete();
+        return redirect()->back()->with('success', 'Salle supprimée avec succès');
+    }
+
+    // Edit Room
+    public function edit($id)
+    {
+        $room = Room::findOrFail($id);
+        return view('admin/roomsEdit', ['room' => $room]);
+    }
+
+    // Update Room
+    public function update(Request $request, $id)
+    {
+        $room = Room::findOrFail($id);
+        $room->update($request->all());
+        return redirect()->route('index_salle')->with('success', 'Salle modifiée avec succès');
     }
 
     public function modif_les_roles($id, Request $request){

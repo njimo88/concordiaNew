@@ -131,7 +131,7 @@
                       <i class="fa fa-pencil-alt" style="color: #2770e6;"></i>
                   </div>
                   <div class="col-8 ">
-                    <span class="stat-text" style="font-size : 12px !important;">Article de blog</span><br>
+                    <span class="stat-text" style="font-size : 12px !important;">Message Accueil</span><br>
                       <a href="{{ route('edit_blog_index', ['id' => 1]) }}" class="btn btn-primary btn-sm mt-1">Editer</a>
                   </div>
                   
@@ -476,8 +476,8 @@
                <li class="nav-item">
                   <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#"> <i style="color: #f80000;" class="fa-regular fa-message"></i><span>Communication</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                     @if (auth()->user()->roles->estAutoriserDeVoirMessages)<li> <a href="{{route('index_communication')}}"><span style="color: #f80000; margin-right:8px" class="fa fa-envelope fa-fw mr-1"></span><span>Envoie de mail</span> </a></li>@endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirHistorique)<li> <a href="charts-apexcharts.html"><span style="color: #f80000; margin-right:8px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Historique</span> </a></li> @endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirMessages)<li> <a href="{{route('index_communication')}}"><span style="color: #f80000; margin-right:8px" class="fa fa-envelope fa-fw mr-1"></span><span>Envoi de mail</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirHistorique)<li> <a href="{{route('historique')}}"><span style="color: #f80000; margin-right:8px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Historique</span> </a></li> @endif
                   </ul>
                </li>
             @endif
@@ -489,6 +489,7 @@
                      @if (auth()->user()->roles->estAutoriserDeVoirAnimations)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-swimming fa-fw mr-1"></span><span>Animations</span> </a></li>@endif 
                      @if (auth()->user()->roles->estAutoriserDeVoirStatsExports)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-chart-line fa-fw mr-1"></span><span>Stats-Exports</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirValiderCertificats)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-stamp fa-fw mr-1"></span><span>Valider Certificats</span> </a></li>@endif
+                     <li> <a href="{{route('history_index')}}"><span style="color: #f59f00; margin-right:10px" class="fa-sharp fa-solid fa-clock-rotate-left"></span><span>Historique</span> </a></li>
                   </ul>
                </li>
             @endif
@@ -506,9 +507,9 @@
                <li class="nav-item">
                   <a class="nav-link collapsed" data-bs-target="#para-nav" data-bs-toggle="collapse" href="#"><span style="color: #f5f503; margin-right:10px" class="fa fa-screwdriver-wrench fa-fw mr-2 gc-yellow"></span><span>Paramètres</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="para-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                     @if (auth()->user()->roles->estAutoriserDeVoirGestionDesDroits)<li> <a href="pro-chartjs.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-user-check fa-fw mr-1"></span><span>Gestion des droits</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirGestionDesDroits)<li> <a href="{{  route('index_roles') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-user-check fa-fw mr-1"></span><span>Gestion des droits</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirParametresGeneraux)<li> <a href="pro-apexclub.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Paramètres</span> </a></li>@endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirSalles)<li> <a href="pro-apexclub.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Salles</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirSalles)<li> <a href="{{ route('index_salle') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Salles</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirMessageGeneral)               <li> <a href="club-apexclub.html"><i style="color: #f5f503;" class="fa-regular fa-message"></i></span><span>Message Général</span> </a></li>@endif
                   </ul>
                </li>

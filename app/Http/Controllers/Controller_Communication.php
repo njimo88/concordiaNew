@@ -14,6 +14,7 @@ use App\Models\shop_article_1;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Mail\Message;
 
 require_once(app_path().'/fonction.php');
 
@@ -45,6 +46,50 @@ class Controller_Communication extends Controller
 
         return view('Communication/page_envoi_de_mail', compact('shop_articles','saison_list'));
    
+}
+
+public function getEmails(Request $request)
+{
+    $userIds = $request->input('userIds');
+    
+    $users = User::whereIn('user_id', $userIds)->get();
+
+    // Mapper les utilisateurs pour récupérer les emails des parents si l'utilisateur est un enfant et qu'il n'a pas d'email
+    $emails = $users->map(function ($user) {
+        if ($user->family_level === 'child' && empty($user->email)) {
+            $parentEmails = User::where('family_id', $user->family_id)
+                                ->where('family_level', 'parent')
+                                ->pluck('email');
+            return $parentEmails;
+        } else {
+            return $user->email;
+        }
+    })->flatten()->unique(); 
+    return response()->json($emails);
+}
+
+public function sendEmails(Request $request)
+{
+    $emails = $request->input('emails');
+    $subject = $request->input('subject');
+    $content = $request->input('content');
+    foreach($emails as $email) {
+        foreach($emails as $email) {
+            Mail::send('emails.template', ['content' => $content], function ($message) use ($email, $subject) {
+                $message->from(config('mail.from.address'), config('mail.from.name'));
+                $message->to($email);
+                $message->subject($subject);
+            });
+        }
+        
+    }
+    
+    return response()->json(['message' => 'Emails envoyés avec succès.']);
+}
+
+
+public function historique (){
+    return view('Communication/historique');
 }
 
 public function getBuyersForShopArticle($id) {
