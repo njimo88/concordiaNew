@@ -169,7 +169,9 @@ Route::middleware(['auth', 'role:20'])->group(function () {
 
 /*---------------------------------ABBé------------------------------------------*/
 
-Route::get('/', [A_ControllerBlog::class, 'a_fetchPost'])->name('A_blog')->middleware('visitor.counter');
+Route::get('/', [A_ControllerBlog::class, 'index'])->name('A_blog')->middleware('visitor.counter');
+Route::get('/fetch-posts', [A_ControllerBlog::class, 'fetchPosts']);
+
 Route::get('/home', [A_ControllerBlog::class, 'a_fetchPost']);
 
 Route::middleware(['PageCounterMiddleware'])->group(function () {

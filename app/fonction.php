@@ -614,7 +614,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 function printUsersBirthdayOnImage()
 {
     $users = getUsersBirthdayToday();
-
+dd  ($users);
     $image = Image::make(public_path('assets/images/birthday.jpg'));
     
     setlocale(LC_TIME, 'fr_FR.utf8');

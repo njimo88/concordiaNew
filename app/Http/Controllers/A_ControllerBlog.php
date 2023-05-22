@@ -74,35 +74,42 @@ class A_ControllerBlog extends Controller
     DB::table('parametre')->where('activate', 1)->increment('determinesection', 1);
 }
 
-    public function a_fetchPost(Request $request){
-        $a_post = A_Blog_Post::latest('date_post')
+public function index(Request $request)
+
+{
+    printUsersBirthdayOnImage();
+    $a_post = A_Blog_Post::latest('date_post')
         ->join('users', 'blog_posts.id_user', '=', 'users.user_id')
-        ->select('blog_posts.*','users.name','users.lastname','users.email')
-        ->paginate(3);
-        $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
-        $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
-        $post = DB::table('blog_posts')
+        ->select('blog_posts.*', 'users.name', 'users.lastname', 'users.email')
+        ->paginate(10);
+
+    $a_categorie1 = A_Categorie1::select('Id_categorie1', 'image')->get();
+    $a_categorie2 = A_Categorie2::select('Id_categorie2', 'image')->get();
+
+    // Article d'accueil
+    $post = DB::table('blog_posts')
         ->join('system', 'blog_posts.id_blog_post_primaire', '=', 'system.value')
         ->where('system.id_system', '=', 6)
-        ->where('status','Publié')
+        ->where('status', 'Publié')
         ->select('blog_posts.contenu')
         ->first();
 
-        
+        if ($request->ajax()) {
+            Paginator::currentPageResolver(function () use ($request) {
+                return $request->input('page');
+            });
+    
+            $html = view('posts', compact('a_post', 'a_categorie1', 'a_categorie2'))->render();
+            return response()->json(['html' => $html]);
+        }
 
-
-   // Check if request is ajax or not 
-  // If request is ajax then we have to return the data of next page's content in json array
-        if($request->ajax()) {
-            return $data = [
-                    "view" => view('A_Blog_scroll',compact('a_post','a_categorie1','a_categorie2'))->render(),
-                    'url' => $a_post->nextPageUrl()
-                    ];
-            }
-
-            printUsersBirthdayOnImage();
-      return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2','post'))->with('user', auth()->user());
+    return view('A_Blog_index', compact('a_post', 'a_categorie1', 'a_categorie2', 'post'))->with('user', auth()->user());
 }
+
+
+
+
+
 
 public function Simple_Post($id){
     $a_post = A_Blog_Post::find($id);
