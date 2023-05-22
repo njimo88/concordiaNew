@@ -571,6 +571,7 @@ function updateSetting(checkbox, settingId) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
 <script src="../r_js/jquery.nestable.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{asset('assetsAdmin/js/main.js')}}"></script>
 <script src="../r_js/style.js"></script>
 

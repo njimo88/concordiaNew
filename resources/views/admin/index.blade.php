@@ -148,7 +148,7 @@ require_once(app_path().'/fonction.php');
 <div class="col-12 col-md-8">
 
 @php
-
+      $annee_creation = 2015 ;
       $years = array();
       $years  = generateArray($annee_creation,$annee_actu,1);
       $stat_values_per_year = array();

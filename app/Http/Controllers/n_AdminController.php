@@ -62,7 +62,6 @@ class n_AdminController extends Controller
                     $get_stat_pages = statistiques_visites::where('page', '!=', '/')->orderBy('nbre_visitors', 'desc')
                     ->limit(10)->get();
                    
-
                    return view('admin.index',compact('annee_creation','annee_actu','nbre_visit','get_stat_pages'))->with('user', auth()->user());
         }
 
