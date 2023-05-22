@@ -740,6 +740,9 @@
 <div class="row question-div2" id="page3">
 
 
+
+
+
 <h2>As-tu un esprit d'équipe ?</h2>
                     <br>
                     <div id="wdanse" class="warning">
@@ -772,18 +775,113 @@
                                         </div>
                                 </div>
                     </div>
+
                     <div class="col-2 d-flex justify-content-center">
                  
-                </div>
+                 </div>
+ 
+                 <div class="col-12 d-flex justify-content-center">
+                    <button class="next-btn btn-sm mx-auto" type="button" id="next-page3" disabled onclick="nextQuestion2()">Suivant</button>
+                 </div>
 
-                <div class="col-12 d-flex justify-content-center">
-                   <button class="next-btn btn-sm mx-auto" type="button" id="next-page3" disabled onclick="nextQuestion2()">Suivant</button>
-                </div>
             </div>
 
+
                 
+</div>
+
+<div class="row question-div2" id="page4">
+
+<h2>Es-tu souple ?</h2>
+                    <br>
+                    <div id="wsouplesse" class="warning">
+              Veuillez sélectionner une réponse.
+            </div>
+                    <br>
+                    <input name="souplesse" type="hidden" value=NULL>
+
+                    <div class="row">
+                    <div class="col-6 d-flex justify-content-center">
+                                <div class="card" style="width: 7rem;">
+                                        <img class="card-img-top" src="{{ asset('../assets/images/questionnaire/souple/y.png') }}" alt="Card image cap">
+                                        <div class="card-body">
+                                        <input name="souplesse" type="radio" value=0 class="radio-btn">
+                                            <br>
+                                           
+                                           
+                                           <p>Oui</p>
+                                            
+                                        </div>
+                                </div>
+                    </div>
+                    <div class="col-6 d-flex justify-content-center">
+                                <div class="card" style="width: 7rem;">
+                                        <img class="card-img-top" src="{{ asset('../assets/images/questionnaire/souple/n.png') }}" alt="Card image cap">
+                                        <div class="card-body">
+                                        <input name="souplesse" type="radio" value=1 class="radio-btn">
+                                        <br>
+                                           
+                                           <p>Non</p>
+                                        </div>
+                                </div>
+                    </div>
+
+                    <div class="col-2 d-flex justify-content-center">
+                 
+                 </div>
+ 
+                 <div class="col-12 d-flex justify-content-center">
+                    <button class="next-btn btn-sm mx-auto" type="button" id="next-page4" disabled onclick="nextQuestion2()">Suivant</button>
+                 </div>
+            </div>
                 
-    </div>
+</div>
+
+<div class="row question-div2" id="page5">
+
+<h2>As-tu le vertige ?</h2>
+                    <br>
+                    <div id="wvertigo" class="warning">
+              Veuillez sélectionner une réponse.
+            </div>
+                    <br>
+                
+            <input name="vertigo" type="hidden" value=NULL>
+
+                    <div class="row">
+                    <div class="col-6 d-flex justify-content-center">
+                                <div class="card" style="width: 7rem;">
+                                        <img class="card-img-top" src="{{ asset('../assets/images/questionnaire/vertige/y.png') }}" alt="Card image cap">
+                                        <div class="card-body">
+                                        <input name="vertigo" type="radio" value=0 class="radio-btn">
+                                            <br>
+                                          
+                                           
+                                           <p>Oui</p>
+                                            
+                                        </div>
+                                </div>
+                    </div>
+                    <div class="col-6 d-flex justify-content-center">
+                                <div class="card" style="width: 7rem;">
+                                        <img class="card-img-top" src="{{ asset('../assets/images/questionnaire/vertige/n.png') }}" alt="Card image cap">
+                                        <div class="card-body">
+                                        <input name="vertigo" type="radio" value=1 class="radio-btn">
+                                        <br>
+                                           
+                                           <p>Non</p>
+                                        </div>
+                                </div>
+                    </div>
+
+                    <div class="col-2 d-flex justify-content-center">
+                 
+                 </div>
+ 
+                 <div class="col-12 d-flex justify-content-center">
+                    <button class="next-btn btn-sm mx-auto" type="button" id="next-page5" disabled onclick="nextQuestion2()">Suivant</button>
+                 </div>
+            </div>
 
 
 
@@ -791,6 +889,176 @@
 
 
 
+
+
+
+                
+</div>
+
+
+<div class="row question-div2" id="page6">
+
+<h2>Es-tu acrobate ?</h2>
+                    <br>
+                    <div id="waccrobate" class="warning">
+              Veuillez sélectionner une réponse.
+            </div>
+                    <br>
+                
+                    <input name="accrobate" type="hidden" value=NULL>
+
+                    <div class="row">
+                    <div class="col-6 d-flex justify-content-center">
+                                <div class="card" style="width: 7rem;">
+                                        <img class="card-img-top"  src="{{ asset('../assets/images/questionnaire/acrobate/y.png') }}" alt="Card image cap">
+                                        <div class="card-body">
+                                        <input name="accrobate" type="radio" value=0 class="radio-btn">
+                                            <br>
+                                           
+                                           
+                                           <p>Oui</p>
+                                            
+                                        </div>
+                                </div>
+                    </div>
+                    <div class="col-6 d-flex justify-content-center">
+                                <div class="card" style="width: 7rem;">
+                                        <img class="card-img-top" src="{{ asset('../assets/images/questionnaire/acrobate/n.png') }}" src="{{ asset('../assets/images/questionnaire/acrobate/n.png') }}" alt="Card image cap">
+                                        <div class="card-body">
+                                        <input name="accrobate" type="radio" value=1 class="radio-btn">
+                                        <br>
+                                           
+                                           <p>Non</p>
+                                        </div>
+                                </div>
+                    </div>
+
+                    <div class="col-2 d-flex justify-content-center">
+                 
+                 </div>
+ 
+                 <div class="col-12 d-flex justify-content-center">
+                    <button class="next-btn btn-sm mx-auto" type="button" id="next-page6" disabled onclick="nextQuestion2()">Suivant</button>
+                 </div>
+
+
+            </div>
+    
+</div>
+
+<div class="row question-div2" id="page7">
+
+<h2>Es-tu persévérant ?</h2>
+                    <br>
+                    <div id="wpers" class="warning">
+              Veuillez sélectionner une réponse.
+            </div>  <br>
+                
+            <input name="pers" type="hidden" value=NULL>
+
+                    <div class="row">
+                    <div class="col-6 d-flex justify-content-center">
+                                <div class="card" style="width: 7rem;">
+                                        <img class="card-img-top"  src="{{ asset('../assets/images/questionnaire/perseverant/y.png') }}" alt="Card image cap">
+                                        <div class="card-body">
+                                        <input name="pers" type="radio" value=0 class="radio-btn">
+                                            <br>
+                                           
+                                           
+                                           <p>Oui</p>
+                                            
+                                        </div>
+                                </div>
+                    </div>
+                    <div class="col-6 d-flex justify-content-center">
+                                <div class="card" style="width: 7rem;">
+                                        <img class="card-img-top" src="{{ asset('../assets/images/questionnaire/perseverant/n.png') }}" alt="Card image cap">
+                                        <div class="card-body">
+                                        <input name="pers" type="radio" value=1 class="radio-btn">
+                                        <br>
+                                           
+                                           <p>Non</p>
+                                        </div>
+                                </div>
+                    </div>
+
+                    <div class="col-2 d-flex justify-content-center">
+                 
+                 </div>
+ 
+                 <div class="col-12 d-flex justify-content-center">
+                    <button class="next-btn btn-sm mx-auto" type="button" id="next-page7" disabled onclick="nextQuestion2()">Suivant</button>
+                 </div>
+
+            </div>
+    
+                
+</div>
+
+<div class="row question-div2" id="page8">
+
+
+<h2>Aimes-tu la musculation ?</h2>
+                                <br>
+                                <div id="wmuscu" class="warning">
+                        Veuillez sélectionner une réponse.
+                        </div>  <br>
+                            
+                            <input name="muscu" type="hidden" value=NULL>
+
+                                <div class="row">
+                                <div class="col-6 d-flex justify-content-center">
+                                            <div class="card" style="width: 7rem;">
+                                                    <img class="card-img-top" src="{{ asset('../assets/images/questionnaire/muscu/y.png') }}" alt="Card image cap">
+                                                    <div class="card-body">
+                                                    <input name="muscu" type="radio" value=0 class="radio-btn">
+                                                        <br>
+                                                    
+                                                    
+                                                    <p>Oui</p>
+                                                        
+                                                    </div>
+                                            </div>
+                                </div>
+                                <div class="col-6 d-flex justify-content-center">
+                                            <div class="card" style="width: 7rem;">
+                                                    <img class="card-img-top"  src="{{ asset('../assets/images/questionnaire/muscu/n.png') }}" alt="Card image cap">
+                                                    <div class="card-body">
+                                                    <input name="muscu" type="radio" value=0 class="radio-btn">
+                                                    <br>
+                                                    
+                                                    <p>Non</p>
+                                                    </div>
+                                            </div>
+                                </div>
+                                <div class="col-2 d-flex justify-content-center">
+                 
+                 </div>
+ 
+                 <div class="col-12 d-flex justify-content-center">
+                    <button class="next-btn btn-sm mx-auto" type="button" id="next-page8" disabled onclick="nextQuestion2()">Suivant</button>
+                 </div>
+
+                            </div>
+                
+</div>
+
+<div class="row question-div2" id="page9">
+
+
+<div class="col-2 d-flex justify-content-center">
+        <h2>  Voir les résultats </h2>
+                 <br>
+</div>
+
+<div class="col-12 d-flex justify-content-center">
+        
+     <button type="submit" class="btn btn-primary  btn-block "> Valider </button>
+
+</div>
+         
+</div>
+                
 </form>
 
 </div>
@@ -1084,16 +1352,102 @@ function nextQuestion() {
 // formulaire young
 
 const page1RadioButtons = document.querySelectorAll('#page1 input[type="radio"]');
+const page2RadioButtons = document.querySelectorAll('#page2 input[type="radio"]');
+const page3RadioButtons = document.querySelectorAll('#page3 input[type="radio"]');
+const page4RadioButtons = document.querySelectorAll('#page4 input[type="radio"]');
+const page5RadioButtons = document.querySelectorAll('#page5 input[type="radio"]');
+const page6RadioButtons = document.querySelectorAll('#page6 input[type="radio"]');
+const page7RadioButtons = document.querySelectorAll('#page7 input[type="radio"]');
+const page8RadioButtons = document.querySelectorAll('#page8 input[type="radio"]');
+
+
 const nextpage = document.querySelector('#next-page1');
+const nextpage2 = document.querySelector('#next-page2');
+const nextpage3 = document.querySelector('#next-page3');
+const nextpage4 = document.querySelector('#next-page4');
+const nextpage5 = document.querySelector('#next-page5');
+const nextpage6 = document.querySelector('#next-page6');
+const nextpage7 = document.querySelector('#next-page7');
+const nextpage8 = document.querySelector('#next-page8');
 
 page1RadioButtons.forEach(radioButton => {
 
 radioButton.addEventListener('change', () => {
   nextpage.removeAttribute('disabled');
-
+  
 });
 
 });
+
+page2RadioButtons.forEach(radioButton => {
+
+radioButton.addEventListener('change', () => {
+  nextpage2.removeAttribute('disabled');
+  
+});
+
+});
+
+page3RadioButtons.forEach(radioButton => {
+
+radioButton.addEventListener('change', () => {
+  nextpage3.removeAttribute('disabled');
+  
+});
+
+});
+
+page4RadioButtons.forEach(radioButton => {
+
+radioButton.addEventListener('change', () => {
+  nextpage4.removeAttribute('disabled');
+  
+});
+
+});
+
+page5RadioButtons.forEach(radioButton => {
+
+radioButton.addEventListener('change', () => {
+  nextpage5.removeAttribute('disabled');
+  
+});
+
+});
+
+page6RadioButtons.forEach(radioButton => {
+
+radioButton.addEventListener('change', () => {
+  nextpage6.removeAttribute('disabled');
+  
+});
+
+});
+
+page7RadioButtons.forEach(radioButton => {
+
+radioButton.addEventListener('change', () => {
+  nextpage7.removeAttribute('disabled');
+  
+});
+
+});
+
+page8RadioButtons.forEach(radioButton => {
+
+radioButton.addEventListener('change', () => {
+  nextpage8.removeAttribute('disabled');
+  
+});
+
+});
+
+
+
+
+
+
+
 
 let currentQuestion2 = 1;
 const questionnaireDivs2 = document.getElementsByClassName("question-div2");
@@ -1107,14 +1461,6 @@ function nextQuestion2() {
     questionnaireDivs2[currentQuestion2 - 1].classList.add("show");
   }
 }
-
-
-
-
-
-
-
-
 
 
 

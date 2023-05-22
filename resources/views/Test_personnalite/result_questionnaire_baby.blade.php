@@ -9,49 +9,40 @@
 
         <main id="main" class="main">
 <style>
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
 
-.container img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 0vh;
-  border-color: darkblue;
-}
-
-.po
 </style>
 
 
        @foreach($shop_category as $data)
 
+  
+       <div class="container">
+       <h2>  Resultats : </h2><br>
+  
+  <!-- Left-aligned media object -->
+  <div class="media">
+    <div class="media-left">
+      <img src="{{ $data->image }}" class="media-object" style="width:160px">
+    </div>
+    <div class="media-body">
 
-      
-       <p class="position"> <h2>  Resultats : </h2> </p>
+    </div>
+  </div>
+  <hr>
+  
+  <!-- Right-aligned media object -->
+  <div class="media">
+    <div class="media-body">
     
+      <p> {!! $data->description !!} </p>
+    </div>
+   
+  </div>
+</div>
 
-        <div class="container">
-            
-        <img src="{{ $data->image }}">
-       
-        </div>
-        <div class="content">
-       <p> {!! $data->description !!} </p>
-        </div>
 
-        <br>
+@endforeach
 
-       @endforeach
 
 
 

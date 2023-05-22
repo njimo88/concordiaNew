@@ -102,7 +102,8 @@ class Controller_Quizz extends Controller
 
     public function handle_questionnaire_6_et_14(Request $request){
 
-        return $request->input('opop') ;
+        //return $request->input('pers') ;
+        return 'nkp';
 
 
 }
