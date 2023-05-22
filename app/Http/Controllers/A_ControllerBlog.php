@@ -77,7 +77,6 @@ class A_ControllerBlog extends Controller
 public function index(Request $request)
 
 {
-    printUsersBirthdayOnImage();
     $a_post = A_Blog_Post::latest('date_post')
         ->join('users', 'blog_posts.id_user', '=', 'users.user_id')
         ->select('blog_posts.*', 'users.name', 'users.lastname', 'users.email')
