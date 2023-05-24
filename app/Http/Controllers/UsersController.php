@@ -19,6 +19,7 @@ use App\Models\Role;
 use App\Models\SystemSetting;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
+use GuzzleHttp\Client;
 
 require_once(app_path().'/fonction.php');
 
@@ -27,6 +28,42 @@ require_once(app_path().'/fonction.php');
 
 class UsersController extends Controller
 {
+
+    
+    
+    public function showForm()
+    {
+        $client = new Client();
+
+        $username = env('API_USERNAME');
+        $password = env('API_PASSWORD');
+        $auth = base64_encode($username . ':' . $password);
+
+        $headers = [
+            'Authorization' => 'Basic ' . $auth,
+            'Content-Type' => 'application/json',
+        ];
+
+        $response = $client->post('https://api.scelliuspaiement.labanquepostale.fr/api-payment/V4/Charge/CreatePayment', [
+            'headers' => $headers,
+            'json' => [
+                "amount" => 990,
+                "currency" => "EUR",
+                "orderId" => "myOrderId-999999",
+                "customer" => [
+                    "email" => "sample@example.com"
+                ]
+            ]
+        ]);
+    
+        $responseBody = json_decode($response->getBody()->getContents());
+    
+        $formToken = $responseBody->answer->formToken;
+        return view('admin.payment_form')->with('formToken', $formToken);
+    }
+   
+    
+
     
 public function editdata(){
     ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
@@ -198,7 +235,8 @@ public function detail_paiement($id,$nombre_cheques)
         $bill->status = 34;
     }elseif ($id == 6){
         $bill->status = 36;
-    }    
+    }elseif ($id == 1){
+        $bill->status = 100;    }
     $bill->payment_total_amount = $total;
     $bill->family_id = auth()->user()->family_id;
     $bill->ref = "0";

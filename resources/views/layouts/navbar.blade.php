@@ -219,6 +219,7 @@ use Illuminate\Support\Facades\Route;
                   <li><a target="_blank" href="https://www.facebook.com/GymConcordia"><span><i class="bi bi-facebook"></i>&nbsp;&nbsp;Facebook</span></a></li>
                   <li><a target="_blank" href="https://www.instagram.com/gym_concordia"><span><i class="bi bi-instagram"></i>&nbsp;&nbsp;Instagram</span></a></li>
                   <li><a target="_blank" href="https://www.youtube.com/user/GymConcordia"><span><i class="bi bi-youtube"></i>&nbsp;&nbsp;Youtube</span></a></li>
+                  <li><a target="_blank" href="https://www.tiktok.com/discover/gym-concordia-schiltigheim?lang=fr"><span><i class="bi bi-tiktok"></i>&nbsp;&nbsp;TikTok</span></a></li>
                   <li><a target="_blank" href="#"><span><i class="bi bi-camera-video"></i>&nbsp;&nbsp;Videos</span></a></li>
                   <li><a target="_blank" href="#"><span><i class="bi bi-newspaper"></i>&nbsp;&nbsp;Presse</span></a></li>
                 </ul>
@@ -362,7 +363,8 @@ use Illuminate\Support\Facades\Route;
                     <li><a target="_blank" href="https://www.facebook.com/GymConcordia"><span><i class="bi bi-facebook"></i>&nbsp;&nbsp;Facebook</span></a></li>
                     <li><a target="_blank" href="https://www.instagram.com/gym_concordia"><span><i class="bi bi-instagram"></i>&nbsp;&nbsp;Instagram</span></a></li>
                     <li><a target="_blank" href="https://www.youtube.com/user/GymConcordia"><span><i class="bi bi-youtube"></i>&nbsp;&nbsp;Youtube</span></a></li>
-                    <li><a target="_blank" href="#"><span><i class="bi bi-camera-video"></i>&nbsp;&nbsp;Videos</span></a></li>
+                  <li><a target="_blank" href="https://www.tiktok.com/discover/gym-concordia-schiltigheim?lang=fr"><span><i class="bi bi-tiktok"></i>&nbsp;&nbsp;TikTok</span></a></li>
+                  <li><a target="_blank" href="#"><span><i class="bi bi-camera-video"></i>&nbsp;&nbsp;Videos</span></a></li>
                     <li><a target="_blank" href="#"><span><i class="bi bi-newspaper"></i>&nbsp;&nbsp;Presse</span></a></li>
                   </ul>
                   

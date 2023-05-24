@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<main id="main" class="main" style="padding : 88px 0; background-image: url('{{asset("/assets/images/background.png")}}');">
+<main id="main" class="main" style="padding : 20px 0; background-image: url('{{asset("/assets/images/background.png")}}');">
     <div style="background-color:white;"  class="container rounded" >
       @if (session('success'))
             <div class="alert alert-success col-12 m-3">
@@ -64,7 +64,12 @@
                         <img style="width : 30px" src="{{ $Mpaiement->image}}" alt=""><h5 class="mx-3">{{ $Mpaiement->payment_method}}</h5>
                     </div>
                     <div class="col-11 d-flex justify-content-center m-2">
-                            <a type="button"  data-toggle="modal" data-target="#{{ $Mpaiement->payment_method }}" href="#"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
+                      @if ($Mpaiement->payment_method == 'Carte Bancaire')
+                <a type="button" href="/payment_form"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
+            @else
+            <a type="button"  data-toggle="modal" data-target="#{{ $Mpaiement->payment_method }}" href="#"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
+
+            @endif
                     </div>
 
                 </div>

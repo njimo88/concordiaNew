@@ -122,7 +122,6 @@
           {!! $post->contenu !!}
         </div>
       </div>
-    </div>
     
     <style>
       .icon-box {
@@ -134,13 +133,12 @@
       }
     </style>
     
-    <div class="icon-boxes position-relative" style="background-image: url('{{asset("/assets/images/background.png")}}');">
-      <div class="container position-relative">
-        <div class="row mt-5">
+    
+        <div class="row mt-4">
           <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex align-items-center" data-aos="fade-up" data-aos-delay="100">
             <div class="icon-box" style="background-color: #cc0000;">
               <img src="{{ asset('assets/images/1.png') }}" alt="" class="icon-image">
-              <h4 class="title" style="color: white; margin: 5px;"><a href="{{ route('questionnaire') }}">Je choisis ma section</a></h4>
+              <h4 class="title" style="color: white; margin: 5px;"><a href="{{-- route('questionnaire') --}}#">Je choisis ma section</a></h4>
             </div>
           </div>
           <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="200">
@@ -158,12 +156,11 @@
           <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="500">
             <div class="icon-box" style="background-color: green;">
               <img src="{{ asset('assets/images/4.png') }}" alt="" class="icon-image">
-              <h4 class="title" style="color: white; margin: 4px;"><a href="">Je te dis plus tard</a></h4>
+              <h4 class="title" style="color: white; margin: 4px;"><a href="#">Animations été</a></h4>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      
     
   
     </div>

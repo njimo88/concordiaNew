@@ -111,10 +111,15 @@ public function index(Request $request)
 
 
 public function Simple_Post($id){
-    $a_post = A_Blog_Post::find($id);
+    $a_article = A_Blog_Post::join('users', 'blog_posts.id_user', '=', 'users.user_id')
+    ->select('blog_posts.*', 'users.name', 'users.lastname', 'users.email')
+    ->where('blog_posts.id_blog_post_primaire', $id)
+    ->first();
+
+
     $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
     $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
-    return view('club.Simple_Post',compact('a_post','a_categorie1','a_categorie2'))->with('user', auth()->user());
+    return view('club.Simple_Post',compact('a_article','a_categorie1','a_categorie2'))->with('user', auth()->user());
 }
 public function recherche_par_cat1(Request $request, $id) {
 

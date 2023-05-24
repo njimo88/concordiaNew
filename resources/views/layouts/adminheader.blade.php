@@ -1,7 +1,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<link rel="icon" href="{{ asset('assets/images/gym.png') }}" type="image/x-icon">
+<link rel="icon" href="{{ asset('assets/images/favicon.png') }}" type="image/x-icon">
 
     <title>Dashboard - Admin </title>
     <meta name="robots" content="noindex, nofollow">

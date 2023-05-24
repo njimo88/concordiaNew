@@ -7,6 +7,15 @@
     max-width: 1500px !important;
   }
 }
+.breadcrumb-item a {
+    color: black;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    text-decoration: underline;
+}
+
+
+
 </style>
 <main id="main" class="main pt-3" class="mt-0" style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height: 100vh;">
   
@@ -97,7 +106,8 @@
              
                 <a href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" ><img style="width: 100% !important;" src="{{ $data->image }}" class="img-fluid" alt=""></a>
                 <div class="portfolio-info d-flex justify-content-center">
-                  <h5 class="d-flex justify-content-center"><a style="text-align:center !important" href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" title="More Details"> {{ $data->name}}</a></h5>
+                  <h5 class="d-flex justify-content-center"><a style="text-align:center !important; color: darkblue;" href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" title="More Details"> {{ $data->name}}</a></h5>
+
                 
                 </div>
               </div>
