@@ -118,7 +118,7 @@
 
                                                                 if($r == $room->id_room and $norepeat == TRUE){
                                                                         echo"<br>";
-                                                                        echo "<b>Lieu:</b> <small style='font-size: 13px;'><a href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a></small>";
+                                                                        echo "<b>Lieu:</b> <small  style='font-size: 13px;  '><a style=' color: darkblue;' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a></small>";
 
                                                                         
                                                                         $norepeat = FALSE ;
@@ -171,7 +171,7 @@
                                       @if($users->user_id == $t)
                                         <div class="d-flex flex-column align-items-center">
                                           <img id="prof" class="mx-auto" style="max-height: 90px;" src="{{ $users->image }}">
-                                          <label  style="margin-top:-4px !important; font-size: 10px !important" for="prof" class="text-center">{{ $users->lastname }} {{ $users->name }}</label>
+                                          <label  style="margin-top:-4px !important; font-size: 10px !important;color : black; " for="prof" class="text-center">{{ $users->lastname }} {{ $users->name }}</label>
                                         </div>
                                         @php $aff = 1; @endphp
                                       @endif

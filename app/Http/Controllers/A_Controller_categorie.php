@@ -490,7 +490,7 @@ public function Shop_souscategorie($id){
 
     $indice = $id;
     $info_parent = Shop_category::select('id_shop_category_parent','name')->get();
-    $info = Shop_category::get();
+    $info = Shop_category::where('active', 1)->get();
     $info2 = Shop_category::select('name','description')->where('id_shop_category','=',$indice)->first();
     $article = Shop_article::get();
     $shopService = shop_article_1::get();

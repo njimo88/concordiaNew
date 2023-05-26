@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Shop_article;
 
+use App\Models\MailHistory;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\User;
 use App\Models\Shop_category;
@@ -37,11 +38,11 @@ class Controller_Communication extends Controller
 
             } else {
                 $shop_articles = Shop_article::leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
-                                            ->where('shop_article.type_article', '=', 1)
-                                            ->whereRaw('JSON_CONTAINS(shop_article_1.teacher, \'["' . $user->id . '"]\')')
-                                            ->orderBy('saison', 'desc')
-                                            ->orderBy('shop_article.title', 'asc')
-                                            ->get();
+                ->where('shop_article.type_article', '=', 1)
+                ->whereRaw('JSON_CONTAINS(shop_article_1.teacher, \'[' . $user->user_id . ']\')')
+                ->orderBy('saison', 'desc')
+                ->orderBy('shop_article.title', 'asc')
+                ->get();
             }
 
         return view('Communication/page_envoi_de_mail', compact('shop_articles','saison_list'));
@@ -73,19 +74,44 @@ public function sendEmails(Request $request)
     $emails = $request->input('emails');
     $subject = $request->input('subject');
     $content = $request->input('content');
+
     foreach($emails as $email) {
-        foreach($emails as $email) {
-            Mail::send('emails.template', ['content' => $content], function ($message) use ($email, $subject) {
-                $message->from(config('mail.from.address'), config('mail.from.name'));
-                $message->to($email);
-                $message->subject($subject);
-            });
-        }
-        
+        Mail::send('emails.template', ['content' => $content], function ($message) use ($email, $subject) {
+            $message->from(config('mail.from.address'), config('mail.from.name'));
+            $message->to($email);
+            $message->subject($subject);
+        });
     }
+
+    // Save the record to mail_history
+    $mail_history = new MailHistory;
+    $mail_history->id_user_expediteur = Auth::id(); 
+    $mail_history->title = $subject;
+    $mail_history->message = $content;
+    $mail_history->link_pj = null; 
+    $mail_history->date = now();
+    $mail_history->id_user_destinataires = json_encode($emails); 
+    $mail_history->save();
+
+    $authUser = Auth::user();
+    $securityEmail = 'security@gym-concordia.com';
+    $destinataires = User::whereIn('email', $emails)->get();
+    $subject = '[Surveillance] Mail ' . $authUser->lastname . ' ' . $authUser->name . ' | ' . date('d-m-Y H:i');
+    $group = $request->input('group');
+
+    Mail::send('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'group' => $group, 'destinataires' => $destinataires], function ($message) use ($authUser, $subject) {
+        $message->from(config('mail.from.address'), config('mail.from.name'));
+        $message->to($authUser->email);
+        $message->subject($subject);
+    });
     
+   
+    
+
     return response()->json(['message' => 'Emails envoyés avec succès.']);
 }
+
+
 
 
 public function historique (){

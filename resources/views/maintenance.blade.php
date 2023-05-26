@@ -94,7 +94,7 @@
 			</g>
 		</g>
 	</svg>
-	<h2>Réouverture du site internet <br> le 25 mai 2023 à 10h00</h2>
+	<h2>Réouverture du site internet <br> le 26 mai 2023 à 12h00</h2>
 	<div>
 		<p>Désolé pour la gêne occasionnée. <br> Nous effectuons 
 			actuellement une maintenance importante. <br> Vous pouvez nous suivre 

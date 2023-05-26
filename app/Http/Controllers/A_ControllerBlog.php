@@ -79,6 +79,8 @@ public function index(Request $request)
 {
     $a_post = A_Blog_Post::latest('date_post')
         ->join('users', 'blog_posts.id_user', '=', 'users.user_id')
+        ->where('status', 'Publié')
+        ->whereRaw('date_post <= ?', [now()])
         ->select('blog_posts.*', 'users.name', 'users.lastname', 'users.email')
         ->paginate(10);
 
@@ -87,11 +89,11 @@ public function index(Request $request)
 
     // Article d'accueil
     $post = DB::table('blog_posts')
-        ->join('system', 'blog_posts.id_blog_post_primaire', '=', 'system.value')
-        ->where('system.id_system', '=', 6)
-        ->where('status', 'Publié')
-        ->select('blog_posts.contenu')
-        ->first();
+    ->join('system', 'blog_posts.id_blog_post_primaire', '=', 'system.value')
+    ->where('system.id_system', '=', 6)
+    ->select('blog_posts.contenu', 'blog_posts.date_post')
+    ->first();
+
 
         if ($request->ajax()) {
             Paginator::currentPageResolver(function () use ($request) {

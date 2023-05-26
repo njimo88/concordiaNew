@@ -242,6 +242,7 @@ sendButton.addEventListener('click', function (event) {
     // Get the IDs of the selected users
     const selectedUserIds = Array.from(selectedUsers.querySelectorAll('a.list-group-item')).map(user => user.dataset.id);
     // Get the email subject and content from the form inputs
+    const selectedGroup = document.querySelector('#shop-articles option:checked').textContent;
     const subject = document.querySelector('textarea[name="titre"]').value;
     const content = CKEDITOR.instances.ckeditor.getData();
 
@@ -268,7 +269,8 @@ sendButton.addEventListener('click', function (event) {
     body: JSON.stringify({
         emails: emails,
         subject: subject,
-        content: content
+        content: content,
+        group: selectedGroup
     })
 })
 .then(response => response.json())

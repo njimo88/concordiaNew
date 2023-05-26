@@ -11,7 +11,6 @@
     color: black;
     font-size: 16px;
     font-family: Arial, sans-serif;
-    text-decoration: underline;
 }
 
 
