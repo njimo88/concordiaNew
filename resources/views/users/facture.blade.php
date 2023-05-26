@@ -61,7 +61,7 @@
                                                 <th id="date" style="min-width:100px;"><a >Date</a></th>
                                                 <th style="min-width:100px;"><a >Total</a></th>
                                                 <th style="min-width:150px;"><a >Statut</a></th>
-                                                <th style="min-width:150px">Actions</th>
+                                                
                                             </thead>                            
                                             <tbody>
                                                 @foreach ($bill as $bills )
@@ -72,7 +72,7 @@
                                                                 <a type="button" target="_blank" class=" user-link a text-black "  href="{{ route('user.showBill', ['id' => $bills->id]) }}">{{ intval($bills->id) }}</i></a>
                                                             </span>
                                                         </td>
-                                                        <td style="font-weight : bold;">{{ $user->lastname}}</td> 
+                                                        <td style="font-weight : bold;">{{ $user->lastname}} {{ $user->name}}</td> 
                                                         <td><img style="height: 30px" src="{{ $bills->image}}" alt="">
                                                             <span style="display: none;">{{ $bills->payment_method}}</span>
                                                         </td>
@@ -86,17 +86,7 @@
                                                             <img src="{{ $bills->image_status }}" alt="Caution acceptée">
                                                             <span style="display: none;">{{ $bills->status}}</span>
                                                         </td>
-                                                        <td>   
-                                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="DELETE">
-                                                                <a data-toggle="modal" data-target="#deleteUserFacture{{ $bills->id }}" href="" type="button" class="btn  rounded-circle "><i style="color: red" class="fa-solid fa-trash"></i></a>
-                                                            </span> 
-                                                            @include('users.modals.deleteFacture')
-                                                            @if ($bills->type == 'devis')
-                                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Ajout Panier">
-                                                                <a data-toggle="modal" data-target="" href="" type="button" class=""><i class="fa-solid fa-euro-sign"></i></a>
-                                                            </span>
-                                                            @endif
-                                                        </td>
+                                                        
                                                     </tr>        
                                                 @endforeach  
                                                 
