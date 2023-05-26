@@ -123,28 +123,27 @@ public function Simple_Post($id){
     $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
     return view('club.Simple_Post',compact('a_article','a_categorie1','a_categorie2'))->with('user', auth()->user());
 }
+
 public function recherche_par_cat1(Request $request, $id) {
+    
 
-    // $a_requete1 = A_Blog_Post::latest('date_post')->paginate(5);
-    $a_requete1 = A_Blog_Post::latest('date_post')->paginate(6);
-    $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
-    $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
-   
-    $a_result = $id ;
+    $blogs = A_Blog_Post::whereJsonContains('categorie1', intval($id))->latest('date_post')->paginate(6);
 
 
+    $a_categorie1 = A_Categorie1::select('Id_categorie1', 'image')->get();
+    $a_categorie2 = A_Categorie2::select('Id_categorie2', 'image')->get();
+    $a_result = $id;
 
-    return view('A_blog_par_categorie1', compact('a_requete1','a_result','a_categorie1','a_categorie2'))->with('user', auth()->user()) ;
-   
+    return view('A_blog_par_categorie1', compact('blogs', 'a_result', 'a_categorie1', 'a_categorie2'))->with('user', auth()->user());
+}
 
 
-    }
    
 
 public function recherche_par_cat2(Request $request, $id) {
 
+    $blogs = A_Blog_Post::whereJsonContains('categorie2', intval($id))->latest('date_post')->paginate(6);
 
-    $a_requete1 = A_Blog_Post::latest('date_post')->paginate(6);
     $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
     $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
  
@@ -153,7 +152,7 @@ public function recherche_par_cat2(Request $request, $id) {
 
 
 
-    return view('A_blog_par_categorie2', compact('a_requete1','a_result','a_categorie1','a_categorie2'))->with('user', auth()->user()) ;
+    return view('A_blog_par_categorie2', compact('blogs','a_result','a_categorie1','a_categorie2'))->with('user', auth()->user()) ;
     
 }
 
