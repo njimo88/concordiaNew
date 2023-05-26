@@ -329,8 +329,8 @@ use Illuminate\Support\Facades\Route;
                         @endforeach
                     </ul>
               </li>
-              <li><a href="#"><span><img src="{{ asset("/assets/images/sport-etudes.png") }}" width="24">&nbsp;Sport-Etudes</span></a>
-              <li><a href="#"><span><img src="{{ asset("/assets/images/HorairesBureau.png") }}" width="24">&nbsp;Horaires Bureau</span></a>
+              <li><a href="{{ route('Simple_Post',13224) }}"><span><img src="{{ asset("/assets/images/sport-etudes.png") }}" width="24">&nbsp;Sport-Etudes</span></a>
+              <li><a href="{{ route('Simple_Post',13005) }}"><span><img src="{{ asset("/assets/images/HorairesBureau.png") }}" width="24">&nbsp;Horaires Bureau</span></a>
             </ul>
           </li>
           <li><a href="#" data-toggle="modal" data-target="#search-modal"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
@@ -473,8 +473,8 @@ use Illuminate\Support\Facades\Route;
                           @endforeach
                       </ul>
                 </li>
-                <li><a href="#"><span><img src="{{ asset("/assets/images/sport-etudes.png") }}" width="24">&nbsp;Sport-Etudes</span></a>
-                <li><a href="#"><span><img src="{{ asset("/assets/images/HorairesBureau.png") }}" width="24">&nbsp;Horaires Bureau</span></a>
+                <li><a href="{{ route('Simple_Post',13224) }}"><span><img src="{{ asset("/assets/images/sport-etudes.png") }}" width="24">&nbsp;Sport-Etudes</span></a>
+                <li><a href="{{ route('Simple_Post',13005) }}"><span><img src="{{ asset("/assets/images/HorairesBureau.png") }}" width="24">&nbsp;Horaires Bureau</span></a>
               </ul>
             </li>
             <li><a href="#" data-toggle="modal" data-target="#search-modal"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
