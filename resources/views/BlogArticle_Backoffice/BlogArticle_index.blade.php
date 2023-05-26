@@ -1,7 +1,9 @@
 @extends('layouts.template')
 
 @section('content')
-
+@php
+    require_once(app_path().'/helpers.php');
+@endphp
 <main id="main" class="main">
 @if(session()->has('success'))
                 <div class="alert alert-success">
@@ -36,8 +38,8 @@
                      <th>Dernier éditeur </th>
                      <th>Date de modification</th>
                      <th>Statut</th>
-                     <th>Modifier</th>
-                      <th>supprimer</th>
+                     <th></th>
+                      <th></th>
                     
                      
                        
@@ -45,24 +47,33 @@
                             <tbody>
                                
                                 @foreach($requete_user as $data)
-    <tr>
-      
-        <td>{{$data->titre}}</td>
-
-        
-      
-        <td>{{$data->lastname}} {{$data->name}}</td>
-        <td><?php echo date("d/m/Y à H:i", strtotime($data->date_post)); ?></td>
-           
-        <td>{{$data->lastname}} {{$data->name}}</td>
-
-    
-        <td><?php echo date("d/m/Y à H:i", strtotime($data->updated_at)); ?></td>
-        <td>{{$data->status}}</td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Edit"><a href="{{route('edit_blog_index',['id' => $data->id_blog_post_primaire])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier ce billet de blog ?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
-        <td><p data-placement="top" data-toggle="tooltip" title="Delete"><a href="{{route('delete_blog',['id' => $data->id_blog_post_primaire])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer ce billet de blog ?');" ><i class="bi bi-trash"></i></button></a></p></td>
-    
-    </tr>
+                                <tr style="background-color: <?php echo getAuthorColor($data->lastname, $data->name); ?>">
+                                    <td>{{$data->titre}}</td>
+                                    <td>{{$data->lastname}} {{$data->name}}</td>
+                                    <td><?php echo date("d/m/Y à H:i", strtotime($data->date_post)); ?></td>
+                                    <td>{{$data->lastname}} {{$data->name}}</td>
+                                    <td><?php echo date("d/m/Y à H:i", strtotime($data->updated_at)); ?></td>
+                                    <td>{{$data->status}}</td>
+                                    <td >
+                                      <p class="m-0" data-placement="top" data-toggle="tooltip" title="Edit">
+                                        <a href="{{route('edit_blog_index',['id' => $data->id_blog_post_primaire])}}">
+                                          <button class="btn btn-sm btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit">
+                                            <i class="bi bi-pencil-fill"></i>
+                                          </button>
+                                        </a>
+                                      </p>
+                                    </td>
+                                    <td>
+                                      <p class="m-0" data-placement="top" data-toggle="tooltip" title="Delete">
+                                        <a href="{{route('delete_blog',['id' => $data->id_blog_post_primaire])}}" onclick="return confirm('êtes-vous sûr de vouloir supprimer ce billet de blog ?');">
+                                          <button class="btn btn-sm btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete">
+                                            <i class="bi bi-trash"></i>
+                                          </button>
+                                        </a>
+                                      </p>
+                                    </td>
+                                  </tr>
+                                  
     @endforeach
                     
                             </tbody>
@@ -70,9 +81,7 @@
                     </div>
 
 <div class="clearfix"></div>
-<div class="d-flex justify-content-center">
-    {!! $requete_blog->links() !!}
-</div>          
+         
             </div>
             
         

@@ -17,12 +17,13 @@ class BlogArticle_Controller extends Controller
 
     function index()
     {
-        $requete_article = Shop_article::paginate(50) ;
-        $requete_blog  =   A_Blog_Post::paginate(50) ;
+        $requete_article = Shop_article::All() ;
+        $requete_blog  =   A_Blog_Post::All()  ;
         $requete_user = DB::table('users')
         ->join('blog_posts', 'blog_posts.id_user', '=', 'users.user_id')
         ->orderBy('blog_posts.date_post', 'desc') 
-        ->paginate(50);
+        ->select('users.lastname','users.name','blog_posts.*')
+        ->get();
 
 
         return view('BlogArticle_Backoffice/BlogArticle_index',compact('requete_blog','requete_article','requete_user'))->with('user', auth()->user()) ;

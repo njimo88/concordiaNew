@@ -382,25 +382,26 @@ $('#myTable').on('click', 'thead th', function() {
 /*my table end-------------------------------------------------------------------*/
 /*myTableArticle Sort-------------------------------------------------------------------*/
 $('#ArticleTable').DataTable({
-  info: false,
-    bLengthChange: false,
-    paging: false, // Désactiver la pagination
-    lengthChange: false, 
-    language: {
-      search: "",
-      searchPlaceholder: "Rechercher...",
-      lengthMenu: "Afficher _MENU_ entrées",
-      zeroRecords: "Aucun résultat trouvé",
-      info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
-      infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
-      infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
-      paginate: {
-          first: "Premier",
-          last: "Dernier",
-          next: "Suivant",
-          previous: "Précédent"
-      }
-    },
+  info: true,
+  paging: true, 
+  lengthChange: true, 
+  lengthMenu: [ [100, 500, -1], [100, 500, "Tout"] ],
+  pageLength: 100,
+  language: {
+    search: "",
+    searchPlaceholder: "Rechercher...",
+    lengthMenu: "Afficher _MENU_ entrées",
+    zeroRecords: "Aucun résultat trouvé",
+    info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
+    infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
+    infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
+    paginate: {
+      first: "Premier",
+      last: "Dernier",
+      next: "Suivant",
+      previous: "Précédent"
+    }
+  },
   order: [],
   drawCallback: function(settings) {
     var api = this.api();
@@ -409,16 +410,21 @@ $('#ArticleTable').DataTable({
     }).nodes();
   },
   columnDefs: [
+    { targets: [6, 7], orderable: false },
     {
-      targets: 3,
+      targets: 2,
       type: 'datetime-dd-mm-yyyy'
-    },{
+    },
+    {
       targets: 4,
-      type: 'numeric-comma'
+      type: 'datetime-dd-mm-yyyy'
     }
   ],
-  dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+  dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" +
+    "<'row'<'col-sm-12'tr>>" +
+    "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
 });
+
 
  
 $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
