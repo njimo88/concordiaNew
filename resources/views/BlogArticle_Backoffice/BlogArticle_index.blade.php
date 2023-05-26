@@ -26,7 +26,7 @@
     <div class="table-responsive">
     
 
-                        <table style="width:100%;" id="myTableArticle" class="table table-bordred table-striped">
+                        <table style="width:100%;" id="ArticleTable" class="table table-bordred table-striped">
                               <thead>
                    
                    

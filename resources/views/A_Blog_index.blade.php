@@ -115,10 +115,10 @@
             $dateString = $date->format('Y-m-d');
             $filename = $dateString . "-birthday.jpg";
           @endphp
-          <a href="{{ route('anniversaire') }}"><img style="width : 100% !important; height: 284px !important;" src="{{ asset('assets/images/'.$filename) }}" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100"></a>
+          <a href="{{ route('anniversaire') }}"><img  src="{{ asset('assets/images/'.$filename) }}" class="img-fluid" alt="" data-aos="zoom-out" data-aos-delay="100"></a>
         </div>
         <div style="    background-color: #DAE7FF;
-        border: 2px solid #1F6FB5!important;" class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start border border-dark">
+        border: 2px solid #1F6FB5!important;" class="col-11 col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start border border-dark">
           {!! $post->contenu !!}
         </div>
       </div>
