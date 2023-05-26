@@ -536,7 +536,7 @@
   
   
               </div>
-              <div class="col-md-2" >
+              <div class="col-md-4" >
               {{--  Affichage bloc prix  --}}
               <div class="card" style="border:0px; box-shadow: none;" >
                 <div class="card-body"  style="background-color: white;     display: flow-root !important; position :relative " >
@@ -596,7 +596,7 @@
   
               
   
-                <div class=" col-md-3">
+                {{-- <div class=" col-md-3">
                   <div class="card" >
                     <div class="card-body"   style="display: block !important;">
                   <h4 class="card-title">Choix</h4>
@@ -632,10 +632,10 @@
                         </div>
                     @endif
                 </div></div></div>
-  
+  @endif --}}
                     
               @guest
-                <div class="col-md-4" >
+                <div class="col-md-5" >
                   {{--  Affichage bloc prix  --}}
                   <div class="card" >
                     <div class="card-body"   style="display: block !important;">
@@ -652,7 +652,7 @@
                   </div>
                   </div>
               @else
-                <div class="col-md-4" >
+                <div class="col-md-5" >
                 {{--  Affichage bloc prix  --}}
                 <div class="card" >
                   <div class="card-body"   style="display: block !important;">
@@ -708,7 +708,6 @@
                            </script>
                           
                         <button  data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
-                    @endif
                     </span>
                   </div>
     

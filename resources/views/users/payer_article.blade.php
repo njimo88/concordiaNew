@@ -59,6 +59,8 @@
             <h5 style="font-weight:bold"  class="text-dark font-weight-bold p-3">Moyens de paiement :</h5>
 
             @foreach ($Mpaiement as $Mpaiement)
+            @if ($Mpaiement->payment_method == 'Carte Bancaire')
+            @else
                 <div  class="col-md-5  row mx-2 d-flex justify-content-center mb-5">
                     <div style="background-color:#edeeef;" class="col-7 d-flex justify-content-center m-2 p-1 border">
                         <img style="width : 30px" src="{{ $Mpaiement->image}}" alt=""><h5 class="mx-3">{{ $Mpaiement->payment_method}}</h5>
@@ -73,7 +75,7 @@
                     </div>
 
                 </div>
-                
+                @endif
             @endforeach
             <!-- Modal -->
             <div class="modal fade" id="Espèces" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

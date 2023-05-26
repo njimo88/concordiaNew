@@ -28,7 +28,7 @@
     <div class="row p-3" style="margin: 0px;"><div class="row titleml " style="margin: 0px;"><u><strong>Documents Administratifs</strong></u></div>
     @foreach($parametre as $pt)
 <div class="row containtiles" style="margin: 0px;">
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 my-2">
     <a target="_blank" href="{{ $pt->fichier_inscription3 }}">
       <div class="tile bg-darkBlue fg-white">
       <button type="button" class="btn btn-primary btn-block btn-lg" style="min-height: 70px;">Statut de l'association</button>
@@ -36,7 +36,7 @@
       </div>
     </a>
   </div>
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 my-2">
     <a target="_blank" href="{{ $pt->fichier_inscription2 }}">
       <div class="tile bg-darkBlue fg-white">
        
@@ -44,7 +44,7 @@
       </div>
     </a>
   </div>
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 my-2">
     <a target="_blank" target="_blank" href="{{ $pt->fichier_inscription1 }}">
       <div class="tile bg-darkBlue fg-white">
       
@@ -61,7 +61,7 @@
 
 <div class="row titleml mt-3" style="margin: 0px;"><u><strong>Documents Santé</strong></u></div>
 <div class="row containtiles" style="margin: 0px;">
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 my-2">
     <a target="_blank" href="{{ asset('uploads/Fichiers/FFGym-Quest-Mineurs-2022-2023.pdf') }}">
       <div class="tile bg-darkBlue fg-white">
       
@@ -69,7 +69,7 @@
       </div>
     </a>
   </div>
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 mt-2">
     <a  href="{{ asset('uploads/Fichiers/FFGym-Quest-Majeurs-2022-2023.pdf') }}" target="_blank">
       <div class="tile bg-darkBlue fg-white">
        
@@ -85,7 +85,7 @@
 
 <div class="row titleml mt-3" style="margin: 0px;"><u><strong>Informations Juridiques</strong></u></div>
 <div class="row containtiles" style="margin: 0px;">
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 my-2">
     <a target="_blank" href="{{route('index_politique')}}">
       <div class="tile bg-darkBlue fg-white">
       <button type="button" class="btn btn-primary btn-block btn-lg" style="min-height: 70px;">Politique de Confidentialit&eacute;</button>
@@ -93,7 +93,7 @@
       </div>
     </a>
   </div>
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 my-2">
     <a target="_blank" href="">
       <div class="tile bg-darkBlue fg-white">
         
@@ -105,7 +105,7 @@
 
 <br>
 
-<div class="row titleml mt-3" style="margin: 0px;" ><u><strong>Valeurs et Chartes</strong></u></div>
+<div class="row titleml mt-3 " style="margin: 0px;" ><u><strong>Valeurs et Chartes</strong></u></div>
 
 <div class="row containtiles" style="margin: 0px;border-bottom-left-radius: 10px;border-bottom-right-radius: 10px;">
   <div class="col-md-3 col-sm-6">
@@ -118,7 +118,7 @@
     </a>
   </div>
  
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 my-2">
     <a target="_blank" href="{{ asset('uploads/Fichiers/Eco%20Gym.pdf') }}">
       <div class="tile bg-darkBlue fg-white">
         
@@ -127,7 +127,7 @@
       </div>
     </a>
   </div>
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 my-2">
     <a target="_blank" href="{{ asset('uploads/Fichiers/Charte%20Ethique%20et%20D%C3%A9ontologie%20ffgym.pdf') }}">
       <div class="tile bg-darkBlue fg-white">
         <span class="tile-label"></span>
@@ -135,7 +135,7 @@
       </div>
     </a>
   </div>
-  <div class="col-md-3 col-sm-6">
+  <div class="col-md-3 col-sm-6 my-2">
     <a target="_blank" href="{{ asset('uploads/Fichiers/Developpement%20durable.pdf') }}">
       <div class="tile bg-darkBlue fg-white">
         <span class="tile-label"></span>
