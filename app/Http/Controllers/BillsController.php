@@ -398,6 +398,7 @@ class BillsController extends Controller
 
     public function showBill($id)
     {
+        $user = auth()->user();
         updateTotalCharges($id);
 
         $billsQuery = DB::table('bills')
@@ -415,8 +416,7 @@ class BillsController extends Controller
             ->select('old_bills.*', 'bills_status.row_color', 'bills_status.status as bill_status', 'users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country', 'users.birthdate', 'bills_payment_method.payment_method as method');
 
         $bill = $billsQuery->union($oldBillsQuery)->first();
-
-
+        if ($user->belongsToFamily($bill->family_id)) {
         
         $shop = DB::table('liaison_shop_articles_bills')
         ->select('quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'liaison_shop_articles_bills.id_liaison')
@@ -446,7 +446,10 @@ class BillsController extends Controller
         $nb_paiment = calculerPaiements($bill->payment_total_amount,$bill->number);
         
             return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages'))->with('user', auth()->user());
-            
+        }
+
+        abort(403, 'Vous n\'êtes pas autorisé à accéder à cette facture.');
+     
     }
 
     public function addShopMessage(Request $request, $id) {
@@ -472,7 +475,7 @@ class BillsController extends Controller
             $userName = 'Gym Concordia [Bureau]';
             $message = "Votre facture n°{$bill->id} a été créée avec succès.";
             $userEmail = "webmaster@gym-concordia.com";
-            HistoriqueMail($userEmail, $message, $receiverEmail, $userName,$bill, $messageEnvoye);
+           // HistoriqueMail($userEmail, $message, $receiverEmail, $userName,$bill, $messageEnvoye);
         }
      
       

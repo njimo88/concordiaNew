@@ -56,8 +56,8 @@
                                     <td>{{$data->status}}</td>
                                     <td >
                                       <p class="m-0" data-placement="top" data-toggle="tooltip" title="Edit">
-                                        <a href="{{route('edit_blog_index',['id' => $data->id_blog_post_primaire])}}">
-                                          <button class="btn btn-sm btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit">
+                                        <a target="_blank" href="{{route('edit_blog_index',['id' => $data->id_blog_post_primaire])}}">
+                                          <button  class="btn btn-sm btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit">
                                             <i class="bi bi-pencil-fill"></i>
                                           </button>
                                         </a>

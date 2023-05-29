@@ -1321,22 +1321,27 @@ function applyFamilyDiscount()
         if (!$basket) {*/
             // Mettre à jour le totalprice de l'article correspondant
             $shopArticle = Shop_article::find(1);
-            $shopArticle->totalprice = $reduction_famille*(-1);
-            $shopArticle->save();
 
-            // Ajouter la réduction famille au panier
-            $basket = new Basket([
-                'user_id' => auth()->user()->user_id,
-                'family_id' => $family_id,
-                'pour_user_id' => auth()->user()->user_id,
-                'ref' => 1,
-                'qte' => 1,
-                'prix' => $reduction_famille*(-1),
-            ]);
-            $basket->save();
-       /* }*/
+            // Vérifier si le type de l'article est 0
+            if ($shopArticle->type_article == 0) {
+                $shopArticle->totalprice = $reduction_famille*(-1);
+                $shopArticle->save();
+
+                // Ajouter la réduction famille au panier
+                $basket = new Basket([
+                    'user_id' => auth()->user()->user_id,
+                    'family_id' => $family_id,
+                    'pour_user_id' => auth()->user()->user_id,
+                    'ref' => 1,
+                    'qte' => 1,
+                    'prix' => $reduction_famille*(-1),
+                ]);
+                $basket->save();
+            }
+        /*}*/
     }
 }
+
 
 
 

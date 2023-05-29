@@ -63,6 +63,11 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasMany(Basket::class, 'user_id');
     }
     
+    public function belongsToFamily($familyId)
+{
+    return $this->family_id === intval($familyId);
+}
+
 
     /**
      * The attributes that should be hidden for serialization.

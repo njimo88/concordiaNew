@@ -3,6 +3,7 @@
 @section('content')
 <main class="main" id="main"  style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height:100vh;">
 
+@if ($bill->user_id == auth()->user()->user_id)
 
 <div style="background-color: white;" class="container  justify-content-center">
     <div class="row">
@@ -251,7 +252,6 @@
         </div>
     </div>
 @endif
-  @if (auth()->user()->role > 5)
     
   
   <div class="row border border-dark my-5 mx-2">
@@ -260,54 +260,61 @@
     </div>
 
 
-<div class="col-lg-12 mt-3">
-  @foreach($messages as $message)
-  <?php
-  // Configure la locale en français
-  setlocale(LC_ALL, 'fr_FR.UTF-8');
-  
-  // Tableau de traduction des mois et jours de la semaine
-  $englishToFrench = [
-      'January' => 'janvier',
-      'February' => 'février',
-      'March' => 'mars',
-      'April' => 'avril',
-      'May' => 'mai',
-      'June' => 'juin',
-      'July' => 'juillet',
-      'August' => 'août',
-      'September' => 'septembre',
-      'October' => 'octobre',
-      'November' => 'novembre',
-      'December' => 'décembre',
-      'Monday' => 'Lundi',
-      'Tuesday' => 'Mardi',
-      'Wednesday' => 'Mercredi',
-      'Thursday' => 'Jeudi',
-      'Friday' => 'Vendredi',
-      'Saturday' => 'Samedi',
-      'Sunday' => 'Dimanche',
-  ];
-  
-  $formattedDate = \Carbon\Carbon::parse($message->date)->isoFormat('dddd D MMMM YYYY à HH:mm:ss ');
-  
-  $formattedDate = strtr($formattedDate, $englishToFrench);
-  ?>
-      @if ($message->state == 'Privé')
-          <u><b><span style="color:red;">(Privé)</span></b> {{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
-      @else
-          <u>{{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
+    <div class="col-lg-12 mt-3">
+      @foreach($messages as $message)
+        <?php
+        // Configure la locale en français
+        setlocale(LC_ALL, 'fr_FR.UTF-8');
+      
+        // Tableau de traduction des mois et jours de la semaine
+        $englishToFrench = [
+            'January' => 'janvier',
+            'February' => 'février',
+            'March' => 'mars',
+            'April' => 'avril',
+            'May' => 'mai',
+            'June' => 'juin',
+            'July' => 'juillet',
+            'August' => 'août',
+            'September' => 'septembre',
+            'October' => 'octobre',
+            'November' => 'novembre',
+            'December' => 'décembre',
+            'Monday' => 'Lundi',
+            'Tuesday' => 'Mardi',
+            'Wednesday' => 'Mercredi',
+            'Thursday' => 'Jeudi',
+            'Friday' => 'Vendredi',
+            'Saturday' => 'Samedi',
+            'Sunday' => 'Dimanche',
+        ];
+      
+        $formattedDate = \Carbon\Carbon::parse($message->date)->isoFormat('dddd D MMMM YYYY à HH:mm:ss ');
+      
+        $formattedDate = strtr($formattedDate, $englishToFrench);
+        ?>
+    
+        @if ($message->state == 'Public' || Route::currentRouteName() === 'facture.showBill')
+          @if ($message->state == 'Privé')
+            <u><b><span style="color:red;">(Privé)</span></b> {{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
+          @else
+            <u>{{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
           @endif
+    
           @if ($message->somme_payé <= 0 && $message->somme_payé != null)
-          <b >Somme payée : </b><span style="font-weight : bold" class="text-danger">{{ $message->somme_payé }} €</span><br>
+            <b>Somme payée : </b><span style="font-weight : bold" class="text-danger">{{ $message->somme_payé }} €</span><br>
           @elseif ($message->somme_payé > 0)
-            <b >Somme remboursée : </b><span style="font-weight : bold" class="text-success">{{ $message->somme_payé }} €</span><br>
-            @endif
+            <b>Somme remboursée : </b><span style="font-weight : bold" class="text-success">{{ $message->somme_payé }} €</span><br>
+          @endif
+    
           {!! html_entity_decode(nl2br(e($message->message))) !!}
-            
+    
           <hr>
-          @endforeach
-</div>
+        @endif
+      @endforeach
+    </div>
+    
+    @if (Route::currentRouteName() === 'facture.showBill')
 
 
   <div class="col-lg-12">
@@ -330,6 +337,8 @@
   @endif
   
 </div>
+
+@endif
 
 <div style="height: 25px"></div>
 </main>

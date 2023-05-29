@@ -112,7 +112,7 @@ $date = Carbon::now();
     <div class="col-sm-4" style="background-color:LightGreen; border: 2px solid grey;">
 
       <div class="col-md-12">
-    <div style="height: 305px;  overflow: scroll; ">
+    <div style="height: 334px;  overflow: scroll; ">
 <table class="table">
   <thead>
     <tr>
@@ -158,7 +158,7 @@ $date = Carbon::now();
     <div class="col-sm-4" style="background-color:MediumSeaGreen; border: 2px solid grey;">
       
     <div class="col-md-12">
-    <div style="height: 305px;  overflow: scroll; ">
+    <div style="height: 334px;  overflow: scroll; ">
 <table class="table">
   <thead>
     <tr>
@@ -207,7 +207,9 @@ $date = Carbon::now();
           <form>
             <div class="mb-3">
               <label for="date_post" class="form-label">Date de publication</label>
-              <input type="datetime-local" class="form-control" id="date_post" name="date_post" value="<?php echo date('Y-m-d\TH:i'); ?>">
+              <input type="datetime-local" style="max-height: 100px !important;" class="form-control" id="date_post" name="date_post" value="<?php echo date("Y-m-d\TH:i", strtotime($data1->date_post)) ; ?>">
+
+
             </div>
             <div class="d-flex justify-content-between align-items-center">
               <button class="btn btn-secondary" type="submit" name="valider" value="Brouillon">Brouillon</button>

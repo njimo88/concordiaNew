@@ -38,6 +38,12 @@ class generatePDF extends Controller
         $image2 = Image::make(public_path('assets/images/Page-CERFA-2.png'));
         $image2->resize(700, 1000);
 
+		$image1->text(10000+$bill->id, 600, 70, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+
         $image2->text($bill->name, 100, 86, function($font) {
             $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
@@ -158,12 +164,17 @@ class generatePDF extends Controller
         $image2 = Image::make(public_path('assets/images/Page-CERFA-2.png'));
         $image2->resize(700, 1000);
 
-        $image2->text($bill->name, 100, 86, function($font) {
+        $image->text(10000+$bill->id, 600, 70, function($font) {
             $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
             $font->color('#000000');
         });
-        
+
+        $image2->text($bill->name, 100, 86, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });   
     
         $image2->text($bill->lastname, 419, 73+13, function($font) {
             $font->file(public_path('fonts/arial.ttf'));
