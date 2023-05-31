@@ -428,7 +428,7 @@
                   </ul>
                </li>
             @endif
-            @if ( auth()->user()->roles->estAutoriserDeVoirArticles || auth()->user()->roles->estAutoriserDeRedigerArticle || auth()->user()->roles->estAutoriserDeGererSlider || auth()->user()->roles->estAutoriserDeVoirCategories)
+            @if ( auth()->user()->roles->estAutoriserDeVoirArticles || auth()->user()->roles->estAutoriserDeRedigerArticle || auth()->user()->roles->estAutoriserDeVoirCategories)
                <li class="nav-item">
                   <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#"> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Blog</span><i class="bi bi-chevron-down ms-auto"></i></a>
                   <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">

@@ -63,6 +63,7 @@
                                         </a>
                                       </p>
                                     </td>
+                                    @if (auth()->user()->roles->estautoriserDeSupprimerBlogArticle)
                                     <td>
                                       <p class="m-0" data-placement="top" data-toggle="tooltip" title="Delete">
                                         <a href="{{route('delete_blog',['id' => $data->id_blog_post_primaire])}}" onclick="return confirm('êtes-vous sûr de vouloir supprimer ce billet de blog ?');">
@@ -72,6 +73,7 @@
                                         </a>
                                       </p>
                                     </td>
+                                    @endif
                                   </tr>
                                   
     @endforeach

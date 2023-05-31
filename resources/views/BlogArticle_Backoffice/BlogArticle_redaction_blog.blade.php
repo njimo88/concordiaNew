@@ -155,7 +155,7 @@
           <hr class="mt-4 mb-3">
           <div class="row">
             <div class="col text-center">
-              <p>Publication : <?php echo date('Y-m-d\TH:i'); ?></p>
+              <p>Publication : <?php echo date('Y-m-d H:i'); ?></p>
             </div>
           </div>
         </div>

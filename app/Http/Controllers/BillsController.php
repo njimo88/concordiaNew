@@ -19,6 +19,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use App\Models\ShopReduction;
 use App\Models\LiaisonShopArticlesShopReductions;
 use App\Models\LiaisonUserShopReduction;
+use Illuminate\Support\Facades\Route;
 
 
 require_once(app_path().'/fonction.php');
@@ -416,7 +417,7 @@ class BillsController extends Controller
             ->select('old_bills.*', 'bills_status.row_color', 'bills_status.status as bill_status', 'users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country', 'users.birthdate', 'bills_payment_method.payment_method as method');
 
         $bill = $billsQuery->union($oldBillsQuery)->first();
-        if ($user->belongsToFamily($bill->family_id)) {
+        if ($user->belongsToFamily($bill->family_id) || Route::currentRouteName() === 'facture.showBill') {
         
         $shop = DB::table('liaison_shop_articles_bills')
         ->select('quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'liaison_shop_articles_bills.id_liaison')
@@ -444,7 +445,6 @@ class BillsController extends Controller
         ->orderBy('shop_messages.date', 'asc')
         ->get();
         $nb_paiment = calculerPaiements($bill->payment_total_amount,$bill->number);
-        
             return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages'))->with('user', auth()->user());
         }
 

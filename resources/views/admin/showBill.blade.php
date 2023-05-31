@@ -3,8 +3,6 @@
 @section('content')
 <main class="main" id="main"  style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height:100vh;">
 
-@if ($bill->user_id == auth()->user()->user_id)
-
 <div style="background-color: white;" class="container  justify-content-center">
     <div class="row">
         @if (session('success'))
@@ -338,7 +336,6 @@
   
 </div>
 
-@endif
 
 <div style="height: 25px"></div>
 </main>

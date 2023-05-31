@@ -60,7 +60,7 @@ class RolesController extends Controller
         $role->estAutoriserDeVoirMembres =  $request->input('estAutoriserDeVoirMembres');
         $role->estAutoriserDeVoirClickAsso =  $request->input('estAutoriserDeVoirClickAsso');
         $role->estAutoriserDeRedigerArticle =  $request->input('estAutoriserDeRedigerArticle');
-        $role->estAutoriserDeGererSlider=  $request->input('estAutoriserDeGererSlider');
+        $role->estautoriserDeSupprimerBlogArticle=  $request->input('estautoriserDeSupprimerBlogArticle');
         $role->estAutoriserDeVoirCategories=  $request->input('estAutoriserDeVoirCategories');
         $role->estAutoriserDeVoirFacture=  $request->input('estAutoriserDeVoirFacture');
         $role->estAutoriserDeVoirReduction = $request->input('estAutoriserDeVoirReduction');
@@ -124,7 +124,7 @@ class RolesController extends Controller
         $role->estAutoriserDeVoirMembres =  0;
         $role->estAutoriserDeVoirClickAsso =  0;
         $role->estAutoriserDeRedigerArticle =  0;
-        $role->estAutoriserDeGererSlider=   0;
+        $role->estautoriserDeSupprimerBlogArticle=   0;
         $role->estAutoriserDeVoirCategories=   0;
         $role->estAutoriserDeVoirFacture=   0;
         $role->estAutoriserDeVoirReduction =  0;

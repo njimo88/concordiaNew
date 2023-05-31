@@ -66,7 +66,7 @@
                                         <th scope="col">estAutoriserAVoirMembres</th>
                                         <th scope="col">estAutoriserDeVoirClickAsso</th>
                                         <th scope="col">estAutoriserDeRedigerArticle</th>
-                                        <th scope="col">estAutoriserDeGererSlider</th>
+                                        <th scope="col">estautoriserDeSupprimerBlogArticle</th>
                                         <th scope="col">estAutoriserDeVoirCategories</th>
                                         <th scope="col"> estAutoriserDeVoirFacture</th>
                                         <th scope="col"> estAutoriserDeVoirReduction</th>
@@ -119,7 +119,7 @@
                                         <td>  <input  type="number"  min="0" max="1" aria-label="First name" class="form-control small-input"  name="estAutoriserDeVoirMembres" value="{{$r->estAutoriserDeVoirMembres}}"></td>
                                         <td>  <input  type="number"  min="0" max="1" aria-label="First name" class="form-control small-input" name="estAutoriserDeVoirClickAsso" value="{{$r->estAutoriserDeVoirClickAsso}}" ></td>
                                         <td>   <input  type="number"  min="0" max="1" aria-label="First name" class="form-control small-input" name="estAutoriserDeRedigerArticle" value="{{$r->estAutoriserDeRedigerArticle}}" ></td>
-                                        <td>   <input  type="number"  min="0" max="1" aria-label="First name" class="form-control small-input" name="estAutoriserDeGererSlider" value="{{$r->estAutoriserDeGererSlider}}" ></td>
+                                        <td>   <input  type="number"  min="0" max="1" aria-label="First name" class="form-control small-input" name="estautoriserDeSupprimerBlogArticle" value="{{$r->estautoriserDeSupprimerBlogArticle}}" ></td>
                                         <td><input type="number"  min="0" max="1"  aria-label="First name" class="form-control small-input" name="estAutoriserDeVoirCategories" value="{{$r->estAutoriserDeVoirCategories}}" ></td>
                                         <td><input type="number"  min="0" max="1"  aria-label="First name" class="form-control small-input" name="estAutoriserDeVoirFacture" value="{{$r->estAutoriserDeVoirFacture}}" ></td>
                                         <td><input type="number"  min="0" max="1"  aria-label="First name" class="form-control small-input"  name="estAutoriserDeVoirReduction" value="{{$r->estAutoriserDeVoirReduction}}" ></td>

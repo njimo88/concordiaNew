@@ -17,7 +17,7 @@ class Role extends Model
         'estAutoriserDeVoirClickAsso',
         'estAutoriserDeVoirArticles',
         'estAutoriserDeRedigerArticle',
-        'estAutoriserDeGererSlider',
+        'estautoriserDeSupprimerBlogArticle',
         'estAutoriserDeVoirCategories',
         'estAutoriserDeVoirFacture',
         'estAutoriserDeVoirReduction',
