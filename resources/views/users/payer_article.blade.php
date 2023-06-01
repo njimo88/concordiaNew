@@ -28,7 +28,7 @@
         @foreach ($paniers as $article)
         <div class="row d-flex justify-content-between align-items-center mb-2">
           <div class="col-12 col-sm-3 d-flex justify-content-start">
-            <span style="font-weight:bold" class="text-dark">{{ $article->lastname }}{{ $article->name }}</span>
+            <span style="font-weight:bold" class="text-dark">{{ $article->lastname }} {{ $article->name }}</span>
           </div>
           <div class="col-12 col-sm-5 d-flex justify-content-start">
             <span>{{ $article->title }}
@@ -59,41 +59,65 @@
             <h5 style="font-weight:bold"  class="text-dark font-weight-bold p-3">Moyens de paiement :</h5>
 
             @foreach ($Mpaiement as $Mpaiement)
-            @if ($Mpaiement->payment_method == 'Carte Bancaire')
-            @else
-                <div  class="col-md-5  row mx-2 d-flex justify-content-center mb-5">
-                    <div style="background-color:#edeeef;" class="col-7 d-flex justify-content-center m-2 p-1 border">
-                        <img style="width : 30px" src="{{ $Mpaiement->image}}" alt=""><h5 class="mx-3">{{ $Mpaiement->payment_method}}</h5>
+                @if ($Mpaiement->payment_method == 'Mixte')
+                 @elseif ($Mpaiement->payment_method == 'Virement' && $total < 800)
+                @else
+                    <div class="col-md-5  row mx-2 d-flex justify-content-center mb-5">
+                        <div style="background-color:#edeeef;" class="col-7 d-flex justify-content-center m-2 p-1 border">
+                            <img style="width : 30px" src="{{ $Mpaiement->icon}}" alt=""><h5 class="mx-3">{{ $Mpaiement->payment_method}}</h5>
+                        </div>
+                        <div class="col-11 d-flex justify-content-center m-2">
+                          @if ($Mpaiement->payment_method == 'Carte Bancaire')
+                          <a type="button" href="{{ route('payment_form', ['user_id' => $article->user_id, 'total' => $total]) }}"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
+                        @else
+                            <a type="button"  data-toggle="modal" data-target="#{{ $Mpaiement->payment_method }}" href="#"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
+                        @endif
+                        </div>
                     </div>
-                    <div class="col-11 d-flex justify-content-center m-2">
-                      @if ($Mpaiement->payment_method == 'Carte Bancaire')
-                <a type="button" href="/payment_form"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
-            @else
-            <a type="button"  data-toggle="modal" data-target="#{{ $Mpaiement->payment_method }}" href="#"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
-
-            @endif
-                    </div>
-
-                </div>
                 @endif
             @endforeach
+
             <!-- Modal -->
             <div class="modal fade" id="Espèces" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+              <div class="modal-dialog modal-dialog-centered" role="document">
                   <div class="modal-content p-2">
-                    <div class="modal-header">
-                      <h5 style="font-weight:bold" class="modal-title" id="exampleModalLabel">Payement par espèces</h5>
-                      <a type="button"  data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </a>
+                      <div class="modal-header bg-primary text-white">
+                          <h5 class="modal-title font-weight-bold" id="exampleModalLabel">Paiement en Espèces</h5>
+                          <a type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </a>
+                      </div>
+                      <div class="modal-body">
+                         {!! $Espece->text !!}
+                          <a href="{{ route('detail_paiement', ['id' => 3, 'nombre_cheques' => 1]) }}" class="btn btn-primary mr-2">Valider ma commande</a>
+                          <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="modal fade" id="Bons" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content p-2">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title font-weight-bold" id="exampleModalLabel">Paiement par Bons</h5>
+                        <a type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </a>
                     </div>
                     <div class="modal-body">
-                        <a href="{{ route('detail_paiement', ['id' => 3, 'nombre_cheques' => 1]) }}" class="btn btn-primary">Valider ma commande</a>
+                      {!! $Bons->text !!}
+                        
+                        <a href="{{ route('detail_paiement', ['id' => 5, 'nombre_cheques' => 1]) }}" class="btn btn-primary mr-2">Valider ma commande</a>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
                     </div>
-                    
-                  </div>
                 </div>
-              </div>
+            </div>
+        </div>
+        
+          
+          
+          
 
               
               <div class="modal fade" id="Chèques" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -106,23 +130,10 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                        <p>Frais : 1 € / chèque</p>
-                        <p>En cas de paiement en plusieurs fois :</p>
-                        <ul>
-                            <li>20% immédiat</li>
-                            <li>80% fractionnable</li>
-                        </ul>
-                        <div class="form-group mb-4">
-                            <label for="nombre_cheques">Nombre de chèques:</label>
-                            <select class="form-control selectpicker" id="nombre_cheques" data-style="btn-danger" data-width="auto">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                        </div>
+                      {!! $Cheques->text !!}
+                        
                         <a href="#" class="btn btn-primary" id="valider_commande">Valider ma commande</a>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
                         <script>
                             // Lorsque l'utilisateur clique sur le bouton "Valider ma commande"
                             document.getElementById('valider_commande').addEventListener('click', function(event) {
@@ -140,47 +151,35 @@
 
 
                 <div class="modal fade" id="Virement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
                       <div class="modal-content p-2">
-                        <div class="modal-header">
-                          <h5 style="font-weight:bold" class="modal-title" id="exampleModalLabel">Paiement par prélèvement</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          <p>Frais : 0 € / prélèvement</p>
-                          <p>En cas de paiement en plusieurs fois :</p>
-                          <ul>
-                            <li>20% immédiat</li>
-                            <li>80% fractionnable</li>
-                          </ul>
-                          <div class="form-group mb-4">
-                            <label for="nombre_virment">Nombre de virements:</label>
-                            <select class="form-control selectpicker" id="nombre_virment" data-style="btn-danger" data-width="auto">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                            </select>
-                        </div>
-                        <a href="#" class="btn btn-primary" id="valider_virment">Valider ma commande</a>
-                        <script>
-                            // Lorsque l'utilisateur clique sur le bouton "Valider ma commande"
-                            document.getElementById('valider_virment').addEventListener('click', function(event) {
-                                event.preventDefault(); // Empêcher le comportement par défaut du lien
-                                var nombre_virment = document.getElementById('nombre_virment').value; // Récupérer la valeur sélectionnée
-                                var url = '{{ route('detail_paiement', ['id' => 6, 'nombre_cheques' => ':nombre_virment']) }}';
-                                url = url.replace(':nombre_virment', nombre_virment); // Remplacer la valeur de la variable dans l'URL
-                                window.location.href = url; // Rediriger vers la page detail_paiement avec le nombre de chèques sélectionné
-                            });
-                        </script>
-                        </div>
-                       
+                          <div class="modal-header bg-primary text-white">
+                              <h5 class="modal-title font-weight-bold" id="exampleModalLabel">Virement Bancaire</h5>
+                              <a type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </a>
+                          </div>
+                          <div class="modal-body">
+                            {!! $Virement->text !!}
+                              
+                              <a href="#" class="btn btn-primary mr-2" id="valider_virment">Valider ma commande</a>
+                              <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                              <script>
+                                  document.getElementById('valider_virment').addEventListener('click', function(event) {
+                                      event.preventDefault();
+                                      var nombre_virment = document.getElementById('nombre_virment').value;
+                                      var url = '{{ route('detail_paiement', ['id' => 6, 'nombre_cheques' => ':nombre_virment']) }}';
+                                      url = url.replace(':nombre_virment', nombre_virment);
+                                      window.location.href = url;
+                                  });
+                              </script>
+                          </div>
                       </div>
-                    </div>
-                </div>
+                  </div>
+              </div>
+              
+              
+              
 
             </div>
               

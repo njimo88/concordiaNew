@@ -31,8 +31,12 @@ class UsersController extends Controller
 
     
     
-    public function showForm()
-    {
+    public function showForm(Request $request)
+{
+    $userId = $request->get('user_id');
+    $total = $request->get('total');
+    $user = User::find($userId);
+
         $client = new Client();
 
         $username = env('API_USERNAME');
@@ -47,11 +51,11 @@ class UsersController extends Controller
         $response = $client->post('https://api.scelliuspaiement.labanquepostale.fr/api-payment/V4/Charge/CreatePayment', [
             'headers' => $headers,
             'json' => [
-                "amount" => 100,
+                "amount" => $total*100,
                 "currency" => "EUR",
-                "orderId" => "myOrderId-999999",
+                "orderId" => "myOrderId-" . uniqid(),
                 "customer" => [
-                    "email" => "sample@example.com"
+                    "email" => utf8_encode($user->email),
                 ]
             ]
         ]);
@@ -142,20 +146,13 @@ public function uploadProfileImage(Request $request)
     ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
     ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
     ->leftJoin('shop_article_2', 'shop_article_2.id_shop_article', '=', 'basket.ref')
-    ->where('basket.user_id', '=',auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id','shop_article_2.declinaison','basket.declinaison',
-             'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 
-             'shop_article.image', 'basket.prix', 'shop_article.ref', 
-             'users.name', 'users.lastname', 'basket.reduction')
+    ->where('basket.user_id', '=', auth()->user()->user_id)
+    ->groupBy('basket.pour_user_id', 'shop_article_2.declinaison', 'basket.declinaison', 'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
     ->orderBy('basket.pour_user_id')
     ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 
-             'shop_article.title', 'shop_article.image', 'basket.prix', 
-             'shop_article.ref as reff', 'users.name', 'users.lastname', 
-             DB::raw('SUM(basket.qte) as total_qte'),
-             DB::raw("JSON_UNQUOTE(JSON_EXTRACT(shop_article_2.declinaison, CONCAT('$[', basket.declinaison-1, '].', basket.declinaison, '.libelle'))) as declinaison_libelle"),
-             'basket.reduction')
+    ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'), DB::raw("JSON_UNQUOTE(JSON_EXTRACT(shop_article_2.declinaison, '$[0].libelle')) as declinaison_libelle"), 'basket.reduction')
     ->get();
+
         $total = 0;
         foreach ($paniers as $panier) {
             $total += $panier->total_qte * $panier->prix;
@@ -225,18 +222,32 @@ public function detail_paiement($id,$nombre_cheques)
     $bill->type = "facture";
     $bill->number = $nombre_cheques;
     $bill->payment_method = $id;
+    
+
     if ($id == 3){
         $bill->status = 32;
+    $text = DB::table('bills_payment_method')->where('payment_method', 'Espèces')->first();
+
     }elseif ($id == 2){
         $bill->status = 38;
+        $text = DB::table('bills_payment_method')->where('payment_method', 'Mixte')->first();
     }elseif($id == 4){
+    $text = DB::table('bills_payment_method')->where('payment_method', 'Chèques')->first();
+
         $bill->status = 30;
     }elseif ($id == 5){
         $bill->status = 34;
+    $text = DB::table('bills_payment_method')->where('payment_method', 'Bons')->first();
+
     }elseif ($id == 6){
         $bill->status = 36;
+    $text = DB::table('bills_payment_method')->where('payment_method', 'Virement')->first();
+
     }elseif ($id == 1){
-        $bill->status = 100;    }
+        $bill->status = 100; 
+        $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
+    }
+
     $bill->payment_total_amount = $total;
     $bill->family_id = auth()->user()->family_id;
     $bill->ref = "0";
@@ -254,7 +265,7 @@ public function detail_paiement($id,$nombre_cheques)
     $userName = 'Gym Concordia [Bureau]';
     $message = "Votre facture n°{$bill->id} a été créée avec succès.";
     $userEmail = "webmaster@gym-concordia.com";
-    envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill);
+    envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill, $text);
     
     // Ajouter des lignes dans la table de liaison
     foreach ($paniers as $panier) {
@@ -274,7 +285,7 @@ public function detail_paiement($id,$nombre_cheques)
 
     DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
     MiseAjourStock();
-    return view('users.detail_paiement', compact('paniers','total','payment','nb_paiment','bill'))->with('user', auth()->user());
+    return view('users.detail_paiement', compact('paniers','total','payment','nb_paiment','bill','text'))->with('user', auth()->user());
 }
 
     }
@@ -333,12 +344,15 @@ foreach ($paniers as $panier) {
             $unavailable_articles[] = $shop->title;
         }
     }
-
+    $Espece = DB::table('bills_payment_method')->where('payment_method', 'Espèces')->first();
+    $Bons = DB::table('bills_payment_method')->where('payment_method', 'Bons')->first();
+    $Cheques = DB::table('bills_payment_method')->where('payment_method', 'Chèques')->first();
+    $Virement = DB::table('bills_payment_method')->where('payment_method', 'Virement')->first();
     if (!$can_purchase) {
         $error_msg = "Les articles suivants ne peuvent pas être achetés: " . implode(', ', $unavailable_articles);
         return redirect()->back()->withErrors([$error_msg]);
     }else{
-        return view('users.payer_article', compact('paniers','total','adresse','Mpaiement'))->with('user', auth()->user());
+        return view('users.payer_article', compact('paniers','total','adresse','Mpaiement','Espece','Bons','Cheques','Virement'))->with('user', auth()->user());
     }
 
     }
@@ -532,7 +546,7 @@ $bill = DB::table('bills')
         ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
         ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
         ->where('old_bills.user_id', $user->user_id)
-        ->select('old_bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.image as image')
+        ->select('old_bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.icon as image')
     )->orderBy('date_bill', 'desc')
     ->get();
     

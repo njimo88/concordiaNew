@@ -114,7 +114,7 @@
                                             @endif
                                         </td>
                                         <td style="font-weight : bold;">{{ $bills->name}} {{ $bills->lastname}}</td> 
-                                        <td><img style="height: 30px" src="{{ $bills->image}}" alt="">
+                                        <td><img style="height: 30px" src="{{ $bills->icon}}" alt="">
                                             <span style="display: none;">{{ $bills->payment_method}}</span>
                                         </td>
                                           

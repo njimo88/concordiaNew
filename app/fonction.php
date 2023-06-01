@@ -1359,7 +1359,7 @@ function applyFamilyDiscount()
 
 
     
-function envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill){
+function envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill,$text){
 
    
     // Set the SMTP credentials dynamically
@@ -1373,7 +1373,7 @@ $config = [
     'password' => "mickmickmath&67_mickmickmath&67"
 ];
 
-    Mail::mailer('smtp')->to($receiverEmail)->send(new BillInfoMail($userEmail, $message, $userName, $paniers, $total, $nb_paiment, $payment, $bill));
+    Mail::mailer('smtp')->to($receiverEmail)->send(new BillInfoMail($userEmail, $message, $userName, $paniers, $total, $nb_paiment, $payment, $bill,$text));
     
 }
 
@@ -1387,13 +1387,14 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
     public $total;
     public $nb_paiment;
     public $payment;
+    public $text;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($userEmail, $message, $userName, $paniers, $total, $nb_paiment, $payment, $bill)
+    public function __construct($userEmail, $message, $userName, $paniers, $total, $nb_paiment, $payment, $bill ,$text)
     {
         $this->userEmail = $userEmail;
         $this->message = $message;
@@ -1403,6 +1404,7 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
         $this->nb_paiment = $nb_paiment;
         $this->payment = $payment;
         $this->bill = $bill;
+        $this->text = $text;
     }
 
     /**
@@ -1426,6 +1428,7 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
                         'nb_paiment' => $this->nb_paiment,
                         'payment' => $this->payment,
                         'bill' => $this->bill,
+                        'text' => $this->text,
                             ]);
 
     }

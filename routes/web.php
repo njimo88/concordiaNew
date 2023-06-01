@@ -48,6 +48,7 @@ Route::get('/test', function () {
 
 });
 
+
 Route::get('/passwordd', [App\Http\Controllers\UsersController::class, 'passwordd']);
 
 Auth::routes();

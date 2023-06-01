@@ -79,6 +79,7 @@
                 Nous avons bien enregistré votre commande #{{ $bill->ref }} du @php english()@endphp  (NB : Celle-ci ne sera validée qu'à la réception de votre paiement).<br><br>
                 Vous avez choisi de régler votre commande par {{ $payment }}, merci de nous transmettre votre règlement :<br>
                 &nbsp;&nbsp;&nbsp;&nbsp;- D'un montant total de <b>{{ number_format($total, 2, ',', ' ') }} €</b> &nbsp;&nbsp;&nbsp;&nbsp;        <br>&nbsp;&nbsp;&nbsp;&nbsp;- A l'ordre de <b>"Gym Concordia"</b><br><br>Mode de paiement : <b>{{ $payment }}</b><br>En cas d'envoi, merci de le transmettre à cette adresse : <b>Trésorier Gym Concordia - 30, Rue de gambsheim - 67300 Schiltigheim</b><br><br>
+                {!! $text->text !!}
                 <fieldset class="large-8 left">
                     <legend>Dates d'Encaissements</legend>
                     <?php
@@ -111,6 +112,7 @@
     $i++;
 }
                     ?>
+                    
                 </fieldset>
                 
                 

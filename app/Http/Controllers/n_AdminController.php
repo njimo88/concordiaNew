@@ -24,6 +24,9 @@ require_once(app_path().'/fonction.php');
 
 class n_AdminController extends Controller
 {
+
+   
+
     public function index()
 
     {
@@ -142,7 +145,7 @@ class n_AdminController extends Controller
         'username' => 'nullable|string|max:255',
         'name' => ['required', 'alpha', 'max:255'],
         'lastname' => ['required', 'alpha', 'max:255'],
-        'email' => [ 'nullable','string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')],
+        'email' => [ 'nullable','string', 'email', 'max:255'],
         'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
         'profession' => 'string|max:191',
         'birthdate' => 'required|date|before:today',

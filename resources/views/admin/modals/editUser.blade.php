@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 <div class="col-md-9 border-right">
-                    <div class="p-3 py-5">
+                    <div class="p-3 pb-5">
                         <div class="row">
                             <div class="col-md-6 mt-2">
                                 <h4 class="text-right mt-3">Paramètres du Profil</h4>
@@ -269,7 +269,7 @@
                         </div>
                         @if(auth()->user()->role >= $n_users->role || auth()->user()->user_id == $n_users->user_id)
                         
-                            <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Sauver Profil</button></div>
+                            <div class="mt-3 text-end"><button class="btn btn-dark profile-button" type="submit">Sauver Profil</button></div>
                         @endif
                     </div>
                 </div>

@@ -41,7 +41,7 @@ class BillsController extends Controller
     ->join('users', 'bills.user_id', '=', 'users.user_id')
     ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
     ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-    ->select('bills.*', 'bills.status as bill_status', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status','bills_status.row_color')
+    ->select('bills.*', 'bills.status as bill_status', 'bills_payment_method.icon','users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status','bills_status.row_color')
     ->orderBy('bills.date_bill', 'desc')
     ->get();
 
