@@ -47,7 +47,7 @@ class UsersController extends Controller
         $response = $client->post('https://api.scelliuspaiement.labanquepostale.fr/api-payment/V4/Charge/CreatePayment', [
             'headers' => $headers,
             'json' => [
-                "amount" => 990,
+                "amount" => 100,
                 "currency" => "EUR",
                 "orderId" => "myOrderId-999999",
                 "customer" => [

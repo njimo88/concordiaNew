@@ -210,35 +210,45 @@ function retourner_buyers_dun_shop_article($id_shop_article) {
 
 
 //fonctions pour afficher les dates
-function fetchDayy($date){
+function fetchDayy($date) {
+    $lejour = (new DateTime($date))->format('l');
+    $mois = (new DateTime($date))->format('F');
 
-    $lejour = ( new DateTime($date) )->format('l');
+    $jour_semaine = array(
+        "lundi" => "Monday",
+        "mardi" => "Tuesday",
+        "mercredi" => "Wednesday",
+        "jeudi" => "Thursday",
+        "vendredi" => "Friday",
+        "samedi" => "Saturday",
+        "dimanche" => "Sunday"
+    );
 
-  $jour_semaine = array(
-"lundi" => "Monday",
-"Mardi" => "Tuesday",
-"Mercredi" => "Wednesday",
-"Jeudi" => "Thursday",
-"Vendredi" => "Friday",
-"Samedi" => "Saturday",
-"Dimanche" => "Sunday"
+    $mois_fr = array(
+        "janvier" => "January",
+        "février" => "February",
+        "mars" => "March",
+        "avril" => "April",
+        "mai" => "May",
+        "juin" => "June",
+        "juillet" => "July",
+        "août" => "August",
+        "septembre" => "September",
+        "octobre" => "October",
+        "novembre" => "November",
+        "décembre" => "December",
+    );
 
-  );
+    $jour_semaine_fr = array_flip($jour_semaine);
+    $mois_fr = array_flip($mois_fr);
 
-        
-        foreach ($jour_semaine as $key => $value){
+    if (isset($jour_semaine_fr[$lejour]) && isset($mois_fr[$mois])) {
+        return ucfirst($jour_semaine_fr[$lejour]) . ' ' . $mois_fr[$mois];
+    }
 
-            if ($value == $lejour) {
-                    return $key ;
-            }
-
-        }
-  
-
-
-
-
+    return '';
 }
+
 
 
 // recuperer l'ID de user et la saison et restituer les shop articles achetes

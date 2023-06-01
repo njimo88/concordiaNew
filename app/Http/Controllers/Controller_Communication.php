@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Mail\Message;
+use Illuminate\Support\Str;
 
 require_once(app_path().'/fonction.php');
 
@@ -75,9 +76,34 @@ public function sendEmails(Request $request)
     $subject = $request->input('subject');
     $content = $request->input('content');
 
+    $authUser = Auth::user();
+    $fromEmail = config('mail.from.address');
+    $fromName = config('mail.from.name');
+    $senderName = $authUser->lastname . ' ' . $authUser->name;
+
+    if (Str::endsWith($authUser->email, '@gym-concordia.com')) {
+        $fromEmail = $authUser->email;
+        $fromName = ' Gym Concordia ['.$authUser->lastname . ' ' . $authUser->name.']';
+    }
+
+    if ($authUser->username == 'eferandel') {
+        $fromEmail = 'president@gym-concordia.com';
+        $fromName = 'Gym Concordia [Président]';
+        $senderName = 'Elric Ferandel - Président';
+    } else if ($authUser->username == 'mferandel') {
+        $fromEmail = 'tresorier@gym-concordia.com';
+        $fromName = ' Gym Concordia [Trésorier]';
+        $senderName = 'Michel Ferandel - Trésorier';
+    }
+
     foreach($emails as $email) {
-        Mail::send('emails.template', ['content' => $content], function ($message) use ($email, $subject) {
-            $message->from(config('mail.from.address'), config('mail.from.name'));
+        $user = User::where('email', $email)->first();
+    
+        $firstName = $user->name;
+        $lastName = $user->lastname;
+
+        Mail::send('emails.communicationTemplate', ['firstName' => $firstName, 'lastName' => $lastName, 'content' => $content, 'senderName' => $senderName], function ($message) use ($email, $subject, $fromEmail, $fromName) {
+            $message->from($fromEmail, $fromName);
             $message->to($email);
             $message->subject($subject);
         });
@@ -104,8 +130,13 @@ public function sendEmails(Request $request)
         $message->to($authUser->email);
         $message->subject($subject);
     });
-    
-   
+    dd($authUser->email);
+    Mail::send('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'group' => $group, 'destinataires' => $destinataires], function ($message) use ($authUser, $subject, $securityEmail) {
+        $message->from(config('mail.from.address'), config('mail.from.name'));
+        $message->to($securityEmail);
+        $message->subject($subject);
+    });
+
     
 
     return response()->json(['message' => 'Emails envoyés avec succès.']);
