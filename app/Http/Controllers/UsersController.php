@@ -266,7 +266,17 @@ public function detail_paiement($id,$nombre_cheques)
     $message = "Votre facture n°{$bill->id} a été créée avec succès.";
     $userEmail = "webmaster@gym-concordia.com";
     envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill, $text);
+
+    // envoi du mail Paiement Accepté
+    if ($bill->status == 100) {
+        Mail::send('emails.order_accepted', ['user' => $user, 'bill' => $bill], function ($message) use ($receiverEmail, $orderNumber) {
+            $message->from(config('mail.from.address'), config('mail.from.name'));
+            $message->to($receiverEmail);
+            $message->subject("Paiement accepté - Commande : " . $bill->ref);
+        });
+    }
     
+
     // Ajouter des lignes dans la table de liaison
     foreach ($paniers as $panier) {
         $liaison = new liaison_shop_articles_bills;

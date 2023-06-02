@@ -109,15 +109,15 @@ public function sendEmails(Request $request)
         });
     }
 
-    // Save the record to mail_history
-    $mail_history = new MailHistory;
-    $mail_history->id_user_expediteur = Auth::id(); 
-    $mail_history->title = $subject;
-    $mail_history->message = $content;
-    $mail_history->link_pj = null; 
-    $mail_history->date = now();
-    $mail_history->id_user_destinataires = json_encode($emails); 
-    $mail_history->save();
+   // Save the record to mail_history
+   $mail_history = new MailHistory;
+   $mail_history->id_user_expediteur = Auth::id(); 
+   $mail_history->title = $subject;
+   $mail_history->message = $content;
+   $mail_history->link_pj = null; 
+   $mail_history->date = now();
+   $mail_history->id_user_destinataires = json_encode(array_values($emails)); 
+   $mail_history->save();
 
     $authUser = Auth::user();
     $securityEmail = 'security@gym-concordia.com';

@@ -236,51 +236,67 @@
 
     const sendButton = document.getElementById('send-button');
 
-sendButton.addEventListener('click', function (event) {
+    sendButton.addEventListener('click', function (event) {
     event.preventDefault();
 
-    // Get the IDs of the selected users
+    
     const selectedUserIds = Array.from(selectedUsers.querySelectorAll('a.list-group-item')).map(user => user.dataset.id);
+    
+   
+    if (selectedUserIds.length === 0) {
+        alert("Aucun utilisateur sélectionné");
+        return;  
+    }
+    
     // Get the email subject and content from the form inputs
     const selectedGroup = document.querySelector('#shop-articles option:checked').textContent;
     const subject = document.querySelector('textarea[name="titre"]').value;
     const content = CKEDITOR.instances.ckeditor.getData();
 
-    // Request the emails of the selected users from the server
-    fetch('/get-emails', {
-    method: 'POST',
-    headers: {
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-        userIds: selectedUserIds
-    })
-})
+    
+    if (subject.trim() === "") {
+        alert("Le titre est vide");
+        return;  
+    }
 
+    if (content.trim() === "") {
+        alert("Le contenu est vide");
+        return;  
+    }
+
+    
+    fetch('/get-emails', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userIds: selectedUserIds
+        })
+    })
     .then(response => response.json())
     .then(emails => {
-      fetch('/send-emails', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-    },
-    body: JSON.stringify({
-        emails: emails,
-        subject: subject,
-        content: content,
-        group: selectedGroup
-    })
-})
-.then(response => response.json())
-.then(data => {
-    alert(data.message);
-});
-
-
+        fetch('/send-emails', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify({
+                emails: emails,
+                subject: subject,
+                content: content,
+                group: selectedGroup
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+        });
     });
 });
+
 
 });
 </script>

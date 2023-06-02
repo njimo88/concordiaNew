@@ -23,7 +23,6 @@ class A_Blog_Post extends Model
         'categorie1',
         'categorie2',
         'status',
-        'post_url Index',
         'id_user',
         'id_last_editor',
         'highlighted',

@@ -1,6 +1,50 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 @include('layouts.adminheader')
+<style>
+#logout-button {
+    position: relative; /* Make sure the ::after pseudo-element is positioned relative to this element */
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #654321;
+    transition: all 0.5s;
+}
+
+#logout-icon {
+    max-width: 100%;
+    height: auto;
+    transform-origin: 50% 100%; 
+}
+
+#logout-button:hover #logout-icon {
+    animation: wave 0.7s infinite;
+}
+
+
+#logout-button::after {
+    content: attr(data-text);
+    position: absolute;
+    opacity: 0; 
+    transition: opacity 0.5s;
+    bottom: -20px; 
+    color: black; 
+}
+
+#logout-button:hover::after {
+    opacity: 1; /* Show the text on hover */
+}
+
+
+@keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-30deg); }
+}
+
+
+</style>
 <body>
 
    <div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -395,6 +439,16 @@
         <nav class="header-nav ms-auto">
            <ul class="d-flex align-items-center">
               <li class="nav-item dropdown pe-3">
+                <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();" class="rounded-circle" id="logout-button" data-text="Déconnexion">
+                  <img src="{{ asset('assets/images/goodbye.png') }}" alt="" id="logout-icon">
+              </a>
+              <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+              </form>
+              </li>
+              <li class="nav-item dropdown pe-3">
+                
+              
                  <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                   @if(auth()->user()->image)
                      <img class="rounded-circle" src="{{  auth()->user()->image }}" >
