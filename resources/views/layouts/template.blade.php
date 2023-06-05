@@ -562,7 +562,7 @@
                   <a class="nav-link collapsed" data-bs-target="#para-nav" data-bs-toggle="collapse" href="#"><span style="color: #f5f503; margin-right:10px" class="fa fa-screwdriver-wrench fa-fw mr-2 gc-yellow"></span><span>Paramètres</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="para-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if (auth()->user()->roles->estAutoriserDeVoirGestionDesDroits)<li> <a href="{{  route('index_roles') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-user-check fa-fw mr-1"></span><span>Gestion des droits</span> </a></li>@endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirParametresGeneraux)<li> <a href="pro-apexclub.html"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Paramètres</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirParametresGeneraux)<li> <a href="{{ route('parametres') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Paramètres</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirSalles)<li> <a href="{{ route('index_salle') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Salles</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirMessageGeneral)               <li> <a href="club-apexclub.html"><i style="color: #f5f503;" class="fa-regular fa-message"></i></span><span>Message Général</span> </a></li>@endif
                   </ul>

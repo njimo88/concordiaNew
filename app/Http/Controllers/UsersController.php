@@ -20,6 +20,7 @@ use App\Models\SystemSetting;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Mail;
 
 require_once(app_path().'/fonction.php');
 
@@ -269,7 +270,10 @@ public function detail_paiement($id,$nombre_cheques)
 
     // envoi du mail Paiement Accepté
     if ($bill->status == 100) {
-        Mail::send('emails.order_accepted', ['user' => $user, 'bill' => $bill], function ($message) use ($receiverEmail, $orderNumber) {
+        $generatePDFController = new generatePDF();  
+        $pdfPath = $generatePDFController->generatePDFreduction_FiscaleOutput($bill->id);
+        dd($pdfPath);
+        Mail::send('emails.order_accepted', ['user' => $user, 'bill' => $bill], function ($message) use ($receiverEmail, $pdfPath,$bill) {
             $message->from(config('mail.from.address'), config('mail.from.name'));
             $message->to($receiverEmail);
             $message->subject("Paiement accepté - Commande : " . $bill->ref);
@@ -310,6 +314,10 @@ public function detail_paiement($id,$nombre_cheques)
   public function payer_article(){
 
     $Mpaiement = DB::table('bills_payment_method')->get();
+    $order = [1,3,5,4,6,2];
+    $Mpaiement = $Mpaiement->sortBy(function($item) use ($order) {
+        return array_search($item->id, $order);
+    });
     $user_id = auth()->user()->user_id;
     $adresse = DB::table('users')
             ->select('address', 'zip', 'city', 'country')

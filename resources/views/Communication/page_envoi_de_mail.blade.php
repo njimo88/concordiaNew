@@ -50,6 +50,34 @@
   }
 </style>
 <main class="main" id="main">
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="userModalLabel">Erreur</h5>
+            </div>
+            <div class="modal-body" id="userModalBody">
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal -->
+<div class="modal fade" id="responseModal" tabindex="-1" role="dialog" aria-labelledby="responseModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="responseModalLabel">Message</h5>
+        </div>
+        <div class="modal-body" id="responseModalBody">
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+      
   <div class="container">
       <div class="row justify-content-center">
           <div class="col-12">
@@ -60,7 +88,7 @@
                     <form class="row">
                       <div class="card-header d-flex justify-content-between">
                         <h3>Envoyer un e-mail</h3>
-                        <button id="send-button" type="submit" class="btn btn-primary">Envoyer</button>
+                        <button id="send-button" type="submit" class="btn btn-primary">Envoyer<span id="loading-icon" style="display: none;"><i class="fa fa-spinner fa-spin"></i></span></button>
                       </div>
                       <div class="form-group col-4">
                         <label for="saison">Saison :</label>
@@ -239,12 +267,14 @@
     sendButton.addEventListener('click', function (event) {
     event.preventDefault();
 
+    const loadingIcon = document.getElementById('loading-icon');
     
+
     const selectedUserIds = Array.from(selectedUsers.querySelectorAll('a.list-group-item')).map(user => user.dataset.id);
-    
    
     if (selectedUserIds.length === 0) {
-        alert("Aucun utilisateur sélectionné");
+        document.getElementById('userModalBody').innerText = "Aucun utilisateur sélectionné";
+        $('#userModal').modal('show');
         return;  
     }
     
@@ -255,15 +285,19 @@
 
     
     if (subject.trim() === "") {
-        alert("Le titre est vide");
+        document.getElementById('userModalBody').innerText = "Le titre est vide";
+        $('#userModal').modal('show');
         return;  
     }
 
     if (content.trim() === "") {
-        alert("Le contenu est vide");
+        document.getElementById('userModalBody').innerText = "Le contenu est vide";
+        $('#userModal').modal('show');
         return;  
     }
 
+    sendButton.disabled = true;
+    loadingIcon.style.display = '';
     
     fetch('/get-emails', {
         method: 'POST',
@@ -292,7 +326,15 @@
         })
         .then(response => response.json())
         .then(data => {
-            alert(data.message);
+            const responseModal = document.getElementById('responseModal');
+            const responseModalBody = document.getElementById('responseModalBody');
+
+            responseModalBody.textContent = data.message;
+
+            $(responseModal).modal('show');
+
+            sendButton.disabled = false;
+            loadingIcon.style.display = 'none';
         });
     });
 });

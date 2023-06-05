@@ -501,6 +501,7 @@ use Illuminate\Support\Facades\Route;
                 </form>
               </ul>
             </li>
+            
             @php
                 $paniers = DB::table('basket')
                             ->select('basket.id')

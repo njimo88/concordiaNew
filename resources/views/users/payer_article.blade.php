@@ -64,9 +64,10 @@
                 @else
                     <div class="col-md-5  row mx-2 d-flex justify-content-center mb-5">
                         <div style="background-color:#edeeef;" class="col-7 d-flex justify-content-center m-2 p-1 border">
-                            <img style="width : 30px" src="{{ $Mpaiement->icon}}" alt=""><h5 class="mx-3">{{ $Mpaiement->payment_method}}</h5>
+                            <img style="width : 30px;height:30px;" src="{{ $Mpaiement->icon}}" alt=""><h5 class="mx-3">{{ $Mpaiement->payment_method}}</h5>
                         </div>
-                        <div class="col-11 d-flex justify-content-center m-2">
+                        <div style="    min-height: 204px;
+                        " class="col-11 d-flex justify-content-center m-2 align-items-center">
                           @if ($Mpaiement->payment_method == 'Carte Bancaire')
                           <a type="button" href="{{ route('payment_form', ['user_id' => $article->user_id, 'total' => $total]) }}"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
                         @else
@@ -120,34 +121,64 @@
           
 
               
-              <div class="modal fade" id="Chèques" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content p-2">
-                    <div class="modal-header">
-                      <h5 style="font-weight:bold" class="modal-title" id="exampleModalLabel">Paiement par chèque</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
+        <div class="modal fade" id="Chèques" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content p-2">
+                  <div class="modal-header bg-primary text-white">
+                      <h5 class="modal-title font-weight-bold" id="exampleModalLabel">Paiement par Chèques</h5>
+                      <a type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </a>
+                  </div>
+                  <div class="modal-body">
                       {!! $Cheques->text !!}
-                        
-                        <a href="#" class="btn btn-primary" id="valider_commande">Valider ma commande</a>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
-                        <script>
-                            // Lorsque l'utilisateur clique sur le bouton "Valider ma commande"
-                            document.getElementById('valider_commande').addEventListener('click', function(event) {
-                                event.preventDefault(); // Empêcher le comportement par défaut du lien
-                                var nombre_cheques = document.getElementById('nombre_cheques').value; // Récupérer la valeur sélectionnée
-                                var url = '{{ route('detail_paiement', ['id' => 4, 'nombre_cheques' => ':nombre_cheques']) }}';
-                                url = url.replace(':nombre_cheques', nombre_cheques); // Remplacer la valeur de la variable dans l'URL
-                                window.location.href = url; // Rediriger vers la page detail_paiement avec le nombre de chèques sélectionné
-                            });
-                        </script>
-                    </div>
+                      <p class="mt-4">Veuillez sélectionner le nombre de paiements que vous souhaitez effectuer :</p>
+                      <div class="form-group mb-3">
+                          <select class="form-control selectpicker" id="nombre_cheques" data-style="btn-dark" data-width="auto"></select>
+                      </div>
+                      <a href="#" class="btn btn-primary mr-2" id="valider_commande">Valider ma commande</a>
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
                   </div>
-                  </div>
-                </div>
+              </div>
+          </div>
+      </div> 
+      
+      
+      <script>
+          var total = {{ $total }}; // Mettre ici la valeur du total
+          var nombre_cheques = document.getElementById('nombre_cheques');
+      
+          var maxPayments;
+          if (total < 50) {
+              maxPayments = 1;
+          } else if (total < 100) {
+              maxPayments = 2;
+          } else if (total < 150) {
+              maxPayments = 3;
+          } else if (total < 200) {
+              maxPayments = 4;
+          } else {
+              maxPayments = 5;
+          }
+      
+          for (var i = 1; i <= maxPayments; i++) {
+              var option = document.createElement('option');
+              option.value = i;
+              option.text = i;
+              nombre_cheques.add(option);
+          }
+      
+          // Lorsque l'utilisateur clique sur le bouton "Valider ma commande"
+          document.getElementById('valider_commande').addEventListener('click', function(event) {
+              event.preventDefault(); // Empêcher le comportement par défaut du lien
+              var nombre_cheques_value = nombre_cheques.value; // Récupérer la valeur sélectionnée
+              var url = '{{ route('detail_paiement', ['id' => 4, 'nombre_cheques' => ':nombre_cheques']) }}';
+              url = url.replace(':nombre_cheques', nombre_cheques_value); // Remplacer la valeur de la variable dans l'URL
+              window.location.href = url; // Rediriger vers la page detail_paiement avec le nombre de chèques sélectionné
+          });
+      </script>
+      
+      
 
 
                 <div class="modal fade" id="Virement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -130,7 +130,6 @@ public function sendEmails(Request $request)
         $message->to($authUser->email);
         $message->subject($subject);
     });
-    dd($authUser->email);
     Mail::send('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'group' => $group, 'destinataires' => $destinataires], function ($message) use ($authUser, $subject, $securityEmail) {
         $message->from(config('mail.from.address'), config('mail.from.name'));
         $message->to($securityEmail);

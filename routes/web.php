@@ -19,6 +19,7 @@ use App\Http\Controllers\RolesController;
 use App\Http\Controllers\A_Controller;
 use App\Http\Controllers\Auth\ForgotUsernameController;
 use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\ParametreController;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -437,3 +438,8 @@ Route::post('/member_historique',[Member_History_Controller::class, 'history_inc
 
 /*---------------------------------Maintenance------------------------------------------*/
 Route::post('/verify-password', [MaintenanceController::class, 'verifyPassword'])->name('verify_password');
+
+
+/*---------------------------------parametres------------------------------------------*/
+Route::get('/parametres', [ParametreController::class, 'index'])->name('parametres');
+Route::post('/setActiveSeason', [ParametreController::class, 'setActiveSeason'])->name('setActiveSeason');

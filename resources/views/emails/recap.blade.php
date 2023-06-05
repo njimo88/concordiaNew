@@ -10,7 +10,7 @@
 
         alt=""><hr>
     <p>
-        Mail envoyé par {{ $user->lastname }} {{ $user->name }} le {{ $mail_history->date }} au groupe {{ $group}}
+        Mail envoyé par {{ $user->lastname }} {{ $user->name }} le {{ $mail_history->date }}
     </p>
     <p>
         Titre = {{ $mail_history->title }}
