@@ -516,12 +516,7 @@
                         <div class="card-body"  >
                           <h4 class="card-title mb-2-5">Produit :</h4>
                           <img style="max-height: 120px" src="{{ $data->image }}" alt="">
-                              @foreach($shopService as $data1)
-  
-                                  @if ($data->id_shop_article == $data1->id_shop_article)
-  
-                                      
-                                    
+                              
   
                         
                         </div>
@@ -568,7 +563,7 @@
                                   @elseif ($data->type_article == 2)
                                       <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Disponibles</span>
                                   @endif
-                              @elseif ($data->stock_actuel > 0 && $data->stock_actuel <= $data->alert_stock)
+                  @elseif ($data->stock_actuel > 0 && $data->stock_actuel <= $data->alert_stock)
                                   @if ($data->type_article == 0)
                                       <span style="color:orange;"><i class="fas fa-exclamation-triangle" style="color:orange;"></i> Il reste {{$data->stock_actuel}} disponibilités</span>
                                   @elseif ($data->type_article == 1)
@@ -576,7 +571,7 @@
                                   @elseif ($data->type_article == 2)
                                       <span style="color:orange;"><i class="fas fa-exclamation-triangle" style="color:orange;"></i> Il reste {{$data->stock_actuel}} disponibilités</span>
                                   @endif
-                              @elseif ($data->stock_actuel <= 0)
+                  @elseif ($data->stock_actuel <= 0)
                                   @if ($data->type_article == 0)
                                       <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
                                   @elseif ($data->type_article == 1)
@@ -584,7 +579,7 @@
                                   @elseif ($data->type_article == 2)
                                       <span style="color:red;"><i class="fas fa-times-circle" style="color:red;"></i> Indisponible/Complet</span>
                                   @endif
-                              @endif
+                  @endif
                   </div>
                 </div>
   
@@ -661,12 +656,17 @@
                     @else
                       <h4 class="card-title">Inscrire</h4>
                     @endif
-                        <select onchange="updatePriceToDisplay()" class="border mb-4 col-12 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
+                    @if (count($selectedUsers) > 0)
+                    <select onchange="updatePriceToDisplay()" class="border mb-4 col-12 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
 
-                          @foreach ($selectedUsers as $user)
-                              <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
-                            @endforeach
-                        </select>
+                      @foreach ($selectedUsers as $user)
+                          <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
+                        @endforeach
+                    </select>
+                    <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
+                @else
+                    <p>Votre famille ne correspond pas à cet article.</p>
+                @endif
                         <script>
                           function updatePriceToDisplay() {
                       var select = document.getElementById("buyers");
@@ -707,7 +707,7 @@
                       
                            </script>
                           
-                        <button  data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>
+                          
                     </span>
                   </div>
     
@@ -720,8 +720,7 @@
             </div>
        
   
-                                          @endif
-                                        @endforeach
+                                          
                                         <div class="row d-flex justify-content-center">
                                           <h1> Descriptif de l'article</h1>
                                           <div class="card">

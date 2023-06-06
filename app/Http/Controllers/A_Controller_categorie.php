@@ -548,7 +548,6 @@ usort($n_var, function ($a, $b) {
 
 public function Handle_details( $id){
     MiseAjourStock();
-    
     $articl= Shop_article::where('id_shop_article', $id)->firstOrFail();
     $reducedPrice = getReducedPriceGuest($id, $articl->totalprice);
     $priceToDisplay = $reducedPrice ? $reducedPrice : $articl->totalprice;
@@ -576,12 +575,12 @@ public function Handle_details( $id){
     }
 
     $coursVente = SystemSetting::find(5);
-
     // Convertir la chaîne JSON en tableau PHP
     if (Auth::check()) {
         $selectedUsers = getArticleUsers($articl);
     }
     if ($articl->type_article == 2) {
+        
         return view('Details_article', compact('DescReduc','id','indice', 'messageContent','coursVente','article', 'rooms', 'shopService', 'a_user', 'selectedUsers','info','declinaisons'))->with('user', auth()->user())->with('priceToDisplay', $priceToDisplay);
 
     }
