@@ -244,51 +244,65 @@ use Illuminate\Support\Facades\Route;
                     @endif
                 </a>
                 <ul>
-                    <!-- First level dropdown: categories with one digit id -->
-                    @foreach($categories->filter(function ($category) {
-                        return strlen($category->id_shop_category) === 1;
-                    }) as $category)
-                    <li class="dropdown">
-                        <a href="{{ route('sous_categorie', ['id' =>  $category->id_shop_category]) }}">
-                            <span><img src="{{ $category->image }}" width="24">&nbsp;{{ $category->name }}</span>
-                            @if($categories->filter(function ($subCategory) use ($category) {
-                                    return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
-                                })->count() > 0)
-                                <i class="bi bi-chevron-down dropdown-indicator"></i>
-                            @endif
-                        </a>
-                        <!-- Second level dropdown: categories with three digits id -->
-                        <ul>
-                            @foreach($categories->filter(function ($subCategory) use ($category) {
-                                return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
-                            }) as $subCategory)
-                            <li class="dropdown">
-                                <a href="{{ route('sous_categorie', ['id' =>  $subCategory->id_shop_category]) }}">
-                                    <span><img src="{{ $subCategory->image }}" width="24">&nbsp;{{ $subCategory->name }}</span>
-                                    @if($categories->filter(function ($subSubCategory) use ($subCategory) {
-                                            return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
-                                        })->count() > 0)
-                                        <i class="bi bi-chevron-down dropdown-indicator"></i>
-                                    @endif
-                                </a>
-                                <!-- Third level dropdown: categories with four digits id -->
-                                <ul>
-                                    @foreach($categories->filter(function ($subSubCategory) use ($subCategory) {
-                                        return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
-                                    }) as $subSubCategory)
-                                    <li>
-                                        <a href="{{ route('sous_categorie', ['id' =>  $subSubCategory->id_shop_category]) }}">
-                                            <span><img src="{{ $subSubCategory->image }}" width="24">&nbsp;{{ $subSubCategory->name }}</span>
-                                        </a>
-                                    </li>
-                                    @endforeach
-                                </ul>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </li>
-                    @endforeach
-                </ul>
+                  @foreach($categories->filter(function ($category) {
+                      return strlen($category->id_shop_category) === 1;
+                  }) as $category)
+                  
+                  @php
+                      $subCategoryCount = $categories->filter(function ($subCategory) use ($category) {
+                          return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
+                      })->count();
+                  @endphp
+              
+                  <li class="{{ $subCategoryCount > 0 ? 'dropdown' : '' }}">
+                      <a href="{{ route('sous_categorie', ['id' =>  $category->id_shop_category]) }}">
+                          <span><img src="{{ $category->image }}" width="24">&nbsp;{{ $category->name }}</span>
+                          @if($subCategoryCount > 0)
+                              <i class="bi bi-chevron-down dropdown-indicator"></i>
+                          @endif
+                      </a>
+                      <!-- Second level dropdown: categories with three digits id -->
+                      @if($subCategoryCount > 0)
+                          <ul>
+                              @foreach($categories->filter(function ($subCategory) use ($category) {
+                                  return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
+                              }) as $subCategory)
+                              
+                              @php
+                                  $subSubCategoryCount = $categories->filter(function ($subSubCategory) use ($subCategory) {
+                                      return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
+                                  })->count();
+                              @endphp
+              
+                              <li class="{{ $subSubCategoryCount > 0 ? 'dropdown' : '' }}">
+                                  <a href="{{ route('sous_categorie', ['id' =>  $subCategory->id_shop_category]) }}">
+                                      <span><img src="{{ $subCategory->image }}" width="24">&nbsp;{{ $subCategory->name }}</span>
+                                      @if($subSubCategoryCount > 0)
+                                          <i class="bi bi-chevron-down dropdown-indicator"></i>
+                                      @endif
+                                  </a>
+                                  <!-- Third level dropdown: categories with four digits id -->
+                                  @if($subSubCategoryCount > 0)
+                                      <ul>
+                                          @foreach($categories->filter(function ($subSubCategory) use ($subCategory) {
+                                              return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
+                                          }) as $subSubCategory)
+                                          <li>
+                                              <a href="{{ route('sous_categorie', ['id' =>  $subSubCategory->id_shop_category]) }}">
+                                                  <span><img src="{{ $subSubCategory->image }}" width="24">&nbsp;{{ $subSubCategory->name }}</span>
+                                              </a>
+                                          </li>
+                                          @endforeach
+                                      </ul>
+                                  @endif
+                              </li>
+                              @endforeach
+                          </ul>
+                      @endif
+                  </li>
+                  @endforeach
+              </ul>
+              
             </li>
         
           <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Informations.png") }}" width="24">&nbsp;Nos Activités</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
@@ -388,51 +402,65 @@ use Illuminate\Support\Facades\Route;
                       @endif
                   </a>
                   <ul>
-                      <!-- First level dropdown: categories with one digit id -->
-                      @foreach($categories->filter(function ($category) {
-                          return strlen($category->id_shop_category) === 1;
-                      }) as $category)
-                      <li class="dropdown">
-                          <a href="{{ route('sous_categorie', ['id' =>  $category->id_shop_category]) }}">
-                              <span><img src="{{ $category->image }}" width="24">&nbsp;{{ $category->name }}</span>
-                              @if($categories->filter(function ($subCategory) use ($category) {
-                                      return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
-                                  })->count() > 0)
-                                  <i class="bi bi-chevron-down dropdown-indicator"></i>
-                              @endif
-                          </a>
-                          <!-- Second level dropdown: categories with three digits id -->
-                          <ul>
-                              @foreach($categories->filter(function ($subCategory) use ($category) {
-                                  return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
-                              }) as $subCategory)
-                              <li class="dropdown">
-                                  <a href="{{ route('sous_categorie', ['id' =>  $subCategory->id_shop_category]) }}">
-                                      <span><img src="{{ $subCategory->image }}" width="24">&nbsp;{{ $subCategory->name }}</span>
-                                      @if($categories->filter(function ($subSubCategory) use ($subCategory) {
-                                              return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
-                                          })->count() > 0)
-                                          <i class="bi bi-chevron-down dropdown-indicator"></i>
-                                      @endif
-                                  </a>
-                                  <!-- Third level dropdown: categories with four digits id -->
-                                  <ul>
-                                      @foreach($categories->filter(function ($subSubCategory) use ($subCategory) {
-                                          return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
-                                      }) as $subSubCategory)
-                                      <li>
-                                          <a href="{{ route('sous_categorie', ['id' =>  $subSubCategory->id_shop_category]) }}">
-                                              <span><img src="{{ $subSubCategory->image }}" width="24">&nbsp;{{ $subSubCategory->name }}</span>
-                                          </a>
-                                      </li>
-                                      @endforeach
-                                  </ul>
-                              </li>
-                              @endforeach
-                          </ul>
-                      </li>
-                      @endforeach
-                  </ul>
+                    @foreach($categories->filter(function ($category) {
+                        return strlen($category->id_shop_category) === 1;
+                    }) as $category)
+                    
+                    @php
+                        $subCategoryCount = $categories->filter(function ($subCategory) use ($category) {
+                            return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
+                        })->count();
+                    @endphp
+                
+                    <li class="{{ $subCategoryCount > 0 ? 'dropdown' : '' }}">
+                        <a href="{{ route('sous_categorie', ['id' =>  $category->id_shop_category]) }}">
+                            <span><img src="{{ $category->image }}" width="24">&nbsp;{{ $category->name }}</span>
+                            @if($subCategoryCount > 0)
+                                <i class="bi bi-chevron-down dropdown-indicator"></i>
+                            @endif
+                        </a>
+                        <!-- Second level dropdown: categories with three digits id -->
+                        @if($subCategoryCount > 0)
+                            <ul>
+                                @foreach($categories->filter(function ($subCategory) use ($category) {
+                                    return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
+                                }) as $subCategory)
+                                
+                                @php
+                                    $subSubCategoryCount = $categories->filter(function ($subSubCategory) use ($subCategory) {
+                                        return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
+                                    })->count();
+                                @endphp
+                
+                                <li class="{{ $subSubCategoryCount > 0 ? 'dropdown' : '' }}">
+                                    <a href="{{ route('sous_categorie', ['id' =>  $subCategory->id_shop_category]) }}">
+                                        <span><img src="{{ $subCategory->image }}" width="24">&nbsp;{{ $subCategory->name }}</span>
+                                        @if($subSubCategoryCount > 0)
+                                            <i class="bi bi-chevron-down dropdown-indicator"></i>
+                                        @endif
+                                    </a>
+                                    <!-- Third level dropdown: categories with four digits id -->
+                                    @if($subSubCategoryCount > 0)
+                                        <ul>
+                                            @foreach($categories->filter(function ($subSubCategory) use ($subCategory) {
+                                                return strlen($subSubCategory->id_shop_category) === 4 && strpos($subSubCategory->id_shop_category, $subCategory->id_shop_category) === 0;
+                                            }) as $subSubCategory)
+                                            <li>
+                                                <a href="{{ route('sous_categorie', ['id' =>  $subSubCategory->id_shop_category]) }}">
+                                                    <span><img src="{{ $subSubCategory->image }}" width="24">&nbsp;{{ $subSubCategory->name }}</span>
+                                                </a>
+                                            </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </li>
+                    @endforeach
+                </ul>
+                
               </li>
           
             <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Informations.png") }}" width="24">&nbsp;Nos Activités</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>

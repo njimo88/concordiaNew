@@ -203,7 +203,7 @@ public function detail_paiement($id,$nombre_cheques)
     ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
     ->orderBy('basket.pour_user_id')
     ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'basket.declinaison', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'basket.pour_user_id', 'shop_article.title', 'basket.declinaison', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
     ->get();
 
         $payment = DB::table('bills_payment_method')->where('id', '=', $id)->first()->payment_method;
@@ -279,21 +279,23 @@ public function detail_paiement($id,$nombre_cheques)
             $message->subject("Paiement accepté - Commande : " . $bill->ref);
         });
     }
-    
+
+
 
     // Ajouter des lignes dans la table de liaison
     foreach ($paniers as $panier) {
+        $pou_user = User::where('user_id', $panier->pour_user_id)->first();
         $liaison = new liaison_shop_articles_bills;
         $liaison->bill_id = $bill->id;
         $liaison->href_product = $panier->reff;
         $liaison->quantity = $panier->qte;
         $liaison->ttc = round($panier->totalprice, 2);
-        $liaison->addressee = auth()->user()->lastname . ' ' . auth()->user()->name;
+        $liaison->addressee = $pou_user->lastname . ' ' . $pou_user->name;
         $liaison->sub_total = round($panier->qte * $panier->totalprice, 2);
         $liaison->designation = $panier->title;
         $liaison->id_shop_article = $panier->ref;
         $liaison->declinaison = $panier->declinaison;
-        $liaison->id_user = $panier->user_id;
+        $liaison->id_user = $pou_user->user_id;
         $liaison->save();
     }
 

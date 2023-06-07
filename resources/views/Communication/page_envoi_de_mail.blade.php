@@ -50,6 +50,13 @@
   }
 </style>
 <main class="main" id="main">
+  <?php
+$successMessage = $_GET['successMessage'] ?? '';
+
+if (!empty($successMessage)) {
+    echo '<div class="alert alert-success">' . $successMessage . '</div>';
+}
+?>
     <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
@@ -106,6 +113,7 @@
                         <div class="input-group">
                           <select class="form-select" id="shop-articles" style="max-height: 300px; overflow-y: auto;">
                             @foreach($shop_articles as $shop_article)
+                            <option value="Choisir un groupe" selected >Choisir un groupe</option>
                               <option value="{{ $shop_article->id_shop_article }}" data-saison="{{ $shop_article->saison }}">{{ $shop_article->title }}</option>
                             @endforeach
                           </select>
@@ -335,8 +343,10 @@
 
             sendButton.disabled = false;
             loadingIcon.style.display = 'none';
+            checkAllSelected.checked = false;
         });
     });
+
 });
 
 

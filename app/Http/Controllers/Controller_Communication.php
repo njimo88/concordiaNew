@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Str;
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
+use App\Mail\CommunicationEmail;
 
 require_once(app_path().'/fonction.php');
 
@@ -96,19 +99,26 @@ public function sendEmails(Request $request)
         $senderName = 'Michel Ferandel - Trésorier';
     }
 
-    foreach($emails as $email) {
-        $user = User::where('email', $email)->first();
+    $validator = new EmailValidator();
+
+    $emailFragments = array_chunk($emails, 10);
     
-        $firstName = $user->name;
-        $lastName = $user->lastname;
-
-        Mail::send('emails.communicationTemplate', ['firstName' => $firstName, 'lastName' => $lastName, 'content' => $content, 'senderName' => $senderName], function ($message) use ($email, $subject, $fromEmail, $fromName) {
-            $message->from($fromEmail, $fromName);
-            $message->to($email);
-            $message->subject($subject);
-        });
+    foreach ($emailFragments as $fragment) {
+        $invalidEmails = [];
+    
+        foreach ($fragment as $email) {
+            if ($validator->isValid($email, new RFCValidation())) {
+                $user = User::where('email', $email)->first();
+                $firstName = $user->name;
+                $lastName = $user->lastname;
+        
+                Mail::to($email)->send(new CommunicationEmail($firstName, $lastName, $content, $senderName, $subject));
+            } else {
+                $invalidEmails[] = $email;
+            }
+        }
     }
-
+    
    // Save the record to mail_history
    $mail_history = new MailHistory;
    $mail_history->id_user_expediteur = Auth::id(); 
@@ -124,19 +134,17 @@ public function sendEmails(Request $request)
     $destinataires = User::whereIn('email', $emails)->get();
     $subject = '[Surveillance] Mail ' . $authUser->lastname . ' ' . $authUser->name . ' | ' . date('d-m-Y H:i');
     $group = $request->input('group');
-
-    Mail::send('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'group' => $group, 'destinataires' => $destinataires], function ($message) use ($authUser, $subject) {
+    Mail::send('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'group' => $group, 'destinataires' => $destinataires, 'invalidEmails' => $invalidEmails], function ($message) use ($authUser, $subject) {
         $message->from(config('mail.from.address'), config('mail.from.name'));
         $message->to($authUser->email);
         $message->subject($subject);
     });
-    Mail::send('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'group' => $group, 'destinataires' => $destinataires], function ($message) use ($authUser, $subject, $securityEmail) {
+
+    Mail::send('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'group' => $group, 'destinataires' => $destinataires, 'invalidEmails' => $invalidEmails], function ($message) use ($authUser, $subject, $securityEmail) {
         $message->from(config('mail.from.address'), config('mail.from.name'));
         $message->to($securityEmail);
         $message->subject($subject);
     });
-
-    
 
     return response()->json(['message' => 'Emails envoyés avec succès.']);
 }
