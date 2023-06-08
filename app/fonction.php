@@ -564,8 +564,15 @@ function verifierStockUnArticlePanier($articles,$quantite){
     }
 }
 
-function calculerPaiements(float $total, int $nbfois) {
+function calculerPaiements(int $methodePaiement,float $total, int $nbfois) {
     $paiements = [];
+
+    if($methodePaiement == 5) {
+        $total += 5;
+    } else if($methodePaiement == 4) {
+        $total += $nbfois;
+    }
+
     $montant = 0.8 * $total / $nbfois;
     $premierMontant = $montant + 0.2 * $total;
     $paiements[] = round($premierMontant,2);

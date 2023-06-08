@@ -59,7 +59,7 @@
             <h5 style="font-weight:bold"  class="text-dark font-weight-bold p-3">Moyens de paiement :</h5>
 
             @foreach ($Mpaiement as $Mpaiement)
-                @if ($Mpaiement->payment_method == 'Mixte' || $Mpaiement->payment_method == 'Carte Bancaire' )
+                @if ($Mpaiement->payment_method == 'Mixte'  )
                  @elseif ($Mpaiement->payment_method == 'Virement' && $total < 800)
                 @else
                     <div class="col-md-5  row mx-2 d-flex justify-content-center mb-5">

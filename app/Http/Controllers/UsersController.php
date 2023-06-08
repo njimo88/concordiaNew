@@ -38,34 +38,44 @@ class UsersController extends Controller
     $total = $request->get('total');
     $user = User::find($userId);
 
-        $client = new Client();
+    $bill = bills::latest('id')->first();
+    $year = date('Y');
+    $billIdWithOffset = $bill->id + 10001;
+    $userId = $user->user_id;
+    $orderId = "{$year}-{$billIdWithOffset}-{$userId}";
 
-        $username = env('API_USERNAME');
-        $password = env('API_PASSWORD');
-        $auth = base64_encode($username . ':' . $password);
+    $client = new Client();
 
-        $headers = [
-            'Authorization' => 'Basic ' . $auth,
-            'Content-Type' => 'application/json',
-        ];
+    $username = env('API_USERNAME');
+    $password = env('API_PASSWORD');
+    $auth = base64_encode($username . ':' . $password);
 
-        $response = $client->post('https://api.scelliuspaiement.labanquepostale.fr/api-payment/V4/Charge/CreatePayment', [
-            'headers' => $headers,
-            'json' => [
-                "amount" => $total*100,
-                "currency" => "EUR",
-                "orderId" => "myOrderId-" . uniqid(),
-                "customer" => [
-                    "email" => utf8_encode($user->email),
-                ]
+    $headers = [
+        'Authorization' => 'Basic ' . $auth,
+        'Content-Type' => 'application/json',
+    ];
+
+    $response = $client->post('https://api.scelliuspaiement.labanquepostale.fr/api-payment/V4/Charge/CreatePayment', [
+        'headers' => $headers,
+        'json' => [
+            "amount" => $total*100,
+            "currency" => "EUR",
+            "orderId" => $orderId,
+            "customer" => [
+                "email" => utf8_encode($user->email),
+                "firstName" => $user->firstname, 
+                "lastName" => $user->lastname,
+                "address" => $user->address . " " . $user->ip . " " . $user->city . " " . $user->country,
             ]
-        ]);
-    
-        $responseBody = json_decode($response->getBody()->getContents());
-    
-        $formToken = $responseBody->answer->formToken;
-        return view('admin.payment_form')->with('formToken', $formToken);
-    }
+        ]
+    ]);
+
+    $responseBody = json_decode($response->getBody()->getContents());
+
+    $formToken = $responseBody->answer->formToken;
+    return view('admin.payment_form')->with('formToken', $formToken);
+} 
+
    
     
 
@@ -212,7 +222,7 @@ public function detail_paiement($id,$nombre_cheques)
     foreach ($paniers as $panier) {
         $total += $panier->qte * $panier->totalprice;
     }
-    $nb_paiment = calculerPaiements($total,$nombre_cheques);
+    $nb_paiment = calculerPaiements($id,$total,$nombre_cheques);
 
     if($paniers->count() == 0){
         return redirect()->route('panier');}
