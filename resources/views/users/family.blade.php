@@ -16,11 +16,16 @@
   <div  class="container justify-content-center d-flex">
     
     <div class="col-10 mt-3 mt-lg-0 ">
-      @if($errors->any())
-    <div class="alert alert-danger mt-3">
-      Une erreur est survenue vérifiez les champs et réessayer.
-  </div>
-  @endif
+      @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
   
     @if(session()->has('success'))
     <div class="alert alert-success mt-3">

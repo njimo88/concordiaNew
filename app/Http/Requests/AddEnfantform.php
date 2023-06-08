@@ -29,7 +29,7 @@ class AddEnfantform extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone' =>  ['required', 'regex:/^0[0-9]{9}$/'],
-            'profession' => 'required|alpha|max:191',
+            'profession' => 'required|string|max:191',
             'gender' => 'required|in:male,female',
             'birthdate' => 'required|date|before:today',
             'nationality' => 'required',

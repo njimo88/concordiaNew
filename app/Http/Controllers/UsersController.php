@@ -272,7 +272,6 @@ public function detail_paiement($id,$nombre_cheques)
     if ($bill->status == 100) {
         $generatePDFController = new generatePDF();  
         $pdfPath = $generatePDFController->generatePDFreduction_FiscaleOutput($bill->id);
-        dd($pdfPath);
         Mail::send('emails.order_accepted', ['user' => $user, 'bill' => $bill], function ($message) use ($receiverEmail, $pdfPath,$bill) {
             $message->from(config('mail.from.address'), config('mail.from.name'));
             $message->to($receiverEmail);
