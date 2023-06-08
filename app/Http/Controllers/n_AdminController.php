@@ -143,8 +143,8 @@ class n_AdminController extends Controller
     $user = User::find($user_id);
     $validatedData = $request->validate( [
         'username' => 'nullable|string|max:255',
-        'name' => ['required', 'alpha', 'max:255'],
-        'lastname' => ['required', 'alpha', 'max:255'],
+        'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+        'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
         'email' => [ 'nullable','string', 'email', 'max:255'],
         'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
         'profession' => 'string|max:191',

@@ -163,8 +163,8 @@ public function modif_user($id,Request $request){
 
     $validatedData = $request->validate( [
         'username' => 'nullable|string|max:255',
-        'name' => ['required', 'alpha', 'max:255'],
-        'lastname' => ['required', 'alpha', 'max:255'],
+        'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+        'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
         'email' => [ 'nullable','string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')],
         'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
         'profession' => 'string|max:191',

@@ -2,6 +2,15 @@
 
 @section('content')
 <main id="main" class="main">
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
     <div style="--bs-modal-width: 80vw !important; height: 95vh !important;" class="modal fade " id="editusermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content" id="editusermodalContainer">

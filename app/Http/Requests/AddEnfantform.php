@@ -24,8 +24,8 @@ class AddEnfantform extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'alpha', 'max:255'],
-            'lastname' => ['required', 'alpha', 'max:255'],
+            'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+            'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone' =>  ['required', 'regex:/^0[0-9]{9}$/'],

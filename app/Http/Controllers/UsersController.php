@@ -386,8 +386,8 @@ foreach ($paniers as $panier) {
     public function update(Request $request, User $user)
     {
         $this->validate($request, [
-            'name' => [ 'alpha', 'max:255'],
-            'lastname' => ['alpha', 'max:255'],
+            'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+        'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . auth()->user()->user_id],
             'phone' =>  ['required', 'regex:/^0[0-9]{9}$/'],
             'profession' => 'alpha|max:191',
@@ -484,8 +484,8 @@ public function editFamille(Request $request, $user_id)
     {
         $user = User::find($user_id);
         $validatedData = $request->validate([
-            'name' => ['required', 'alpha', 'max:255'],
-            'lastname' => ['required', 'alpha', 'max:255'],
+            'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+            'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')->where(function($query) use ($user) {
                 return $query->where('family_id', '!=', $user->family_id);
             })],
