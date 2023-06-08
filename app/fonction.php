@@ -384,7 +384,7 @@ function countArticle($user_id, $idArticle)
     // Step 3: Update the stock_actuel for each article
     foreach ($id_shop_articles as $id_shop_article) {
         $shop_article = Shop_article::find($id_shop_article);
-        if($shop_article->type_article == 2) {
+        /* if($shop_article->type_article == 2) {
             $article_2 = shop_article_2::find($shop_article->id_shop_article);
     
         $liaison_count = DB::table('liaison_shop_articles_bills')
@@ -418,14 +418,14 @@ function countArticle($user_id, $idArticle)
         $shop_article->stock_ini = $stock_ini;
         $shop_article->stock_actuel = $stock_actuel;
         $shop_article->save();
-        } else {
+        } else {*/
         $stock_ini = $shop_article->stock_ini;
         $count = $liaison_counts->get($id_shop_article, 0);
         
         $stock_actuel = $stock_ini - $count;
         $shop_article->stock_actuel = $stock_actuel;
         $shop_article->save();
-         }
+         /*}*/
 
     }
 }
@@ -442,7 +442,7 @@ function MiseAjourArticlePanier($articles){
 
     foreach ($articles as $article) {
         $article_db = Shop_article::find($article->ref);
-        if($article_db->type_article == 2) {
+        /*if($article_db->type_article == 2) {
             $article_2 = shop_article_2::find($article_db->id_shop_article);
     
         $liaison_count = DB::table('liaison_shop_articles_bills')
@@ -477,20 +477,20 @@ function MiseAjourArticlePanier($articles){
         $article_db->stock_ini = $stock_ini;
         $article_db->stock_actuel = $stock_actuel;
         $article_db->save();
-        }else{
+        }else{*/
             $stock_ini = $article_db->stock_ini;
         $count = $liaison_counts->get($article->ref, 0);
         $stock_actuel = $stock_ini - $count;
         $article_db->stock_actuel = $stock_actuel;
         $article_db->save();
-        }
+       /* }*/
         
     }
 }
 
 
 function MiseAjourArticle($article){
-    if ($article->type_article == 2) {
+    /*if ($article->type_article == 2) {
         $article_2 = shop_article_2::find($article->id_shop_article);
     
         $liaison_count = DB::table('liaison_shop_articles_bills')
@@ -529,7 +529,7 @@ function MiseAjourArticle($article){
     }
     
     
-    else{
+    else{*/
         $liaison_counts = DB::table('liaison_shop_articles_bills')
         ->where('id_shop_article', $article->id_shop_article)
         ->select(DB::raw('sum(quantity) as count'))
@@ -541,7 +541,7 @@ function MiseAjourArticle($article){
         $stock_actuel = $stock_ini - $count;
         $article->stock_actuel = $stock_actuel;
         $article->save();
-    }
+   /* }*/
     
 }
 

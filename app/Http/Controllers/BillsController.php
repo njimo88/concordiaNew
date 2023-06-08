@@ -35,19 +35,19 @@ class BillsController extends Controller
      */
 
 
-    public function index()
-    {
-        $bill = DB::table('bills')
-    ->join('users', 'bills.user_id', '=', 'users.user_id')
-    ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-    ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-    ->select('bills.*', 'bills.status as bill_status', 'bills_payment_method.icon','users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status','bills_status.row_color')
-    ->orderBy('bills.date_bill', 'desc')
-    ->get();
-
-            
-        return view('admin.facture')->with('bill', $bill)->with('user', auth()->user());
-    }
+     public function index()
+     {
+         $bill = DB::table('bills')
+             ->join('users', 'bills.user_id', '=', 'users.user_id')
+             ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+             ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+             ->select('bills.*', 'bills.status as bill_status', 'bills_payment_method.icon', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status', 'bills_status.row_color')
+             ->where('bills.status', '>=', 10)  
+             ->orderBy('bills.date_bill', 'desc')
+             ->get();
+     
+         return view('admin.facture')->with('bill', $bill)->with('user', auth()->user());
+     }
 
     public function reduction()
     {
@@ -355,16 +355,13 @@ class BillsController extends Controller
 
 
     public function destroy(bills $bill)
-{
-    // Supprimer la facture
-    $bill->delete();
-
-    // Ajouter un message à la session
-    session()->flash('success', 'La facture a été supprimée avec succès.');
-
-    // Rediriger vers la page d'origine
-    return back();
-}
+    {
+        $bill->status = 1;
+        $bill->save();
+        session()->flash('success', 'Le statut de la facture a été mis à jour avec succès.');
+        return back();
+    }
+    
 
 
     
