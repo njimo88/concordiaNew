@@ -35,20 +35,41 @@ class BillsController extends Controller
      */
 
 
-     public function index()
+     public function index(Request $request)
      {
-         $bill = DB::table('bills')
+         if ($request->has('statusOldBills')) {
+             $bill = DB::table('old_bills')
+             ->join('users', 'old_bills.user_id', '=', 'users.user_id')
+             ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+             ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+             ->select('old_bills.*', 'old_bills.status as bill_status', 'bills_payment_method.icon', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status', 'bills_status.row_color')
+             ->orderBy('old_bills.date_bill', 'desc')
+             ->get();
+         }else{
+             $billQuery = DB::table('bills')
              ->join('users', 'bills.user_id', '=', 'users.user_id')
              ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
              ->join('bills_status', 'bills.status', '=', 'bills_status.id')
              ->select('bills.*', 'bills.status as bill_status', 'bills_payment_method.icon', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status', 'bills_status.row_color')
-             ->where('bills.status', '>=', 10)  
-             ->orderBy('bills.date_bill', 'desc')
-             ->get();
+             ->orderBy('bills.date_bill', 'desc');
      
-         return view('admin.facture')->with('bill', $bill)->with('user', auth()->user());
+             if ($request->has('statusLessThan10')) {
+                 $bill = $billQuery->where('bills.status', '<', 10)->get();
+             }else {
+                 $bill = $billQuery->where('bills.status', '>=', 10)->get();
+             }
+         }
+     
+         return view('admin.facture', compact('bill'));
      }
+     
 
+     public function miseAjourStock()
+     {
+          MiseAjourStock();
+          return response()->json(['message' => 'Le stock a été mis à jour.'], 200);
+     }
+     
     public function reduction()
     {
         $shopReductions = ShopReduction::all();
@@ -441,7 +462,7 @@ class BillsController extends Controller
         ->select('shop_messages.message', 'shop_messages.date', 'shop_messages.somme_payé', 'users.name', 'users.lastname','shop_messages.id_customer','shop_messages.id_admin','shop_messages.state')
         ->orderBy('shop_messages.date', 'asc')
         ->get();
-        $nb_paiment = calculerPaiements($bill->payment_total_amount,$bill->number);
+        $nb_paiment = calculerPaiements($bill->payment_method,$bill->payment_total_amount,$bill->number);
             return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages'))->with('user', auth()->user());
         }
 

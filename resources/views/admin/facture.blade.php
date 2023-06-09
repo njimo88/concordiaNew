@@ -1,24 +1,88 @@
 @extends('layouts.template')
 
 @section('content')
+<style>
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+.btn {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 1px;
+  display: inline-block;
+  padding: 10px 30px;
+  color: #fff;
+  background-color: #182983;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  transition: .3s ease background-color;
+}
+
+.btn:hover {
+  background-color: #ba0712;
+  color: white;
+}
+
+.btn i {
+  margin-right: 10px;
+  transition: .3s ease all;
+}
+
+.btn:hover i {
+  transform: rotate(360deg);
+}
+
+</style>
 <main id="main" class="main">
     @if(session()->has('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif
-
+@if (session('stockUpdated'))
+    <div class="alert alert-success">
+        {{ session('stockUpdated') }}
+    </div>
+@endif
    
 
 
 
-    <div class="pagetitle">
-       <h1>Liste des factures</h1>
-       <nav>
-          <ol class="breadcrumb">
-             <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-             <li class="breadcrumb-item">Paiement</li>
-             <li class="breadcrumb-item active">Facture</li>
-          </ol>
-       </nav>
+    <div class="pagetitle row justify-content-between">
+        <div class="col-md-3">
+            <a href="{{ route('paiement.facture') }}"><h1>Liste des factures</h1></a>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item">Paiement</li>
+                    <li class="breadcrumb-item active">Facture</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-3 my-1 d-flex justify-content-center">
+            <button id="updateStock"  class="btn">
+                <i class="fas fa-sync"></i> Mettre à jour le stock
+            </button>
+        </div>
+        <div class="col-md-3 my-1 d-flex justify-content-center">
+            <button id="oldBills" class="btn btn-primary">
+                <i class="fas fa-history"></i> Anciennes factures
+            </button>
+        </div>
+        <div class="col-md-3 my-1 d-flex justify-content-center">
+            <button id="filterStatus" class="btn">
+                <i class="fas fa-filter"></i> Factures Annulées
+            </button>
+        </div>
+       
+        
+        
+        
+        
+        
+        
+          
+          
     </div>
     
     <section class="section">    

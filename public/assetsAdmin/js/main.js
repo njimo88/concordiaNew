@@ -1037,7 +1037,59 @@ $(document).ready(function() {
 
 
 
+$(document).ready(function() {
+  $('#updateStock').click(function(e) {
+      e.preventDefault();
+
+      $.ajax({
+          url: "/stock/update",
+          method: 'POST',
+          data: {
+              "_token": $('meta[name="csrf-token"]').attr('content'),
+          },
+          success: function(response) {
+              alert(response.message);
+          }
+      });
+  });
+});
 
 
+$(document).ready(function() {
+  $('#filterStatus').click(function(e) {
+      e.preventDefault();
 
+      $.ajax({
+          url: "/admin/paiement/facture", 
+          method: 'GET',
+          data: {
+              "_token": $('meta[name="csrf-token"]').attr('content'),
+              "statusLessThan10": true
+          },
+          success: function(response) {
+            window.location.href = "/admin/paiement/facture?statusLessThan10=true";
+        }
+        
+      });
+  });
+});
 
+$(document).ready(function() {
+  $('#oldBills').click(function(e) {
+      e.preventDefault();
+
+      $.ajax({
+          url: "/admin/paiement/facture", 
+          method: 'GET',
+          data: {
+              "_token": $('meta[name="csrf-token"]').attr('content'),
+              "statusOldBills": true
+          },
+          success: function(response) {
+            console.log(response);
+            window.location.href = "/admin/paiement/facture?statusOldBills=true";
+        }
+        
+      });
+  });
+});

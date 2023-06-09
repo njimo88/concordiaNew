@@ -124,6 +124,8 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::put('/admin/paiement/facture/updateStatus/{id}',  [BillsController::class, 'updateStatus'])->name('facture.updateStatus');
     Route::put('/admin/paiement/facture/updateDes/{id}',  [BillsController::class, 'updateDes'])->name('facture.updateDes');
     Route::delete('/bill/{bill}', [BillsController::class, 'destroy'])->name('bill.destroy');
+    Route::post('/stock/update', [BillsController::class, 'miseAjourStock'])->name('stock.update');
+
 
     /*----------------------- Reduction ------------------------------ */
     Route::get('/admin/paiement/reduction', [BillsController::class, 'reduction'])->name('paiement.reduction');

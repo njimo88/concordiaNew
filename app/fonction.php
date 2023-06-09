@@ -361,6 +361,21 @@ function countArticle($user_id, $idArticle)
     return $count;
 }
 
+ function canAddMoreOfArticle($selected_user_id , Shop_article $article)
+    {
+        $userId = $selected_user_id;
+        $basketItems = Basket::where('pour_user_id', $userId)
+                             ->where('ref', $article->id_shop_article)
+                             ->get();
+
+        $totalQuantity = $basketItems->sum('qte');
+        if ($totalQuantity >= $article->max_per_user) {
+            return false;
+        }
+
+        return true;
+    }
+
  function MiseAjourStock()
 {
    // Step 1: Retrieve the id_shop_article of the current season that have bills.status > 9

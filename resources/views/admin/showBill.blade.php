@@ -167,7 +167,13 @@
           ?>
       </fieldset>
       <br><br>
-        <span style="font-weight:bold">Reste à payer : {{ number_format($bill->payment_total_amount-$bill->amount_paid, 2, ',', ' ') }} €</span> 
+        <span style="font-weight:bold">
+          Reste à payer :
+           @if ($bill->status == 100)
+            <span class="text-success">Facture payée</span>
+          @else
+            {{ number_format($bill->payment_total_amount-$bill->amount_paid, 2, ',', ' ') }} €</span>
+            @endif 
         <br><br><br>
         @if (auth()->user()->roles->paiement_immediat && Route::currentRouteName() === 'facture.showBill')
           <a href="{{ route("paiement_immediat",$bill->id ) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Immédiat <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>

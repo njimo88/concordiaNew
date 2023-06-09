@@ -63,12 +63,19 @@ class UsersController extends Controller
             "orderId" => $orderId,
             "customer" => [
                 "email" => utf8_encode($user->email),
-                "firstName" => $user->firstname, 
-                "lastName" => $user->lastname,
-                "address" => $user->address . " " . $user->ip . " " . $user->city . " " . $user->country,
+                "billingDetails" => [
+                    "firstName" => $user->name,
+                    "lastName" => $user->lastname,
+                    "address" => $user->address,
+                    "zipCode" => $user->zip,
+                    "city" => $user->city,
+                    "country" => $user->country,
+                    "phoneNumber" => $user->phone, 
+                ]
             ]
         ]
     ]);
+    
 
     $responseBody = json_decode($response->getBody()->getContents());
 

@@ -71,7 +71,7 @@ class A_Controller_categorie extends Controller
     $declinaison = $request->declinaison;
     //verifier si l'article est en stock et les conditions d'achat
     //$quantite = $request->quantite;
-    if(verifierStockUnArticle($shop, $quantite) && countArticle($selected_user_id,$id_article) < $shop->max_per_user){
+    if(verifierStockUnArticle($shop, $quantite) && countArticle($selected_user_id,$id_article) < $shop->max_per_user && canAddMoreOfArticle($selected_user_id,$shop)){
     
     
     
@@ -168,7 +168,7 @@ public function commander_article($id, Request $request)
     $declinaison = $request->declinaison;
     //verifier si l'article est en stock et les conditions d'achat
     //$quantite = $request->quantite;
-    if(verifierStockUnArticle($shop, $quantite) && countArticle($selected_user_id,$id_article) < $shop->max_per_user){
+    if(verifierStockUnArticle($shop, $quantite) && countArticle($selected_user_id,$id_article) < $shop->max_per_user && canAddMoreOfArticle($selected_user_id,$shop)){
     
     
     
