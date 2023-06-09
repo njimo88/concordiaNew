@@ -297,24 +297,34 @@
       
         $formattedDate = strtr($formattedDate, $englishToFrench);
         ?>
-    
-        @if ($message->state == 'Public' || Route::currentRouteName() === 'facture.showBill')
-          @if ($message->state == 'Privé')
-            <u><b><span style="color:red;">(Privé)</span></b> {{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
-          @else
-            <u>{{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
-          @endif
-    
-          @if ($message->somme_payé <= 0 && $message->somme_payé != null)
-            <b>Somme payée : </b><span style="font-weight : bold" class="text-danger">{{ $message->somme_payé }} €</span><br>
-          @elseif ($message->somme_payé > 0)
-            <b>Somme remboursée : </b><span style="font-weight : bold" class="text-success">{{ $message->somme_payé }} €</span><br>
-          @endif
-    
+        <div class="row" id="message-{{ $message->id_shop_message }}">
+          @if ($message->state == 'Public' || Route::currentRouteName() === 'facture.showBill')
+            <div>
+              @if ($message->state == 'Privé')
+                <u><b><span style="color:red;">(Privé)</span></b> {{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
+              @else
+                <u>{{ $message->lastname }} {{ $message->name }} <time datetime="{{ $message->date }}">{{ $formattedDate }}</time></u><br>
+              @endif
+        
+              @if ($message->somme_payé <= 0 && $message->somme_payé != null)
+                <b>Somme payée : </b><span style="font-weight : bold" class="text-danger">{{ $message->somme_payé }} €</span><br>
+              @elseif ($message->somme_payé > 0)
+                <b>Somme remboursée : </b><span style="font-weight : bold" class="text-success">{{ $message->somme_payé }} €</span><br>
+              @endif
+            </div>
+        <div class="col-11 my-2">
           {!! html_entity_decode(nl2br(e($message->message))) !!}
-    
+        </div>
+    <div class="col-1 my-2 d-flex justify-content-end">
+      <button style="display: flex ; align-self:flex-end"class="btn  btn-outline-danger delete-button" data-id="{{ $message->id_shop_message  }}">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+          
+          
           <hr>
         @endif
+        </div>
       @endforeach
     </div>
     
@@ -345,5 +355,27 @@
 
 <div style="height: 25px"></div>
 </main>
+<script>
+  $(document).ready(function() {
+    $('.delete-button').click(function() {
+      console.log('delete');
+      var messageId = $(this).data('id');
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) {
+        $.ajax({
+          url: '/admin/supprimer-message/' + messageId,
+          method: 'DELETE',
+          data: {
+            "_token": "{{ csrf_token() }}"
+          },
+          success: function(response) {
+              alert('Le message a été supprimé avec succès.');
+              $('#message-' + messageId).hide(); 
+          }
+        });
+      }
+    });
+  });
+  </script>
+  
 @endsection
 

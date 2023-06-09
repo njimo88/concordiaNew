@@ -69,6 +69,17 @@ class BillsController extends Controller
           MiseAjourStock();
           return response()->json(['message' => 'Le stock a été mis à jour.'], 200);
      }
+
+     public function messageDestroy($id)
+{
+    
+    $message = ShopMessage::find($id);
+    if ($message) {
+        $message->delete();
+        return response()->json(['message' => 'Suppression réussie.']);
+    }
+    return response()->json(['message' => 'Échec de la suppression.'], 400);
+}
      
     public function reduction()
     {
@@ -459,7 +470,7 @@ class BillsController extends Controller
         $messages = DB::table('shop_messages')
         ->join('users', 'shop_messages.id_customer', '=', 'users.user_id')
         ->where('shop_messages.id_bill', $id)
-        ->select('shop_messages.message', 'shop_messages.date', 'shop_messages.somme_payé', 'users.name', 'users.lastname','shop_messages.id_customer','shop_messages.id_admin','shop_messages.state')
+        ->select('shop_messages.message', 'shop_messages.id_shop_message', 'shop_messages.date', 'shop_messages.somme_payé', 'users.name', 'users.lastname','shop_messages.id_customer','shop_messages.id_admin','shop_messages.state')
         ->orderBy('shop_messages.date', 'asc')
         ->get();
         $nb_paiment = calculerPaiements($bill->payment_method,$bill->payment_total_amount,$bill->number);

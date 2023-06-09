@@ -125,6 +125,8 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::put('/admin/paiement/facture/updateDes/{id}',  [BillsController::class, 'updateDes'])->name('facture.updateDes');
     Route::delete('/bill/{bill}', [BillsController::class, 'destroy'])->name('bill.destroy');
     Route::post('/stock/update', [BillsController::class, 'miseAjourStock'])->name('stock.update');
+    Route::delete('/admin/supprimer-message/{id}', [BillsController::class, 'messageDestroy'])->name('message.destroy');
+
 
 
     /*----------------------- Reduction ------------------------------ */
