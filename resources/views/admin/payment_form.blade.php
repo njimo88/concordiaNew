@@ -36,8 +36,9 @@
 <script type="text/javascript"
     src="https://static.scelliuspaiement.labanquepostale.fr/static/js/krypton-client/V4.0/stable/kr-payment-form.min.js" 
     kr-public-key="{{ env('API_PUBLIC_KEY') }}"
-    kr-get-url-success="{{ route('detail_paiement', ['id' => 1, 'nombre_cheques' => 1]) }}";>
+    kr-get-url-success="{{ route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment]) }}">
 </script>
+
 
 <script type="text/javascript" src="https://static.scelliuspaiement.labanquepostale.fr/static/js/krypton-client/V4.0/ext/neon.js"></script>
 <main class="main mt-4" id="main">

@@ -66,15 +66,18 @@ class UsersController extends Controller
             $datePaiement->addMonth(); 
         }
 
-        $paymentConfig = rtrim($paymentConfig, ';');
+        $paymentConfig = rtrim($paymentConfig, ';');       
+            $amount = $paiements[0] * 100;
+        
     } else {
         $paymentConfig = "SINGLE";
+        $amount = $total * 100;
     }
 
     $response = $client->post('https://api.scelliuspaiement.labanquepostale.fr/api-payment/V4/Charge/CreatePayment', [
         'headers' => $headers,
         'json' => [
-            "amount" => $total * 100,
+            "amount" => $amount,
             "currency" => "EUR",
             "orderId" => $orderId,
             "customer" => [
@@ -98,7 +101,8 @@ class UsersController extends Controller
     $responseBody = json_decode($response->getBody()->getContents());
 
     $formToken = $responseBody->answer->formToken;
-    return view('admin.payment_form')->with('formToken', $formToken);
+    return view('admin.payment_form')->with(compact('formToken', 'nombre_virment'));
+
 }
 
 
