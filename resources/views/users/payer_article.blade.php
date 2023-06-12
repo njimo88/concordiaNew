@@ -59,7 +59,7 @@
             <h5 style="font-weight:bold"  class="text-dark font-weight-bold p-3">Moyens de paiement :</h5>
 
             @foreach ($Mpaiement as $Mpaiement)
-                @if ($Mpaiement->payment_method == 'Mixte'  )
+                @if ($Mpaiement->payment_method == 'Mixte')
                  @elseif ($Mpaiement->payment_method == 'Virement' && $total < 800)
                 @else
                     <div class="col-md-5  row mx-2 d-flex justify-content-center mb-5">
@@ -68,11 +68,8 @@
                         </div>
                         <div style="    min-height: 204px;
                         " class="col-11 d-flex justify-content-center m-2 align-items-center">
-                          @if ($Mpaiement->payment_method == 'Carte Bancaire')
-                          <a type="button" href="{{ route('payment_form', ['user_id' => $article->user_id, 'total' => $total]) }}"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
-                        @else
+                          
                             <a type="button"  data-toggle="modal" data-target="#{{ $Mpaiement->payment_method }}" href="#"><img class="imghover" style="max-width : 200px" src="{{ $Mpaiement->image}}" alt=""></a>
-                        @endif
                         </div>
                     </div>
                 @endif
@@ -96,6 +93,36 @@
                   </div>
               </div>
           </div>
+
+          <div class="modal fade" id="Carte Bancaire" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content p-2">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title font-weight-bold" id="exampleModalLabel">Paiement en Carte Bancaire</h5>
+                        <a type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </a>
+                    </div>
+                    <div class="modal-body">
+                        {!! $cb->text !!}
+                        <select class="form-control selectpicker mb-3" id="nombre_virment" data-style="btn-danger" data-width="fit">                                       <option value="1">1</option>                                       <option value="2">2</option>                                       <option value="3">3</option>                                       <option value="4">4</option>                                       <option value="5">5</option>                                   </select> 
+                        <br>
+                        <a href="#" class="btn btn-primary mr-2 " id="valider_virment">Valider ma commande</a>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+                        <script>
+                            document.getElementById('valider_virment').addEventListener('click', function(event) {
+                                event.preventDefault();
+                                var nombre_virment = document.getElementById('nombre_virment').value;
+                                var url = '{{ route('payment_form', ['nombre_virment' => ':nombre_virment', 'total' => $total ]) }}';
+                                url = url.replace(':nombre_virment', nombre_virment);
+
+                                window.location.href = url;
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
 
           <div class="modal fade" id="Bons" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -181,7 +208,7 @@
       
 
 
-                <div class="modal fade" id="Virement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                {{-- <div class="modal fade" id="Virement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                       <div class="modal-content p-2">
                           <div class="modal-header bg-primary text-white">
@@ -207,7 +234,7 @@
                           </div>
                       </div>
                   </div>
-              </div>
+              </div> --}}
               
               
               

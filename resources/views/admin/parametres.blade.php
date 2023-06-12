@@ -36,9 +36,69 @@
             {{ session('success') }}
         </div>
     @endif
+    <a href="{{ route("createNewSeason") }}" class="btn btn-custom m-3 mx-0" id="new-season-button">Créer la nouvelle saison</a>
+
+    <div class="container py-3">
+        <h2 class="text-primary mb-3">Liste des saisons</h2>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Saison</th>
+                <th>Fichier d'inscription 1</th>
+                <th>Fichier d'inscription 2</th>
+                <!-- Ajoutez d'autres colonnes selon vos besoins -->
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($seasons as $season)
+                <tr>
+                  <td>{{ $season->saison }}-{{ $season->saison+1 }}</td>
+                  <td>{{ $season->fichier_inscription1 }}</td>
+                  <td>{{ $season->fichier_inscription2 }}</td>
+                  <!-- Ajoutez d'autres cellules selon vos besoins -->
+                  <td>
+                    <button class="btn btn-custom btn-sm" data-toggle="modal" data-target="#editModal-{{ $season->saison }}">Éditer</button>
+                  </td>
+                </tr>
+    
+                <!-- Modal d'édition -->
+                <div class="modal fade" id="editModal-{{ $season->saison }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Éditer la saison</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form action="{{ route("editSeason", $season->saison) }}" method="POST">
+                          @csrf
+                          @method('PUT')
+                          <div class="form-group">
+                            <label for="fichier_inscription1-{{ $season->saison }}">Fichier d'inscription 1</label>
+                            <input type="text" class="form-control" id="fichier_inscription1-{{ $season->saison }}" name="fichier_inscription1" value="{{ $season->fichier_inscription1 }}">
+                          </div>
+                          <div class="form-group">
+                            <label for="fichier_inscription2-{{ $season->saison }}">Fichier d'inscription 2</label>
+                            <input type="text" class="form-control" id="fichier_inscription2-{{ $season->saison }}" name="fichier_inscription2" value="{{ $season->fichier_inscription2 }}">
+                          </div>
+                          <!-- Ajoutez d'autres champs de formulaire selon vos besoins -->
+                          <button type="submit" class="btn btn-custom">Sauvegarder</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+    </div>
         
-        
-    <div class="container py-5">
+    <div class="container ">
         <div class="row">
             <div class="col-lg-6 mx-auto">
                 <div class="card border-0 shadow-lg rounded-lg card-custom">
@@ -65,11 +125,18 @@
             </div>
         </div>
     </div>
+    
     </main> 
     
     <script>
         document.getElementById("submitBtn").addEventListener("click", function(event){
           var confirmation = confirm("Êtes-vous sûr de vouloir modifier la saison active ?");
+          if (!confirmation) {
+            event.preventDefault();
+          }
+        });
+        document.getElementById("new-season-button").addEventListener("click", function(event){
+          var confirmation = confirm("Êtes-vous sûr de vouloir créer une nouvelle saison ?");
           if (!confirmation) {
             event.preventDefault();
           }

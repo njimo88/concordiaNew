@@ -110,17 +110,20 @@
           </div>
       </div>
   @endif
-<div style="background-color:white;"  class="container rounded" >
-  @if (session('success'))
-    <div style="display: -webkit-inline-box !important;" class="alert alert-success mt-3 col-12">
+  <div class="container">
+    @if (session('success'))
+    <div class="alert alert-success m-3">
         {{ session('success') }}
     </div>
 @endif
 @if (session('error'))
-    <div style="    display: -webkit-inline-box;" class="alert alert-danger mt-3">
+    <div class="alert alert-danger m-3">
         {{ session('error') }}
     </div>
 @endif
+</div>
+<div style="background-color:white;"  class="container rounded" >
+
 
           <div  class="row">
             <div class="widget-title col-12 d-flex justify-content-between align-items-center">
@@ -491,8 +494,8 @@
           </div>
       </div>
       @endif
-  <div style="background-color:white;"  class="container rounded" >
-    @if (session('success'))
+      <div class="container">
+      @if (session('success'))
       <div class="alert alert-success m-3">
           {{ session('success') }}
       </div>
@@ -502,6 +505,9 @@
           {{ session('error') }}
       </div>
   @endif
+</div>
+  <div style="background-color:white;"  class="container rounded" >
+    
   
             <div  class="row ">
               <div class="widget-title col-12 d-flex justify-content-between align-items-center">

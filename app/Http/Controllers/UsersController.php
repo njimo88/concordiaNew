@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 require_once(app_path().'/fonction.php');
 
@@ -32,10 +33,10 @@ class UsersController extends Controller
 
     
     
-    public function showForm(Request $request)
+    public function showForm($nombre_virment, $total)
 {
-    $userId = $request->get('user_id');
-    $total = $request->get('total');
+    $userId = Auth::user()->user_id;
+    
     $user = User::find($userId);
 
     $bill = bills::latest('id')->first();
@@ -55,10 +56,25 @@ class UsersController extends Controller
         'Content-Type' => 'application/json',
     ];
 
+    $paiements = calculerPaiements(1, $total, $nombre_virment);
+
+    if ($nombre_virment > 1) {
+        $paymentConfig = "MULTI_EXT:";
+        $datePaiement = Carbon::today(); 
+        foreach ($paiements as $index => $montant) {
+            $paymentConfig .= $datePaiement->format('Ymd') . "={$montant};";
+            $datePaiement->addMonth(); 
+        }
+
+        $paymentConfig = rtrim($paymentConfig, ';');
+    } else {
+        $paymentConfig = "SINGLE";
+    }
+
     $response = $client->post('https://api.scelliuspaiement.labanquepostale.fr/api-payment/V4/Charge/CreatePayment', [
         'headers' => $headers,
         'json' => [
-            "amount" => $total*100,
+            "amount" => $total * 100,
             "currency" => "EUR",
             "orderId" => $orderId,
             "customer" => [
@@ -73,15 +89,19 @@ class UsersController extends Controller
                     "phoneNumber" => $user->phone, 
                 ]
             ]
+        ],
+        'query' => [
+            'vads_payment_config' => $paymentConfig
         ]
     ]);
-    
 
     $responseBody = json_decode($response->getBody()->getContents());
 
     $formToken = $responseBody->answer->formToken;
     return view('admin.payment_form')->with('formToken', $formToken);
-} 
+}
+
+
 
    
     
@@ -384,11 +404,12 @@ foreach ($paniers as $panier) {
     $Bons = DB::table('bills_payment_method')->where('payment_method', 'Bons')->first();
     $Cheques = DB::table('bills_payment_method')->where('payment_method', 'Chèques')->first();
     $Virement = DB::table('bills_payment_method')->where('payment_method', 'Virement')->first();
+    $cb = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
     if (!$can_purchase) {
         $error_msg = "Les articles suivants ne peuvent pas être achetés: " . implode(', ', $unavailable_articles);
         return redirect()->back()->withErrors([$error_msg]);
     }else{
-        return view('users.payer_article', compact('paniers','total','adresse','Mpaiement','Espece','Bons','Cheques','Virement'))->with('user', auth()->user());
+        return view('users.payer_article', compact('paniers','total','adresse','Mpaiement','Espece','Bons','Cheques','Virement',"cb"))->with('user', auth()->user());
     }
 
     }
