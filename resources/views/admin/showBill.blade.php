@@ -18,23 +18,25 @@
         <div class="col-3">
             <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
         </div>
-        <div class="row col-9 d-flex justify-content-end" >
-          <div class="col-3 d-flex justify-content-end" >
-            <form method="post" action="{{ route('generatePDFfacture', $bill->id) }}">
-              @csrf
-              <button type="submit" class="my-custom-btn btn btn-primary my-4">Facture <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
-            </form>
-          </div>
-          @if ($bill->status == 100)
+        
+          @if ($bill->status >= 70)
+          <div class="row col-9 d-flex justify-content-end" >
+            <div class="col-3 d-flex justify-content-end" >
+              <form method="post" action="{{ route('generatePDFfacture', $bill->id) }}">
+                @csrf
+                <button type="submit" class="my-custom-btn btn btn-primary my-4">Facture <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
+              </form>
+            </div>
           <div class="col-3 d-flex justify-content-end" >
             <form method="post" action="{{ route('generatePDFreduction_Fiscale', $bill->id) }}">
               @csrf
               <button type="submit" class="my-custom-btn btn btn-primary my-4">Réduction Fiscale  <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
             </form>
           </div>
+      </div>
+
           @endif          
           
-      </div>
         
         <hr>
         

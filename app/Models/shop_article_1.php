@@ -23,7 +23,19 @@ class shop_article_1 extends Model
             'updated_at'
     ];
 
-   
+    public static function hasMultipleTeachers($id_article) {
+        $article = self::find($id_article);
+    
+        if(!$article) {
+            throw new \Exception('Article not found');
+        }
+    
+        $teachers = json_decode($article->teacher, true);
+    
+        return count($teachers) > 1;
+    }
+    
+    
 
 
 

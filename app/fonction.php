@@ -197,7 +197,11 @@ function retourner_shop_article_dun_teacher($user_id, $saison) {
 
 function retourner_buyers_dun_shop_article($id_shop_article) {
 
-    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::where('id_shop_article',$id_shop_article)->pluck('id_user')->toArray();
+    $requete_liaison_shop_article_bills = LiaisonShopArticlesBill::join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+    ->where('id_shop_article', $id_shop_article)
+    ->where('bills.status', '>', 9)
+    ->pluck('liaison_shop_articles_bills.id_user')
+    ->toArray();
 
     return $requete_liaison_shop_article_bills ;
 
@@ -248,7 +252,54 @@ function fetchDayy($date) {
 
     return '';
 }
+function fetcchDayy($date) {
+    $lejour = (new DateTime($date))->format('l');
 
+    $jour_semaine = array(
+        "lundi" => "Monday",
+        "mardi" => "Tuesday",
+        "mercredi" => "Wednesday",
+        "jeudi" => "Thursday",
+        "vendredi" => "Friday",
+        "samedi" => "Saturday",
+        "dimanche" => "Sunday"
+    );
+
+    $jour_semaine_fr = array_flip($jour_semaine);
+
+    if (isset($jour_semaine_fr[$lejour])) {
+        return ucfirst($jour_semaine_fr[$lejour]);
+    }
+
+    return '';
+}
+
+function fetchMonthh($date) {
+    $mois = (new DateTime($date))->format('F');
+
+    $mois_fr = array(
+        "janvier" => "January",
+        "février" => "February",
+        "mars" => "March",
+        "avril" => "April",
+        "mai" => "May",
+        "juin" => "June",
+        "juillet" => "July",
+        "août" => "August",
+        "septembre" => "September",
+        "octobre" => "October",
+        "novembre" => "November",
+        "décembre" => "December",
+    );
+
+    $mois_fr = array_flip($mois_fr);
+
+    if (isset($mois_fr[$mois])) {
+        return ucfirst($mois_fr[$mois]);
+    }
+
+    return '';
+}
 
 
 // recuperer l'ID de user et la saison et restituer les shop articles achetes

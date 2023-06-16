@@ -4,7 +4,14 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use App\Models\Parametre;
+use App\Models\Shop_article;
+use App\Models\shop_article_0;
+use App\Models\shop_article_1;
+use App\Models\shop_article_2;
+
 
 class ParametreController extends Controller
 {
@@ -46,6 +53,79 @@ public function update(Request $request, $id)
 
     return redirect()->back()->with('success', 'La saison a été mise à jour avec succès.');
 }
+
+public function duplicateProducts(Request $request, $season)
+{
+    $notDuplicated = [];
+    $sourceSeason = $season;
+    $targetSeason = $request->input('target_season');
+    $startValidity = $request->input('start_validity');
+    $startYear = date('Y', strtotime($startValidity));
+    $endYear = $startYear + 1;
+    $endValidity = $endYear . '-05-31';
+
+    $sourceArticles = Shop_article::where('saison', $sourceSeason)->get();
+    
+    foreach ($sourceArticles as $article) {
+        $newArticle = $article->replicate();
+        $newArticle->saison = $targetSeason;
+        $newArticle->title = "0-" . $newArticle->title;
+        $newArticle->ref = substr($newArticle->ref, 0, -5) . substr($targetSeason, -2) . "-" . ((int)substr($targetSeason, -2) + 1);
+        $newArticle->startvalidity = $startValidity;
+        $newArticle->endvalidity = $endValidity;
+        $newArticle->need_member = 0;
+        $newArticle->stock_actuel = $newArticle->stock_ini;
+        $newArticle->push();
+        $newId = DB::table('shop_article')->max('id_shop_article');
+
+        if ($article->type_article == 1) {
+            $sourceArticle1 = shop_article_1::where('id_shop_article', $article->id_shop_article)->first();
+            if ($sourceArticle1) {
+                $newArticle1Data = $sourceArticle1->attributesToArray();
+                $newArticle1Data['id_shop_article'] = $newId;
+                $newArticle1Data['lesson'] = str_replace($sourceSeason, $targetSeason, $newArticle1Data['lesson']);
+                $newArticle1Data['updated_at'] = Carbon::now();
+                $newArticle1Data['created_at'] = Carbon::now();
+                DB::table('shop_article_1')->insert($newArticle1Data);
+            }else{
+                $notDuplicated[] = $article;
+            }
+        }
+        if ($article->type_article == 0) {
+            $sourceArticle0 = shop_article_0::where('id_shop_article', $article->id_shop_article)->first();
+            if ($sourceArticle0) {
+                $newArticle0Data = $sourceArticle0->attributesToArray();
+                $newArticle0Data['id_shop_article'] = $newId;
+                $newArticle0Data['updated_at'] = Carbon::now();
+                $newArticle0Data['created_at'] = Carbon::now();
+                DB::table('shop_article_0')->insert($newArticle0Data);
+            }else{
+                $notDuplicated[] = $article;
+            }
+        } elseif ($article->type_article == 2) {
+            $sourceArticle2 = shop_article_2::where('id_shop_article', $article->id_shop_article)->first();
+            if ($sourceArticle2) {
+                $newArticle2Data = $sourceArticle2->attributesToArray();
+                $newArticle2Data['id_shop_article'] = $newId;
+                $newArticle2Data['updated_at'] = Carbon::now();
+                $newArticle2Data['created_at'] = Carbon::now();
+                DB::table('shop_article_2')->insert($newArticle2Data);
+            }else{
+                $notDuplicated[] = $article;
+            }
+        }
+        
+    }
+dd($notDuplicated);
+    // afficher les articles qui n'ont pas pu être dupliqués
+    foreach ($notDuplicated as $article) {
+        echo "Article ID: " . $article->id_shop_article . " n'a pas pu être dupliqué.\n";
+    }
+
+    return redirect()->back()->with('success', 'Les produits ont été dupliqués avec succès');
+}
+
+
 
 
 

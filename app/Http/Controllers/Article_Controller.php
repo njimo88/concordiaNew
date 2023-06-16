@@ -11,6 +11,7 @@ use App\Models\rooms;
 use App\Models\shop_article_0;
 use App\Models\shop_article_1;
 use App\Models\shop_article_2;
+use App\Models\Parametre;
 use Illuminate\Http\Request;
 require_once(app_path().'/fonction.php');
 class Article_Controller extends Controller
@@ -742,9 +743,10 @@ class Article_Controller extends Controller
         $requete_cate = Shop_category::get() ;
 
         $requete_prof = User::select("*")->where('role','>', 29)->get();
-        $rooms = rooms::get();
+        $rooms = rooms::orderBy('name', 'asc')->get();
 
-        $saison_list = Shop_article::select('saison')->distinct('name')->get();
+
+        $saison_list = Parametre::select('saison')->distinct('name')->get();
 
         $Shop_article = Shop_article::where('id_shop_article', $id)->get();
         $shop_article_1 = shop_article_1::where('id_shop_article', $id)->get();
@@ -757,12 +759,52 @@ class Article_Controller extends Controller
 
     }
 
+    public function updateLesson(Request $request)
+    {
+        $shopArticleId = $request->input('shop_article_id');
+        $lessonIndex = $request->input('lesson_index');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $startTime = $request->input('start_time');
+        $endTime = $request->input('end_time');
+        $room = $request->input('room');
+    
+        // Récupérer le shop article correspondant
+        $shopArticle = shop_article_1::find($shopArticleId);
+        if ($shopArticle) {
+            $lessons = json_decode($shopArticle->lesson, true);
+    
+            // Mettre à jour les informations de la séance
+            if (isset($lessons['start_date'][$lessonIndex])) {
+                $lessons['start_date'][$lessonIndex] = $startDate . ' ' . $startTime;
+            }
+    
+            if (isset($lessons['end_date'][$lessonIndex])) {
+                $lessons['end_date'][$lessonIndex] = $endDate . ' ' . $endTime;
+            }
+    
+            if (isset($lessons['room'][$lessonIndex])) {
+                $lessons['room'][$lessonIndex] = $room;
+            }
+    
+            // Mettre à jour la colonne "lesson" dans la base de données
+            $shopArticle->lesson = json_encode($lessons);
+            $shopArticle->save();
+    
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['success' => false, 'message' => 'Shop article not found']);
+    }
+    
+
        //Modification des articles
     public function edit(Request $request, $id){
             
           // $article= Shop_article::where('id_shop_article', $id)->firstOrFail(); apparemment, la fonction firstorfail force a utiliser id comme primary key
             $article= Shop_article::find($id); 
             $article->update($request->all());
+            $id_article = $article->id_shop_article;
             $article_2 = shop_article_2::find($id);    
             $article_1 = shop_article_1::find($id);
             $article_0 = shop_article_0::find($id);
@@ -809,12 +851,17 @@ class Article_Controller extends Controller
                               
 
                              
-                                $article_0->update($request->all()); 
+                                if($article_0) { 
+                                    $article_0->update($request->all()); 
+                                }
+                                
  
                               
                                
 
            }elseif($type_article == 1){
+                            
+            
 
                                 if(isset($request->editor1)){
 
@@ -884,10 +931,28 @@ class Article_Controller extends Controller
 
                              
 
-
                                 
-                                $article_1->update($request->all());
-                                            
+                             if($article_1) { 
+                                $article_1->update($request->all()); 
+                            }
+                            
+                                if(shop_article_1::hasMultipleTeachers($id_article)) {
+                                    $article->image = asset('assets/images/multiple_teachers_image.png');
+                                    $article->save(); 
+                                } else {
+                                    $article1 =  shop_article_1::find($id_article);
+                                    $teachers = json_decode($article1->teacher, true);
+                                    $teacherId = $teachers[0]; 
+                                    $teacher = User::find($teacherId); 
+                                
+                                    if($teacher && $teacher->image) {
+                                        $article->image = asset($teacher->image);
+                                        $article->save(); 
+                                    } else {
+                                        $article->image = asset('assets/images/default_teacher_image.png'); 
+                                        $article->save(); 
+                                    }
+                                }
 
 
 
@@ -939,8 +1004,9 @@ class Article_Controller extends Controller
 
 
 
-                                            
-                                    $article_2->update($request->all());
+                                            if($article_2){
+                                                $article_2->update($request->all());
+                                            }
                             
 
            }

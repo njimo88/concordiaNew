@@ -29,273 +29,250 @@ foreach($Shop_article as $value1){
 
     @if($type_article == 0)
        
-
     <main id="main" class="main">
-                                    <div class="container">
-                            @if(session()->has('success'))
-                                            <div class="alert alert-success">
-                                                {{ session()->get('success') }}
-                                            </div>
-                                        @endif
 
-                                        <div class="row pt-5">
-                                                <div class="col-md-2">
-                                                    
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <a href="{{route('index_article')}}"><button class="btn btn-warning"> retour</button></a>
-                                                </div>
-                            </div>
+        <div class="container">
+                             @if(session()->has('success'))
+                                             <div class="alert alert-success">
+                                                 {{ session()->get('success') }}
+                                             </div>
+                                         @endif
+ 
+                                         <div class="row pt-5justify-content-end">
+                                                 <div class="col-md-2">
+                                                     
+                                                 </div>
+                                                 <div class="col-md-12">
+                                                     <a href="{{route('index_article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
+                                                 </div>
+                             </div>
+                             
+ 
+                                     
+                             <form  method="POST" action="{{route('edit_article',$Id)}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
+                             @csrf
+                             <div class="my-4 text-center">
+                                 <h3 class="bg-success text-white p-2">Paramètres Généraux</h3>  
+                             </div>
+                     
+                             <div class="row">
+                                 @foreach($Shop_article as $value1)
+                                     <div class="col-md-2 mb-3">
+                                         <label for="saison">Saison</label>
+                                         <select id="saison" class="form-control" name="saison">
+                                             @foreach($saison_list as $data)
+                                                 <option value="{{$data->saison}}" {{ $value1->saison == $data->saison ? 'selected' : '' }}> {{$data->saison}} - {{$data->saison + 1 }}</option>
+                                             @endforeach
+                                         </select>
+                                     </div>
+                                     <div class="col-md-4 col-6">
+                                         <label for="title">Titre</label>
+                                             
+                                             <input required id="title" class="form-control" name="title" for="title" type="text" value="{{$value1->title}}">
+                                 </div>
+                         <div class="col-md-2 col-6">
+                         <label for="image">Image</label>
+                         
+                         <input class="imageUpload form-control" id="image" required for="image" name="image" type="upload" placeholder="Image" value="{{$value1->image}}">
+                         </div>
+                         <div class="col-md-2 col-6">
+                         <label for="ref">Référence</label>
+                         
+                                 <input id="ref" class="form-control" for="ref" name="ref" type="text" placeholder="Référence" value="{{$value1->ref}}">
+                         </div>
+                        
+                         <div class="col-md-2 col-6 mb-3">
+                         <label for="img">Couleur</label>
+                         <input class="jscolor {width:243, height:150, position:'right', borderColor:'#000', insetColor:'#FFF', backgroundColor:'#DDD'}">
+                     </div>
+                     
+                     
+                 
+                         <div class="col-md-2 col-6 ">
+                     <label> Début de validité : </label>
+                             <input required type="date" class="form-control" name="startvalidity" value="{{$value1->startvalidity}}">
+                         </div>
+                         <div class="col-md-2 col-6">
+                                                      <label> Fin de validité :</label>
+                                                          <input required type="date" class="form-control" name="endvalidity" value="{{$value1->endvalidity}}">
+                                                      </div>
+                 
+                                                      <div class="col-md-2 col-6">
+                 
+                                                          <label>  Statut :   </label> 
+                                                              
+                                                                  <select value="0" name="need_member" class="form-control" id="require">
+                                                                      <option value="0" {{ $value1->need_member == 0 ? 'selected' : '' }}>Non membre</option>
+                                                                      <option value="1" {{ $value1->need_member == 1 ? 'selected' : '' }}>membre loisir</option>
+                                                                      <option value="3" {{ $value1->need_member == 3 ? 'selected' : '' }}>membre compétition</option>
+                                                                  
+                                                          </label>       
+                                                                  </select>
+                 
+                                                      </div>
+                 
+                                                      <div class="col-md-2 col-6">
+                 
+                                                      
+                                                              <label>Age Minimal</label><input type="number" class="form-control" name="agemin" step="0.01" value="{{$value1->agemin}}" required>
+                 
+                                                      </div>
+                 
+                                                      <div class="col-md-2 col-6">
+                 
+                                                      <label>Age Maximal</label><input type="number" class="form-control" name="agemax" step="0.01" value="{{$value1->agemax}}" required>
+                 
+                                                      </div>
+                 
+                                                      <div class="col-md-2 col-6">
+                 
+                                                          <label> Prix TTC :</label>
+                                                          
+                                                          <input step="0.01" class="form-control" name="price" for="TTC" type="number" value='{{$value1->price}}' required>
+                 
+                                                      </div>
+                 
+                                                  <div class="col-md-2 col-6">
+                 
+                                                  <label> Prix indicatif :</label>
+                                                          
+                                                          <input step="0.01" class="form-control" name="price_indicative" for="TTC" type="number" value='{{$value1->price_indicative}}' required>
+                 
+                                                  </div>
+                 
+                                                  <div class="col-md-2 col-6">
+                 
+                                                     <label> Quantité initale:</label>
+                                                             
+                                                             <input step="0.01" class="form-control" name="stock_ini" for="TTC" type="number" value='{{$value1->stock_ini}}' required>
+                 
+                                                     </div>
+                 
+                                                     <div class="col-md-2 col-6">
+                 
+                                                     <label>  Quantité restante: </label>
+                                                             <input step="0.01" class="form-control" name="stock_actuel" for="TTC" type="number" value='{{$value1->stock_actuel}}' required>
+                 
+                                                     </div>
+                 
+                                                     <div class="col-md-2 col-6">
+                                                     <label>  Quantité alerte:</label> 
+                                                             <input step="0.01" class="form-control" name="alert_stock" for="TTC" type="number" value='{{$value1->alert_stock}}' required>
+                 
+                                                     </div>
+                 
+                                                     <div class="col-md-2 col-6">
+                                                     <label> type article  :</label>
+                                                             <input step="1" class="form-control" name="type_article" for="" type="number" value='{{$value1->type_article }}' required readonly>
+                 
+                                                     </div>
+                 
+                                                     <div class="col-md-2 col-6">
+                                                     <label>  Max utilisateur:</label>
+                                                             <input  class="form-control" name="max_per_user" for="" type="number" value='{{$value1->max_per_user}}' required>
+                 
+                                                     </div>
+                                                     <div class="col-md-6">
+                                                         <div style="height: 250px; overflow: auto;" class="border rounded p-3 bg-light">
+                                                             <table class="table table-striped">
+                                                                 <thead>
+                                                                     <tr>        
+                                                                         <th scope="col">Choix des catégories</th>
+                                                                         <th scope="col"></th>
+                                                                     </tr>
+                                                                 </thead>
+                                                                 <tbody>
+                                                                 @php
+                                                                     $json_cate = json_decode($value1->categories) ?? [];
+                                                                 @endphp
+                                                                     
+                                                                 @foreach($requete_cate as $data)
+                                                                     <tr>    
+                                                                         <td>{{$data->name}}</td>     
+                                                                         <td class="text-center">
+                                                                             <div class="form-check form-check-inline">
+                                                                                 <input class="form-check-input mb-0" type="checkbox" id="category{{$data->id_shop_category}}" name="category[]" value="{{$data->id_shop_category}}" {{ in_array($data->id_shop_category,$json_cate) ? 'checked ': ""}}>
+                                                                                 <label class="form-check-label" for="category{{$data->id_shop_category}}"></label>
+                                                                             </div>
+                                                                         </td>
+                                                                     </tr>
+                                                                 @endforeach
+                                                                     
+                                                                 </tbody>
+                                                             </table>
+                                                         </div>
+                                                     </div>
+                                                     <div class="col-md-6 col-6 row">
+                                                         
+                                                         
+                                                         <div class="col-md-4  mt-4">
+                                                             <div class="form-check form-switch">
+                                                                 <input class="form-check-input" type="checkbox" id="strict" name="strict" value="1" {{ $value1->selected_limit == 1 ? 'checked' : '' }}>
+                                                                 <label class="form-check-label" for="strict">&nbsp Mode strict</label>
+                                                             </div>
+                                                         </div>
+                                                         <div class="col-md-4  mt-4">
+                                                             <div class="form-check form-switch">
+                                                                 <input class="form-check-input" type="checkbox" id="afiscale" name="afiscale" value="1" {{ $value1->afiscale == 1 ? 'checked' : '' }}>
+                                                                 <label class="form-check-label" for="afiscale">&nbsp Attestation fiscale</label>
+                                                             </div>
+                                                         </div>
+                                                         <div class="col-md-3  mt-4">
+                                                             <div class="form-check form-switch">
+                                                                 <input class="form-check-input" type="checkbox" id="nouveaute" name="nouveaute" value="1" {{ $value1->nouveaute == 1 ? 'checked' : '' }}>
+                                                                 <label class="form-check-label" for="nouveaute">&nbsp Nouveauté</label>
+                                                             </div>
+                                                         </div>
+                                                                 <label class="mr-2">Limitation par sexe:</label>
+                                                                 <div class="form-check form-check-inline">
+                                                                     <input class="form-check-input" type="radio" id="sexLimitMixte" name="sex_limit" value="0" {{ $value1->sex_limit == 0 ? 'checked' : ''}}>
+                                                                     <label class="form-check-label" for="sexLimitMixte">Mixte</label>
+                                                                 </div>
+                                                         
+                                                                 <div class="form-check form-check-inline">
+                                                                     <input class="form-check-input" type="radio" id="sexLimitFemme" name="sex_limit" value="1" {{ $value1->sex_limit == 1 ? 'checked' : ''}}>
+                                                                     <label class="form-check-label" for="sexLimitFemme">Femme</label>
+                                                                 </div>
+                                                         
+                                                                 <div class="form-check form-check-inline">
+                                                                     <input class="form-check-input" type="radio" id="sexLimitHomme" name="sex_limit" value="2" {{ $value1->sex_limit == 2 ? 'checked' : ''}}>
+                                                                     <label class="form-check-label" for="sexLimitHomme">Homme</label>
+                                                                 </div>
+                                                         
+                                                         
+                                                         
+                                                     </div>
+                                                     
+                                                     
+                                     
+                                                     
+                                                     
+                                 @endforeach
+                             </div>
+                     
+                             
+                             <br> 
 
-                                    
-                            <form  method="POST" action="{{route('edit_article',$Id)}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
-                            @csrf
-                                            <div class="row"> 
-                                                <div class="col-md-4">
-                                                
-                                                <input class="btn btn-warning" name="modifier" type="submit" value="Valider">
-                                                </div>
-                                            
-                                            
-                                            </div>
-                                            <br>
+                                    @foreach($shop_article_0 as $article)
 
-                                @foreach($Shop_article as $value1)         
-                                            <!-- row vert  -->
-                                <div class="row" style="background-color: #c6ffc1; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
-                                            <h3>Paramètres Généraux</h3>  
-                                                    <div class="col-md-2 col-6">
-                                                        <label for="saison">Saison</label>
-                                                            <select id="saison" class="form-control" name="saison">
-                                                                @foreach($saison_list as $data)
-                                                               
-                                                                <option value="{{$data->saison}}" {{ $value1->saison == $data->saison ? 'selected' : '' }}> {{$data->saison}} - {{$data->saison + 1 }}</option>
-                                                                
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-2 col-6">
-                                                                <label for="title">Titre</label>
-                                                                    
-                                                                    <input required id="title" class="form-control" name="title" for="title" type="text" value="{{$value1->title}}">
-                                                        </div>
-                                                <div class="col-md-2 col-6">
-                                                <label for="image">Image</label>
-                                                
-                                                <input class="imageUpload form-control" id="image" required for="image" name="image" type="upload" placeholder="Image" value="{{$value1->image}}">
-                                                </div>
-                                                <div class="col-md-2 col-6">
-                                                <label for="ref">Référence</label>
-                                                
-                                                        <input id="ref" class="form-control" for="ref" name="ref" type="text" placeholder="Référence" value="{{$value1->ref}}">
-                                                </div>
-                                                <div class="col-md-2 col-6">
-                                                <label for="img">Couleur</label>
-                                                    <input id="img" type="color" class="form-control" class="color" name="color" value="">
-                                                </div>
-                                                
-
-                                                <div class="col-md-2 col-6 ">
-                                            <label> Début de validité : </label>
-                                                    <input required type="date" class="form-control" name="startvalidity" value="{{$value1->startvalidity}}">
-                                                </div>
-
-                                                <div class="col-md-2 col-6">
-                                                <label> Fin de validité :</label>
-                                                    <input required type="date" class="form-control" name="endvalidity" value="{{$value1->endvalidity}}">
-                                                </div>
-
-                                                <div class="col-md-2 col-6">
-
-                                                    <label>  Statut :   </label> 
-                                                        
-                                                            <select value="0" name="need_member" class="form-control" id="require">
-                                                                <option value="0" {{ $value1->need_member == 0 ? 'selected' : '' }}>Non membre</option>
-                                                                <option value="1" {{ $value1->need_member == 1 ? 'selected' : '' }}>membre loisir</option>
-                                                                <option value="3" {{ $value1->need_member == 3 ? 'selected' : '' }}>membre compétition</option>
-                                                            
-                                                    </label>       
-                                                            </select>
-
-                                                </div>
-
-                                                <div class="col-md-2 col-6">
-
-                                                
-                                                        <label>Age Minimal</label><input type="number" class="form-control" name="agemin" step="0.01" value="{{$value1->agemin}}" required>
-
-                                                </div>
-
-                                                <div class="col-md-2 col-6">
-
-                                                <label>Age Maximal</label><input type="number" class="form-control" name="agemax" step="0.01" value="{{$value1->agemax}}" required>
-
-                                                </div>
-
-                                                <div class="col-md-2 col-6">
-
-                                                    <label> Prix TTC :</label>
-                                                    
-                                                    <input step="0.01" class="form-control" name="price" for="TTC" type="number" value='{{$value1->price}}' required>
-
-                                                </div>
-
-                                            <div class="col-md-2 col-6">
-
-                                            <label> Prix indicatif :</label>
-                                                    
-                                                    <input step="0.01" class="form-control" name="price_indicative" for="TTC" type="number" value='{{$value1->price_indicative}}' required>
-
-                                            </div>
-
-                                            <div class="col-md-2 col-6">
-
-                                            <label> Quantité initale:</label>
-                                                    
-                                                    <input step="0.01" class="form-control" name="stock_ini" for="TTC" type="number" value='{{$value1->stock_ini}}' required>
-
-                                            </div>
-
-                                            <div class="col-md-2 col-6">
-
-                                            <label>  Quantité restante: </label>
-                                                    <input step="0.01" class="form-control" name="stock_actuel" for="TTC" type="number" value='{{$value1->stock_actuel}}' required>
-
-                                            </div>
-
-                                            <div class="col-md-2 col-6">
-                                            <label>  Quantité alerte:</label> 
-                                                    <input step="0.01" class="form-control" name="alert_stock" for="TTC" type="number" value='{{$value1->alert_stock}}' required>
-
-                                            </div>
-
-                                            <div class="col-md-2 col-6">
-                                            <label> type article  :</label>
-                                                    <input step="1" class="form-control" name="type_article" for="" type="number" value='0' required readonly>
-
-                                            </div>
-
-                                            <div class="col-md-2 col-6">
-                                            <label>  Max utilisateur:</label>
-                                                    <input  class="form-control" name="max_per_user" for="" type="number" value='{{$value1->max_per_user}}' required>
-
-                                            </div>
+                                    <div class="row" style="background-color:lightblue; border: 2px solid grey;justify-content: center; font-family: 'font-name'">
                                         
-                                            <div class="row pt-3"> 
-                                            <div class="col-md-4 col-6">
-                                            <label>  Mode strict:</label>
+                                        <div class="col-sm-12 text-center">
+                                            <p>Prix Adhesion: {{$article->prix_adhesion}}</p>
+                                            <p>Prix Assurance: {{$article->prix_assurance}}</p>
+                                            <p>Prix Licence Fede: {{$article->prix_licence_fede}}</p>
+                                        </div>
 
-                                            <table class="table">
-                                            
+                                    </div>
 
-                                                    <tr>
-                                                
-                                                    <td><input style="vertical-align:center;" for="" type="checkbox" name="strict" value="{{$value1->selected_limit}}" {{ $value1->selected_limit == 1 ? 'checked' : 0 }} ></td>
-
-                                                    </tr>
-                                                
-                                        </table>
+                                    @endforeach
 
 
-                                            </div>
-                                            <div class="col-md-4 col-6">
-
-                                            <label>  Attestation fiscale :</label>
-
-                                                    <table class="table">
-
-                                                            <tr>
-                                                           
-                                                            <td><input type="checkbox"  value=1 name="afiscale" value="{{$value1->afiscale}}" {{ $value1->afiscale == 1 ? 'checked' : 0 }} ></td>
-
-                                                            </tr>
-                                                        
-                                                    </table>
-
-                                        
-                                        
-
-                                            </div>
-                                            <div class="col-md-2 col-6">
-                                                <label for="attestation">Nouveauté</label>
-                                            <input type="checkbox"  for="id_shop_article" value='1' name="nouveaute"  value="{{$value1->nouveaute}}" {{ $value1->nouveaute == 1 ? 'checked' : 0 }}>
-                                                </div>
-                                            <div class="col-md-4 col-6 pb-5">
-                                            
-                                 <fieldset>
-                                <label> Limitation par sexe: </label> 
-                                <div>
-                                <input type="radio" id="" name="sex_limit"  value=0 {{ $value1->sex_limit == 0 ? 'checked' : ''}}>
-                                <label for="">Mixte</label>
-                                </div>
-
-                                <div>
-                                <input type="radio" id="dewey" name="sex_limit"  value=1 {{ $value1->sex_limit == 1 ? 'checked' : ''}}  >
-                                <label for="">Femme</label>
-                                </div>
-
-                                <div>
-                                <input type="radio" id="" name="sex_limit"  value=2 {{ $value1->sex_limit == 2 ? 'checked' : ''}}>
-                                <label for="">Homme</label>
-                                </div>
-                            </fieldset>
-                                        
-                                                    
-                                            </div>
-                                            <div class="col-md-12">
-                                <div style="height: 250px;  overflow: scroll; ">
-                            <table class="table">
-                            <thead>
-                                <tr>
-                                
-                                <th scope="col">Choix des catégories</th>
-                                <th scope="col"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @php
-                                $json_cate = json_decode($value1->categories) ;  
-                                if ($json_cate){
-
-                                }else{
-                                    $json_cate = [];  
-                                }
-                                
-                            @endphp
-
-                            
-                                
-                                @foreach($requete_cate as $data)
-                                
-                                <tr>
-                            
-                                <td>{{$data->name}}</td>
-                                
-                                <td><input style="vertical-align:center;" for="catenvoi" type="checkbox" name="category[]"  value="{{$data->id_shop_category}}" {{ in_array($data->id_shop_category,$json_cate) ? 'checked ': " "}}></td>
-                                
-                            
-
-                                </tr>
-
-                                @endforeach
-                            
-                            </tbody>
-                            </table>
-                            </div>
-                                </div>
-
-                                            </div>
-
-
-                            </div>
-
-                            @endforeach
-                            <br> 
-
+                             <br>
                             @foreach($shop_article_0 as $data)
 
                             <!-- row beige  -->
-                            <div class="row" style="background-color: beige;border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
+                            <div class="row" style="background-color: beige; border :2px solid grey; justify-content: center">
 
                             <h3>Paramètres spécifiques</h3>
                             <br>
@@ -331,7 +308,7 @@ foreach($Shop_article as $value1){
 
                             @foreach($Shop_article as $value1)
                             <!-- row rose -->
-                            <div class="row" style="background-color:pink; border-right: 2px solid grey;border-top: 2px solid grey;border-left: 2px solid grey;justify-content: center">
+                            <div class="row" style="background-color:pink; border: 2px solid grey;justify-content: center">
 
                                     
                                     <div class="row">
@@ -365,7 +342,11 @@ foreach($Shop_article as $value1){
                             @endforeach
                                     
                             </div>
-
+                            <div class="row mt-4 d-flex justify-content-center">
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <input class="btn btn-success" name="modifier" type="submit" value="Valider">
+                                </div>
+                            </div>
                             </form>
 
 </main>
@@ -388,11 +369,7 @@ foreach($Shop_article as $value1){
                                                     <a href="{{route('index_article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
                                                 </div>
                             </div>
-                            <div class="row mt-4 d-flex justify-content-center">
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <input class="btn btn-success" name="modifier" type="submit" value="Valider">
-                                </div>
-                            </div>
+                            
 
                                     
                             <form  method="POST" action="{{route('edit_article',$Id)}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
@@ -701,7 +678,11 @@ foreach($Shop_article as $value1){
                             @endforeach
                                     
                             </div>
-
+                            <div class="row mt-4 d-flex justify-content-center">
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <input class="btn btn-success" name="modifier" type="submit" value="Valider">
+                                </div>
+                            </div>
                             </form>
 
 
@@ -717,7 +698,7 @@ foreach($Shop_article as $value1){
             </div>
         </div>
     
-        <form class="border border-dark p-3" method="POST" action="{{route('edit_article', $Id)}}" enctype="multipart/form-data" novalidate>
+        <form id="bigform" class="border  p-3" method="POST" action="{{route('edit_article', $Id)}}" enctype="multipart/form-data" novalidate>
             @csrf
     
             <div class="mb-4 text-center">
@@ -739,11 +720,7 @@ foreach($Shop_article as $value1){
                             
                             <input required id="title" class="form-control" name="title" for="title" type="text" value="{{$value1->title}}">
                 </div>
-        <div class="col-md-2 col-6">
-        <label for="image">Image</label>
         
-        <input class="imageUpload form-control" id="image" required for="image" name="image" type="upload" placeholder="Image" value="{{$value1->image}}">
-        </div>
         <div class="col-md-2 col-6">
         <label for="ref">Référence</label>
         
@@ -919,138 +896,242 @@ foreach($Shop_article as $value1){
                 @endforeach
             </div>
     
-            <div class="row mt-4 d-flex justify-content-center">
-                <div class="col-md-4 d-flex justify-content-center">
-                    <input class="btn btn-success" name="modifier" type="submit" value="Valider">
-                </div>
+            <br> 
+
+
+            @foreach($Shop_article as $value1)
+            <!-- row rose -->
+            <div class="row pb-3" style="background-color:pink; border: 2px solid grey;justify-content: center">
+
+                    
+                    <div class="row">
+                    
+                        <div class="col-sm-12">
+                                    <br>
+                        
+                                        <label>Résumé </label>
+                                            <textarea type="text" name="short_description" class="form-control" > {{$value1->short_description}}</textarea>
+                                        <label>Description</label>
+                                            <textarea name="editor1"  id="ckeditor" class="form-control" required> {{$value1->description}}</textarea>
+                                            
+                        </div>
+                    
+                    
+                    
+                    </div>
+                
+                    
             </div>
-        </form>
+
+
+            </div>
+
+            @endforeach
+        
     
 
         <br> 
-    
+        <style>
+            .my-custom-container {
+                background-color: #eee9e9;  
+                
+            }
+        
+            .my-custom-container h2 {
+                text-align: center;
+            }
+        
+            .add-session {
+                text-align: right;
+            }
+        
+            .table-row {
+                background-color: #f8f9fa; 
+            }
+        
+            .table-row:hover {
+                background-color: #e9ecef; 
+            }
+        </style>
+        
         <!-- row beige  -->
-        <div class="row p-3" style="background-color: beige;border: 2px solid grey;justify-content: center">
-            <div class="col-md-12">
-                <i style="color: red;">Si vous voulez modifier réécrivez les anciennes données à conserver et ajoutez les nouvelles à la suite ; dans le cas où vous voulez remplacer complètement les données, remplissez le formulaire avec les nouvelles données (les anciennes données seront perdues)</i>
-            </div>
-    
-            <div class="col-md-4">
-                <div style="height: 250px;  overflow: scroll; ">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Choix des professeurs :</th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                                $json_teacher = '';           
-                                foreach($shop_article_1 as $val){
-                                    $json_teacher = json_decode($val->teacher);  
-                                }
-                            @endphp
-                            @foreach($requete_prof as $data)
-                                <tr>
-                                    <td>{{$data->name}}  {{$data->lastname }}</td>
-                                    <td>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="prof{{$data->user_id}}" name="prof[]" value="{{$data->user_id}}" {{ in_array($data->user_id, $json_teacher) ? 'checked' : '' }}>
-                                            <label class="form-check-label" for="prof{{$data->user_id}}"></label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+        <div class="my-custom-container">
+            <div class="row p-4">
+                <div class="col-md-12">
+                    <h2>Information sur la séance</h2>
                 </div>
-            </div>
-    
-            <div class="col-md-4 mt-2">
-                <b>Lieu: </b>
-                <br>
+        
+                <div class="col-md-12 add-session mb-3">
+                    <button class="add_field_button btn btn-dark">Ajouter des séances</button>
+                </div>
+        
+                <div class="col-md-4">
+                    <div style="height: 250px;  overflow: scroll; ">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="position: sticky" scope="col">Choix des professeurs :</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $json_teacher = '';           
+                                    foreach($shop_article_1 as $val){
+                                        $json_teacher = json_decode($val->teacher);  
+                                    }
+                                @endphp
+                                @foreach($requete_prof as $data)
+                                    <tr class="table-row">
+                                        <td>{{$data->name}}  {{$data->lastname }}</td>
+                                        <td>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="checkbox" id="prof{{$data->user_id}}" name="prof[]" value="{{$data->user_id}}" {{ in_array($data->user_id, $json_teacher) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="prof{{$data->user_id}}"></label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                
+            </form>
+            <div class="col-md-8 mt-2">
                 @foreach($shop_article_1 as $data1)
                     @php
                         $norepeat = TRUE; // éviter de répéter les redondances d'informations à l'affichage
                         $Data_lesson = (array) json_decode($data1->lesson,true);
-    
-                        foreach($rooms as $room){
-                            foreach($Data_lesson['room'] as $r){
-                                if($r == $room->id_room && $norepeat == TRUE){
-                                    echo "<p><a class='a' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a></p>";
-                                }
-                            }
-                        }
                     @endphp
-                @endforeach
-            </div>
-            <div class="col-md-4 mt-2">
-                <b>Horaire Respectif: </b>
-                <br>
-                @foreach($shop_article_1 as $data1)
+                    @foreach($Data_lesson['start_date'] as $key => $dt)
                     @php
-                        $norepeat = TRUE; // éviter de répéter les redondances d'informations à l'affichage
-                        foreach($Data_lesson['start_date'] as $dt){
-                            $date = new DateTime($dt);
-                            echo "Cette séance est dispensée le " . fetchDayy($dt) . " " . $date->format('d F') . " ";
-                            foreach($Data_lesson['end_date'] as $end_dt){
-                                $end_date = new DateTime($end_dt);
-                                echo "De ".$date->format('G:i')." à ".$end_date->format('G:i');
-                                break;
-                            }
-                            echo "<br><br>";
-                        }
+                        $date = new DateTime($dt);
+                        $end_date = new DateTime($Data_lesson['end_date'][$key]);
                     @endphp
+                        <div class="row">
+                            <div class="col-10">
+                                Séance {{ $loop->iteration }}:<br>
+                                Cette séance est dispensée le {{ fetcchDayy($dt) }} {{ $date->format('d') }} {{ fetchMonthh($dt) }}.<br>
+                                De {{ $date->format('G:i') }} à {{ $end_date->format('G:i') }}.<br>
+                                @foreach($rooms as $room)
+                                    @if(in_array($room->id_room, $Data_lesson['room']) && $norepeat == TRUE)
+                                        <span class="text-primary">{{ $room->name }}</span><br>
+                                        @php $norepeat = FALSE; @endphp
+                                    @endif
+                                @endforeach
+                            </div>
+                            <div class="col-2 d-flex align-items-center">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal{{ $loop->parent->iteration }}-{{ $loop->iteration }}">
+                                    Éditer
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="modal fade" id="editModal{{ $loop->parent->iteration }}-{{ $loop->iteration }}" tabindex="-1" role="dialog" aria-labelledby="editModal{{ $loop->parent->iteration }}Label-{{ $loop->iteration }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModal{{ $loop->parent->iteration }}Label-{{ $loop->iteration }}">Éditer la séance {{ $loop->iteration }}</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form>
+                                            <div class="form-group">
+                                                <label for="editStartDate{{ $loop->parent->iteration }}-{{ $loop->iteration }}">Date de début :</label>
+                                                <input type="date" class="form-control" id="editStartDate{{ $loop->parent->iteration }}-{{ $loop->iteration }}" value="{{ $date->format('Y-m-d') }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editEndDate{{ $loop->parent->iteration }}-{{ $loop->iteration }}">Date de fin :</label>
+                                                <input type="date" class="form-control" id="editEndDate{{ $loop->parent->iteration }}-{{ $loop->iteration }}" value="{{ $end_date->format('Y-m-d') }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editStartTime{{ $loop->parent->iteration }}-{{ $loop->iteration }}">Heure de début :</label>
+                                                <input type="time" class="form-control" id="editStartTime{{ $loop->parent->iteration }}-{{ $loop->iteration }}" value="{{ $date->format('H:i') }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editEndTime{{ $loop->parent->iteration }}-{{ $loop->iteration }}">Heure de fin :</label>
+                                                <input type="time" class="form-control" id="editEndTime{{ $loop->parent->iteration }}-{{ $loop->iteration }}" value="{{ $end_date->format('H:i') }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="editRoom{{ $loop->parent->iteration }}-{{ $loop->iteration }}">Chambre :</label>
+                                                <select class="form-control" id="editRoom{{ $loop->parent->iteration }}-{{ $loop->iteration }}">
+                                                    @foreach($rooms as $room)
+                                                        <option value="{{ $room->id_room }}" {{ in_array($room->id_room, $Data_lesson['room']) ? 'selected' : '' }}>{{ $room->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                        <button type="button" class="btn btn-primary" onclick="updateLesson({{ $loop->parent->iteration }}, {{ $loop->iteration }})">Sauvegarder</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    @endforeach
                 @endforeach
             </div>
             
-    
-            <div class="row-md-2 col-12">
-                <div class="col-lg-12">
-                    <div class="input_fields_wrap">
-                    </div>
-                    <br><button class="add_field_button btn btn-info">Ajouter des séances</button>
+                
+                <div class="col-md-12">
+                    <div class="input_fields_wrap"></div>
                 </div>
+                
             </div>
         </div>
+    <!-- fin -->
+    <script>
+        function updateLesson(parentIndex, index) {
+            var startDate = $('#editStartDate' + parentIndex + '-' + index).val();
+            var endDate = $('#editEndDate' + parentIndex + '-' + index).val();
+            var startTime = $('#editStartTime' + parentIndex + '-' + index).val();
+            var endTime = $('#editEndTime' + parentIndex + '-' + index).val();
+            var room = $('#editRoom' + parentIndex + '-' + index).val();
+            var url = '{{ route("lesson.update") }}';
+
     
-
-                <br> 
-
-
-                 @foreach($Shop_article as $value1)
-                 <!-- row rose -->
-                 <div class="row pb-3" style="background-color:pink; border: 2px solid grey;justify-content: center">
-
-                         
-                         <div class="row">
-                         
-                             <div class="col-sm-12">
-                                         <br>
-                             
-                                             <label>Résumé </label>
-                                                 <textarea type="text" name="short_description" class="form-control" > {{$value1->short_description}}</textarea>
-                                             <label>Description</label>
-                                                 <textarea name="editor1"  id="ckeditor" class="form-control" required> {{$value1->description}}</textarea>
-                                                 
-                             </div>
-                         
-                         
-                         
-                         </div>
-                     
-                         
-                 </div>
-
-
-                 </div>
-
-                 @endforeach
+            // Requête AJAX pour mettre à jour les informations de la séance
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    shop_article_id: '{{ $data1->id_shop_article }}',
+                    lesson_index: index - 1,
+                    start_date: startDate,
+                    end_date: endDate,
+                    start_time: startTime,
+                    end_time: endTime,
+                    room: room
+                },
+                success: function(response) {
+                    alert('Séance mise à jour avec succès !');
+                },
+                error: function(xhr) {
+                    // Gérer les erreurs lors de la mise à jour
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+    </script>
+    
+    
+               
                          
                  </div>
-
-                 </form>
+                 <div class="row mt-4 d-flex justify-content-center">
+                    <div class="col-md-4 d-flex justify-content-center">
+                        <input form="bigform" class="btn btn-success" name="modifier" type="submit" value="Valider">
+                    </div>
+                </div>
+                
 
 
   
@@ -1058,6 +1139,7 @@ foreach($Shop_article as $value1){
 
 
        @endif
+
 
        <script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
 <script type="text/javascript">
@@ -1113,7 +1195,7 @@ foreach($Shop_article as $value1){
                 success: function(msg) {
                     if (x < max_fields) {
                         x++;
-                        $(wrapper).append('<br><br><div class="small-12" id="mysession">Début <input type="datetime-local" name="startdate[]"/>Fin <input type="datetime-local" name="enddate[]"/>Salle'  + msg + '<a href="#" class="remove_field">Supprimer</a></div>')
+                        $(wrapper).append('<br><br><div class="small-12" id="mysession">Début <input type="datetime-local" name="startdate[]"/>Fin <input class="mx-2" type="datetime-local" name="enddate[]"/>Salle'  + msg + '<a href="#" class="mx-3 remove_field">Supprimer</a></div>')
                     }
                 }
             });
@@ -1124,6 +1206,7 @@ foreach($Shop_article as $value1){
             x--;
         })
     });
+    
 </script>
 </body>
 

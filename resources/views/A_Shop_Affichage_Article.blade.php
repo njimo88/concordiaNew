@@ -53,8 +53,25 @@
             @if($data->id_shop_category == $indice)
                 <div class="row p-2 bg-white border border-dark  d-flex justify-content-center">
                     <div class="col-md-6 mt-1">
-                        <a style="font-weight: bold;" class="a2" cl href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}">{{ $data->title}}</a>
-                        <p class="text-justify text-truncate para mb-0">
+                        <a style="font-weight: bold;" class="a2" cl href="{{ route('details_article', ['id' =>  $data->id_shop_article]) }}">{{ $data->title}}</a><br>
+                        <div class="row">
+                            <div class="col-md-3">
+                        @if ($data->type_article != 1)
+                                <img  style="max-height: 120px" src="{{ $data->image }}" alt="">
+                              @endif
+                            </div>
+                            <div class="col-md-9">
+
+                                <style>
+                                    .description {
+                                        display: -webkit-box;
+                                        -webkit-line-clamp: 2; 
+                                        -webkit-box-orient: vertical;
+                                        overflow: hidden;
+                                        text-overflow: ellipsis;
+                                    }
+                                    </style>
+                        <p class="text-justify p-1 para mb-0 description">
                         
                                 @if ($data->short_description  == 'sans')
 
@@ -151,11 +168,10 @@
                                         
 
                                 @endif
-                        </p>
+                        </p></div></div>
+                            
                             <div class="d-flex flex-wrap justify-content-start align-items-center">
-                              @if ($data->type_article != 1)
-                                <img style="max-height: 120px" src="{{ $data->image }}" alt="">
-                              @endif
+                              
                               @foreach($shopService as $data1)
                               
                                 @if ($data->id_shop_article == $data1->id_shop_article)

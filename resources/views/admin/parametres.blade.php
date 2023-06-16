@@ -30,6 +30,8 @@
     font-weight: bold;
 }
   </style>
+
+
 <main class="main" id="main">
     @if (session('success'))
         <div class="alert alert-success">
@@ -53,6 +55,40 @@
             </thead>
             <tbody>
               @foreach($seasons as $season)
+                <!-- Modal de duplication -->
+<div class="modal fade" id="duplicateModal-{{ $season->saison }}" tabindex="-1" role="dialog" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="duplicateModalLabel">Dupliquer les produits de la saison</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('seasons.duplicate', $season->saison) }}" method="POST">
+          @csrf
+          <div class="form-group mb-3">
+            <label for="target_season-{{ $season->saison }}">Saison cible</label>
+            <select class="form-control" id="target_season-{{ $season->saison }}" name="target_season">
+              @foreach($seasons as $targetSeason)
+                @if($targetSeason->saison != $season->saison)
+                  <option  value="{{ $targetSeason->saison }}">{{ $targetSeason->saison }}-{{ $targetSeason->saison + 1 }}</option>
+                @endif
+              @endforeach
+            </select>
+          </div>
+          <div class="form-group mb-3">
+            <label for="start_validity-{{ $season->saison }}">Début de validité</label>
+            <input type="date" class="form-control" id="start_validity-{{ $season->saison }}" name="start_validity">
+        </div>
+        
+          <button type="submit" class="btn btn-custom">Dupliquer les produits</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
                 <tr>
                   <td>{{ $season->saison }}-{{ $season->saison+1 }}</td>
                   <td>{{ $season->fichier_inscription1 }}</td>
@@ -60,6 +96,7 @@
                   <!-- Ajoutez d'autres cellules selon vos besoins -->
                   <td>
                     <button class="btn btn-custom btn-sm" data-toggle="modal" data-target="#editModal-{{ $season->saison }}">Éditer</button>
+                    <button class="btn btn-custom btn-sm mx-2" data-toggle="modal" data-target="#duplicateModal-{{ $season->saison }}">Dupliquer</button>
                   </td>
                 </tr>
     

@@ -409,6 +409,21 @@ class generatePDF extends Controller
     }
 
 
+    $fontSizeSmaller = $fontSize - 3;  
+$addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+$addresseeLinesArray = explode("\n", $addresseeLines);
+
+foreach ($addresseeLinesArray as $i => $addresseeLine) {
+    $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSizeSmaller);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+
+
     // Imprimer la quantité
     
 
@@ -544,7 +559,20 @@ class generatePDF extends Controller
             $font->valign('top');
         });
     }
-
+    $fontSizeSmaller = $fontSize - 3;  
+    $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+    $addresseeLinesArray = explode("\n", $addresseeLines);
+    
+    foreach ($addresseeLinesArray as $i => $addresseeLine) {
+        $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size($fontSizeSmaller);
+            $font->color('#00000');
+            $font->align('left');
+            $font->valign('top');
+        });
+    }
+    
 
     // Imprimer la quantité
     
@@ -613,7 +641,20 @@ foreach ($secondGroup as $product) {
         });
     }
 
-
+    $fontSizeSmaller = $fontSize - 3;  
+    $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+    $addresseeLinesArray = explode("\n", $addresseeLines);
+    
+    foreach ($addresseeLinesArray as $i => $addresseeLine) {
+        $image2->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size($fontSizeSmaller);
+            $font->color('#00000');
+            $font->align('left');
+            $font->valign('top');
+        });
+    }
+    
     // Imprimer la quantité
     
 
@@ -800,6 +841,19 @@ foreach ($titleLinesArray as $i => $titleLine) {
         $font->valign('top');
     });
 }
+$fontSizeSmaller = $fontSize - 3;  
+$addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+$addresseeLinesArray = explode("\n", $addresseeLines);
+
+foreach ($addresseeLinesArray as $i => $addresseeLine) {
+    $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSizeSmaller);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
 
 
 // Imprimer la quantité
@@ -867,6 +921,19 @@ foreach ($thirdGroup as $product) {
             $font->valign('top');
         });
     }
+    $fontSizeSmaller = $fontSize - 3;  
+    $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+    $addresseeLinesArray = explode("\n", $addresseeLines);
+    
+    foreach ($addresseeLinesArray as $i => $addresseeLine) {
+        $image3->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size($fontSizeSmaller);
+            $font->color('#00000');
+            $font->align('left');
+            $font->valign('top');
+        });
+    }
     
     
     // Imprimer la quantité
@@ -927,6 +994,19 @@ foreach ($titleLinesArray as $i => $titleLine) {
     $image2->text($titleLine, $x + 126, $y2 - 4 + ($i * 12), function($font) use ($fontSize) {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size($fontSize);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+$fontSizeSmaller = $fontSize - 3;  
+$addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+$addresseeLinesArray = explode("\n", $addresseeLines);
+
+foreach ($addresseeLinesArray as $i => $addresseeLine) {
+    $image2->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSizeSmaller);
         $font->color('#00000');
         $font->align('left');
         $font->valign('top');
@@ -1171,7 +1251,20 @@ public function generatePDFfactureOutput($id)
             $font->valign('top');
         });
     }
-
+    $fontSizeSmaller = $fontSize - 3;  
+    $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+    $addresseeLinesArray = explode("\n", $addresseeLines);
+    
+    foreach ($addresseeLinesArray as $i => $addresseeLine) {
+        $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size($fontSizeSmaller);
+            $font->color('#00000');
+            $font->align('left');
+            $font->valign('top');
+        });
+    }
+    
 
     // Imprimer la quantité
     
@@ -1309,7 +1402,20 @@ public function generatePDFfactureOutput($id)
         });
     }
 
-
+    $fontSizeSmaller = $fontSize - 3;  
+    $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+    $addresseeLinesArray = explode("\n", $addresseeLines);
+    
+    foreach ($addresseeLinesArray as $i => $addresseeLine) {
+        $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size($fontSizeSmaller);
+            $font->color('#00000');
+            $font->align('left');
+            $font->valign('top');
+        });
+    }
+    
     // Imprimer la quantité
     
 
@@ -1376,7 +1482,20 @@ foreach ($secondGroup as $product) {
             $font->valign('top');
         });
     }
-
+    $fontSizeSmaller = $fontSize - 3;  
+    $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+    $addresseeLinesArray = explode("\n", $addresseeLines);
+    
+    foreach ($addresseeLinesArray as $i => $addresseeLine) {
+        $image2->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size($fontSizeSmaller);
+            $font->color('#00000');
+            $font->align('left');
+            $font->valign('top');
+        });
+    }
+    
 
     // Imprimer la quantité
     
@@ -1559,6 +1678,19 @@ foreach ($titleLinesArray as $i => $titleLine) {
         $font->valign('top');
     });
 }
+$fontSizeSmaller = $fontSize - 3;  
+$addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+$addresseeLinesArray = explode("\n", $addresseeLines);
+
+foreach ($addresseeLinesArray as $i => $addresseeLine) {
+    $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSizeSmaller);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
 
 
 // Imprimer la quantité
@@ -1626,6 +1758,19 @@ foreach ($thirdGroup as $product) {
             $font->valign('top');
         });
     }
+    $fontSizeSmaller = $fontSize - 3;  
+    $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+    $addresseeLinesArray = explode("\n", $addresseeLines);
+    
+    foreach ($addresseeLinesArray as $i => $addresseeLine) {
+        $image3->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size($fontSizeSmaller);
+            $font->color('#00000');
+            $font->align('left');
+            $font->valign('top');
+        });
+    }
     
     
     // Imprimer la quantité
@@ -1687,6 +1832,19 @@ foreach ($titleLinesArray as $i => $titleLine) {
     $image2->text($titleLine, $x + 126, $y2 - 4 + ($i * 12), function($font) use ($fontSize) {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size($fontSize);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+$fontSizeSmaller = $fontSize - 3;  
+$addresseeLines = wordwrap($product->addressee, 40, "\n", true);
+$addresseeLinesArray = explode("\n", $addresseeLines);
+
+foreach ($addresseeLinesArray as $i => $addresseeLine) {
+    $image2->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSizeSmaller);
         $font->color('#00000');
         $font->align('left');
         $font->valign('top');

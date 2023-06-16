@@ -37,15 +37,18 @@ class Controller_club extends Controller
         $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
           ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
          
-           $users_saison_active = User::select('users.user_id','users.name','users.lastname','users.phone','users.birthdate','users.email','liaison_shop_articles_bills.id_shop_article')
-          ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-          ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison_actu)
-          ->whereIn('type_article',[0,1])
-          ->distinct('users.user_id')
-          ->orderBy('users.name', 'ASC')
-          ->get(); 
+          $users_saison_active = User::select('users.user_id','users.name','users.lastname','users.phone','users.birthdate','users.email','liaison_shop_articles_bills.id_shop_article')
+            ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+            ->where('shop_article.saison', $saison_actu)
+            ->whereIn('shop_article.type_article', [0, 1])
+            ->where('bills.status', '>', 9)
+            ->distinct('users.user_id')
+            ->orderBy('users.name', 'ASC')
+            ->get();
 
-     
+
 
             //requete pour la saison choisie
           $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
@@ -54,7 +57,6 @@ class Controller_club extends Controller
           ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
           ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)
           ->where('type_article',1)->get();
-
         /* ------------------------------------------requetes pour l'admin------------------------------*/
 
         $shop_article = Shop_article::where('saison',$saison)->where('type_article',1)->get() ;

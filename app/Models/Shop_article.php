@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Shop_article extends Model
 {
@@ -49,7 +50,15 @@ class Shop_article extends Model
     ];
 
    
-
+    public function usersActiveCount()
+{
+    return DB::table('liaison_shop_articles_bills')
+        ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+        ->where('bills.status', '>', 9)
+        ->where('liaison_shop_articles_bills.id_shop_article', $this->id_shop_article)
+        ->count();
+}
+    
 
 
 

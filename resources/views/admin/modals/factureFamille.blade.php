@@ -19,6 +19,9 @@ text-align: left !important;
     </thead>
     <tbody>
         @foreach ($bill as $bills )
+        <tr style="background-color: yellow;">
+            <td colspan="6" style="font-weight: bold;">Facture n°: {{ $bills->id }}</td>
+        </tr>
             <tr >
                 <td>
                     <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Afficher Facture">
@@ -36,29 +39,19 @@ text-align: left !important;
                     <span style="display: none;">{{ $bills->status }}</span>
                 </td>
             </tr>
+            <tr style="background-color: rgb(255, 0, 13);">
+                <td colspan="6" style="font-weight: bold;">Produits :</td>
+            </tr>
             @foreach($bills->liaisons as $liaison)
-                <tr>
-                    <td colspan="6">
-                        <table class="table table-bordered table-striped table-hover table-sm" style="table-layout: fixed;">
-                            <thead>
+            
+              
                                 <tr>
-                                    <th style="width: 40%;">Designation</th>
-                                    <th style="width: 15%;">Quantity</th>
-                                    <th style="width: 20%;">Price</th>
-                                    <th style="width: 25%;">Pour</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{{ $liaison->designation }}</td>
+                                    <td class="col-4">{{ $liaison->designation }}</td>
                                     <td>{{ $liaison->quantity }}</td>
                                     <td>{{ number_format($liaison->ttc, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
                                     <td>{{ $liaison->liaison_user_lastname }} {{ $liaison->liaison_user_name }}</td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
+              
             @endforeach
             <tr style="background-color: #f5f5f5">
                 <td colspan="6" style="border-bottom: 3px solid #333;"></td>

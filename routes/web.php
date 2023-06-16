@@ -244,6 +244,7 @@ Route::post('/Article/include-page', [Article_Controller::class, 'index_include'
 
 Route::post('/Article/edit/{id}', [Article_Controller::class, 'edit'])->name('edit_article');
 Route::get('/Article/edit/{id}', [Article_Controller::class, 'edit_index'])->name('edit_article_index');
+Route::post('/Article/updateSeance', [Article_Controller::class, 'updateLesson'])->name('lesson.update');
 
 
 Route::post('images/upload', 'ImageController@upload')->name('ckeditor.upload');
@@ -450,3 +451,4 @@ Route::get('/parametres', [ParametreController::class, 'index'])->name('parametr
 Route::post('/setActiveSeason', [ParametreController::class, 'setActiveSeason'])->name('setActiveSeason');
 Route::get('/create-new-season', [ParametreController::class, 'createNewSeason'])->name('createNewSeason');
 Route::put('/saison/edit/{id}', [ParametreController::class, 'update'])->name('editSeason');
+Route::post('/saison/{season}/duplicate',[ParametreController::class, 'duplicateProducts'])->name('seasons.duplicate');

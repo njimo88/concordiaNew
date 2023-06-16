@@ -349,7 +349,7 @@ class BillsController extends Controller
         $userName = 'Gym Concordia [Bureau]';
         $message = "Votre facture n°{$bill->id} a été créée avec succès.";
         $userEmail = "webmaster@gym-concordia.com";
-        updateStatusMail($userEmail, $message, $receiverEmail, $userName, $bill);
+        /*updateStatusMail($userEmail, $message, $receiverEmail, $userName, $bill);*/
 
         return  redirect()->back()->with('success', 'Le statut de la facture n°'.$id.' a été modifié avec succès');
     }
