@@ -374,7 +374,7 @@ foreach($Shop_article as $value1){
                                     
                             <form  method="POST" action="{{route('edit_article',$Id)}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
                             @csrf
-                            <div class="mb-4 text-center">
+                            <div class="my-4 text-center">
                                 <h3 class="bg-success text-white p-2">Paramètres Généraux</h3>  
                             </div>
                     
@@ -701,7 +701,7 @@ foreach($Shop_article as $value1){
         <form id="bigform" class="border  p-3" method="POST" action="{{route('edit_article', $Id)}}" enctype="multipart/form-data" novalidate>
             @csrf
     
-            <div class="mb-4 text-center">
+            <div class="my-4 text-center">
                 <h3 class="bg-success text-white p-2">Paramètres Généraux</h3>  
             </div>
     

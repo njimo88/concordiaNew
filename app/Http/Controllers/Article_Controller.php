@@ -23,8 +23,8 @@ class Article_Controller extends Controller
         $saison = $request->input('saison');
        
          $saison_list = Shop_article::select('saison')->distinct('name')->get();
-         $requete_article = Shop_article::where('saison',$S_active)->paginate(50) ;
-         $requete_article_pick = Shop_article::where('saison',  $saison)->paginate(50) ;
+         $requete_article = Shop_article::where('saison',$S_active)->get() ;
+         $requete_article_pick = Shop_article::where('saison',  $saison)->get() ;
 
         
         return view('Articles/MainPage_article',compact('requete_article','saison_list','saison','requete_article_pick'))->with('user', auth()->user()) ;
@@ -219,7 +219,7 @@ class Article_Controller extends Controller
         $article->categories =  json_encode($request->input('category'),JSON_NUMERIC_CHECK);
        
         $article->save();
-
+        
       
         // recupere l'id de l'article qu'on a juste cree
         $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
@@ -844,8 +844,9 @@ class Article_Controller extends Controller
                                 if(isset($request->category)){
                                  
                                     $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
-                                   
+                                    
                                     $article->save();  
+                                    updateArticleCategories($id_article, $request->category);
                                 }
 
                               
@@ -895,7 +896,8 @@ class Article_Controller extends Controller
                                 
                                     $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
                                 
-                                    $article->save();  
+                                    $article->save(); 
+                                    updateArticleCategories($id_article, $request->category); 
                                 }
 
 
@@ -989,8 +991,10 @@ class Article_Controller extends Controller
                                     if(isset($request->category)){
                                     
                                         $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
-                                    
-                                        $article->save();  
+                                        $article->save(); 
+                                        updateArticleCategories($id_article, $request->category);
+                                         
+                                        
                                     }
 
                                     if($request->has('sex_limit')){

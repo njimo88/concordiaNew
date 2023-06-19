@@ -116,7 +116,7 @@ public function duplicateProducts(Request $request, $season)
         }
         
     }
-dd($notDuplicated);
+    
     // afficher les articles qui n'ont pas pu être dupliqués
     foreach ($notDuplicated as $article) {
         echo "Article ID: " . $article->id_shop_article . " n'a pas pu être dupliqué.\n";

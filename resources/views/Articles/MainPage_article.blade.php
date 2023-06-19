@@ -190,9 +190,7 @@ Créer un article
 
   
 <div class="clearfix"></div>
-<div class="d-flex justify-content-center">
-    {!! $requete_article->links() !!}
-</div> 
+ 
             
    
 

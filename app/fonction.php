@@ -123,6 +123,7 @@ function getArticleUsers($article) {
             ->pluck('id_shop_article')
             ->toArray();
 
+
         $selectedUsers = DB::table('selected_limit')
             ->where('id_shop_article', $article->id_shop_article)
             ->whereIn('user_id', $family->pluck('user_id'))
@@ -130,7 +131,7 @@ function getArticleUsers($article) {
             ->toArray();
 
     $filteredUsers = collect($family)->filter(function($user) use ($selectedUsers, $article) {
-        return in_array($user->user_id, $selectedUsers) && ($article->sex_limit == null || $user->gender == $article->sex_limit);
+        return in_array($user->user_id, $selectedUsers) && ($article->sex_limit == null || $article->sex_limit == 0 || $user->gender == $article->sex_limit);
     })->values();
 
     $familyMembersMeetingAgeCriteria = getFamilyMembersMeetingAgeCriteria($family, $article->agemin, $article->agemax);
@@ -139,7 +140,6 @@ function getArticleUsers($article) {
     })->values();
 
     $filteredUsers = $filteredUsers->merge($familyMembersMeetingAgeCriteria);
-
     return $filteredUsers;
 
 
@@ -1808,4 +1808,24 @@ function History_member($saison){
     
 
 
+}
+
+// ----------------- updateArticleCategories --------------
+function updateArticleCategories($shopArticleId, array $shopCategoryIds)
+{
+    DB::table('liaison_shop_articles_shop_categories')
+        ->where('id_shop_article', $shopArticleId)
+        ->delete();
+
+    $data = [];
+    foreach ($shopCategoryIds as $categoryId) {
+        $data[] = [
+            'id_shop_article' => $shopArticleId,
+            'id_shop_category' => $categoryId,
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+    }
+
+    DB::table('liaison_shop_articles_shop_categories')->insert($data);
 }

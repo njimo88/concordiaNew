@@ -445,10 +445,11 @@ Route::post('/member_historique',[Member_History_Controller::class, 'history_inc
 /*---------------------------------Maintenance------------------------------------------*/
 Route::post('/verify-password', [MaintenanceController::class, 'verifyPassword'])->name('verify_password');
 
-
+Route::middleware(['auth', 'role:20'])->group(function () {
 /*---------------------------------parametres------------------------------------------*/
 Route::get('/parametres', [ParametreController::class, 'index'])->name('parametres');
 Route::post('/setActiveSeason', [ParametreController::class, 'setActiveSeason'])->name('setActiveSeason');
 Route::get('/create-new-season', [ParametreController::class, 'createNewSeason'])->name('createNewSeason');
 Route::put('/saison/edit/{id}', [ParametreController::class, 'update'])->name('editSeason');
 Route::post('/saison/{season}/duplicate',[ParametreController::class, 'duplicateProducts'])->name('seasons.duplicate');
+});
