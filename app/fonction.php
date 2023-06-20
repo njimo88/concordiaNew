@@ -252,6 +252,28 @@ function fetchDayy($date) {
 
     return '';
 }
+
+function fetchDayy2($date) {
+    $lejour = (new DateTime($date))->format('l');
+
+    $jour_semaine = array(
+        "lundi" => "Monday",
+        "mardi" => "Tuesday",
+        "mercredi" => "Wednesday",
+        "jeudi" => "Thursday",
+        "vendredi" => "Friday",
+        "samedi" => "Saturday",
+        "dimanche" => "Sunday"
+    );
+
+    $jour_semaine_fr = array_flip($jour_semaine);
+
+    if (isset($jour_semaine_fr[$lejour])) {
+        return ucfirst($jour_semaine_fr[$lejour]);
+    }
+
+    return '';
+}
 function fetcchDayy($date) {
     $lejour = (new DateTime($date))->format('l');
 

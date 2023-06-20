@@ -752,10 +752,16 @@ class Article_Controller extends Controller
         $shop_article_1 = shop_article_1::where('id_shop_article', $id)->get();
         $shop_article_0 = shop_article_0::where('id_shop_article', $id)->get();
         $shop_article_2 = shop_article_2::where('id_shop_article', $id)->get();
-     
         
+        $parametre = Parametre::where('activate', 1)->first();
+
+        // Récupérer les articles correspondants
+        $articleLicence1 = Shop_article::find($parametre->articles_licence1);
+        $articleLicence2 = Shop_article::find($parametre->articles_licence2);
+        $articleLicence3 = Shop_article::find($parametre->articles_licence3);
+        $articleLicence4 = Shop_article::find($parametre->articles_licence4);
     
-        return view('Articles/edit_index',compact('Shop_article','shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','Id','rooms'))->with('user', auth()->user());
+        return view('Articles/edit_index',compact('Shop_article','articleLicence1','articleLicence2','articleLicence3','articleLicence4','parametre','shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','Id','rooms'))->with('user', auth()->user());
 
     }
 

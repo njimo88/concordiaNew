@@ -1094,3 +1094,19 @@ $(document).ready(function() {
   });
 });
 
+
+$(function () {
+  var table = $('#users-table').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: "/admin/users/get",
+      pageLength: 10000, // Affiche 10 000 lignes par page
+      lengthChange: false, // Supprime le menu déroulant de sélection de la longueur de page
+      columns: [
+          {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+          {data: 'name', name: 'name'},
+          {data: 'email', name: 'email'},
+          {data: 'action', name: 'action', orderable: false, searchable: false},
+      ]
+  });
+});

@@ -421,18 +421,32 @@ foreach($Shop_article as $value1){
                                                      </div>
                 
                                                      <div class="col-md-2 col-6">
-                
-                                                         <label>  Statut :   </label> 
-                                                             
-                                                                 <select value="0" name="need_member" class="form-control" id="require">
-                                                                     <option value="0" {{ $value1->need_member == 0 ? 'selected' : '' }}>Non membre</option>
-                                                                     <option value="1" {{ $value1->need_member == 1 ? 'selected' : '' }}>membre loisir</option>
-                                                                     <option value="3" {{ $value1->need_member == 3 ? 'selected' : '' }}>membre compétition</option>
-                                                                 
-                                                         </label>       
-                                                                 </select>
-                
-                                                     </div>
+                                                        <label>Statut :</label>
+                                                        <select name="need_member" class="form-control" id="require">
+                                                            <option value="0" {{ $value1->need_member == 0 ? 'selected' : '' }}>Non Membre</option>
+                                                            @if(isset($articleLicence1))
+                                                                <option value="{{ $articleLicence1->id_shop_article }}" {{ $value1->need_member == $articleLicence1->id_shop_article ? 'selected' : '' }}>
+                                                                    {{ $articleLicence1->title }}
+                                                                </option>
+                                                            @endif
+                                                            @if(isset($articleLicence2))
+                                                                <option value="{{ $articleLicence2->id_shop_article }}" {{ $value1->need_member == $articleLicence2->id_shop_article ? 'selected' : '' }}>
+                                                                    {{ $articleLicence2->title }}
+                                                                </option>
+                                                            @endif
+                                                            @if(isset($articleLicence3))
+                                                                <option value="{{ $articleLicence3->id_shop_article }}" {{ $value1->need_member == $articleLicence3->id_shop_article ? 'selected' : '' }}>
+                                                                    {{ $articleLicence3->title }}
+                                                                </option>
+                                                            @endif
+                                                            @if(isset($articleLicence4))
+                                                                <option value="{{ $articleLicence4->id_shop_article }}" {{ $value1->need_member == $articleLicence4->id_shop_article ? 'selected' : '' }}>
+                                                                    {{ $articleLicence4->title }}
+                                                                </option>
+                                                            @endif
+                                                        </select>
+                                                    </div>
+                                                    
                 
                                                      <div class="col-md-2 col-6">
                 

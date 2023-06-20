@@ -71,6 +71,48 @@ class n_AdminController extends Controller
 
     }
 
+    public function PortOuvindex()
+    {
+        return view('admin.portOuv')->with('user', auth()->user());
+    }
+
+    public function getUsers(Request $request)
+    {
+        if ($request->ajax()) {
+        
+            $cacheKey = 'users:data' . ($request->has('search') ? ':' . $request->get('search')['value'] : '');
+    
+            $data = Cache::get($cacheKey);
+    
+            if (!$data) {
+                $query = User::latest();
+    
+                if ($request->has('search') && $request->get('search')['value']) {
+                    $query->where(function ($query) use ($request) {
+                        $query->where('name', 'like', "%" . $request->get('search')['value'] . "%")
+                              ->orWhere('email', 'like', "%" . $request->get('search')['value'] . "%");
+                    });
+                }
+    
+                $data = $query->get();
+                Cache::put($cacheKey, $data, 60);
+            }
+    
+            return datatables()->of($data)
+                ->addColumn('action', function($data){
+                    // Add your action buttons here
+                })
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+    
+        return view('admin.portOuv');
+    }
+    
+
+
+
     public function members()
     {
         $roles = Role::all();

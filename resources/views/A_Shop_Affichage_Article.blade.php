@@ -109,7 +109,8 @@
 
                                                         echo"</p>";
                                                         echo"<b>Jour: </b>";
-                                                        echo "Cette séance est dispensée le ".fetchDayy($dt)." ".$date->format('G:i');
+                                                        
+                                                        echo "Cette séance est dispensée le ".fetchDayy2($dt)." de ".$date->format('G:i');
                                                        
                                                     };
 
@@ -135,7 +136,7 @@
 
                                                                 if($r == $room->id_room and $norepeat == TRUE){
                                                                         echo"<br>";
-                                                                        echo "<b>Lieu:</b> <small  style='font-size: 13px;  '><a style=' color: darkblue;' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . " - " . $room->address . "</a></small>";
+                                                                        echo "<b>Lieu:</b> <small  style='font-size: 13px;  '><a style=' color: darkblue;' href='$room->map' target='_blank'>" . $room->name . " - " . $room->address . "</a></small>";
 
                                                                         
                                                                         $norepeat = FALSE ;

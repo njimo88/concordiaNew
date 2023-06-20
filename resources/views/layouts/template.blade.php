@@ -479,6 +479,7 @@
                   <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if(auth()->user()->roles->estAutoriserDeVoirMembres)<li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-solid fa-user"></i><span>Membres</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirClickAsso)<li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-light fa-at"></i><span>ClickAsso</span> </a></li>@endif
+                     <li> <a href="{{ route('portesOuvertes') }}"> <i style="color: #007b00" class="fa-light fa-at"></i><span>Portes ouvertes</span> </a></li>
                   </ul>
                </li>
             @endif

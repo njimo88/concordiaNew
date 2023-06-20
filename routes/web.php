@@ -114,6 +114,9 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/admin/members/delete/{user_id}', [n_AdminController::class, 'DeleteUser'])->name('admin.DeleteUser');
     Route::get('/admin/members/deletemodal/{user_id}', [n_AdminController::class, 'DeleteUsermodal']);
 
+    Route::get('/admin/portes', [n_AdminController::class, 'PortOuvindex'])->name('portesOuvertes');
+    Route::get('/admin/users/get', [n_AdminController::class, 'getUsers'])->name('users.get');
+
      /*----------------------- Factures ------------------------------ */
     Route::get('/admin/paiement/facture', [BillsController::class, 'index'])->name('paiement.facture');
     Route::get('/admin/paiement/facture/{id}', [BillsController::class, 'delete'])->name('paiement.deleteFacture');
@@ -452,4 +455,7 @@ Route::post('/setActiveSeason', [ParametreController::class, 'setActiveSeason'])
 Route::get('/create-new-season', [ParametreController::class, 'createNewSeason'])->name('createNewSeason');
 Route::put('/saison/edit/{id}', [ParametreController::class, 'update'])->name('editSeason');
 Route::post('/saison/{season}/duplicate',[ParametreController::class, 'duplicateProducts'])->name('seasons.duplicate');
+
+
+Route::get('/admin/portesOuvertes', [UserController::class, 'index']);
 });
