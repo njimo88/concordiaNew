@@ -255,7 +255,7 @@
                                         
   
                                         echo "<p style='align-self: flex-start !important;'>" ;
-                                        echo fetchDayy($dt)." ".fetchjour($dt)." ".fetchMonth($dt)." ".fetchan($dt);
+                                        echo fetcchDayy($dt)." ".fetchjour($dt)." ".fetchMonth($dt)." ".fetchan($dt);
                                         echo "</p>" ;
                                         echo "\n";
                                     
@@ -342,7 +342,7 @@
                                                   if($r == $room->id_room and $norepeat == TRUE){
                                                     echo"</p>";
                                                     echo " <b style='align-self: flex-start !important;'>lieu: </b>" ;
-                                                    echo "<a class='a' style='font-size: small' href='https://www.google.com/maps?q=" . urlencode($room->name . " " . $room->address) . "' target='_blank'>" . $room->name . "<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . str_replace('-', '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $room->address) . "</a>";
+                                                    echo "<a class='a' style='font-size: small' href='$room->map' target='_blank'>" . $room->name . "<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . str_replace('-', '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $room->address) . "</a>";
 
                                                     $norepeat = FALSE ;
 

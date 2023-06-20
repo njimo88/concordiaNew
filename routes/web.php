@@ -115,7 +115,7 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/admin/members/deletemodal/{user_id}', [n_AdminController::class, 'DeleteUsermodal']);
 
     Route::get('/admin/portes', [n_AdminController::class, 'PortOuvindex'])->name('portesOuvertes');
-    Route::get('/admin/users/get', [n_AdminController::class, 'getUsers'])->name('users.get');
+    Route::get('/admin/usersget', [n_AdminController::class, 'getUsers'])->name('users.get');
 
      /*----------------------- Factures ------------------------------ */
     Route::get('/admin/paiement/facture', [BillsController::class, 'index'])->name('paiement.facture');
@@ -457,5 +457,4 @@ Route::put('/saison/edit/{id}', [ParametreController::class, 'update'])->name('e
 Route::post('/saison/{season}/duplicate',[ParametreController::class, 'duplicateProducts'])->name('seasons.duplicate');
 
 
-Route::get('/admin/portesOuvertes', [UserController::class, 'index']);
 });

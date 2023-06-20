@@ -1851,3 +1851,13 @@ function updateArticleCategories($shopArticleId, array $shopCategoryIds)
 
     DB::table('liaison_shop_articles_shop_categories')->insert($data);
 }
+
+ function updateTotalPrice(Shop_article $article)
+{
+    $shopArticle = Shop_article::find($article->need_member);
+    if ($shopArticle) {
+    $article->totalprice = $article->price + $shopArticle->totalprice;
+    $article->save();
+    }
+    
+}

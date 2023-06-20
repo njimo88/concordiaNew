@@ -77,38 +77,49 @@ class n_AdminController extends Controller
     }
 
     public function getUsers(Request $request)
-    {
-        if ($request->ajax()) {
-        
-            $cacheKey = 'users:data' . ($request->has('search') ? ':' . $request->get('search')['value'] : '');
+{
+    if ($request->ajax()) {
     
-            $data = Cache::get($cacheKey);
-    
-            if (!$data) {
-                $query = User::latest();
-    
-                if ($request->has('search') && $request->get('search')['value']) {
-                    $query->where(function ($query) use ($request) {
-                        $query->where('name', 'like', "%" . $request->get('search')['value'] . "%")
-                              ->orWhere('email', 'like', "%" . $request->get('search')['value'] . "%");
-                    });
-                }
-    
-                $data = $query->get();
-                Cache::put($cacheKey, $data, 60);
+        $cacheKey = 'users:data' . ($request->has('search') ? ':' . $request->get('search')['value'] : '');
+
+        $data = Cache::get($cacheKey);
+        $user = Auth::user();
+        if (!$data) {
+            $query = User::select('user_id', 'email', 'username', 'phone', DB::raw("CONCAT(lastname, ' ', name) as full_name"),'birthdate');
+
+            if ($request->has('search') && $request->get('search')['value']) {
+                $query->where(function ($query) use ($request) {
+                    $query->where('name', 'like', "%" . $request->get('search')['value'] . "%")
+                          ->orWhere('email', 'like', "%" . $request->get('search')['value'] . "%")
+                          ->orWhere('username', 'like', "%" . $request->get('search')['value'] . "%")
+                          ->orWhere('phone', 'like', "%" . $request->get('search')['value'] . "%");
+                });
             }
-    
-            return datatables()->of($data)
-                ->addColumn('action', function($data){
-                    // Add your action buttons here
-                })
-                ->rawColumns(['action'])
-                ->addIndexColumn()
-                ->make(true);
+
+            $data = $query->get();
+            Cache::put($cacheKey, $data, 60);
         }
-    
-        return view('admin.portOuv');
+
+        return datatables()->of($data)
+        ->editColumn('birthdate', function($user) {
+            return date("Y-m-d", strtotime($user->birthdate));
+        })
+            ->addColumn('action', function($user){
+                return '<span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Réinitialiser le mot de passe">' .
+                    '<img data-user-id="' . $user->user_id . '" class="Resetpass editbtn2 mx-2" src="' . asset('assets/images/rotate.png') . '">' . 
+                    '</span>' . 
+                    '<a data-user-id="' . $user->user_id . '" type="button" class="editusermodal user-link a text-black" href="#">' .
+                    '<i class="fas fa-edit"></i>' . // replace with your own icon
+                    '</a>';
+            })
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
     }
+
+    return view('admin.portOuv');
+}
+
     
 
 
@@ -235,7 +246,7 @@ class n_AdminController extends Controller
    }
 
         $user->update($request->all());
-        return redirect()->route('utilisateurs.members')->with('success',$request->lastname.' '.$request->name. ' a été mis à jour avec succès');
+        return redirect()->back()->with('success', 'Le profil a été modifié avec succès');
     
     }
 
@@ -258,7 +269,7 @@ class n_AdminController extends Controller
             $message->subject('Reinitialisation du Mot de Passe');
         });
 
-        return redirect()->route('utilisateurs.members')->with('success','Le mot de pass de '.$user->lastname.' '.$user->name.' a été réinitialisé avec succès');
+        return redirect()->back()->with('success', 'Le mot de passe de '.$user->lastname.' '.$user->name.' a été réinitialisé avec succès');
     }
 
     public function familleMembers($user_id){

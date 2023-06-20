@@ -32,12 +32,21 @@
                                 <div class="labels">
                                     <label for="role">Rôle</label>
                                 </div>
-                               <select  @if(auth()->user()->role < 100)
-                                disabled @endif class="border col-md-12 form-group selectpicker @error('role') is-invalid @enderror" name="role" id="role" autocomplete="role" autofocus role="listbox" data-style='btn-info'>
+                                <select  @if(auth()->user()->role < 100 || Route::currentRouteName() != 'portesOuvertes')
+                                    disabled 
+                                    @endif 
+                                    class="border col-md-12 form-group selectpicker @error('role') is-invalid @enderror" 
+                                    name="role" 
+                                    id="role" 
+                                    autocomplete="role" 
+                                    autofocus 
+                                    role="listbox" 
+                                    data-style='btn-info'>
                                     @foreach($roles as $role)
                                         <option value="{{ $role->id }}" {{ $n_users->role == $role->id ? 'selected' : '' }} role="option">{{ $role->name }}</option>
                                     @endforeach
                                 </select>
+                                
                                
                                 @error('role')
                                     <span class="text-danger" role="alert">
@@ -216,7 +225,7 @@
                                 <div class="labels">
                                     <label for="password">Changer MDP</label>
                                   </div>
-                                <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
+                                <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id || Route::currentRouteName() != 'portesOuvertes')
                                 readonly @endif class="form-control" type="password" id="password" placeholder=" " class=" @error('password') is-invalid @enderror" name="password"  autocomplete="new-password" />
                                 @error('password')
                                     <span class="text-danger" role="alert">
@@ -228,7 +237,7 @@
                                 <div class="labels">
                                     <label for="password-confirm">Confirmer MDP</label>
                                   </div>
-                                <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
+                                <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id || Route::currentRouteName() != 'portesOuvertes')
                                 readonly @endif class="form-control" type="password" id="password-confirm" placeholder=" "  name="password_confirmation"  autocomplete="new-password" />
                             </div>
                             <div class="col-sm-4 input mt-2">

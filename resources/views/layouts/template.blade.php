@@ -45,6 +45,9 @@
 
 
 </style>
+@php
+  use App\Models\SystemSetting;
+@endphp
 <body>
 
    <div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -63,7 +66,7 @@
     
                             <form  id="form" >
                             
-                                <input id="checkbox1"  type="checkbox" class="checkbox">
+                              <input id="checkbox1" type="checkbox" class="checkbox" {{ SystemSetting::getValue(2) == 1 ? 'checked' : '' }}>
                                 <input type="hidden" id="url" name="URL" value="/admin">
                                 <div class="stat-text" style="font-size : 12px !important;">Portes ouvertes</div>
                                 <label for="checkbox1" class="switch">
@@ -479,7 +482,9 @@
                   <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if(auth()->user()->roles->estAutoriserDeVoirMembres)<li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-solid fa-user"></i><span>Membres</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirClickAsso)<li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-light fa-at"></i><span>ClickAsso</span> </a></li>@endif
-                     <li> <a href="{{ route('portesOuvertes') }}"> <i style="color: #007b00" class="fa-light fa-at"></i><span>Portes ouvertes</span> </a></li>
+                     @if (SystemSetting::getValue(2) == 1 && auth()->user()->roles->estAutoriserDeVoirPortesOuvertes)
+                      <li> <a href="{{ route('portesOuvertes') }}"> <i style="color: #007b00" class="fa-sharp fa-solid fa-door-open"></i><span>Portes Ouvertes</span> </a></li>
+                    @endif
                   </ul>
                </li>
             @endif
@@ -576,6 +581,12 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function () {
+// Événement change pour checkbox1
+$('#checkbox1').on('change', function () {
+  updateSetting($(this), 2);
+});
+
+
 // Événement change pour checkbox3
 $('#checkbox3').on('change', function () {
   updateSetting($(this), 3);

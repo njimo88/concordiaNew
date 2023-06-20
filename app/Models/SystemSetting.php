@@ -21,4 +21,11 @@ class SystemSetting extends Model
     ];
 
     public $timestamps = false;
+
+    public static function getValue($id){
+        $setting = self::find($id);
+        return $setting ? $setting->value : null;
+    }
+
+    
 }

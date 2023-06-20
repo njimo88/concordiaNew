@@ -12,6 +12,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Laravel\Ui\Presets\Preset;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 require_once(app_path().'/fonction.php');
 
@@ -51,12 +52,27 @@ class Controller_club extends Controller
 
 
             //requete pour la saison choisie
-          $shop_article_lesson_choisie =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
-          ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison',  $saison)->get();
-          $users_saison_choisie = User::select('users.user_id', 'users.name', 'users.lastname','users.email','users.phone','users.birthdate','liaison_shop_articles_bills.id_shop_article')
-          ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-          ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)
-          ->where('type_article',1)->get();
+            $role = Auth::user()->role; // Assuming the role is stored in a column named 'role'
+
+            $shop_article_lesson_choisie_query = shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
+                ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison',  $saison);
+            
+            if($role < 90) {
+                $shop_article_lesson_choisie_query = $shop_article_lesson_choisie_query->where('type_article', 1);
+            }
+            
+            $shop_article_lesson_choisie = $shop_article_lesson_choisie_query->get();
+            
+            $users_saison_choisie_query = User::select('users.user_id', 'users.name', 'users.lastname','users.email','users.phone','users.birthdate','liaison_shop_articles_bills.id_shop_article')
+                ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+                ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison);
+            
+            if($role < 90) {
+                $users_saison_choisie_query = $users_saison_choisie_query->where('type_article',1);
+            }
+            
+            $users_saison_choisie = $users_saison_choisie_query->get();
+            
         /* ------------------------------------------requetes pour l'admin------------------------------*/
 
         $shop_article = Shop_article::where('saison',$saison)->where('type_article',1)->get() ;

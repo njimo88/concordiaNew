@@ -574,6 +574,72 @@ $('#myTableArticle').on('click', 'thead th', function() {
     var isAsc = $(this).hasClass('asc');
     table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
   });
+
+  /*---------------------------------porte ouverte --------------------------------------*/
+  $(function () {
+    var table = $('#users-table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "/admin/usersget",
+        pageLength: 10000, 
+        lengthChange: false,
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json"
+        },
+        columns: [
+            {data: 'full_name', name: 'full_name'},
+            {data: 'username', name: 'username'},
+            {data: 'email', name: 'email'},
+            {
+                data: 'birthdate', 
+                name: 'birthdate',
+                render: function (data, type, row) {
+                    var date = new Date(data);
+                    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+                }
+            },
+            {data: 'phone', name: 'phone', orderable: false},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ]
+    });
+});
+
+  
+  $('#users-table').on('click', '.Resetpass', function(){
+    $('#Resetpass').modal('show');
+  
+    // Get the bill ID from the clicked element
+    var user_id = $(this).data('user-id');
+    
+     // Make an AJAX request to retrieve the old bills
+     $.ajax({
+        
+     url: '/admin/members/mdpUniverselmodal/' + user_id,
+     success: function(data) {
+        // Insert the old bills data into the modal body
+        $('#ResetpassContainer').html(data);
+     }
+     });
+     });
+
+
+      $('#users-table').on('click', '.editusermodal', function() {
+        $('#editusermodal').modal('show');
+    
+        // Get the bill ID from the clicked element
+        var user_id = $(this).data('user-id');
+    
+        // Make an AJAX request to retrieve the old bills
+        $.ajax({
+          url: '/admin/members/editUser/' + user_id,
+          success: function(data) {
+    
+             $('#editusermodalContainer').html(data);
+             $('.countrypicker').countrypicker();
+             $('.selectpicker').selectpicker();
+          }
+        });
+      });
   
    /*---------------------------------sorting by column myTableMembers --------------------------------------*/
   
@@ -1095,18 +1161,3 @@ $(document).ready(function() {
 });
 
 
-$(function () {
-  var table = $('#users-table').DataTable({
-      processing: true,
-      serverSide: true,
-      ajax: "/admin/users/get",
-      pageLength: 10000, // Affiche 10 000 lignes par page
-      lengthChange: false, // Supprime le menu déroulant de sélection de la longueur de page
-      columns: [
-          {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-          {data: 'name', name: 'name'},
-          {data: 'email', name: 'email'},
-          {data: 'action', name: 'action', orderable: false, searchable: false},
-      ]
-  });
-});

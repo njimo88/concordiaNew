@@ -853,6 +853,8 @@ class Article_Controller extends Controller
                                     
                                     $article->save();  
                                     updateArticleCategories($id_article, $request->category);
+                                    updateTotalPrice($article);
+
                                 }
 
                               
@@ -904,6 +906,7 @@ class Article_Controller extends Controller
                                 
                                     $article->save(); 
                                     updateArticleCategories($id_article, $request->category); 
+                                    updateTotalPrice($article);
                                 }
 
 
@@ -1000,7 +1003,7 @@ class Article_Controller extends Controller
                                         $article->save(); 
                                         updateArticleCategories($id_article, $request->category);
                                          
-                                        
+                                        updateTotalPrice($article);
                                     }
 
                                     if($request->has('sex_limit')){
