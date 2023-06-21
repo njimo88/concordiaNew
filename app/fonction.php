@@ -1328,9 +1328,7 @@ function getFirstReductionDescriptionGuest($articleId) {
 
 function getReducedPriceGuest($articleId, $originalPrice) {
     $shopReductions = LiaisonShopArticlesShopReductions::where('id_shop_article', $articleId)->get();
-
     $reducedPrice = $originalPrice;
-
     // Check if user is authenticated
     if (Auth::check()) {
         $userId = Auth::user()->user_id;
@@ -1377,9 +1375,7 @@ function getReducedPriceGuest($articleId, $originalPrice) {
 
     // Apply value reductions
     foreach ($valueReductions as $valueReduction) {
-        while ($valueReduction <= $reducedPrice) {
             $reducedPrice -= $valueReduction;
-        }
     }
 
     // Apply largest percentage reduction

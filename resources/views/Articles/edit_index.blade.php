@@ -239,19 +239,20 @@ foreach($Shop_article as $value1){
                                                          </div>
                                                                  <label class="mr-2">Limitation par sexe:</label>
                                                                  <div class="form-check form-check-inline">
-                                                                     <input class="form-check-input" type="radio" id="sexLimitMixte" name="sex_limit" value="0" {{ $value1->sex_limit == 0 ? 'checked' : ''}}>
-                                                                     <label class="form-check-label" for="sexLimitMixte">Mixte</label>
-                                                                 </div>
-                                                         
-                                                                 <div class="form-check form-check-inline">
-                                                                     <input class="form-check-input" type="radio" id="sexLimitFemme" name="sex_limit" value="1" {{ $value1->sex_limit == 1 ? 'checked' : ''}}>
-                                                                     <label class="form-check-label" for="sexLimitFemme">Femme</label>
-                                                                 </div>
-                                                         
-                                                                 <div class="form-check form-check-inline">
-                                                                     <input class="form-check-input" type="radio" id="sexLimitHomme" name="sex_limit" value="2" {{ $value1->sex_limit == 2 ? 'checked' : ''}}>
-                                                                     <label class="form-check-label" for="sexLimitHomme">Homme</label>
-                                                                 </div>
+                                                                    <input class="form-check-input" type="radio" id="sexLimitMixte" name="sex_limit" value="" {{ $value1->sex_limit === NULL ? 'checked' : ''}}>
+                                                                    <label class="form-check-label" for="sexLimitMixte">Mixte</label>
+                                                                </div>
+                                                                                                             
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" id="sexLimitFemme" name="sex_limit" value="female" {{ $value1->sex_limit === 'female' ? 'checked' : ''}}>
+                                                                    <label class="form-check-label" for="sexLimitFemme">Femme</label>
+                                                                </div>
+                                                                                                             
+                                                                <div class="form-check form-check-inline">
+                                                                    <input class="form-check-input" type="radio" id="sexLimitHomme" name="sex_limit" value="male" {{ $value1->sex_limit === 'male' ? 'checked' : ''}}>
+                                                                    <label class="form-check-label" for="sexLimitHomme">Homme</label>
+                                                                </div>
+                                                                
                                                          
                                                          
                                                          
@@ -576,19 +577,20 @@ foreach($Shop_article as $value1){
                                                         </div>
                                                                 <label class="mr-2">Limitation par sexe:</label>
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" id="sexLimitMixte" name="sex_limit" value="0" {{ $value1->sex_limit == 0 ? 'checked' : ''}}>
+                                                                    <input class="form-check-input" type="radio" id="sexLimitMixte" name="sex_limit" value="" {{ $value1->sex_limit === NULL ? 'checked' : ''}}>
                                                                     <label class="form-check-label" for="sexLimitMixte">Mixte</label>
                                                                 </div>
-                                                        
+                                                                                                             
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" id="sexLimitFemme" name="sex_limit" value="1" {{ $value1->sex_limit == 1 ? 'checked' : ''}}>
+                                                                    <input class="form-check-input" type="radio" id="sexLimitFemme" name="sex_limit" value="female" {{ $value1->sex_limit === 'female' ? 'checked' : ''}}>
                                                                     <label class="form-check-label" for="sexLimitFemme">Femme</label>
                                                                 </div>
-                                                        
+                                                                                                             
                                                                 <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" id="sexLimitHomme" name="sex_limit" value="2" {{ $value1->sex_limit == 2 ? 'checked' : ''}}>
+                                                                    <input class="form-check-input" type="radio" id="sexLimitHomme" name="sex_limit" value="male" {{ $value1->sex_limit === 'male' ? 'checked' : ''}}>
                                                                     <label class="form-check-label" for="sexLimitHomme">Homme</label>
                                                                 </div>
+                                                                
                                                         
                                                         
                                                         
@@ -913,19 +915,22 @@ foreach($Shop_article as $value1){
                                         </div>
                                                 <label class="mr-2">Limitation par sexe:</label>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" id="sexLimitMixte" name="sex_limit" value="0" {{ $value1->sex_limit == 0 ? 'checked' : ''}}>
+                                                    <input class="form-check-input" type="radio" id="sexLimitMixte" name="sex_limit" value="" {{ $value1->sex_limit === NULL ? 'checked' : ''}}>
                                                     <label class="form-check-label" for="sexLimitMixte">Mixte</label>
                                                 </div>
-                                        
+                                                                                             
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" id="sexLimitFemme" name="sex_limit" value="1" {{ $value1->sex_limit == 1 ? 'checked' : ''}}>
+                                                    <input class="form-check-input" type="radio" id="sexLimitFemme" name="sex_limit" value="female" {{ $value1->sex_limit === 'female' ? 'checked' : ''}}>
                                                     <label class="form-check-label" for="sexLimitFemme">Femme</label>
                                                 </div>
-                                        
+                                                                                             
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" id="sexLimitHomme" name="sex_limit" value="2" {{ $value1->sex_limit == 2 ? 'checked' : ''}}>
+                                                    <input class="form-check-input" type="radio" id="sexLimitHomme" name="sex_limit" value="male" {{ $value1->sex_limit === 'male' ? 'checked' : ''}}>
                                                     <label class="form-check-label" for="sexLimitHomme">Homme</label>
                                                 </div>
+                                                
+                                                
+                                                
                                         
                                         
                                         
