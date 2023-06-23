@@ -216,6 +216,8 @@ Route::post('category-subcategory/edit/{id_shop_category}', [A_Controller_catego
 Route::get('category-subcategory/remove/{id_shop_category}', [A_Controller_categorie::class, 'remove'])->name('category-remove');
 
 
+Route::get('/mode_strict', [A_Controller_categorie::class, 'mode_strict'])->name('mode_strict');
+
 }); 
 
 /*---------------------------------Shop en front office------------------------------------------*/

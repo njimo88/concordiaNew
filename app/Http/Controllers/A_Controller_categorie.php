@@ -51,6 +51,12 @@ class A_Controller_categorie extends Controller
 
     }
 
+    public function mode_strict ()
+    {
+
+        return view('A_Categorie_strict');
+    }
+
     //boutton Payer
     public function Passer_au_paiement($id, Request $request)
     {
