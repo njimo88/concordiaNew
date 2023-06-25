@@ -107,7 +107,7 @@ class A_Controller_categorie extends Controller
             $addcommand->ref = $shop->id_shop_article;
             $addcommand->qte = $quantite;
             $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->price,$selected_user_id);
-            if($addcommand->prix != $shop->totalprice){
+            if($addcommand->prix < $shop->price){
                 $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
                 $addcommand->reduction = $description;
             }
@@ -159,7 +159,7 @@ class A_Controller_categorie extends Controller
                     $addcommand->ref = $need_member;
                     $addcommand->qte = 1;
                     $addcommand->prix = $currentPrice;
-                    if($addcommand->prix != $shop1->totalprice){
+                    if($addcommand->prix < $shop1->price){
                         $description = getFirstReductionDescription($shop1->id_shop_article,$selected_user_id);
                         $addcommand->reduction = $description;
                     }
@@ -204,7 +204,7 @@ class A_Controller_categorie extends Controller
                     $addcommand->ref = $need_member;
                     $addcommand->qte = 1;
                     $addcommand->prix = $currentPrice;
-                    if($addcommand->prix != $shop1->totalprice){
+                    if($addcommand->prix < $shop1->price){
                         $description = getFirstReductionDescription($shop1->id_shop_article,$selected_user_id);
                         $addcommand->reduction = $description;
                     }
@@ -273,7 +273,7 @@ public function commander_article($id, Request $request)
             $addcommand->ref = $shop->id_shop_article;
             $addcommand->qte = $quantite;
             $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->price,$selected_user_id);
-            if($addcommand->prix != $shop->totalprice){
+            if($addcommand->prix < $shop->price){
                 $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
                 $addcommand->reduction = $description;
             }
@@ -324,7 +324,7 @@ public function commander_article($id, Request $request)
                     $addcommand->ref = $need_member;
                     $addcommand->qte = 1;
                     $addcommand->prix = $currentPrice;
-                    if($addcommand->prix != $shop1->totalprice){
+                    if($addcommand->prix < $shop1->price){
                         $description = getFirstReductionDescription($shop1->id_shop_article,$selected_user_id);
                         $addcommand->reduction = $description;
                     }

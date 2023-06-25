@@ -13,6 +13,7 @@ use App\Models\member_history;
 use App\Models\bills;
 use App\Models\old_bills;
 use App\Models\ShopMessage;
+use App\Models\UserReductionUsage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
@@ -22,6 +23,7 @@ use App\Models\LiaisonShopArticlesShopReductions;
 use App\Models\LiaisonUserShopReduction;
 use App\Models\Basket;
 use App\Http\Controllers\generatePDF;
+
 
 
 //fonction pour afficher la famille en fonction de l'id de la famille
@@ -1203,15 +1205,47 @@ function getReducedPrice($articleId, $originalPrice, $user_id) {
     $percentageReductions = [];
 
     // Collect value and percentage reductions
-    foreach ($shopReductions as $shopReduction) {
-        $reduction = ShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
-            ->whereNull('destroy')
-            ->where('state', 1)
-            ->whereDate('startvalidity', '<=', now())
-            ->whereDate('endvalidity', '>=', now())
-            ->first();
+    // Collect value and percentage reductions
+foreach ($shopReductions as $shopReduction) {
+    $reduction = ShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
+        ->whereNull('destroy')
+        ->where('state', 1)
+        ->whereDate('startvalidity', '<=', now())
+        ->whereDate('endvalidity', '>=', now())
+        ->first();
 
-        if ($reduction) {
+    if ($reduction) {
+        // Check if the reduction is usable more than 0 times
+        if ($reduction->usable != 0) {
+            // Get the number of times the user has used this reduction
+            $userReductionUsage = UserReductionUsage::where('user_id', $userId)
+                ->where('reduction_id', $reduction->id_shop_reduction)
+                ->first();
+
+            $usageCount = $userReductionUsage ? $userReductionUsage->usage_count : 0;
+
+            // If the user has used this reduction less times than it's usable, apply the reduction
+            if ($usageCount < $reduction->usable) {
+                if ($reduction->value != 0) {
+                    $valueReductions[] = $reduction->value;
+                } elseif ($reduction->percentage != 0) {
+                    $percentageReductions[] = $reduction->percentage;
+                }
+
+                // Increase the usage count for this reduction
+                if ($userReductionUsage) {
+                    $userReductionUsage->usage_count++;
+                    $userReductionUsage->save();
+                } else {
+                    UserReductionUsage::create([
+                        'user_id' => $userId,
+                        'reduction_id' => $reduction->id_shop_reduction ,
+                        'usage_count' => 1
+                    ]);
+                }
+            }
+        } else {
+            // If the reduction is usable unlimited times, apply the reduction
             if ($reduction->value != 0) {
                 $valueReductions[] = $reduction->value;
             } elseif ($reduction->percentage != 0) {
@@ -1219,6 +1253,8 @@ function getReducedPrice($articleId, $originalPrice, $user_id) {
             }
         }
     }
+}
+
 
     // Apply value reductions
     foreach ($valueReductions as $valueReduction) {
