@@ -55,30 +55,34 @@ class UsersController extends Controller
         ? 'MULTI:first=' . $paiements[0]*100 . ';count=' . $nombre_virment . ';period=30'
         : 'SINGLE';
     
-    $data = [
-        "vads_cust_id" => $user->user_id,  
-        "vads_cust_email" => $user->email,
-        "vads_cust_first_name" => $user->name,
-        "vads_cust_last_name" => $user->lastname,
-        "vads_cust_phone" => $user->phone, 
-        "vads_cust_address" => $user->address, 
-        "vads_cust_zip" => $user->zip, 
-        "vads_cust_city" => $user->city, 
-        "vads_cust_country" => $user->country,
-        "vads_action_mode" => "INTERACTIVE",
-        "vads_amount" => $total*100,
-        "vads_currency" => "978",
-        "vads_ctx_mode" => "PRODUCTION",
-        "vads_order_id" => $orderId,
-        "vads_page_action" => "PAYMENT",
-        "vads_payment_cards" => "VISA;MASTERCARD",
-        "vads_payment_config" => $payment_config,
-        "vads_site_id" => "31118669",
-        "vads_trans_date" => $utcDate,
-        "vads_trans_id" => $vads_trans_id,
-        "vads_version" => "V2",
-        "vads_url_return" => route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment])
-    ];
+        $data = [
+            "vads_cust_id" => $user->user_id,  
+            "vads_cust_email" => $user->email,
+            "vads_cust_first_name" => $user->name,
+            "vads_cust_last_name" => $user->lastname,
+            "vads_cust_phone" => $user->phone, 
+            "vads_cust_address" => $user->address, 
+            "vads_cust_zip" => $user->zip, 
+            "vads_cust_city" => $user->city, 
+            "vads_cust_country" => $user->country,
+            "vads_action_mode" => "INTERACTIVE",
+            "vads_amount" => $total*100,
+            "vads_currency" => "978",
+            "vads_ctx_mode" => "PRODUCTION",
+            "vads_order_id" => $orderId,
+            "vads_page_action" => "PAYMENT",
+            "vads_payment_cards" => "VISA;MASTERCARD",
+            "vads_payment_config" => $payment_config,
+            "vads_site_id" => "31118669",
+            "vads_trans_date" => $utcDate,
+            "vads_trans_id" => $vads_trans_id,
+            "vads_version" => "V2",
+            "vads_url_success" => route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment]),
+            "vads_url_cancel" => route('panier', ['message' => 'Transaction annulée']),
+            "vads_url_error" => route('panier', ['message' => 'Erreur lors de la transaction']),
+            "vads_url_refused" => route('panier', ['message' => 'Transaction refusée']),
+
+        ];
     $signature = generateSignature($data, $key, "HMAC-SHA-256");
 
     return view('admin.payment_form')->with(compact( 'nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements' , 'vads_trans_id', 'total', 'user','payment_config'));
@@ -442,6 +446,7 @@ foreach ($paniers as $panier) {
 
 
     public function family(){
+
         $n_users = User::where('family_id', Auth::user()->family_id)->orderBy('family_level', 'desc')->get();
             if (is_null($n_users)) {
                 return view('users.family')->with('user', auth()->user());

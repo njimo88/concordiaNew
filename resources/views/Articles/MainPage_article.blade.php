@@ -123,8 +123,24 @@ Créer un article
 
 <td><img src="{{$data->image}}" style="height: 60px; width:60px"></td>
 <td>{{$data->ref}}</td>
-<td>{{$data->title}}</td>
-<td>{{$data->price}}</td>
+<td>
+  {{$data->title}}
+  @if($data->sex_limite === null)
+      <!-- Mettez ici l'icône pour null -->
+      {{ $data->sex_limite }}
+      <img src="{{ asset('assets/images/genders.png') }}" alt="icône null" />
+  @elseif($data->sex_limite === 'female')
+      <!-- Mettez ici l'icône pour female -->
+      {{ $data->sex_limite }}
+
+      <img src="{{ asset('assets/images/femenine.png') }}" alt="icône female" />
+  @elseif($data->sex_limite === 'male')
+      <!-- Mettez ici l'icône pour male -->
+      {{ $data->sex_limite }}
+
+      <img src="{{ asset('assets/images/male.png') }}" alt="icône male" />
+  @endif
+</td><td>{{$data->price}}</td>
 <td>{{$data->totalprice}}</td>
 <td>{{$data->stock_actuel}}</td>
 @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
@@ -169,8 +185,19 @@ Créer un article
 <tr style="background-color: <?php echo ($data->stock_actuel <= 0) ? '#FB335B' : (($data->stock_actuel < $data->alert_stock) ? 'orange' : ''); ?>">
 <td><img src="{{$data->image}}" style="height: 60px; width:60px"></td>
 <td>{{$data->ref}}</td>
-<td>{{$data->title}}</td>
-<td>{{ number_format($data->price, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
+<td>
+  {{$data->title}} &nbsp; &nbsp;
+  @if($data->	sex_limit === null)
+      <!-- Mettez ici l'icône pour null -->
+      <img src="{{ asset('assets/images/genders.png') }}" alt="icône null" />
+  @elseif($data->	sex_limit === 'female')
+      <!-- Mettez ici l'icône pour female -->
+      <img src="{{ asset('assets/images/femenine.png') }}" alt="icône female" />
+  @elseif($data->	sex_limit === 'male')
+      <!-- Mettez ici l'icône pour male -->
+      <img src="{{ asset('assets/images/male.png') }}" alt="icône male" />
+  @endif
+</td><td>{{ number_format($data->price, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
 <td>{{ number_format($data->totalprice, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
 <td>{{$data->stock_actuel}}/{{ $data->stock_ini }}</td>
 @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)

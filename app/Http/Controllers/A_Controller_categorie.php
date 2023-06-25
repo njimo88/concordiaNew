@@ -130,7 +130,7 @@ class A_Controller_categorie extends Controller
                 
                     // Check if there is already a type 0 article in the cart
                     $existingBasketItem = Basket::join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-                                            ->where('basket.user_id', $selected_user_id)
+                                            ->where('basket.pour_user_id', $selected_user_id)
                                             ->where('shop_article.type_article', 0)
                                             ->select('basket.*') // Select basket fields
                                             ->first();
@@ -166,7 +166,53 @@ class A_Controller_categorie extends Controller
                     $addcommand->save();
                     applyFamilyDiscount($shop1,$selected_user_id);
                     return redirect()->route('panier');
-                }}
+                }elseif (is_numeric($result)) { // Si le résultat est diff_price
+                    //ajouter l'article avec le prix réduit au panier
+                
+                    $shop1 = Shop_article::where('id_shop_article', $need_member)->firstOrFail();
+                    $currentPrice = $result; // Utilisez diff_price comme le prix actuel
+                
+                    // Check if there is already a type 0 article in the cart
+                    $existingBasketItem = Basket::join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+                                                ->where('basket.pour_user_id', $selected_user_id)
+                                                ->where('basket.prix', $currentPrice)
+                                                ->where('shop_article.type_article', 0)
+                                                ->select('basket.*') // Select basket fields
+                                                ->first();
+                
+                    if ($existingBasketItem) {
+                        // If the existing article is the same, do not add
+                        if ($existingBasketItem->ref == $need_member) {
+                            return redirect()->route('panier');
+                        }
+                
+                        // If the existing article is different, only add if the new article is more expensive
+                        $existingArticle = Shop_article::where('id_shop_article', $existingBasketItem->ref)->first();
+                        if ($currentPrice > $existingArticle->price) {
+                            $existingBasketItem->delete();  // Remove the cheaper article
+                        } else {
+                            // Do not add the new article
+                            return redirect()->route('panier');
+                        }
+                    }
+                
+                    // Now we can add the new article
+                    $addcommand = new Basket();
+                    $addcommand->user_id = auth()->user()->user_id;
+                    $addcommand->family_id = auth()->user()->family_id;
+                    $addcommand->pour_user_id = $request->selected_user_id;
+                    $addcommand->ref = $need_member;
+                    $addcommand->qte = 1;
+                    $addcommand->prix = $currentPrice;
+                    if($addcommand->prix != $shop1->totalprice){
+                        $description = getFirstReductionDescription($shop1->id_shop_article,$selected_user_id);
+                        $addcommand->reduction = $description;
+                    }
+                    $addcommand->save();
+                    applyFamilyDiscount($shop1,$selected_user_id);
+                    return redirect()->route('panier');
+                }
+                }
                 else{
                     return redirect()->route('panier');
                 }}
@@ -241,7 +287,6 @@ public function commander_article($id, Request $request)
 
     if ($need_member != 0) { 
         
-
             $result = MiseAuPanier($selected_user_id, $id_article);
             if ($result == 0) {
                 return redirect()->back()->with('success', 'Article ajouté au panier');}
@@ -251,7 +296,7 @@ public function commander_article($id, Request $request)
                 
                     // Check if there is already a type 0 article in the cart
                     $existingBasketItem = Basket::join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-                                            ->where('basket.user_id', $selected_user_id)
+                                            ->where('basket.pour_user_id', $selected_user_id)
                                             ->where('shop_article.type_article', 0)
                                             ->select('basket.*') // Select basket fields
                                             ->first();
