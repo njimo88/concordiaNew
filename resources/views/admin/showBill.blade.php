@@ -309,7 +309,7 @@
               @endif
         
               @if ($message->somme_payé <= 0 && $message->somme_payé != null)
-                <b>Somme payée : </b><span style="font-weight : bold" class="text-danger">{{ $message->somme_payé }} €</span><br>
+                <b>Somme payée : </b><span style="font-weight : bold" class="text-danger">{{ $message->somme_payé*-1 }} €</span><br>
               @elseif ($message->somme_payé > 0)
                 <b>Somme remboursée : </b><span style="font-weight : bold" class="text-success">{{ $message->somme_payé }} €</span><br>
               @endif

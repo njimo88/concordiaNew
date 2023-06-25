@@ -334,15 +334,18 @@ class BillsController extends Controller
         ->where('bills.id', $id)
         ->first();
 
-        $shopMessage = new ShopMessage();
-        $shopMessage->message = $bill->bill_status;
-        $shopMessage->date = now();
-        $shopMessage->id_bill = $bill->id;
-        $shopMessage->id_customer = $bill->user_id;
-        $shopMessage->id_admin = auth()->user()->user_id;
-        $shopMessage->state = 'Privé';
-        $shopMessage->somme_payé = $bill->payment_total_amount;
-        $shopMessage->save();
+        if($bill->status == 100){
+            $shopMessage = new ShopMessage();
+            $shopMessage->message = $bill->bill_status;
+            $shopMessage->date = now();
+            $shopMessage->id_bill = $bill->id;
+            $shopMessage->id_customer = $bill->user_id;
+            $shopMessage->id_admin = auth()->user()->user_id;
+            $shopMessage->state = 'Privé';
+            $shopMessage->somme_payé = $bill->payment_total_amount*-1;
+            $shopMessage->save();
+        }
+        
             
         $user = User::find($bill->user_id);
         $receiverEmail = $user->email;
