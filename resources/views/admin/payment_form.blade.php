@@ -32,7 +32,10 @@
         margin: 0 auto 20px;
     }
 </style>
+@php
+    require_once(app_path().'/fonction.php');
 
+@endphp
 
 
 
@@ -59,13 +62,13 @@
                 <input type="hidden" name="vads_currency" value="978" />
                 <input type="hidden" name="vads_cust_id" value="{{ $user->user_id }}" />
                 <input type="hidden" name="vads_cust_email" value="{{ $user->email }}" />
-                <input type="hidden" name="vads_cust_first_name" value="{{ $user->name }}" />
-                <input type="hidden" name="vads_cust_last_name" value="{{ $user->lastname }}" />
+                <input type="hidden" name="vads_cust_first_name" value="{{ remove_accents($user->name) }}" />
+                <input type="hidden" name="vads_cust_last_name" value="{{ remove_accents($user->lastname) }}" />
                 <input type="hidden" name="vads_cust_phone" value="{{ $user->phone }}" />
-                <input type="hidden" name="vads_cust_address" value="{{ $user->address }}" />
-                <input type="hidden" name="vads_cust_zip" value="{{ $user->zip }}" />
-                <input type="hidden" name="vads_cust_city" value="{{ $user->city }}" />
-                <input type="hidden" name="vads_cust_country" value="{{ $user->country }}" />
+                <input type="hidden" name="vads_cust_address" value="{{ remove_accents($user->address) }}" />
+                <input type="hidden" name="vads_cust_zip" value="{{ remove_accents($user->zip) }}" />
+                <input type="hidden" name="vads_cust_city" value="{{ remove_accents($user->city) }}" />
+                <input type="hidden" name="vads_cust_country" value="{{ remove_accents($user->country) }}" />
                 <input type="hidden" name="vads_ctx_mode" value="PRODUCTION" />
                 <input type="hidden" name="vads_order_id" value="{{ $orderId  }}" />
                 <input type="hidden" name="vads_page_action" value="PAYMENT" />
@@ -85,6 +88,7 @@
                     <span>Payer {{ $total }} €</span>
                 </button>
             </form>
+            
             
         </div>
 

@@ -11,6 +11,7 @@ class LiaisonShopArticlesBill extends Model
     
     protected $table = 'liaison_shop_articles_bills';
     protected $primaryKey = 'id_liaison';
+    public $timestamps = false;
 
     protected $fillable = [
         'bill_id',

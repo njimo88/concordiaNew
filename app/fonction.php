@@ -1900,3 +1900,7 @@ function generateSignature($data, $key, $algorithm = "HMAC-SHA-256") {
 
     return null;
 }
+
+function remove_accents($str) {
+    return iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+}

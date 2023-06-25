@@ -56,15 +56,15 @@ class UsersController extends Controller
         : 'SINGLE';
     
         $data = [
-            "vads_cust_id" => $user->user_id,  
+            "vads_cust_id" => $user->user_id,
             "vads_cust_email" => $user->email,
-            "vads_cust_first_name" => $user->name,
-            "vads_cust_last_name" => $user->lastname,
-            "vads_cust_phone" => $user->phone, 
-            "vads_cust_address" => $user->address, 
-            "vads_cust_zip" => $user->zip, 
-            "vads_cust_city" => $user->city, 
-            "vads_cust_country" => $user->country,
+            "vads_cust_first_name" => remove_accents($user->name),
+            "vads_cust_last_name" => remove_accents($user->lastname),
+            "vads_cust_phone" => $user->phone,
+            "vads_cust_address" => remove_accents($user->address),
+            "vads_cust_zip" => remove_accents($user->zip),
+            "vads_cust_city" => remove_accents($user->city),
+            "vads_cust_country" => remove_accents($user->country),
             "vads_action_mode" => "INTERACTIVE",
             "vads_amount" => $total*100,
             "vads_currency" => "978",
@@ -81,7 +81,6 @@ class UsersController extends Controller
             "vads_url_cancel" => route('panier', ['message' => 'Transaction annulée']),
             "vads_url_error" => route('panier', ['message' => 'Erreur lors de la transaction']),
             "vads_url_refused" => route('panier', ['message' => 'Transaction refusée']),
-
         ];
     $signature = generateSignature($data, $key, "HMAC-SHA-256");
 
