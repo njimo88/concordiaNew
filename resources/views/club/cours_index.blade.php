@@ -686,7 +686,7 @@ $saison_active = saison_active() ;
                                     
                   <div class="input-container">
                     <img class="px-2" style="height: 30px " src="{{ asset('assets/images/logo-admin-list.png') }}" alt="vvvvvvvvvvvvvvv">
-                    <input readonly onclick="toggleElement('{{ $data->id_shop_article }}')" class="btn m-0" style="font-weight: bold; text-align: left;" value="{{$data->title}}   ({{ $data->usersActiveCount() }}/ {{ count($users_saison_active) }} )">
+                    <input readonly onclick="toggleElement('{{ $data->id_shop_article }}')" class="btn m-0" style="font-weight: bold; text-align: left;" value="{{$data->title}}   ({{ $data->usersActiveCount() }} / {{$data->stock_ini}})">
                   </div>
                   <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
       
