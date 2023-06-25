@@ -1176,7 +1176,6 @@ function getReducedPrice($articleId, $originalPrice, $user_id) {
     $shopReductions = LiaisonShopArticlesShopReductions::where('id_shop_article', $articleId)->get();
 
     $reducedPrice = $originalPrice;
-
     // Check if user is authenticated
     if (Auth::check()) {
         $userId = $user_id;
@@ -1223,9 +1222,7 @@ function getReducedPrice($articleId, $originalPrice, $user_id) {
 
     // Apply value reductions
     foreach ($valueReductions as $valueReduction) {
-        while ($valueReduction <= $reducedPrice) {
             $reducedPrice -= $valueReduction;
-        }
     }
 
     // Apply largest percentage reduction
@@ -1387,61 +1384,84 @@ function getReducedPriceGuest($articleId, $originalPrice) {
     
 }
 
-function applyFamilyDiscount()
+function applyFamilyDiscount(Shop_article $article, $pour_user_id)
 {
-    // Récupérer l'utilisateur connecté
+    $pour_user_id = intval($pour_user_id);
+    // Get the logged-in user
     $user = User::find(auth()->user()->user_id);
-    // Récupérer l'ID de la famille
+    // Get the family ID
     $family_id = $user->family_id;
 
-    // Récupérer les membres de la famille
+    // Check if a family member is a member and if they have an article of type 0 in their basket
     $family_members = User::where('family_id', $family_id)->get();
-
-    // Vérifier si un membre de la famille est adhérent
     $member_found = false;
     foreach ($family_members as $member) {
         if (isUserMember($member->user_id) > 0) {
             $member_found = true;
-            break;
         }
     }
 
-    if ($member_found) {
-        $saison = saison_active();
-        $reduction_famille = DB::table('parametre')
-            ->select('reduction_famille')
-            ->where('saison', $saison)
-            ->first()
-            ->reduction_famille;
+    $userBasketItem = false;
+    if($article->type_article == 0 ) {
+        $userBasketItem = true;
+    }
 
-        // Vérifier si l'utilisateur a déjà la réduction dans son panier
-        /*$basket = Basket::where('user_id', auth()->user()->user_id)
-            ->where('family_id', $family_id)
-            ->where('ref', 1)
-            ->first();
-        if (!$basket) {*/
-            // Mettre à jour le totalprice de l'article correspondant
-            $shopArticle = Shop_article::find(1);
-
-            // Vérifier si le type de l'article est 0
-            if ($shopArticle->type_article == 0) {
-                $shopArticle->totalprice = $reduction_famille*(-1);
-                $shopArticle->save();
-
-                // Ajouter la réduction famille au panier
-                $basket = new Basket([
-                    'user_id' => auth()->user()->user_id,
-                    'family_id' => $family_id,
-                    'pour_user_id' => auth()->user()->user_id,
-                    'ref' => 1,
-                    'qte' => 1,
-                    'prix' => $reduction_famille*(-1),
-                ]);
-                $basket->save();
+    $userFamilyDiscount = Basket::where('pour_user_id', $pour_user_id)
+        ->where('ref', '1')
+        ->first();
+    if ($userBasketItem && !$userFamilyDiscount) {
+        // Check if a family member has a type 0 article in their basket and no family discount
+        $basket_mem = false;
+        foreach ($family_members as $member) {
+            if ($member->user_id != $pour_user_id) { 
+                $memberBasketItem = Basket::join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+                ->where('basket.user_id', auth()->user()->user_id)
+                ->where('basket.pour_user_id', $member->user_id)
+                ->where('shop_article.type_article', 0)
+                ->first();
             }
-        /*}*/
+        
+            $memberFamilyDiscount = Basket::where('user_id', auth()->user()->user_id)
+            ->where('pour_user_id', intval($member->user_id))
+            ->where('ref', '1')
+            ->first();
+        
+             if (isset($memberBasketItem) && $memberBasketItem && !$memberFamilyDiscount) {
+                $basket_mem = true;
+                break;
+            }
+        }
+        
+        
+        if ($member_found || $basket_mem) {
+            $saison = saison_active();
+            $reduction_famille = DB::table('parametre')
+                ->select('reduction_famille')
+                ->where('saison', $saison)
+                ->first()
+                ->reduction_famille;
+
+            // Update the totalprice of the corresponding article
+            $shopArticle = Shop_article::find(1);
+            $shopArticle->totalprice = $reduction_famille*(-1);
+            $shopArticle->save();
+
+            // Add the family discount to the basket
+            $basket = new Basket([
+                'user_id' => auth()->user()->user_id,
+                'family_id' => $family_id,
+                'pour_user_id' => $pour_user_id,
+                'ref' => '1',  // converted to string
+                'qte' => 1,
+                'prix' => $reduction_famille*(-1),
+            ]);
+            $basket->save();
+        }
     }
 }
+
+
+
 
 
 
@@ -1856,4 +1876,27 @@ function updateArticleCategories($shopArticleId, array $shopCategoryIds)
     $article->save();
     }
     
+}
+
+
+function generateSignature($data, $key, $algorithm = "HMAC-SHA-256") {
+    // Triez les champs dont le nom commence par vads_ par ordre alphabétique
+    ksort($data);
+    // Assurez-vous que tous les champs soient encodés en UTF-8
+    $data = array_map('utf8_encode', $data);
+
+    // Concaténez les valeurs de ces champs en les séparant avec le caractère "+"
+    $data = implode("+", $data);
+    // Concaténez le résultat avec la clé de test ou de production en les séparant avec le caractère "+"
+    $data = $data . "+" . $key;
+
+    if ($algorithm == "SHA-1") {
+        // Appliquez la fonction de hachage SHA-1 sur la chaîne obtenue à l'étape précédente
+        return sha1($data);
+    } else if ($algorithm == "HMAC-SHA-256") {
+        // Calculez et encodez au format Base64 la signature du message en utilisant l'algorithme HMAC-SHA-256
+        return base64_encode(hash_hmac('sha256', $data, $key, true));
+    }
+
+    return null;
 }

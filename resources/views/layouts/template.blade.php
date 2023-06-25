@@ -476,7 +476,7 @@
      <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
            <li class="nav-item"> <a class="nav-link " href="{{ route('admin.index') }}"> <i class="bi bi-grid"></i> <span>Accueil</span> </a></li>
-           @if(auth()->user()->roles->estAutoriserDeVoirMembres || auth()->user()->roles->estAutoriserDeVoirClickAsso)
+           @if(auth()->user()->roles->estAutoriserDeVoirMembres || auth()->user()->roles->estAutoriserDeVoirClickAsso || (SystemSetting::getValue(2) == 1 && auth()->user()->roles->estAutoriserDeVoirPortesOuvertes))
                <li class="nav-item">
                   <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"><span style="margin-right: 5px; color:#007b00;" class="fa fa-users fa-fw mr-2 gc-green"></span> <span>Utilisateurs</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">

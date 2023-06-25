@@ -33,14 +33,9 @@
     }
 </style>
 
-<script type="text/javascript"
-    src="https://static.scelliuspaiement.labanquepostale.fr/static/js/krypton-client/V4.0/stable/kr-payment-form.min.js" 
-    kr-public-key="{{ env('API_PUBLIC_KEY') }}"
-    kr-get-url-success="{{ route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment]) }}">
-</script>
 
 
-<script type="text/javascript" src="https://static.scelliuspaiement.labanquepostale.fr/static/js/krypton-client/V4.0/ext/neon.js"></script>
+
 <main class="main mt-4" id="main">
 <!-- Insert your logo -->
 <img width="80%" class="bank-logo" src="{{ asset("assets/images/BP.png") }}" alt="Logo de La Banque Postale">
@@ -55,9 +50,81 @@
     </div>
     <div class="col-md-5 row d-flex justify-content-center">
         <div class="col-md-12 d-flex justify-content-center">
-             <img style="width: 100px" src="{{ asset("assets/images/pst.jpg") }}" alt="Instructions">
+             <img style="width: 200px;height:200px;" src="{{ asset("assets/images/pst.jpg") }}" alt="Instructions">
         </div>
-        <div class="kr-embedded col-md-11" kr-form-token="{{ $formToken }}">
+        <div class="d-flex justify-content-center">
+            <form method="POST" action="https://scelliuspaiement.labanquepostale.fr/vads-payment/">
+                <input type="hidden" name="vads_action_mode" value="INTERACTIVE" />
+                <input type="hidden" name="vads_amount" value="{{ $total*100 }}" />
+                <input type="hidden" name="vads_currency" value="978" />
+                <input type="hidden" name="vads_cust_id" value="{{ $user->user_id }}" />
+                <input type="hidden" name="vads_cust_email" value="{{ $user->email }}" />
+                <input type="hidden" name="vads_cust_first_name" value="{{ $user->name }}" />
+                <input type="hidden" name="vads_cust_last_name" value="{{ $user->lastname }}" />
+                <input type="hidden" name="vads_cust_phone" value="{{ $user->phone }}" />
+                <input type="hidden" name="vads_cust_address" value="{{ $user->address }}" />
+                <input type="hidden" name="vads_cust_zip" value="{{ $user->zip }}" />
+                <input type="hidden" name="vads_cust_city" value="{{ $user->city }}" />
+                <input type="hidden" name="vads_cust_country" value="{{ $user->country }}" />
+                <input type="hidden" name="vads_ctx_mode" value="PRODUCTION" />
+                <input type="hidden" name="vads_order_id" value="{{ $orderId  }}" />
+                <input type="hidden" name="vads_page_action" value="PAYMENT" />
+                <input type="hidden" name="vads_payment_cards" value="VISA;MASTERCARD" />
+                <input type="hidden" name="vads_payment_config" value="{{ $payment_config }}" /> 
+                <input type="hidden" name="vads_site_id" value="31118669" />
+                <input type="hidden" name="vads_url_return" value="{{ route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment]) }}" />
+                <input type="hidden" name="vads_trans_date" value="{{ $utcDate }}" />
+                <input type="hidden" name="vads_trans_id" value="{{ $vads_trans_id }}" />
+                <input type="hidden" name="vads_version" value="V2" />
+                <input type="hidden" name="signature" value="{{ $signature }}"/>
+                <button type="submit" class="btn-pay">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Payer {{ $total }} €</span>
+                </button>
+            </form>
+            
+        </div>
+
+
+<style>
+.btn-pay {
+    font-size: 1rem;
+    padding: 10px 20px;
+    color: #fff;
+    background: #f44336; /* red */
+    border: none;
+    border-radius: .25rem;
+    transition: background 0.5s;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+}
+
+.btn-pay:hover {
+    animation: pulse 1s ease-in-out infinite;
+    background: #969cc1; /* indigo */
+}
+
+.btn-pay i {
+    margin-right: .5rem;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+</style>
+
         </div>
     </div>
 </div>

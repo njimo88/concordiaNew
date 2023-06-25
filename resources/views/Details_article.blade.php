@@ -292,7 +292,7 @@
 
                            
                             $date = new DateTime($dt);
-                            echo "<p style='align-self: flex-start !important; font-weight:bold;'>" ; echo fetchDayy($dt)." ".$date->format('G:i'); 
+                            echo "<p style='align-self: flex-start !important; font-weight:bold;'>" ; echo fetcchDayy($dt)." de ".$date->format('G:i'); 
                          
 
                            $dt1 = $Data_lesson['end_date'][$aff_heure] ;
@@ -317,7 +317,7 @@
                                  
                                   $date = new DateTime($dt); // recupere date timestamp de la database
                                 
-                                  echo "<p style='align-self: flex-start !important; font-weight:bold;'>" ; echo fetchDayy($dt)." ".$date->format('G:i') ; // use method format pour afficher les heures sans les secondes
+                                  echo "<p style='align-self: flex-start !important; font-weight:bold;'>" ; echo fetcchDayy($dt)." de ".$date->format('G:i') ; // use method format pour afficher les heures sans les secondes
 
                                   echo " à ";
                                   foreach($Data_lesson['end_date'] as $dt){
@@ -378,7 +378,7 @@
                       <select onchange="updatePriceToDisplay()" class="border mb-4 col-12 col-md-11 select-form @error('buyers') is-invalid @enderror" name="buyers" id="buyers" autocomplete="buyers" autofocus role="listbox" data-style='btn-info'>
 
                         @foreach ($selectedUsers as $user)
-                            <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }} {{ $user->user_id }}</option>
+                            <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
                           @endforeach
                       </select>
                       <script>
@@ -421,7 +421,7 @@
                     
                          </script>
                         
-                      @if ($coursVente->value == 0)
+                      @if ($coursVente->value == 0 && Auth::user()->role < 90 )
                         <p style="font-weight:bold">Inscriptions inaccessibles actuellement</p>
                       @else
                         <button data-shop-id="{{ $data->id_shop_article }}" class="commanderModal btn btn-primary">Commander</button>

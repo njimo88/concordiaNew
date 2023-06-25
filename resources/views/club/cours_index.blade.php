@@ -24,9 +24,9 @@ $saison_active = saison_active() ;
 
 
 @php 
-        $id_teacher = auth()->user()->user_id ;
-        $my_articles = [] ;
-        $add = [] ;
+  $id_teacher = auth()->user()->user_id ;
+  $my_articles = [] ;
+  $add = [] ;
 @endphp
 
 

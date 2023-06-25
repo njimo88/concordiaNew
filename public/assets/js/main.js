@@ -314,7 +314,6 @@ $('.commanderModal').click(function() {
   },
   success: function(data) {
   // Insert the old bills data into the modal body
-  console.log(data);
   $('#commanderModalContainer').html(data);
   }
   });

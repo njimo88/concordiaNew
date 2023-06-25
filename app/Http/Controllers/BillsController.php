@@ -385,7 +385,7 @@ class BillsController extends Controller
     }
 
 
-
+/*
     public function destroy(bills $bill)
     {
         $bill->status = 1;
@@ -393,8 +393,22 @@ class BillsController extends Controller
         session()->flash('success', 'Le statut de la facture a été mis à jour avec succès.');
         return back();
     }
+    */
+    public function destroy(bills $bill)
+    {
+        // Supprimer les liaisons associées à la facture
+        DB::table('liaison_shop_articles_bills')
+            ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+            ->where('bills.id', $bill->id)
+            ->delete();
     
-
+        // Supprimer la facture
+        $bill->delete();
+    
+        session()->flash('success', 'La facture et les liaisons associées ont été supprimées avec succès.');
+        return back();
+    }
+    
 
     
     

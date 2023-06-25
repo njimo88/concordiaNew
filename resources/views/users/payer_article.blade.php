@@ -105,7 +105,7 @@
                     </div>
                     <div class="modal-body">
                         {!! $cb->text !!}
-                        <select class="form-control selectpicker mb-3" id="nombre_virment" data-style="btn-danger" data-width="fit">                                       <option value="1">1</option>                                       <option value="2">2</option>                                       <option value="3">3</option>                                       <option value="4">4</option>                                       <option value="5">5</option>                                   </select> 
+                        <select class="form-control selectpicker mb-3" id="nombre_virment" data-style="btn-danger" data-width="fit"></select> 
                         <br>
                         <a href="#" class="btn btn-primary mr-2 " id="valider_virment">Valider ma commande</a>
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Annuler</button>
@@ -123,6 +123,40 @@
                 </div>
             </div>
         </div>
+        <script>
+            var total = {{ $total }}; // Mettre ici la valeur du total
+            var nombre_virment = document.getElementById('nombre_virment');
+          
+            var maxPayments;
+            if (total < 50) {
+                maxPayments = 1;
+            } else if (total < 100) {
+                maxPayments = 2;
+            } else if (total < 150) {
+                maxPayments = 3;
+            } else if (total < 200) {
+                maxPayments = 4;
+            } else {
+                maxPayments = 5;
+            }
+          
+            for (var i = 1; i <= maxPayments; i++) {
+                var option = document.createElement('option');
+                option.value = i;
+                option.text = i;
+                nombre_virment.add(option);
+            }
+          
+            // Lorsque l'utilisateur clique sur le bouton "Valider ma commande"
+            document.getElementById('valider_virment').addEventListener('click', function(event) {
+                event.preventDefault(); // Empêcher le comportement par défaut du lien
+                var nombre_virment_value = nombre_virment.value; // Récupérer la valeur sélectionnée
+                var url = '{{ route('payment_form', ['nombre_virment' => ':nombre_virment', 'total' => $total ]) }}';
+                url = url.replace(':nombre_virment', nombre_virment_value); // Remplacer la valeur de la variable dans l'URL
+                window.location.href = url; // Rediriger vers la page payment_form avec le nombre de virements sélectionné
+            });
+        </script>
+        
 
           <div class="modal fade" id="Bons" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">

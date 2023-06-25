@@ -60,11 +60,8 @@ class A_Controller_categorie extends Controller
     //boutton Payer
     public function Passer_au_paiement($id, Request $request)
     {
-
-        
         
     $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
-    
     //step 1 : Mise à jour de stock de l'article
     MiseAjourArticle($shop);
 
@@ -91,13 +88,17 @@ class A_Controller_categorie extends Controller
         ])->first();
 
         if ($panier) {
+
             if($shop->type_article == 2){
+
                 $panier->qte = $quantite;
             $panier->qte += $quantite;
-            $panier->save();}
+            $panier->save();
+                                        }
             else{
                 return redirect()->back()->with('error', 'Cet article est déjà dans votre panier');}
         } else {
+
             // Ajouter une nouvelle ligne pour le produit
             $addcommand = new Basket();
             $addcommand->user_id = auth()->user()->user_id;
@@ -105,17 +106,17 @@ class A_Controller_categorie extends Controller
             $addcommand->pour_user_id = $request->selected_user_id;
             $addcommand->ref = $shop->id_shop_article;
             $addcommand->qte = $quantite;
-            $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->totalprice,$selected_user_id);
+            $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->price,$selected_user_id);
             if($addcommand->prix != $shop->totalprice){
                 $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
                 $addcommand->reduction = $description;
             }
             $addcommand->declinaison = $declinaison;
             $addcommand->save();
-            applyFamilyDiscount();
+            
+            
 
         }
-        
 
     if ($need_member != 0) { 
         
@@ -123,37 +124,60 @@ class A_Controller_categorie extends Controller
             $result = MiseAuPanier($selected_user_id, $id_article);
             if ($result == 0) {
                 return redirect()->route('panier');}
-            elseif ($result == $need_member) {
-                $shop = Shop_article::where('id_shop_article', $need_member)->firstOrFail();
-            $addcommand = new Basket();
-            $addcommand->user_id = auth()->user()->user_id;
-            $addcommand->family_id = auth()->user()->family_id;
-            $addcommand->pour_user_id = $request->selected_user_id;
-            $addcommand->ref = $need_member;
-            $addcommand->qte = 1;
-            $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->totalprice,$selected_user_id);
-            if($addcommand->prix != $shop->totalprice){
-                $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
-                $addcommand->reduction = $description;
-            }
-            $addcommand->save();
-
-            return redirect()->route('panier');
-        } else {
-            $addcommand->prix = $result;
-            $addcommand->save();
-            return redirect()->route('panier');
-        }
-    }
-
-    return redirect()->route('panier');
-}
+                elseif ($result == $need_member) {
+                    $shop1 = Shop_article::where('id_shop_article', $need_member)->firstOrFail();
+                    $currentPrice = getReducedPrice($shop1->id_shop_article,$shop1->price,$selected_user_id);
+                
+                    // Check if there is already a type 0 article in the cart
+                    $existingBasketItem = Basket::join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+                                            ->where('basket.user_id', $selected_user_id)
+                                            ->where('shop_article.type_article', 0)
+                                            ->select('basket.*') // Select basket fields
+                                            ->first();
+                
+                    if ($existingBasketItem) {
+                        // If the existing article is the same, do not add
+                        if ($existingBasketItem->ref == $need_member) {
+                            return redirect()->route('panier');
+                        }
+                
+                        // If the existing article is different, only add if the new article is more expensive
+                        $existingArticle = Shop_article::where('id_shop_article', $existingBasketItem->ref)->first();
+                        if ($currentPrice > $existingArticle->price) {
+                            $existingBasketItem->delete();  // Remove the cheaper article
+                        } else {
+                            // Do not add the new article
+                            return redirect()->route('panier');
+                        }
+                    }
+                
+                    // Now we can add the new article
+                    $addcommand = new Basket();
+                    $addcommand->user_id = auth()->user()->user_id;
+                    $addcommand->family_id = auth()->user()->family_id;
+                    $addcommand->pour_user_id = $request->selected_user_id;
+                    $addcommand->ref = $need_member;
+                    $addcommand->qte = 1;
+                    $addcommand->prix = $currentPrice;
+                    if($addcommand->prix != $shop1->totalprice){
+                        $description = getFirstReductionDescription($shop1->id_shop_article,$selected_user_id);
+                        $addcommand->reduction = $description;
+                    }
+                    $addcommand->save();
+                    applyFamilyDiscount($shop1,$selected_user_id);
+                    return redirect()->route('panier');
+                }}
+                else{
+                    return redirect()->route('panier');
+                }}
     else{
 
         return redirect()->back()->with('error', 'Vous avez atteint la limite d\'achat de cet article ou il n\'est plus disponible');
     }
        
-    }
+    
+
+}
     
 //boutton commander
 public function commander_article($id, Request $request)
@@ -202,14 +226,15 @@ public function commander_article($id, Request $request)
             $addcommand->pour_user_id = $request->selected_user_id;
             $addcommand->ref = $shop->id_shop_article;
             $addcommand->qte = $quantite;
-            $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->totalprice,$selected_user_id);
+            $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->price,$selected_user_id);
             if($addcommand->prix != $shop->totalprice){
                 $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
                 $addcommand->reduction = $description;
             }
             $addcommand->declinaison = $declinaison;
             $addcommand->save();
-            applyFamilyDiscount();
+            
+           
 
         }
         
@@ -219,28 +244,48 @@ public function commander_article($id, Request $request)
 
             $result = MiseAuPanier($selected_user_id, $id_article);
             if ($result == 0) {
-                return redirect()->route('panier');}
+                return redirect()->back()->with('success', 'Article ajouté au panier');}
                 elseif ($result == $need_member) {
-                    $shop = Shop_article::where('id_shop_article', $need_member)->firstOrFail();
-                $addcommand = new Basket();
-                $addcommand->user_id = auth()->user()->user_id;
-                $addcommand->family_id = auth()->user()->family_id;
-                $addcommand->pour_user_id = $request->selected_user_id;
-                $addcommand->ref = $need_member;
-                $addcommand->qte = 1;
-                $addcommand->prix = getReducedPrice($shop->id_shop_article,$shop->totalprice,$selected_user_id);
-                if($addcommand->prix != $shop->totalprice){
-                    $description = getFirstReductionDescription($shop->id_shop_article,$selected_user_id);
-                    $addcommand->reduction = $description;
-                }
-                $addcommand->save();
-
-            return redirect()->route('panier');
-        } else {
-            
-            $addcommand->prix = $result;
-            $addcommand->save();
-            return redirect()->route('panier');
+                    $shop1 = Shop_article::where('id_shop_article', $need_member)->firstOrFail();
+                    $currentPrice = getReducedPrice($shop1->id_shop_article,$shop1->price,$selected_user_id);
+                
+                    // Check if there is already a type 0 article in the cart
+                    $existingBasketItem = Basket::join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+                                            ->where('basket.user_id', $selected_user_id)
+                                            ->where('shop_article.type_article', 0)
+                                            ->select('basket.*') // Select basket fields
+                                            ->first();
+                    if ($existingBasketItem) {
+                        // If the existing article is the same, do not add
+                        if ($existingBasketItem->ref == $need_member) {
+                            return redirect()->back()->with('success', 'Article ajouté au panier');
+                        }
+                
+                        // If the existing article is different, only add if the new article is more expensive
+                        $existingArticle = Shop_article::where('id_shop_article', $existingBasketItem->ref)->first();
+                        if ($currentPrice > $existingArticle->price) {
+                            $existingBasketItem->delete();  // Remove the cheaper article
+                        } else {
+                            // Do not add the new article
+                            return redirect()->back()->with('success', 'Article ajouté au panier');
+                        }
+                    }
+                
+                    // Now we can add the new article
+                    $addcommand = new Basket();
+                    $addcommand->user_id = auth()->user()->user_id;
+                    $addcommand->family_id = auth()->user()->family_id;
+                    $addcommand->pour_user_id = $request->selected_user_id;
+                    $addcommand->ref = $need_member;
+                    $addcommand->qte = 1;
+                    $addcommand->prix = $currentPrice;
+                    if($addcommand->prix != $shop1->totalprice){
+                        $description = getFirstReductionDescription($shop1->id_shop_article,$selected_user_id);
+                        $addcommand->reduction = $description;
+                    }
+                    $addcommand->save();
+                    applyFamilyDiscount($shop1,$selected_user_id);
+                    return redirect()->back()->with('success', 'Article ajouté au panier');
         }
     }
 
@@ -252,15 +297,18 @@ public function commander_article($id, Request $request)
 
 
 
-    public function commanderModal($shop_id,$user_id, Request $request)
-    {
-        MiseAjourStock();
-        $declinaison = $request->input('declinaison');
-        $qte = $request->input('qte');
-        $selected_user = $user_id;
-        $shop = Shop_article::where('id_shop_article', $shop_id)->firstOrFail();
-        return view('Articles.modal.commanderModal', compact('shop','user_id','qte','declinaison'))->with('user', auth()->user());
-    }
+public function commanderModal($shop_id, $user_id, Request $request)
+{
+    MiseAjourStock();
+    $declinaison = $request->input('declinaison');
+    $qte = $request->input('qte');
+    $selected_user = $user_id;
+    $shop = Shop_article::where('id_shop_article', $shop_id)->firstOrFail();
+    $needMember = $shop->need_member != 0;
+
+    return view('Articles.modal.commanderModal', compact('shop', 'user_id', 'qte', 'declinaison', 'needMember'));
+}
+
 
     public function saveNestedCategories(Request $request){
         

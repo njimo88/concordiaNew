@@ -36,7 +36,6 @@ class UsersController extends Controller
     public function showForm($nombre_virment, $total)
 {
     $userId = Auth::user()->user_id;
-    
     $user = User::find($userId);
 
     $bill = bills::latest('id')->first();
@@ -44,66 +43,48 @@ class UsersController extends Controller
     $billIdWithOffset = $bill->id + 10001;
     $userId = $user->user_id;
     $orderId = "{$year}-{$billIdWithOffset}-{$userId}";
-
-    $client = new Client();
-
-    $username = env('API_USERNAME');
-    $password = env('API_PASSWORD');
-    $auth = base64_encode($username . ':' . $password);
-
-    $headers = [
-        'Authorization' => 'Basic ' . $auth,
-        'Content-Type' => 'application/json',
-    ];
-
+   
     $paiements = calculerPaiements(1, $total, $nombre_virment);
 
-    if ($nombre_virment > 1) {
-        $paymentConfig = "MULTI_EXT:";
-        $datePaiement = Carbon::today(); 
-        foreach ($paiements as $index => $montant) {
-            $paymentConfig .= $datePaiement->format('Ymd') . "={$montant};";
-            $datePaiement->addMonth(); 
-        }
+    $utcDate = gmdate('YmdHis');
+    $vads_trans_id = substr(uniqid(), -6);
+    $key = "mfBCrQHiXRZHmkUQ";
 
-        $paymentConfig = rtrim($paymentConfig, ';');       
-            $amount = $paiements[0] * 100;
-        
-    } else {
-        $paymentConfig = "SINGLE";
-        $amount = $total * 100;
-    }
+    // Change payment configuration depending on the number of payments
+    $payment_config = $nombre_virment > 1
+        ? 'MULTI:first=' . $paiements[0]*100 . ';count=' . $nombre_virment . ';period=30'
+        : 'SINGLE';
+    
+    $data = [
+        "vads_cust_id" => $user->user_id,  
+        "vads_cust_email" => $user->email,
+        "vads_cust_first_name" => $user->name,
+        "vads_cust_last_name" => $user->lastname,
+        "vads_cust_phone" => $user->phone, 
+        "vads_cust_address" => $user->address, 
+        "vads_cust_zip" => $user->zip, 
+        "vads_cust_city" => $user->city, 
+        "vads_cust_country" => $user->country,
+        "vads_action_mode" => "INTERACTIVE",
+        "vads_amount" => $total*100,
+        "vads_currency" => "978",
+        "vads_ctx_mode" => "PRODUCTION",
+        "vads_order_id" => $orderId,
+        "vads_page_action" => "PAYMENT",
+        "vads_payment_cards" => "VISA;MASTERCARD",
+        "vads_payment_config" => $payment_config,
+        "vads_site_id" => "31118669",
+        "vads_trans_date" => $utcDate,
+        "vads_trans_id" => $vads_trans_id,
+        "vads_version" => "V2",
+        "vads_url_return" => route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment])
+    ];
+    $signature = generateSignature($data, $key, "HMAC-SHA-256");
 
-    $response = $client->post('https://api.scelliuspaiement.labanquepostale.fr/api-payment/V4/Charge/CreatePayment', [
-        'headers' => $headers,
-        'json' => [
-            "amount" => $amount,
-            "currency" => "EUR",
-            "orderId" => $orderId,
-            "customer" => [
-                "email" => utf8_encode($user->email),
-                "billingDetails" => [
-                    "firstName" => $user->name,
-                    "lastName" => $user->lastname,
-                    "address" => $user->address,
-                    "zipCode" => $user->zip,
-                    "city" => $user->city,
-                    "country" => $user->country,
-                    "phoneNumber" => $user->phone, 
-                ]
-            ]
-        ],
-        'query' => [
-            'vads_payment_config' => $paymentConfig
-        ]
-    ]);
-
-    $responseBody = json_decode($response->getBody()->getContents());
-
-    $formToken = $responseBody->answer->formToken;
-    return view('admin.payment_form')->with(compact('formToken', 'nombre_virment'));
+    return view('admin.payment_form')->with(compact( 'nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements' , 'vads_trans_id', 'total', 'user','payment_config'));
 
 }
+
 
 
 
@@ -528,9 +509,7 @@ public function editFamille(Request $request, $user_id)
         $validatedData = $request->validate([
             'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
             'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')->where(function($query) use ($user) {
-                return $query->where('family_id', '!=', $user->family_id);
-            })],
+            'email' => ['nullable', 'string', 'email', 'max:255'],
             'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
             'profession' => 'string|max:191',
             'birthdate' => 'required|date|before:today',
