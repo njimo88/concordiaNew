@@ -948,7 +948,7 @@ class Article_Controller extends Controller
                             }
                             
                                 if(shop_article_1::hasMultipleTeachers($id_article)) {
-                                    $article->image = asset('assets/images/multiple_teachers_image.png');
+                                    $article->image = asset('\uploads\users\froze\multiple_teachers_image.png');
                                     $article->save(); 
                                 } else {
                                     $article1 =  shop_article_1::find($id_article);

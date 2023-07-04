@@ -391,6 +391,7 @@ class generatePDF extends Controller
         $font->valign('top');
     });
 
+
     $imagePath = public_path(ltrim($product->image, '/'));
     $shopImage = Image::make($imagePath)->resize(47, 46);
     $image->insert($shopImage, 'top-left', 108, $y + (-15)); 

@@ -81,7 +81,12 @@ class UsersController extends Controller
             "vads_url_cancel" => route('panier', ['message' => 'Transaction annulée']),
             "vads_url_error" => route('panier', ['message' => 'Erreur lors de la transaction']),
             "vads_url_refused" => route('panier', ['message' => 'Transaction refusée']),
+            // New keys for automatic redirection
+            "vads_redirect_success_timeout" => "0",
+            "vads_redirect_error_timeout" => "0",
+            "vads_return_mode" => "GET",
         ];
+        
     $signature = generateSignature($data, $key, "HMAC-SHA-256");
 
     return view('admin.payment_form')->with(compact( 'nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements' , 'vads_trans_id', 'total', 'user','payment_config'));

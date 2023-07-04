@@ -83,11 +83,18 @@
                 <input type="hidden" name="vads_trans_id" value="{{ $vads_trans_id }}" />
                 <input type="hidden" name="vads_version" value="V2" />
                 <input type="hidden" name="signature" value="{{ $signature }}"/>
+                
+                <!-- Ajout des champs pour le retour automatique -->
+                <input type="hidden" name="vads_redirect_success_timeout" value="0" />
+                <input type="hidden" name="vads_redirect_error_timeout" value="0" />
+                <input type="hidden" name="vads_return_mode" value="GET" />
+            
                 <button type="submit" class="btn-pay">
                     <i class="fas fa-credit-card"></i>
                     <span>Payer {{ $total }} €</span>
                 </button>
             </form>
+            
             
             
         </div>
