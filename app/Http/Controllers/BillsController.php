@@ -393,17 +393,29 @@ public function updateDes(Request $request, $id){
         'newDesignation' => $article->title,
     ];
 
-       $user = User::find($request->user_id);
-       $oldCourse = $oldDesignation;
-       $newCourse = $article->title;
-       Mail::send('emails.designation-changed', ['oldCourse' => $oldCourse, 'newCourse' => $newCourse, 'user' => $user], function ($message) use ($user) {
-           $message->from(config('mail.from.address'), config('mail.from.name'));
-           $message->to($user->email);
-           $message->subject('La désignation a été modifiée');
-       });
-   
-    return  redirect()->back()->with('success', 'La désignation a été modifiée avec succès');
+    // Send an email
+    $user = User::find($request->user_id);
+    $oldCourse = $oldDesignation;
+    $newCourse = $article->title;
+    Mail::send('emails.designation-changed', ['oldCourse' => $oldCourse, 'newCourse' => $newCourse, 'user' => $user], function ($message) use ($user) {
+        $message->from(config('mail.from.address'), config('mail.from.name'));
+        $message->to($user->email);
+        $message->subject('La désignation a été modifiée');
+    });
+
+    // Create a message in ShopMessage
+    ShopMessage::create([
+        'message' => 'La désignation a été modifiée de ' . $oldDesignation . ' à ' . $article->title,
+        'date' => now(), 
+        'id_bill' => $old->bill_id, 
+        'id_customer' => $request->user_id, 
+        'id_admin' => auth()->id(), 
+        'state' => 'Public', 
+    ]);
+
+    return redirect()->back()->with('success', 'La désignation a été modifiée avec succès');
 }
+
 
 
 /*
