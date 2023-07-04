@@ -207,12 +207,14 @@
             @else
                 <form>
             @endif
+            
                 <td style="width: 800px;">
                     <div class="row ">
                         <div class="col-md-2 col-12">
                             <img style="height: 70px" src="{{ $shop->image }}"  alt="">
                         </div>
                         <div class="col-md-6 col-12">
+                          <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
                           @if(!auth()->user()->roles->changer_designation_facture || Route::currentRouteName() !== 'facture.showBill')
                           <select disabled name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
                             @foreach($designation as $title)
@@ -237,6 +239,7 @@
                         @endif
                     </div>
                 </td>
+                
             </form>
 
               <td>{{ $shop->quantity }} </td>

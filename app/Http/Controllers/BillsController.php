@@ -20,6 +20,8 @@ use App\Models\ShopReduction;
 use App\Models\LiaisonShopArticlesShopReductions;
 use App\Models\LiaisonUserShopReduction;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
+
 
 
 require_once(app_path().'/fonction.php');
@@ -373,19 +375,35 @@ class BillsController extends Controller
 }
 
 
-    public function updateDes(Request $request, $id){
+public function updateDes(Request $request, $id){
+    // Récupérer l'ancienne désignation
+    $old = LiaisonShopArticlesBill::where('id_liaison', $id)->first();
+    $oldDesignation = $old->designation;
 
-        $new = LiaisonShopArticlesBill::where('id_liaison', $id)->first();
-        $article = Shop_article::where('title', $request->designation)->first();
+    // Mettre à jour la nouvelle désignation
+    $article = Shop_article::where('title', $request->designation)->first();
+    $old->designation = $article->title;
+    $old->href_product = $article->ref;
+    $old->ttc = $article->price;
+    $old->id_shop_article = $article->id_shop_article;
+    $old->save();
 
-        $new->designation = $article->title;
-        $new->href_product = $article->ref;
-        $new->ttc = $article->totalprice;
-        $new->id_shop_article = $article->id_shop_article;
-        $new->save();
+    $data = [
+        'oldDesignation' => $oldDesignation,
+        'newDesignation' => $article->title,
+    ];
 
-        return  redirect()->back()->with('success', 'La désignationa été modifié avec succès');
-    }
+       $user = User::find($request->user_id);
+       $oldCourse = $oldDesignation;
+       $newCourse = $article->title;
+       Mail::send('emails.designation-changed', ['oldCourse' => $oldCourse, 'newCourse' => $newCourse, 'user' => $user], function ($message) use ($user) {
+           $message->from(config('mail.from.address'), config('mail.from.name'));
+           $message->to($user->email);
+           $message->subject('La désignation a été modifiée');
+       });
+   
+    return  redirect()->back()->with('success', 'La désignation a été modifiée avec succès');
+}
 
 
 /*
