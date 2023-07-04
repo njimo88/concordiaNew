@@ -11,7 +11,7 @@ use setasign\Fpdi\Fpdi;
 
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_article;
-use App\Models\Shop_article_0;
+use App\Models\shop_article_0;
 require_once(app_path().'/fonction.php');
 
 
@@ -172,7 +172,7 @@ foreach ($billProducts as $billProduct) {
     $article = Shop_article::find($billProduct->id_shop_article);
     
     if ($article->type_article == 0) {
-        $article0 = Shop_article_0::find($billProduct->id_shop_article);
+        $article0 = shop_article_0::find($billProduct->id_shop_article);
         $versement += $article0->prix_adhesion * $billProduct->quantity;
     } else if ($article->afiscale == 1) {
         // Pour les autres types d'articles, on vérifie si afiscale est égal à 1
