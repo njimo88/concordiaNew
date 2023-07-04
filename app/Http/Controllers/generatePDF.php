@@ -415,7 +415,7 @@ $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
 $addresseeLinesArray = explode("\n", $addresseeLines);
 
 foreach ($addresseeLinesArray as $i => $addresseeLine) {
-    $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+    $image->text($addresseeLine, $x + 126, $y + (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size($fontSizeSmaller);
         $font->color('#00000');
@@ -565,7 +565,7 @@ foreach ($addresseeLinesArray as $i => $addresseeLine) {
     $addresseeLinesArray = explode("\n", $addresseeLines);
     
     foreach ($addresseeLinesArray as $i => $addresseeLine) {
-        $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+        $image->text($addresseeLine, $x + 126, $y + (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
             $font->file(public_path('fonts/arial.ttf'));
             $font->size($fontSizeSmaller);
             $font->color('#00000');
@@ -847,7 +847,7 @@ $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
 $addresseeLinesArray = explode("\n", $addresseeLines);
 
 foreach ($addresseeLinesArray as $i => $addresseeLine) {
-    $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+    $image->text($addresseeLine, $x + 126, $y + (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size($fontSizeSmaller);
         $font->color('#00000');
@@ -1257,7 +1257,7 @@ public function generatePDFfactureOutput($id)
     $addresseeLinesArray = explode("\n", $addresseeLines);
     
     foreach ($addresseeLinesArray as $i => $addresseeLine) {
-        $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+        $image->text($addresseeLine, $x + 126, $y + (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
             $font->file(public_path('fonts/arial.ttf'));
             $font->size($fontSizeSmaller);
             $font->color('#00000');
@@ -1408,7 +1408,7 @@ public function generatePDFfactureOutput($id)
     $addresseeLinesArray = explode("\n", $addresseeLines);
     
     foreach ($addresseeLinesArray as $i => $addresseeLine) {
-        $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+        $image->text($addresseeLine, $x + 126, $y + (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
             $font->file(public_path('fonts/arial.ttf'));
             $font->size($fontSizeSmaller);
             $font->color('#00000');
@@ -1684,7 +1684,7 @@ $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
 $addresseeLinesArray = explode("\n", $addresseeLines);
 
 foreach ($addresseeLinesArray as $i => $addresseeLine) {
-    $image->text($addresseeLine, $x + 126, $y - 4 + 12+ (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
+    $image->text($addresseeLine, $x + 126, $y + (($i + count($titleLinesArray)) * 12), function($font) use ($fontSizeSmaller) {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size($fontSizeSmaller);
         $font->color('#00000');
