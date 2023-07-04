@@ -35,8 +35,8 @@ class Controller_Communication extends Controller
         
         $user = Auth::user();
         if ($user->role >= 90) {
-            $shop_articles = Shop_article::where('type_article', '=', 1)
-                             ->orderBy('saison', 'desc')
+            $shop_articles = Shop_article::
+                             orderBy('saison', 'desc')
                              ->orderBy('title', 'asc')
                              ->get();
 
