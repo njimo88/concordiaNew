@@ -95,6 +95,12 @@ class generatePDF extends Controller
             $font->color('#000000');
         });
 
+        $image2->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 490, 793, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+
         if ($bill->method_payment == 'Virement' || $bill->method_payment == 'Carte Bancaire') {
             $image2->text('x', 388, 559, function($font) {
                 $font->file(public_path('fonts/arial.ttf'));
@@ -171,14 +177,20 @@ $versement = 0;
 foreach ($billProducts as $billProduct) {
     $article = Shop_article::find($billProduct->id_shop_article);
     
-    if ($article->type_article == 0) {
-        $article0 = shop_article_0::find($billProduct->id_shop_article);
-        $versement += $article0->prix_adhesion * $billProduct->quantity;
-    } else if ($article->afiscale == 1) {
-        // Pour les autres types d'articles, on vérifie si afiscale est égal à 1
-        $versement += $article->price * $billProduct->quantity;
+    if ($article !== null) {  // Check if $article is not null
+        if ($article->type_article == 0) {
+            $article0 = Shop_article_0::find($billProduct->id_shop_article);
+            if ($article0 !== null) {
+                $versement += $article0->prix_adhesion * $billProduct->quantity;
+            }
+        } else if ($article->afiscale == 1) {
+            // Pour les autres types d'articles, on vérifie si afiscale est égal à 1
+            $versement += $article->price * $billProduct->quantity;
+        }
     }
 }
+
+     
 $versement = floor($versement);
 
 
@@ -250,6 +262,12 @@ $versement = floor($versement);
             $font->color('#000000');
         });
         $image2->text(date('Y', strtotime($bill->date_bill)), 332, 290+13, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(12);
+            $font->color('#000000');
+        });
+
+        $image2->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 490, 793, function($font) {
             $font->file(public_path('fonts/arial.ttf'));
             $font->size(12);
             $font->color('#000000');
@@ -340,7 +358,7 @@ $versement = floor($versement);
 
 
     $now = now();
-    $image->text($now->format('d/m/Y'), 449, 234, function($font)  {
+    $image->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 449, 234, function($font)  {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size(14);
         $font->color('#000000');
@@ -519,7 +537,7 @@ foreach ($addresseeLinesArray as $i => $addresseeLine) {
 
         
     $now = now();
-    $image->text($now->format('d/m/Y'), 449, 234, function($font)  {
+    $image->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 449, 234, function($font)  {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size(14);
         $font->color('#000000');
@@ -801,7 +819,7 @@ $pdf->Output('Facture-'.$bill->id.'.pdf', 'D');
 
     
 $now = now();
-$image->text($now->format('d/m/Y'), 449, 234, function($font)  {
+$image->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 449, 234, function($font)  {
     $font->file(public_path('fonts/arial.ttf'));
     $font->size(14);
     $font->color('#000000');
@@ -1194,7 +1212,7 @@ public function generatePDFfactureOutput($id)
     $image->resize(700, 1000); // Replace 800 and 1200 with the desired width and height
 
     $now = now();
-    $image->text($now->format('d/m/Y'), 449, 234, function($font)  {
+    $image->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 449, 234, function($font)  {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size(14);
         $font->color('#000000');
@@ -1361,7 +1379,7 @@ public function generatePDFfactureOutput($id)
 
         
     $now = now();
-    $image->text($now->format('d/m/Y'), 449, 234, function($font)  {
+    $image->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 449, 234, function($font)  {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size(14);
         $font->color('#000000');
@@ -1638,7 +1656,7 @@ $pdf->Output('Facture-'.$bill->id.'.pdf', 'D');
 
     
 $now = now();
-$image->text($now->format('d/m/Y'), 449, 234, function($font)  {
+$image->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 449, 234, function($font)  {
     $font->file(public_path('fonts/arial.ttf'));
     $font->size(14);
     $font->color('#000000');

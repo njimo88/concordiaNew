@@ -81,7 +81,7 @@
     <div class="row border border-dark m-1 mb-4 rounded">
       <div class="col-md-4 col-12 p-3">
         <h4>Informations Membre</h4>
-        <span style="font-weight:bold">{{ $bill->lastname }} {{ $bill->name }} (n°{{ $bill->user_id }}) </span> <br>
+        <span style="font-weight:bold">{{ $bill->lastname }} {{ $bill->name }} (ID n°{{ $bill->user_id }}) </span> <br>
         <a style="color:rgb(4, 0, 255)" class="a" href="mailto:{{ $bill->email }}">{{ $bill->email }} <br>
         <a style="color:rgb(4, 0, 255)" class="a" href="tel:{{ $bill->phone }}">{{ $bill->phone }}</a><br>
         {{ \Carbon\Carbon::parse($bill->birthdate)->age }} ans

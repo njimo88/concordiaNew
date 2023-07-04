@@ -388,24 +388,23 @@ public function updateDes(Request $request, $id){
     $old->id_shop_article = $article->id_shop_article;
     $old->save();
 
-    $data = [
-        'oldDesignation' => $oldDesignation,
-        'newDesignation' => $article->title,
-    ];
 
     // Send an email
     $user = User::find($request->user_id);
     $oldCourse = $oldDesignation;
     $newCourse = $article->title;
-    Mail::send('emails.designation-changed', ['oldCourse' => $oldCourse, 'newCourse' => $newCourse, 'user' => $user], function ($message) use ($user) {
+    $liaisonAddress = $old->addressee;
+    $billId = $old->bill_id;
+
+    Mail::send('emails.designation-changed', ['oldCourse' => $oldCourse, 'newCourse' => $newCourse, 'liaisonAddress' => $liaisonAddress, 'billId' => $billId, 'user' => $user], function ($message) use ($user) {
         $message->from(config('mail.from.address'), config('mail.from.name'));
         $message->to($user->email);
         $message->subject('La désignation a été modifiée');
     });
-
+    
     // Create a message in ShopMessage
     ShopMessage::create([
-        'message' => 'La désignation a été modifiée de ' . $oldDesignation . ' à ' . $article->title,
+        'message' => 'La désignation a été modifiée de <b>' . $oldDesignation . '</b> (' . $liaisonAddress. ') à <b>' . $article->title . '</b> (' . $liaisonAddress. ').',
         'date' => now(), 
         'id_bill' => $old->bill_id, 
         'id_customer' => $request->user_id, 
