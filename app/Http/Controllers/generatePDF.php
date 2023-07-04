@@ -9,6 +9,11 @@ use PDF;
 use Intervention\Image\ImageManagerStatic as Image;
 use setasign\Fpdi\Fpdi;
 
+use App\Models\LiaisonShopArticlesBill;
+use App\Models\Shop_article;
+use App\Models\Shop_article_0;
+require_once(app_path().'/fonction.php');
+
 
 
 
@@ -157,6 +162,26 @@ class generatePDF extends Controller
             ->select('old_bills.*','bills_payment_method.payment_method as method_payment', 'bills_status.row_color', 'bills_status.status as bill_status','users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country','users.birthdate');
         $bill = $billsQuery->union($oldBillsQuery)->first();
         
+
+        // Récupération des produits associés à la facture
+$billProducts = LiaisonShopArticlesBill::where('bill_id', $bill->id)->get();
+
+$versement = 0;
+
+foreach ($billProducts as $billProduct) {
+    $article = Shop_article::find($billProduct->id_shop_article);
+    
+    if ($article->type_article == 0) {
+        $article0 = Shop_article_0::find($billProduct->id_shop_article);
+        $versement += $article0->prix_adhesion * $billProduct->quantity;
+    } else if ($article->afiscale == 1) {
+        // Pour les autres types d'articles, on vérifie si afiscale est égal à 1
+        $versement += $article->price * $billProduct->quantity;
+    }
+}
+$versement = floor($versement);
+
+
         // Chargement de l'image de fond
         $image = Image::make(public_path('assets/images/Page-CERFA-1.png'));
         $image->resize(700, 1000); 
@@ -198,6 +223,21 @@ class generatePDF extends Controller
             $font->size(12);
             $font->color('#000000');
         });
+
+
+        $image2->text($versement, 281, 237, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(10); 
+            $font->color('#000000'); 
+        });
+
+        $versementEnLettres = chiffreEnLettre($versement);
+        $image2->text($versementEnLettres, 191, 271, function($font) {
+            $font->file(public_path('fonts/arial.ttf'));
+            $font->size(10);
+            $font->color('#000000');
+        });
+
 
         $image2->text(date('d', strtotime($bill->date_bill)), 228, 290+13, function($font) {
             $font->file(public_path('fonts/arial.ttf'));

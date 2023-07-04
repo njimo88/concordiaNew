@@ -92,13 +92,17 @@ function getFilteredArticles($articles) {
 //filtrer les articles en fonction de l'age de la famille
 function hasFamilyMemberWithAgeInRange($familyMembers, $agemin, $agemax) {
     foreach ($familyMembers as $member) {
-        $age = Carbon::parse($member->birthdate)->age;
+        $birthdate = Carbon::parse($member->birthdate);
+        $now = Carbon::now();
+        $daysSinceBirth = $now->diffInDays($birthdate);
+        $age = $daysSinceBirth / 365.25;
         if ($age >= $agemin && $age <= $agemax) {
             return true;
         }
     }
     return false;
 }
+
 
 //sortir les membres de la famille qui ont l'age requis
 function getFamilyMembersMeetingAgeCriteria($family, $agemin, $agemax) {
@@ -1940,3 +1944,45 @@ function generateSignature($data, $key, $algorithm = "HMAC-SHA-256") {
 function remove_accents($str) {
     return iconv('UTF-8', 'ASCII//TRANSLIT', $str);
 }
+
+
+function chiffreEnLettre($nombre) {
+    $unite = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf'];
+    $dizaine = ['', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
+    $dizaine2 = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante', 'quatre-vingt', 'quatre-vingt'];
+    $centaine = ' cent';
+
+    $nombreEnLettre = '';
+
+    $chiffres = str_split($nombre);
+    $longueur = count($chiffres);
+
+    for ($i = 0; $i < $longueur; $i++) {
+        $position = $longueur - $i;
+        $chiffre = $chiffres[$i];
+
+        switch ($position) {
+            case 3:
+                $nombreEnLettre .= $unite[$chiffre] . $centaine . ' ';
+                break;
+            case 2:
+                if ($chiffre == 1 && $chiffres[$i + 1] != 0) {
+                    $nombreEnLettre .= $dizaine[$chiffres[$i + 1]] . ' ';
+                    $i++; 
+                } else {
+                    $nombreEnLettre .= $dizaine2[$chiffre] . ' ';
+                }
+                break;
+            case 1:
+                $nombreEnLettre .= $unite[$chiffre];
+                break;
+        }
+    }
+
+    $nombreEnLettre .= ' euros';
+
+    return $nombreEnLettre;
+}
+
+
+
