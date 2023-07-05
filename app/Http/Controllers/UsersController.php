@@ -242,7 +242,7 @@ public function detail_paiement($id,$nombre_cheques)
     foreach ($paniers as $panier) {
         $total += $panier->qte * $panier->totalprice;
     }
-    $nb_paiment = calculerPaiements($id,$total,$nombre_cheques);
+    
 
     if($paniers->count() == 0){
         return redirect()->route('panier');}
@@ -264,11 +264,12 @@ public function detail_paiement($id,$nombre_cheques)
         $text = DB::table('bills_payment_method')->where('payment_method', 'Mixte')->first();
     }elseif($id == 4){
     $text = DB::table('bills_payment_method')->where('payment_method', 'Chèques')->first();
-
+    $total += $nombre_cheques;
         $bill->status = 30;
     }elseif ($id == 5){
         $bill->status = 34;
     $text = DB::table('bills_payment_method')->where('payment_method', 'Bons')->first();
+    $total += 5;
 
     }elseif ($id == 6){
         $bill->status = 36;
@@ -278,6 +279,8 @@ public function detail_paiement($id,$nombre_cheques)
         $bill->status = 100; 
         $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
     }
+
+    $nb_paiment = calculerPaiements($id,$total,$nombre_cheques);
 
     $bill->payment_total_amount = $total;
     $bill->family_id = auth()->user()->family_id;

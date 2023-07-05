@@ -323,41 +323,56 @@ class BillsController extends Controller
 }
 
 
-    public function updateStatus(Request $request, $id)
-    {
-        $bill = bills::find($id);
-        $bill->status = $request->status;
-        $bill->save();
+public function sendStatusChangedEmail($bill, $oldStatus, $newStatus)
+{
+    $user = User::find($bill->user_id);
+Mail::send('emails.status-changed', ['bill' => $bill, 'oldStatus' => $oldStatus, 'newStatus' => $newStatus], function ($message) use ($user, $bill, $newStatus) {
+    $message->from(config('mail.from.address'), config('mail.from.name'));
+    $message->to($user->email); 
+    $message->subject('Facture ' . $bill->ref . ' :  - '.$newStatus.'');
+});
 
-        $bill = DB::table('bills')
+}
+
+public function updateStatus(Request $request, $id)
+{
+    $bill = bills::find($id);
+    $oldStatusId = $bill->status;
+
+    // Fetching old status value from bills_status table
+    $oldStatusValue = DB::table('bills_status')->where('id', $oldStatusId)->value('status');
+
+    $bill->status = $request->status;
+    $bill->save();
+
+    $bill = DB::table('bills')
         ->leftJoin('bills_status', 'bills.status', '=', 'bills_status.id')
+        ->leftJoin('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
         ->leftJoin('users', 'bills.user_id', '=', 'users.user_id')
-        ->select('bills.*', 'bills_status.status as bill_status', 'users.name', 'users.lastname')
+        ->select('bills.*', 'bills_status.status as bill_status', 'bills_payment_method.payment_method as bill_payment_method', 'users.name', 'users.lastname')
         ->where('bills.id', $id)
         ->first();
 
-        if($bill->status == 100){
-            $shopMessage = new ShopMessage();
-            $shopMessage->message = $bill->bill_status;
-            $shopMessage->date = now();
-            $shopMessage->id_bill = $bill->id;
-            $shopMessage->id_customer = $bill->user_id;
-            $shopMessage->id_admin = auth()->user()->user_id;
-            $shopMessage->state = 'Privé';
-            $shopMessage->somme_payé = $bill->payment_total_amount*-1;
-            $shopMessage->save();
-        }
-        
-            
-        $user = User::find($bill->user_id);
-        $receiverEmail = $user->email;
-        $userName = 'Gym Concordia [Bureau]';
-        $message = "Votre facture n°{$bill->id} a été créée avec succès.";
-        $userEmail = "webmaster@gym-concordia.com";
-        /*updateStatusMail($userEmail, $message, $receiverEmail, $userName, $bill);*/
+    // Fetching new status value from bills_status table
+    $newStatusValue = DB::table('bills_status')->where('id', $bill->status)->value('status');
 
-        return  redirect()->back()->with('success', 'Le statut de la facture n°'.$id.' a été modifié avec succès');
+    if($bill->status == 100){
+        $shopMessage = new ShopMessage();
+        $shopMessage->message = $bill->bill_status;
+        $shopMessage->date = now();
+        $shopMessage->id_bill = $bill->id;
+        $shopMessage->id_customer = $bill->user_id;
+        $shopMessage->id_admin = auth()->user()->user_id;
+        $shopMessage->state = 'Privé';
+        $shopMessage->somme_payé = $bill->payment_total_amount*-1;
+        $shopMessage->save();
     }
+
+    $this->sendStatusChangedEmail($bill, $oldStatusValue, $newStatusValue);
+
+    return  redirect()->back()->with('success', 'Le statut de la facture n°'.$id.' a été modifié avec succès');
+}
+
     public function getOldBills($user_id)
 {
     $oldBills = DB::table('old_bills')->join('users', 'old_bills.user_id', '=', 'users.user_id')
