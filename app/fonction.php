@@ -468,11 +468,14 @@ function countArticle($user_id, $idArticle)
 
 
    // Step 2: Count the occurrence of each id_shop_article multiplied by quantity in the liaison_shop_articles_bills table
-    $liaison_counts = DB::table('liaison_shop_articles_bills')
-    ->whereIn('id_shop_article', $id_shop_articles)
-    ->select('id_shop_article', DB::raw('sum(quantity) as count'))
-    ->groupBy('id_shop_article')
-    ->pluck('count', 'id_shop_article');
+   $liaison_counts = DB::table('liaison_shop_articles_bills')
+   ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+   ->whereIn('liaison_shop_articles_bills.id_shop_article', $id_shop_articles)
+   ->where('bills.status', '>', 9)
+   ->select('liaison_shop_articles_bills.id_shop_article', DB::raw('sum(liaison_shop_articles_bills.quantity) as count'))
+   ->groupBy('liaison_shop_articles_bills.id_shop_article')
+   ->pluck('count', 'liaison_shop_articles_bills.id_shop_article');
+
 
 
     // Step 3: Update the stock_actuel for each article
@@ -529,10 +532,12 @@ function countArticle($user_id, $idArticle)
 function MiseAjourArticlePanier($articles){
 
     $liaison_counts = DB::table('liaison_shop_articles_bills')
-        ->whereIn('id_shop_article', $articles->pluck('ref'))
-        ->select('id_shop_article', DB::raw('sum(quantity) as count'))
-        ->groupBy('id_shop_article')
-        ->pluck('count', 'id_shop_article');
+    ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+    ->whereIn('liaison_shop_articles_bills.id_shop_article', $articles->pluck('ref'))
+    ->where('bills.status', '>', 9)
+    ->select('liaison_shop_articles_bills.id_shop_article', DB::raw('sum(liaison_shop_articles_bills.quantity) as count'))
+    ->groupBy('liaison_shop_articles_bills.id_shop_article')
+    ->pluck('count', 'liaison_shop_articles_bills.id_shop_article');
 
     foreach ($articles as $article) {
         $article_db = Shop_article::find($article->ref);
@@ -625,9 +630,12 @@ function MiseAjourArticle($article){
     
     else{*/
         $liaison_counts = DB::table('liaison_shop_articles_bills')
-        ->where('id_shop_article', $article->id_shop_article)
-        ->select(DB::raw('sum(quantity) as count'))
-        ->value('count');
+    ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+    ->where('liaison_shop_articles_bills.id_shop_article', $article->id_shop_article)
+    ->where('bills.status', '>', 9)
+    ->select(DB::raw('sum(liaison_shop_articles_bills.quantity) as count'))
+    ->value('count');
+
 
 
         $stock_ini = $article->stock_ini;
