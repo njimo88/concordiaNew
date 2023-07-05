@@ -38,10 +38,21 @@ class Controller_club extends Controller
             ->get();
     
         /* ------------------------------------------requetes pour l'admin------------------------------*/
-    
-        $shop_article_first = Shop_article::where('saison', $saison_actu)
-            ->orderBy('title', 'ASC')
-            ->get();
+        $user_role = auth()->user()->role;
+
+        if($user_role >= 90) {
+            // Admin users can see all types of articles
+            $shop_article_first = Shop_article::where('saison', $saison_actu)
+                ->orderBy('title', 'ASC')
+                ->get();
+        } else {
+            // Non-admin users can only see type_article = 1
+            $shop_article_first = Shop_article::where('saison', $saison_actu)
+                ->where('type_article', 1)
+                ->orderBy('title', 'ASC')
+                ->get();
+        }
+
     
         $saison_list = Shop_article::select('saison')->distinct('saison')->orderBy('saison', 'ASC')->get();
     
