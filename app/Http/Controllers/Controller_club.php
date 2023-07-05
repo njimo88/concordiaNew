@@ -19,77 +19,35 @@ require_once(app_path().'/fonction.php');
 class Controller_club extends Controller
 {
     //
-    function index_cours(Request $request){
-
-        
+    function index_cours(Request $request) {
         /*--------------------------faire l'appel------------------------------ */
         ini_set('memory_limit', '512M');
-
-
-        $saison_actu = saison_active() ;
-
-        $saison = $request->input('saison');
-
+    
+        $saison_actu = $request->input('saison') ?? saison_active();
+    
         /*------------------------------------- requetes pour les teachers ------------------------------*/
-
        
-       
-            // requete pour la saison active
-        $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
-          ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
-         
-          $users_saison_active = User::select('users.user_id','users.name','users.lastname','users.phone','users.birthdate','users.email','liaison_shop_articles_bills.id_shop_article')
+        $users_saison_active = User::select('users.user_id','users.name','users.lastname','users.phone','users.birthdate','users.email','liaison_shop_articles_bills.id_shop_article')
             ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
             ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
             ->where('shop_article.saison', $saison_actu)
-            ->whereIn('shop_article.type_article', [0, 1])
             ->where('bills.status', '>', 9)
             ->distinct('users.user_id')
             ->orderBy('users.name', 'ASC')
             ->get();
-
-
-
-            //requete pour la saison choisie
-            $role = Auth::user()->role; // Assuming the role is stored in a column named 'role'
-
-            $shop_article_lesson_choisie_query = shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_ini','shop_article.stock_actuel')
-                ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison',  $saison);
-            
-            if($role < 90) {
-                $shop_article_lesson_choisie_query = $shop_article_lesson_choisie_query->where('type_article', 1);
-            }
-            
-            $shop_article_lesson_choisie = $shop_article_lesson_choisie_query->get();
-            
-            $users_saison_choisie_query = User::select('users.user_id', 'users.name', 'users.lastname','users.email','users.phone','users.birthdate','liaison_shop_articles_bills.id_shop_article')
-                ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-                ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison);
-            
-            if($role < 90) {
-                $users_saison_choisie_query = $users_saison_choisie_query->where('type_article',1);
-            }
-            
-            $users_saison_choisie = $users_saison_choisie_query->get();
-            
+    
         /* ------------------------------------------requetes pour l'admin------------------------------*/
-
-        $shop_article = Shop_article::where('saison',$saison)->where('type_article',1)->get() ;
-        $shop_article_teacher = Shop_article::select('*')->where('saison', $saison_actu)->distinct('id_shop_article')->get();
-     
-        $shop_article_first = Shop_article::where('saison', $saison_actu)->whereIn('type_article', [0, 1])
-        ->orderBy('title', 'ASC')
-        ->get();
-         $saison_list = Shop_article::select('saison')->distinct('name')->orderBy('saison', 'ASC')->get();
-       
-
-       // dd( $users_saison_active_test);
-
-     return view('club/cours_index',compact('saison_list','saison','shop_article','shop_article_first','shop_article_lesson','shop_article_lesson_choisie','users_saison_choisie','users_saison_active'))->with('user', auth()->user()) ;
-           
-
+    
+        $shop_article_first = Shop_article::where('saison', $saison_actu)
+            ->orderBy('title', 'ASC')
+            ->get();
+    
+        $saison_list = Shop_article::select('saison')->distinct('saison')->orderBy('saison', 'ASC')->get();
+    
+        return view('club/cours_index',compact('saison_list','shop_article_first','users_saison_active','saison_actu'))->with('user', auth()->user());
     }
+    
 
 
     public function get_data_table(Request $request, $article_id){
