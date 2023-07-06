@@ -78,7 +78,7 @@ public function getEmails(Request $request)
 public function sendEmails(Request $request)
 {
     // For testing purposes, we're only going to use one email
-    $emails = ['djillynjimo@gmail.com', 'djillynjimo@gmail.com', 'djillynjimo@gmail.com'];
+    $emails = $request->input('emails');
     $subject = $request->input('subject');
     $content = $request->input('content');
 
