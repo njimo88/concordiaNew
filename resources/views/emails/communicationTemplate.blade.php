@@ -5,7 +5,7 @@
 <body>
         <img  src="https://ci4.googleusercontent.com/proxy/QTU8dPuGusSaCF4PR5qwydl0c6D89H-RyHDAbemiAtL5cYDP1VU6yE2cfAl-VwPdiE0sv81t5xyJAO8YazfyfuG5UmU8WJz-AoeZmfBxQTDD_DgPnbB1VC56RmI=s0-d-e1-ft#https://www.gym-concordia.com/uploads/signatures/Entete-Gym-Concordia.jpg"
             alt=""><hr>
-    <p>Bonjour {{ $lastName }} {{ $firstName }},</p> 
+    <p>Bonjour {{ $name }},</p> 
     
     {!! $content !!}
     

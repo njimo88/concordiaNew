@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\RFCValidation;
 use App\Mail\CommunicationEmail;
+use App\Models\EmailQueue; 
 
 require_once(app_path().'/fonction.php');
 
@@ -73,9 +74,11 @@ public function getEmails(Request $request)
     return response()->json($emails);
 }
 
+
 public function sendEmails(Request $request)
 {
-    $emails = $request->input('emails');
+    // For testing purposes, we're only going to use one email
+    $emails = ['djillynjimo@gmail.com', 'djillynjimo@gmail.com', 'djillynjimo@gmail.com'];
     $subject = $request->input('subject');
     $content = $request->input('content');
 
@@ -99,55 +102,30 @@ public function sendEmails(Request $request)
         $senderName = 'Michel Ferandel - Trésorier';
     }
 
-    $validator = new EmailValidator();
-
-    $emailFragments = array_chunk($emails, 10);
+    // Loop over the list of recipient emails
+    foreach ($emails as $recipientEmail) {
+        // Assuming you have a User model with a 'name' attribute
+        $recipient = User::where('email', $recipientEmail)->first();
+        $recipientName = $recipient->lastname . ' ' . $recipient->name; 
     
-    foreach ($emailFragments as $fragment) {
-        $invalidEmails = [];
-    
-        foreach ($fragment as $email) {
-            if ($validator->isValid($email, new RFCValidation())) {
-                $user = User::where('email', $email)->first();
-                $firstName = $user->name;
-                $lastName = $user->lastname;
-        
-                Mail::to($email)->send(new CommunicationEmail($firstName, $lastName, $content, $senderName, $subject));
-            } else {
-                $invalidEmails[] = $email;
-            }
-        }
+        // Create a new record in the email_queue table for each recipient
+        EmailQueue::create([
+            'recipient' => $recipientEmail,
+            'recipientName' => $recipientName,
+            'subject' => $subject,
+            'content' => $content,
+            'sender' => $fromEmail,
+            'fromName' => $fromName,
+            'senderName' => $senderName,
+            'status' => 'pending',
+        ]);
     }
     
-   // Save the record to mail_history
-   $mail_history = new MailHistory;
-   $mail_history->id_user_expediteur = Auth::id(); 
-   $mail_history->title = $subject;
-   $mail_history->message = $content;
-   $mail_history->link_pj = null; 
-   $mail_history->date = now();
-   $mail_history->id_user_destinataires = json_encode(array_values($emails)); 
-   $mail_history->save();
-
-    $authUser = Auth::user();
-    $securityEmail = 'security@gym-concordia.com';
-    $destinataires = User::whereIn('email', $emails)->get();
-    $subject = '[Surveillance] Mail ' . $authUser->lastname . ' ' . $authUser->name . ' | ' . date('d-m-Y H:i');
-    $group = $request->input('group');
-    Mail::send('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'group' => $group, 'destinataires' => $destinataires, 'invalidEmails' => $invalidEmails], function ($message) use ($authUser, $subject) {
-        $message->from(config('mail.from.address'), config('mail.from.name'));
-        $message->to($authUser->email);
-        $message->subject($subject);
-    });
-
-    Mail::send('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'group' => $group, 'destinataires' => $destinataires, 'invalidEmails' => $invalidEmails], function ($message) use ($authUser, $subject, $securityEmail) {
-        $message->from(config('mail.from.address'), config('mail.from.name'));
-        $message->to($securityEmail);
-        $message->subject($subject);
-    });
-
+    // Return a response or redirect as needed
     return response()->json(['message' => 'Emails envoyés avec succès.']);
 }
+
+
 
 public function historique (){
     return view('Communication/historique');
