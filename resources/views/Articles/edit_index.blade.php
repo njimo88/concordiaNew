@@ -1063,9 +1063,8 @@ foreach($Shop_article as $value1){
                                 Cette séance est dispensée le {{ fetcchDayy($dt) }} {{ $date->format('d') }} {{ fetchMonthh($dt) }}.<br>
                                 De {{ $date->format('G:i') }} à {{ $end_date->format('G:i') }}.<br>
                                 @foreach($rooms as $room)
-                                    @if(in_array($room->id_room, $Data_lesson['room']) && $norepeat == TRUE)
+                                    @if($room->id_room == $Data_lesson['room'][$key])
                                         <span class="text-primary">{{ $room->name }}</span><br>
-                                        @php $norepeat = FALSE; @endphp
                                     @endif
                                 @endforeach
                             </div>
