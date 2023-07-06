@@ -38,6 +38,7 @@ class Controller_club extends Controller
             ->get();
     
         /* ------------------------------------------requetes pour l'admin------------------------------*/
+        
         if(auth()->user()->roles->estAutoriserDeVoirArticle0_2) {
             // Admin users can see all types of articles (0, 1, 2)
             $shop_article_first = Shop_article::where('saison', $saison_actu)

@@ -1,7 +1,39 @@
 @extends('layouts.template')
 
 @section('content')
-
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+ 
+ .btn {
+   font-family: 'Poppins', sans-serif;
+   font-weight: 500;
+   font-size: 1rem;
+   letter-spacing: 1px;
+   display: inline-block;
+   padding: 10px 30px;
+   color: #fff;
+   background-color: #182983;
+   border: none;
+   position: relative;
+   cursor: pointer;
+   overflow: hidden;
+   transition: .3s ease background-color;
+ }
+ 
+ .btn:hover {
+   background-color: #ba0712;
+   color: white;
+ }
+ 
+ .btn i {
+   transition: .3s ease all;
+ }
+ 
+ .btn:hover i {
+   transform: rotate(360deg);
+ }
+ 
+ </style>
 @php
 
 require_once(app_path().'/fonction.php');
@@ -15,7 +47,7 @@ $saison_active = saison_active() ;
 	<div class="row d-flex justify-content-between">
 		
         
-        <div class="col-md-4">
+        <div class="col-md-8">
         <h4>Mes articles</h4>
         <button type="button" class="btn btn-primary">Article</button>
         <button type="button" class="btn btn-primary">Anciens articles</button>
@@ -25,6 +57,9 @@ $saison_active = saison_active() ;
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 Créer un article
 </button>
+  <button id="updateStock"  class="btn">
+      <i class="fas fa-sync"></i> Mettre à jour le stock
+  </button>
 <br>
        @endif
       
@@ -106,6 +141,7 @@ Créer un article
      <th>Image</th>
       <th>Référence</th>
        <th>Titre</th>
+       <th>Statut</th>
        <th>Prix TTC</th>
        <th>Prix Cumulé</th>
         <th>Stock</th>
@@ -140,7 +176,23 @@ Créer un article
 
       <img src="{{ asset('assets/images/male.png') }}" alt="icône male" />
   @endif
-</td><td>{{$data->price}}</td>
+</td>
+<td>
+  @php
+    $now = \Carbon\Carbon::now();
+    $startValidity = \Carbon\Carbon::parse($data->startvalidity);
+    $endValidity = \Carbon\Carbon::parse($data->endvalidity);
+  @endphp
+
+  @if ($now->between($startValidity, $endValidity))
+    <!-- If current date is between start and end dates, display green icon -->
+    <i class="fa fa-circle text-success"></i>
+  @else
+    <!-- Else, display red icon -->
+    <i class="fa fa-circle text-danger"></i>
+  @endif
+</td>
+<td>{{$data->price}}</td>
 <td>{{$data->totalprice}}</td>
 <td>{{$data->stock_actuel}}</td>
 @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
@@ -170,6 +222,7 @@ Créer un article
      <th>Image</th>
       <th>Référence</th>
        <th>Titre</th>
+       <th>Statut</th>
        <th>Prix TTC</th>
        <th>Prix Cumulé</th>
         <th>Stock</th>
@@ -197,7 +250,23 @@ Créer un article
       <!-- Mettez ici l'icône pour male -->
       <img src="{{ asset('assets/images/male.png') }}" alt="icône male" />
   @endif
-</td><td>{{ number_format($data->price, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
+</td>
+<td>
+  @php
+    $now = \Carbon\Carbon::now();
+    $startValidity = \Carbon\Carbon::parse($data->startvalidity);
+    $endValidity = \Carbon\Carbon::parse($data->endvalidity);
+  @endphp
+
+  @if ($now->between($startValidity, $endValidity))
+    <!-- If current date is between start and end dates, display green icon -->
+    <i class="fa fa-circle text-success"></i>
+  @else
+    <!-- Else, display red icon -->
+    <i class="fa fa-circle text-danger"></i>
+  @endif
+</td>
+<td>{{ number_format($data->price, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
 <td>{{ number_format($data->totalprice, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
 <td>{{$data->stock_actuel}}/{{ $data->stock_ini }}</td>
 @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
