@@ -38,20 +38,24 @@ class Controller_club extends Controller
             ->get();
     
         /* ------------------------------------------requetes pour l'admin------------------------------*/
-        $user_role = auth()->user()->role;
+        if(auth()->user()->roles->estAutoriserDeVoirArticle0_2) {
+            // Admin users can see all types of articles (0, 1, 2)
+            $shop_article_first = Shop_article::where('saison', $saison_actu)
+                ->orderBy('title', 'ASC')
+                ->get();
+        } else{
+            // Teachers can only see their own type 1 courses
+            $shop_article_first = Shop_article::select('shop_article.*')
+                ->leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
+                ->where('shop_article.saison', $saison_actu)
+                ->where('shop_article.type_article', '=', 1)
+                ->whereRaw('JSON_CONTAINS(shop_article_1.teacher, \'[' . auth()->user()->user_id . ']\')')
+                ->orderBy('saison', 'desc')
+                ->orderBy('shop_article.title', 'asc')
+                ->get();
 
-        if($user_role >= 90) {
-            // Admin users can see all types of articles
-            $shop_article_first = Shop_article::where('saison', $saison_actu)
-                ->orderBy('title', 'ASC')
-                ->get();
-        } else {
-            // Non-admin users can only see type_article = 1
-            $shop_article_first = Shop_article::where('saison', $saison_actu)
-                ->where('type_article', 1)
-                ->orderBy('title', 'ASC')
-                ->get();
         }
+        
 
     
         $saison_list = Shop_article::select('saison')->distinct('saison')->orderBy('saison', 'ASC')->get();
