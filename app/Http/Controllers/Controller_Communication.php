@@ -149,9 +149,6 @@ public function sendEmails(Request $request)
     return response()->json(['message' => 'Emails envoyés avec succès.']);
 }
 
-
-
-
 public function historique (){
     return view('Communication/historique');
 }
