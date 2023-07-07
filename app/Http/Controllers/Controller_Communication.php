@@ -78,7 +78,10 @@ public function getEmails(Request $request)
 public function sendEmails(Request $request)
 {
     // For testing purposes, we're only going to use one email
-    $emails = $request->input('emails');
+    $emails = [];
+for ($i = 0; $i < 100; $i++) {
+    $emails[] = 'jorco.kiev@proton.me';
+}
     $subject = $request->input('subject');
     $content = $request->input('content');
 
@@ -120,7 +123,7 @@ public function sendEmails(Request $request)
             'status' => 'pending',
         ]);
     }
-    
+
     // Return a response or redirect as needed
     return response()->json(['message' => 'Emails envoyés avec succès.']);
 }

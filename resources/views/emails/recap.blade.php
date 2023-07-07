@@ -27,12 +27,7 @@
         {{ $destinataire->lastname }} {{ $destinataire->name }} : ({{ $destinataire->username }}, {{ $destinataire->email }}) <br>
     @endforeach
     </p>
-    @if (count($invalidEmails) > 0)
-        <p>Emails non valides :</p>
-        @foreach($invalidEmails as $invalidEmail)
-            <p>{{$invalidEmail}}</p>
-        @endforeach
-    @endif
+   
     
 
 </body>

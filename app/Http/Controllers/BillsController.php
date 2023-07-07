@@ -349,7 +349,7 @@ public function updateStatus(Request $request, $id)
         ->leftJoin('bills_status', 'bills.status', '=', 'bills_status.id')
         ->leftJoin('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
         ->leftJoin('users', 'bills.user_id', '=', 'users.user_id')
-        ->select('bills.*', 'bills_status.status as bill_status', 'bills_payment_method.payment_method as bill_payment_method', 'users.name', 'users.lastname')
+        ->select('bills.*','bills_status.mail_content', 'bills_status.status as bill_status', 'bills_payment_method.payment_method as bill_payment_method', 'users.name', 'users.lastname')
         ->where('bills.id', $id)
         ->first();
 
@@ -369,6 +369,14 @@ public function updateStatus(Request $request, $id)
     }
 
     $this->sendStatusChangedEmail($bill, $oldStatusValue, $newStatusValue);
+    ShopMessage::create([
+        'message' => 'Le Statut de la Facture est passé de : <b>' . $oldStatusValue . '</b> à <b>' . $newStatusValue . '</b>.',
+        'date' => now(), 
+        'id_bill' => $bill->id, 
+        'id_customer' => $bill->user_id, 
+        'id_admin' => auth()->id(), 
+        'state' => 'Public', 
+    ]);
 
     return  redirect()->back()->with('success', 'Le statut de la facture n°'.$id.' a été modifié avec succès');
 }
