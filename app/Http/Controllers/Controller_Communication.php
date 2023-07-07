@@ -78,10 +78,7 @@ public function getEmails(Request $request)
 public function sendEmails(Request $request)
 {
     // For testing purposes, we're only going to use one email
-    $emails = [];
-for ($i = 0; $i < 100; $i++) {
-    $emails[] = 'jorco.kiev@proton.me';
-}
+    $emails = $request->input('emails');
     $subject = $request->input('subject');
     $content = $request->input('content');
 
@@ -123,7 +120,37 @@ for ($i = 0; $i < 100; $i++) {
             'status' => 'pending',
         ]);
     }
+     // Save the record to mail_history
+   $mail_history = new MailHistory;
+   $mail_history->id_user_expediteur = Auth::id(); 
+   $mail_history->title = $subject;
+   $mail_history->message = $content;
+   $mail_history->link_pj = null; 
+   $mail_history->date = now();
+   $mail_history->id_user_destinataires = json_encode(array_values($emails)); 
+   $mail_history->save();
 
+   $securityEmail = 'security@gym-concordia.com';
+   $destinataires = User::whereIn('email', $emails)->get();
+   $subject = '[Surveillance] Mail ' . $authUser->lastname . ' ' . $authUser->name . ' | ' . date('d-m-Y H:i');
+
+   $recapData = [
+    'recipient' => $authUser->email,
+    'recipientName' => $authUser->lastname . ' ' . $authUser->name,
+    'subject' => $subject,
+    'content' => view('emails.recap', ['user' => $authUser, 'mail_history' => $mail_history, 'destinataires' => $destinataires])->render(), // Render the view as a string
+    'sender' => $fromEmail,
+    'fromName' => $fromName,
+    'senderName' => $senderName,
+    'status' => 'pending',
+];
+
+EmailQueue::create($recapData);
+
+// Add another for the security email
+$recapData['recipient'] = $securityEmail;
+$recapData['recipientName'] = 'Gym Concordia [security]';
+EmailQueue::create($recapData);
     // Return a response or redirect as needed
     return response()->json(['message' => 'Emails envoyés avec succès.']);
 }
