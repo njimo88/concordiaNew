@@ -62,7 +62,7 @@ class ProcessEmailQueue extends Command
                 $email->delete();
     
                 // Pause for 6 seconds to throttle the rate of sending
-                sleep(6);
+                sleep(7);
     
             } catch (\Exception $e) {
                 $reason = 'Failed to send queued email. Error: '.$e->getMessage();
