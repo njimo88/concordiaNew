@@ -8,7 +8,7 @@
             <p>Bonjour,</p>
 
 <p>La facture #{{ $bill->ref }} est passée de statut {{ $oldStatus }} vers statut {{ $newStatus }}.</p>
-{!! $$bill->mail_content !!}
+{!! $bill->mail_content !!}
 <hr>
 
 <p><strong>Date de la facture:</strong> {{ $bill->date_bill }}</p>
