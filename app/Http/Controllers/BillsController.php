@@ -37,6 +37,88 @@ class BillsController extends Controller
      */
 
 
+     public function saveSelection(Request $request)
+    {
+        // Validez les données entrantes
+        $validatedData = $request->validate([
+            'bill_id' => 'required|exists:bills,id',
+            'id_shop_article' => 'required|exists:shop_article,id_shop_article',
+            'quantity' => 'required|integer|min:1',
+            'recalculate' => 'required|boolean',
+            'addressee' => 'required|string',
+            'user_id' => 'required|exists:users,user_id'
+        ]);
+
+        $article = Shop_article::find($validatedData['id_shop_article']);
+
+        // Créez une nouvelle liaison entre l'article et la facture
+        $liaison = new LiaisonShopArticlesBill;
+        $liaison->bill_id = $validatedData['bill_id'];
+        $liaison->href_product = $article->ref;
+        $liaison->ttc = $article->price;
+        $liaison->addressee = $validatedData['addressee'];
+        $liaison->sub_total = $article->price * $validatedData['quantity'];
+        $liaison->designation = $article->title;
+        $liaison->id_shop_article = $validatedData['id_shop_article'];
+        $liaison->quantity = $validatedData['quantity'];
+        $liaison->id_user = $validatedData['user_id'];
+        $liaison->save();
+
+        // Si 'recalculate' est true, recalculez le montant de la facture
+        if ($validatedData['recalculate']) {
+            // Recalculer la facture
+            // $this->recalculateBill($validatedData['bill_id']);
+        }
+
+        return response()->json(['message' => 'Sélection sauvegardée et facture recalculée avec succès.']);
+    }
+
+     
+         public function currentSeason()
+         {
+             $currentSeason = saison_active(); 
+             $products = Shop_article::where('saison', $currentSeason)->orderBy('title')->get();
+             return response()->json($products);
+         }
+
+         public function createBill(Request $request)
+     {
+         // Validation des données de la requête
+         $request->validate([
+             'user_id' => 'required|exists:users,user_id',
+             'payment_method' => 'required|exists:bills_payment_method,id',
+         ]);
+         // Création de la facture
+         $bill = new bills;
+         $bill->date_bill = now();
+         $bill->type = 'facture';
+         $bill->status = 40;
+         $bill->payment_total_amount = 0;
+         $bill->ref = 2021;
+         $bill->payment_method = $request->payment_method;
+         $bill->user_id = $request->user_id;
+         $bill->family_id = $request->family_id;
+         $bill->total_charges = 0;
+         $bill->amount_paid = 0;
+         $bill->number = 1;
+     
+         $bill->save();
+     
+         // Génération du référence
+         $year = date('Y');
+         $billIdWithOffset = $bill->id + 10000;
+         $bill->ref = "{$year}-{$billIdWithOffset}";
+     
+         $bill->save();  // sauvegarder à nouveau la facture après la génération de la référence
+     
+         // Retourner une réponse
+         return response()->json([
+             'status' => 'success',
+             'message' => 'Facture créée avec succès',
+         ]);
+     }
+     
+
      public function index(Request $request)
      {
          if ($request->has('statusOldBills')) {
@@ -543,12 +625,27 @@ public function updateDes(Request $request, $id){
         ->orderBy('shop_messages.date', 'asc')
         ->get();
         $nb_paiment = calculerPaiements($bill->payment_method,$bill->payment_total_amount,$bill->number);
-            return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages'))->with('user', auth()->user());
+        $paymentMethods = DB::table('bills_payment_method')->get();
+
+            return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages','paymentMethods'))->with('user', auth()->user());
         }
 
         abort(403, 'Vous n\'êtes pas autorisé à accéder à cette facture.');
      
     }
+
+    public function search(Request $request)
+{
+    $query = $request->get('query');
+
+    $users = DB::table('users')
+                ->where('name', 'like', '%' . $query . '%')
+                ->orWhere('lastname', 'like', '%' . $query . '%')
+                ->get();
+
+    return response()->json($users);
+}
+
 
     public function addShopMessage(Request $request, $id) {
         $bill = DB::table('bills')

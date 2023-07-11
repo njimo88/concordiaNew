@@ -2,9 +2,51 @@
 
 @section('content')
 <main class="main" id="main"  style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height:100vh;">
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="bill-form">
+          @csrf
+
+          <div class="form-group">
+              <label for="user-search">Chercher un utilisateur</label>
+              <input type="text" class="form-control" id="user-search-input">
+              <select class="form-control user-select" id="user-select"></select>
+          </div>
+      
+          <div class="form-group">
+              <label for="payment-method">Méthode de paiement</label>
+              <select class="form-control" id="payment-method">
+                  @foreach ($paymentMethods as $method)
+                      <option value="{{ $method->id }}">{{ $method->payment_method }}</option>
+                  @endforeach
+              </select>
+          </div>
+      
+          <input type="hidden"  id="user-id" name="user_id">
+          <input type="hidden"  id="family-id" name="family_id">
+      
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+              <button type="button" id="save-button" class="btn btn-primary">Sauvegarder</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div style="background-color: white;" class="container  justify-content-center">
-    <div class="row">
+    <div class="row ">
         @if (session('success'))
                 <div class="alert alert-success mt-3">
                     {{ session('success') }}
@@ -18,16 +60,24 @@
         <div class="col-3">
             <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
         </div>
+        @if ( Route::currentRouteName() === 'facture.showBill')
+          <div class="col-4 my-4 d-flex justify-content-end">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                  Créer une facture
+              </button>
+            </div>
+        @endif
+
         
           @if ($bill->status >= 70)
-          <div class="row col-9 d-flex justify-content-end" >
-            <div class="col-3 d-flex justify-content-end" >
+          <div class="row col-5 d-flex justify-content-end" >
+            <div class="col-5 d-flex justify-content-end" >
               <form method="post" action="{{ route('generatePDFfacture', $bill->id) }}">
                 @csrf
                 <button type="submit" class="my-custom-btn btn btn-primary my-4">Facture <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
               </form>
             </div>
-          <div class="col-3 d-flex justify-content-end" >
+          <div class="col-5 d-flex justify-content-end" >
             <form method="post" action="{{ route('generatePDFreduction_Fiscale', $bill->id) }}">
               @csrf
               <button type="submit" class="my-custom-btn btn btn-primary my-4">Réduction Fiscale  <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
@@ -254,6 +304,7 @@
           
       </tbody>
   </table>
+  
   @else
     <div class="row ">
         <div class="col-12 d-flex justify-content-center ">
@@ -261,7 +312,45 @@
         </div>
     </div>
 @endif
-    
+<div class="d-flex justify-content-end m-3">
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AjouteProduit">
+    Ajouter un produit
+</div>
+<div class="modal fade" id="AjouteProduit" tabindex="-1" aria-labelledby="AjouteProduitLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="AjouteProduitLabel">Sélectionner un produit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="product-select" class="form-label">Produits</label>
+            <select class="form-select" id="product-select">
+              <!-- Les options seront remplis avec du code Javascript -->
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="product-quantity" class="form-label">Quantité</label>
+            <input type="number" class="form-control" id="product-quantity">
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="recalculate-bill">
+            <label class="form-check-label" for="recalculate-bill">
+              Recalculer la facture
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+</div>
+   
   
   <div class="row border border-dark my-5 mx-2">
     <div class="col-12 d-flex justify-content-center border-bottom -border-dark bg-secondary">
@@ -380,7 +469,166 @@
       }
     });
   });
-  </script>
+
+  function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+}
+
+$(document).ready(function() {
+    var searchUser = debounce(function(element) {
+        var query = $(element).val();
+        var userSelect = $('.user-select');
+        userSelect.empty();
+
+        if (query.length >= 3) {
+            $.ajax({
+                url: '/search',
+                type: 'GET',
+                data: {
+                    query: query,
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function(data) {
+                    if (data.length > 0) {
+                        $.each(data, function(key, value) {
+                            userSelect.append('<option value="' + value.user_id + '" data-family-id="' + value.family_id + '">' + value.lastname + ' ' + value.name + ' '+ value.user_id + ' ' + value.family_id +'</option>');
+                        });
+                    } else {
+                        userSelect.append('<option>Aucun utilisateur trouvé</option>');
+                    }
+                }
+            });
+        }
+    }, 300); 
+
+    $("#user-search-input").on("keyup", function() {
+        searchUser(this);
+    });
+});
+
+$("#user-select").on("change", function() {
+    var selectedOption = $(this).find("option:selected");
+    console.log(selectedOption);
+    var userId = selectedOption.val();
+    var familyId = selectedOption.data('family-id');
+
+    $("#user-id").val(userId);
+    $("#family-id").val(familyId);
+
+});
+
+$("#save-button").on("click", function() {
+    var selectedOption = $("#user-select option:selected");
+    var userId = selectedOption.val();
+    var familyId = selectedOption.data('family-id');
+
+    $("#user-id").val(userId);
+    $("#family-id").val(familyId);
+
+    var paymentMethod = $("#payment-method").val();
+
+    $.ajax({
+        url: '/create-bill',
+        type: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        data: {
+            "_token": "{{ csrf_token() }}",
+            "user_id": userId,
+            "family_id": familyId,
+            "payment_method": paymentMethod
+        },
+        success: function(response) {
+            alert(response.message);
+        },
+        error: function(xhr, status, error) {
+            alert('Une erreur s\'est produite lors de la création de la facture: ' + error);
+        }
+    });
+});
+
+var select = $('#product-select');
+
+$.ajax({
+    url: '/products/current-season',
+    type: 'GET',
+    dataType: 'json',
+    success: function(products) {
+        products.forEach(function(product) {
+            var option = $('<option></option>').val(product.id_shop_article).text(product.title);
+            select.append(option);
+        });
+    },
+    error: function(error) {
+        console.log('Error:', error);
+    }
+});
+
+var bill = @json($bill);
+
+var saveButton = document.querySelector('#AjouteProduit .btn-primary');
+var form = document.querySelector('#AjouteProduit form');
+saveButton.addEventListener('click', function(event) {
+    event.preventDefault();
+
+    // Utilisez la variable bill pour obtenir les bonnes valeurs
+    var bill_id = bill.id;
+    var id_shop_article = document.querySelector('#product-select').value;
+    var quantity = document.querySelector('#product-quantity').value;
+    var recalculate = document.querySelector('#recalculate-bill').checked;
+    var addressee = bill.lastname + ' ' + bill.name;
+    var user_id = bill.user_id;
+    
+
+    var data = {
+        bill_id: bill_id,
+        id_shop_article: id_shop_article,
+        quantity: quantity,
+        recalculate: recalculate,
+        addressee: addressee,
+        user_id: user_id
+    };
+
+    fetch('/save-selection', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // Ajoutez ce header si vous utilisez CSRF dans Laravel
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        // Vérifiez si la requête a réussi
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Affichez le message d'alerte et rechargez la page en cas de succès
+        alert(data.message);
+        location.reload();
+    })
+    .catch(error => {
+        // Affichez le message d'erreur en cas d'échec
+        alert('Error: ' + error);
+    });
+});
+
+</script>
   
 @endsection
 

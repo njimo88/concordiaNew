@@ -862,10 +862,17 @@ function updateTotalCharges($bill_id) {
     if (!$bill) {
         $bill = old_bills::find($bill_id);
     }
+    
+    if(!$bill){
+        // Handle case when bill is not found in both tables
+        throw new Exception('Bill not found');
+    }
+
     $bill->amount_paid = $total_payed; 
     $bill->save(); 
     return $total_payed;
 }
+
 
 
 // recuperer l'ID d'un shop articles et retourne les USERS qui ont achete le produit a une date anterieure

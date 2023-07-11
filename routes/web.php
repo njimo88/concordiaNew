@@ -73,6 +73,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/factures-devis', [App\Http\Controllers\UsersController::class, 'facture'])->name('users.FactureUser');
     Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
     Route::get('/users/factures-devis/showBill/{id}', [BillsController::class, 'showBill'])->name('user.showBill');
+    Route::get('/search', [BillsController::class, 'search']);
+    Route::post('/create-bill', [BillsController::class, 'createBill'])->name('create-bill');
+    Route::get('/products/current-season', [BillsController::class, 'currentSeason']);
+    Route::post('/save-selection', [BillsController::class, 'saveSelection']);
+
 
 
 /*-----------PDF--------------------------*/
