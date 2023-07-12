@@ -74,6 +74,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
     Route::get('/users/factures-devis/showBill/{id}', [BillsController::class, 'showBill'])->name('user.showBill');
     Route::get('/search', [BillsController::class, 'search']);
+    Route::get('/family-members/{family_id}', [BillsController::class, 'familySearch']);
     Route::post('/create-bill', [BillsController::class, 'createBill'])->name('create-bill');
     Route::get('/products/current-season', [BillsController::class, 'currentSeason']);
     Route::post('/save-selection', [BillsController::class, 'saveSelection']);
@@ -135,6 +136,10 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::delete('/bill/{bill}', [BillsController::class, 'destroy'])->name('bill.destroy');
     Route::post('/stock/update', [BillsController::class, 'miseAjourStock'])->name('stock.update');
     Route::delete('/admin/supprimer-message/{id}', [BillsController::class, 'messageDestroy'])->name('message.destroy');
+    Route::post('/update-addressee/{liaisonId}', [BillsController::class, 'updateAddressee'])->name('facture.updateAddressee');
+    Route::delete('/delete-designation/{id}', [BillsController::class, 'deleteDesignation'])->name('delete-designation');
+
+
 
 
 

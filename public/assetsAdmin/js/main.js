@@ -1185,9 +1185,6 @@ $(document).ready(function() {
         $.ajax({
           url: '/search',
           type: 'GET',
-          headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          },
           data: {
               query: query,
           },

@@ -197,71 +197,85 @@
       </div>
     </div>
     @if (count($shop) > 0)
-    <table id="" style="width: 98%; margin:0px auto !important"  class="table">
+    <table id="" style="width: 98%; margin:0px auto !important" class="table">
       <thead>
-          <th > <a>Désignation</a></th>
-          <th ><a>Quantité</a></th>
-          <th ><a >Prix</a></th>
-          <th><a >Sous-total</a></th>
-          <th><a ></a></th>
-      </thead>                            
+          <th><a>Désignation</a></th>
+          <th><a>Quantité</a></th>
+          <th><a>Prix</a></th>
+          <th><a>Sous-total</a></th>
+          <th><a></a></th>
+          <th><a></a></th> <!-- New column for delete button -->
+      </thead>
       <tbody>
           @foreach ($shop as $shop)
           <tr>
-            @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
-            <form action="{{ route('facture.updateDes', $shop->id_liaison) }}" method="post">
-                @csrf
-                @method('PUT')
-            @else
-                <form>
-            @endif
-            
-                <td style="width: 800px;">
-                    <div class="row ">
-                        <div class="col-md-2 col-12">
-                            <img style="height: 70px" src="{{ $shop->image }}"  alt="">
-                        </div>
-                        <div class="col-md-6 col-12">
-                          <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
-                          @if(!auth()->user()->roles->changer_designation_facture || Route::currentRouteName() !== 'facture.showBill')
-                          <select disabled name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
-                            @foreach($designation as $title)
-                                @if($title == $shop->designation)
-                                    <option value="{{ $title }}" role="option" selected>{{ $title }}</option>
-                                @endif
-                            @endforeach
-                        </select>
-                          @else
-                            <select name="designation"  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
-                                <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
-                                @foreach($designation as $title)
-                                    <option value="{{ $title }}" role="option">{{ $title }}</option>
-                                @endforeach
-                            </select>
+              @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
+              <form action="{{ route('facture.updateDes', $shop->id_liaison) }}" method="post">
+                  @csrf
+                  @method('PUT')
+              @else
+              <form>
+                  @endif
+  
+                  <td style="width: 600px;">
+                      <div class="row">
+                          <div class="col-md-2 col-12">
+                              <img style="height: 70px" src="{{ $shop->image }}" alt="">
+                          </div>
+                          <div class="col-md-6 col-12">
+                              <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
+                              @if(!auth()->user()->roles->changer_designation_facture || Route::currentRouteName() !== 'facture.showBill')
+                              <select disabled name="designation"
+                                  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status"
+                                  id="status" autocomplete="status" autofocus role="listbox">
+                                  @foreach($designation as $title)
+                                  @if($title == $shop->designation)
+                                  <option value="{{ $title }}" role="option" selected>{{ $title }}</option>
+                                  @endif
+                                  @endforeach
+                              </select>
+                              @else
+                              <select name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror"
+                                  name="status" id="status" autocomplete="status" autofocus role="listbox">
+                                  <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
+                                  @foreach($designation as $title)
+                                  <option value="{{ $title }}" role="option">{{ $title }}</option>
+                                  @endforeach
+                              </select>
+                              @endif
+                          </div>
+                          @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
+                          <div class="col-md-2 col-12">
+                              <button type="submit" class="btn btn-sm btn-warning mt-3">Changer</button>
+                          </div>
                           @endif
-                        </div>
-                        @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
-                        <div class="col-md-2 col-12">
-                            <button type="submit" class="btn btn-sm btn-warning mt-3">Changer</button>
-                        </div>
-                        @endif
-                    </div>
-                </td>
-                
-            </form>
-
+                      </div>
+                  </td>
+  
+              </form>
+  
               <td>{{ $shop->quantity }} </td>
               <td>{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
               <td>{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
-              <td>{{ $shop->addressee   }} </td>
-            </tr>
+              @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
+              <td>
+                  <select name="addressee" class="border form-select mt-3 family-select" onchange="confirmChange(this)"
+                      data-liaison-id="{{ $shop->id_liaison }}">
+                      <option value="{{ $shop->id_user }}" selected>{{ $shop->addressee }}</option>
+                  </select>
+              </td>
+              @else
+              <td>{{ $shop->addressee }}</td>
+              @endif
+              <td> <!-- New column for delete button -->
+                  <button type="button" class="btn btn-sm btn-danger delete-des my-4"
+                      data-id="{{ $shop->id_liaison }}">Supprimer</button>
+              </td>
+          </tr>
           @endforeach
-      
-                   
-           
-          
       </tbody>
   </table>
+  
   
   @else
     <div class="row ">
@@ -272,8 +286,9 @@
 @endif
 <div class="d-flex justify-content-end m-3">
   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AjouteProduit">
-    Ajouter un produit
+    <i class="fa-solid fa-plus"></i> &nbsp; Ajouter un produit
 </div>
+
 <div class="modal fade" id="AjouteProduit" tabindex="-1" aria-labelledby="AjouteProduitLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -291,8 +306,15 @@
           </div>
           <div class="mb-3">
             <label for="product-quantity" class="form-label">Quantité</label>
-            <input type="number" class="form-control" id="product-quantity">
+            <input type="number" class="form-control" id="product-quantity" min="1" value="1">
           </div>
+          
+          <div class="mb-3">
+            <label for="family-select" class="form-label">Membre de la famille</label>
+            <select class="form-select" id="family-select">
+            </select>
+        </div>
+        
           <div class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="recalculate-bill">
             <label class="form-check-label" for="recalculate-bill">
@@ -408,94 +430,193 @@
 <div style="height: 25px"></div>
 </main>
 <script>
-  $(document).ready(function() {
-    $('.delete-button').click(function() {
-      console.log('delete');
-      var messageId = $(this).data('id');
-      if (confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) {
-        $.ajax({
-          url: '/admin/supprimer-message/' + messageId,
-          method: 'DELETE',
-          data: {
-            "_token": "{{ csrf_token() }}"
-          },
-          success: function(response) {
-              alert('Le message a été supprimé avec succès.');
-              $('#message-' + messageId).hide(); 
-          }
-        });
-      }
-    });
+ $(document).ready(function() {
+  $('.delete-button').click(function() {
+    console.log('delete');
+    var messageId = $(this).data('id');
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce message ?')) {
+      $.ajax({
+        url: '/admin/supprimer-message/' + messageId,
+        method: 'DELETE',
+        data: {
+          "_token": "{{ csrf_token() }}"
+        },
+        success: function(response) {
+            alert('Le message a été supprimé avec succès.');
+            $('#message-' + messageId).hide(); 
+        }
+      });
+    }
   });
+});
 
- 
 var select = $('#product-select');
 
 $.ajax({
-    url: '/products/current-season',
-    type: 'GET',
-    dataType: 'json',
-    success: function(products) {
-        products.forEach(function(product) {
-            var option = $('<option></option>').val(product.id_shop_article).text(product.title);
-            select.append(option);
-        });
-    },
-    error: function(error) {
-        console.log('Error:', error);
-    }
+  url: '/products/current-season',
+  type: 'GET',
+  dataType: 'json',
+  success: function(products) {
+      products.forEach(function(product) {
+          var option = $('<option></option>').val(product.id_shop_article).text(product.title);
+          select.append(option);
+      });
+  },
+  error: function(error) {
+      console.log('Error:', error);
+  }
 });
-
 var bill = @json($bill);
 
-var saveButton = document.querySelector('#AjouteProduit .btn-primary');
-var form = document.querySelector('#AjouteProduit form');
-saveButton.addEventListener('click', function(event) {
-    event.preventDefault();
+$(document).ready(function() {
+  var familySelect = $('#family-select');
+  var familyId = bill.family_id;
 
-    // Utilisez la variable bill pour obtenir les bonnes valeurs
-    var bill_id = bill.id;
-    var id_shop_article = document.querySelector('#product-select').value;
-    var quantity = document.querySelector('#product-quantity').value;
-    var recalculate = document.querySelector('#recalculate-bill').checked;
-    var addressee = bill.lastname + ' ' + bill.name;
-    var user_id = bill.user_id;
-    
+  $.ajax({
+      url: '/family-members/' + familyId,
+      type: 'GET',
+      dataType: 'json',
+      success: function(familyMembers) {
+          familyMembers.forEach(function(member) {
+              var option = $('<option></option>').val(member.user_id).text(member.lastname + ' ' + member.name);
+              familySelect.append(option);
+          });
+      },
+      error: function(error) {
+          console.log('Error:', error);
+      }
+  });
 
-    var data = {
-        bill_id: bill_id,
-        id_shop_article: id_shop_article,
-        quantity: quantity,
-        recalculate: recalculate,
-        addressee: addressee,
-        user_id: user_id
-    };
+  var productSelect = $('#product-select');
 
-    fetch('/save-selection', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Ajoutez ce header si vous utilisez CSRF dans Laravel
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+  $.ajax({
+      url: '/products/current-season',
+      type: 'GET',
+      dataType: 'json',
+      success: function(products) {
+          products.forEach(function(product) {
+              var option = $('<option></option>').val(product.id_shop_article).text(product.title);
+              productSelect.append(option);
+          });
+      },
+      error: function(error) {
+          console.log('Error:', error);
+      }
+  });
+
+  $(document).ready(function() {
+    var familySelect = $('.family-select');
+    var familyId = bill.family_id;
+
+    $.ajax({
+        url: '/family-members/' + familyId,
+        type: 'GET',
+        dataType: 'json',
+        success: function(familyMembers) {
+            familyMembers.forEach(function(member) {
+                var option = $('<option></option>').val(member.user_id).text(member.lastname + ' ' + member.name);
+                familySelect.append(option);
+            });
         },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        // Vérifiez si la requête a réussi
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        error: function(error) {
+            console.log('Error:', error);
         }
-        return response.json();
-    })
-    .then(data => {
-        // Affichez le message d'alerte et rechargez la page en cas de succès
-        alert(data.message);
-        location.reload();
-    })
-    .catch(error => {
-        // Affichez le message d'erreur en cas d'échec
-        alert('Error: ' + error);
     });
+
+});
+
+  var saveButton = document.querySelector('#AjouteProduit .btn-primary');
+  var form = document.querySelector('#AjouteProduit form');
+  saveButton.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      var bill_id = bill.id;
+      var id_shop_article = document.querySelector('#product-select').value;
+      var quantity = document.querySelector('#product-quantity').value;
+      var recalculate = document.querySelector('#recalculate-bill').checked;
+      var familyMemberId = document.querySelector('#family-select').value; 
+
+      var data = {
+          bill_id: bill_id,
+          id_shop_article: id_shop_article,
+          quantity: quantity,
+          recalculate: recalculate,
+          family_member_id: familyMemberId // Envoyer l'id du membre de la famille avec les données du formulaire
+      };
+
+      fetch('/save-selection', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify(data)
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+          alert(data.message);
+          location.reload();
+      })
+      .catch(error => {
+          alert('Error: ' + error);
+      });
+  });
+});
+
+
+function confirmChange(select) {
+        var newAddressee = select.value;
+        var confirmation = confirm("Êtes-vous sûr de vouloir changer l'adresse de livraison ?");
+
+        if (confirmation) {
+            // Envoyez une requête AJAX pour mettre à jour l'adresse de livraison
+            var liaisonId = select.getAttribute('data-liaison-id');
+            var url = '/update-addressee/' + liaisonId;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                body: JSON.stringify({ addressee: newAddressee })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => console.error(error));
+        } else {
+            select.value = select.getAttribute('data-previous-value');
+        }
+    }
+
+    $(document).ready(function() {
+    $('.delete-des').click(function() {
+        var liaisonId = $(this).data('id');
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette désignation ?')) {
+            $.ajax({
+                url: '/delete-designation/' + liaisonId,
+                method: 'DELETE',
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    alert('La désignation a été supprimée avec succès.');
+                    $('#liaison-' + liaisonId).remove();
+          location.reload();
+
+
+                }
+            });
+        }
+    });
+
 });
 
 </script>

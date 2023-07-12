@@ -34,8 +34,45 @@ class BillsController extends Controller
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
+     * 
+     * 
      */
 
+     public function updateAddressee(Request $request, $liaisonId)
+{
+    // Validez les données entrantes
+    $validatedData = $request->validate([
+        'addressee' => 'required|Integer'
+    ]);
+
+    // Récupérer la liaison correspondante
+    $liaison = LiaisonShopArticlesBill::find($liaisonId);
+
+    $user = User::find($validatedData['addressee']);
+
+    // Mettre à jour l'adresse de livraison
+    $liaison->addressee = $user->lastname . ' ' . $user->name;
+    $liaison->id_user = $validatedData['addressee'];
+    $liaison->save();
+
+    return response()->json(['message' => 'La désignation a été mise à jour avec succès.']);
+}
+
+
+        public function familySearch($family_id) {
+            $familyMembers = User::where('family_id', $family_id)->get();
+            return response()->json($familyMembers);
+        }
+
+
+        public function deleteDesignation($id)
+        {
+            $liaison = LiaisonShopArticlesBill::findOrFail($id);
+            $liaison->delete();
+        
+            return response()->json(['message' => 'La ligne a été supprimée avec succès.']);
+        }
+        
 
      public function saveSelection(Request $request)
     {
@@ -45,33 +82,49 @@ class BillsController extends Controller
             'id_shop_article' => 'required|exists:shop_article,id_shop_article',
             'quantity' => 'required|integer|min:1',
             'recalculate' => 'required|boolean',
-            'addressee' => 'required|string',
-            'user_id' => 'required|exists:users,user_id'
+            'family_member_id' => 'required|exists:users,user_id'
         ]);
 
+        // Récupérer l'article
+
         $article = Shop_article::find($validatedData['id_shop_article']);
+
+        $user = User::find($validatedData['family_member_id']);
 
         // Créez une nouvelle liaison entre l'article et la facture
         $liaison = new LiaisonShopArticlesBill;
         $liaison->bill_id = $validatedData['bill_id'];
         $liaison->href_product = $article->ref;
         $liaison->ttc = $article->price;
-        $liaison->addressee = $validatedData['addressee'];
+        $liaison->addressee = $user->lastname . ' ' . $user->name;
         $liaison->sub_total = $article->price * $validatedData['quantity'];
         $liaison->designation = $article->title;
         $liaison->id_shop_article = $validatedData['id_shop_article'];
         $liaison->quantity = $validatedData['quantity'];
-        $liaison->id_user = $validatedData['user_id'];
+        $liaison->id_user = $validatedData['family_member_id'];
         $liaison->save();
 
         // Si 'recalculate' est true, recalculez le montant de la facture
         if ($validatedData['recalculate']) {
             // Recalculer la facture
-            // $this->recalculateBill($validatedData['bill_id']);
+            $this->recalculateBill($validatedData['bill_id']);
         }
 
         return response()->json(['message' => 'Sélection sauvegardée et facture recalculée avec succès.']);
     }
+
+    public function recalculateBill($billId)
+{
+    $bill = bills::find($billId);
+    $liaisons = LiaisonShopArticlesBill::where('bill_id', $billId)->get();
+    $total = 0;
+    foreach ($liaisons as $liaison) {
+        $total += $liaison->quantity * $liaison->ttc;
+    }
+    $bill->payment_total_amount = $total;
+    $bill->save();
+}
+
 
      
          public function currentSeason()
@@ -612,7 +665,7 @@ public function updateDes(Request $request, $id){
         if ($user->belongsToFamily($bill->family_id) || Route::currentRouteName() === 'facture.showBill') {
         
         $shop = DB::table('liaison_shop_articles_bills')
-        ->select('quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'liaison_shop_articles_bills.id_liaison')
+        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'liaison_shop_articles_bills.id_liaison')
         ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
         ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
         ->where('bills.id', '=', $id)
