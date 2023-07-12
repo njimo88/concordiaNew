@@ -2,36 +2,60 @@
 
 @section('content')
 <style>
- @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 
 .btn {
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.8rem; /* smaller font size */
   letter-spacing: 1px;
   display: inline-block;
-  padding: 10px 30px;
+  padding: 8px 16px; /* smaller padding */
   color: #fff;
-  background-color: #182983;
   border: none;
   position: relative;
   cursor: pointer;
   overflow: hidden;
   transition: .3s ease background-color;
-}
+  margin-right: 10px;
 
-.btn:hover {
-  background-color: #ba0712;
-  color: white;
 }
 
 .btn i {
-  margin-right: 10px;
   transition: .3s ease all;
 }
 
 .btn:hover i {
   transform: rotate(360deg);
+}
+
+.btn-red {
+  background-color: #ff0000;
+}
+
+.btn-red:hover {
+  background-color: #cc0000;
+}
+
+.btn-grey {
+  background-color: #888;
+}
+
+.btn-grey:hover {
+  background-color: #666;
+}
+
+.btn-green {
+  background-color: #008000;
+}
+
+.btn-green:hover {
+  background-color: #006600;
+}
+
+
+.btn:last-child {
+  margin-right: 0;
 }
 
 </style>
@@ -44,12 +68,52 @@
         {{ session('stockUpdated') }}
     </div>
 @endif
-   
+  
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="bill-form">
+            <div class="form-group">
+                <label for="user-search">Chercher un utilisateur</label>
+                <input type="text" class="form-control" id="user-search-input">
+                <select class="form-control user-select" id="user-select"></select>
+            </div>
+        
+            <div class="form-group">
+                <label for="payment-method">Méthode de paiement</label>
+                <select class="form-control" id="payment-method">
+                    @foreach ($paymentMethods as $method)
+                        <option value="{{ $method->id }}">{{ $method->payment_method }}</option>
+                    @endforeach
+                </select>
+            </div>
+        
+            <input type="hidden"  id="user-id" name="user_id">
+            <input type="hidden"  id="family-id" name="family_id">
+        
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" id="save-button" class="btn btn-primary">Sauvegarder</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 
-    <div class="pagetitle row justify-content-between">
-        <div class="col-md-3">
+  <div class="pagetitle row justify-content-between align-items-center">
+    <div class="col-md-8 row">
+        <div class="col-md-4">
             <a href="{{ route('paiement.facture') }}"><h1>Liste des factures</h1></a>
             <nav>
                 <ol class="breadcrumb">
@@ -59,31 +123,30 @@
                 </ol>
             </nav>
         </div>
-        <div class="col-md-3 my-1 d-flex justify-content-center">
-            <button id="updateStock"  class="btn">
+        <div class="col-md-8 d-flex justify-content-start pt-3">
+            <button id="updateStock" class="btn btn-primary">
                 <i class="fas fa-sync"></i> Mettre à jour le stock
             </button>
-        </div>
-        <div class="col-md-3 my-1 d-flex justify-content-center">
-            <button id="oldBills" class="btn btn-primary">
-                <i class="fas fa-history"></i> Anciennes factures
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                <i class="fas fa-file-invoice"></i> Créer une facture
             </button>
         </div>
-        <div class="col-md-3 my-1 d-flex justify-content-center">
-            <button id="filterStatus" class="btn">
-                <i class="fas fa-filter"></i> Factures Annulées
-            </button>
-        </div>
-       
-        
-        
-        
-        
-        
-        
-          
-          
     </div>
+    <div class="col-md-4 d-flex justify-content-between">
+        <a href="{{ route('paiement.facture') }}" id="bills" class="btn btn-success">
+            <i class="fas fa-file-invoice"></i> Factures
+        </a>
+
+        <button id="oldBills" class="btn btn-secondary">
+            <i class="fas fa-history"></i>  factures
+        </button>
+        <button id="filterStatus" class="btn btn-danger">
+            <i class="fas fa-trash-alt"></i> Corbeille
+        </button>
+        
+    </div>
+</div>
+
     
     <section class="section">    
         <div class="row">
@@ -156,9 +219,9 @@
                     <div class="overflow-x">
                         <table style="width:100%;" id="myTable"  class="table cust-datatable dataTable no-footer">
                             <thead>
-                                <th style="min-width:50px;"> <a>ID Facture</a></th>
-                                <th style="min-width:150px;"><a>Nom</a></th>
-                                <th style="min-width:150px;"><a >Moyen de paiement</a></th>
+                                <th style="min-width:50px;"> <a>ID</a></th>
+                                <th style="min-width:150px;"><a>NOM Prénom</a></th>
+                                <th style="min-width:150px;"><a >Type</a></th>
                                 <th id="date" style="min-width:100px;"><a >Date</a></th>
                                 <th style="min-width:100px;"><a >Total</a></th>
                                 <th style="min-width:150px;"><a >Statut</a></th>
@@ -191,11 +254,30 @@
                                             <span style="display: none;">{{ $bills->bill_status}}</span>
                                         </td>
                                         <td> 
+                                            <!-- Bouton de modification -->
+                                            @if (auth()->user()->roles->supprimer_edit_facture)
+                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Modifier">
+                                                    <a  target="_blank" href="{{ route('facture.showBill', ['id' => $bills->id]) }}" class="btn btn-sm btn-success">
+                                                        <i class="fas fa-pencil-alt"></i>
+                                                    </a>
+                                                </span>
+                                            @endif
+                                        
+                                            
+                                        
+                                            <!-- Bouton des factures famille -->
+                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Factures famille">
+                                                <button data-family-id="{{ $bills->family_id }}" type="button" class="btn btn-sm btn-primary familybill">
+                                                    <i  class="fas fa-house"></i>
+                                                </button>
+                                            </span> 
+
+                                            <!-- Bouton de suppression -->
                                             @if (auth()->user()->roles->supprimer_edit_facture)  
                                                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Supprimer">
-                                                    <button href="#" type="button" class=" delete-bill "
+                                                    <button href="#" type="button" class="btn btn-sm btn-danger delete-bill"
                                                     onclick="event.preventDefault(); if(confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {document.getElementById('delete-form').submit();}">
-                                                        <i  class="fa-solid fa-trash"></i>
+                                                        <i  class="fas fa-times"></i>
                                                     </button>
                                                 </span> 
                                                 <form id="delete-form" action="{{ route('bill.destroy', $bills->id) }}" method="POST" style="display: none;">
@@ -203,12 +285,8 @@
                                                     @method('DELETE')
                                                 </form>
                                             @endif
-
-
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Factures famile">
-                                                <button  data-family-id="{{ $bills->family_id }}"  type="button" class="familybill"><i  class="fas fa-house"></i></button>
-                                            </span> 
                                         </td>
+                                        
                                         
                                     </tr>        
                                 @endforeach  
@@ -221,7 +299,6 @@
     </section>
 </main>
 
-   
 
 
 

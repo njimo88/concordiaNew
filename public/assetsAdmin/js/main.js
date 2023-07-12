@@ -859,28 +859,27 @@ $('#myTableArticle').on('click', 'thead th', function() {
       /*-------------------------------------------------------------------------------------------*/
       $(document).on('click', '.delete-bill', function(event) {
         event.preventDefault();
-        // Récupérer l'ID de la facture à supprimer
+        // Récupérer l'ID de la facture à modifier
         var billId = $(this).data('id');
-      
-        // Afficher une boîte de dialogue pour demander la confirmation de la suppression
-        if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
-          // Envoyer une requête AJAX pour supprimer la facture
-          fetch('/facture/' + billId, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-          })
-          .then(response => response.json())
-          .then(data => {
-            // Si la suppression réussit, afficher un message de confirmation et recharger la page
-            alert('La facture a été supprimée avec succès.');
-            location.reload();
-          })
-          .catch(error => console.error(error));
-        }
-      });
+    
+        // Afficher une boîte de dialogue pour demander la confirmation de la modification
+            // Envoyer une requête AJAX pour modifier la facture
+            fetch('/facture/' + billId, {
+                method: 'PUT', // Changez ceci en 'PUT' ou 'PATCH'
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                body: JSON.stringify({ status: 1 }) // Envoyer le nouveau statut avec la requête
+            })
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => console.error(error));
+    });
+    
+    
       
     
 /*------------------------------------------------------------------------------------Professionnel-----------------------------------------------------------------------------------------*/
@@ -1161,3 +1160,95 @@ $(document).ready(function() {
 });
 
 
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+      var context = this, args = arguments;
+      var later = function() {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+  };
+}
+
+$(document).ready(function() {
+  var searchUser = debounce(function(element) {
+      var query = $(element).val();
+      var userSelect = $('.user-select');
+      userSelect.empty();
+
+      if (query.length >= 3) {
+        $.ajax({
+          url: '/search',
+          type: 'GET',
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          data: {
+              query: query,
+          },
+          success: function(data) {
+              if (data.length > 0) {
+                  $.each(data, function(key, value) {
+                      userSelect.append('<option value="' + value.user_id + '" data-family-id="' + value.family_id + '">' + value.lastname + ' ' + value.name +'</option>');
+                  });
+              } else {
+                  userSelect.append('<option>Aucun utilisateur trouvé</option>');
+              }
+          }
+      });
+      
+      }
+  }, 300); 
+
+  $("#user-search-input").on("keyup", function() {
+      searchUser(this);
+  });
+});
+
+$("#user-select").on("change", function() {
+  var selectedOption = $(this).find("option:selected");
+  console.log(selectedOption);
+  var userId = selectedOption.val();
+  var familyId = selectedOption.data('family-id');
+
+  $("#user-id").val(userId);
+  $("#family-id").val(familyId);
+
+});
+
+$("#save-button").on("click", function() {
+  var selectedOption = $("#user-select option:selected");
+  var userId = selectedOption.val();
+  var familyId = selectedOption.data('family-id');
+
+  $("#user-id").val(userId);
+  $("#family-id").val(familyId);
+
+  var paymentMethod = $("#payment-method").val();
+
+  $.ajax({
+    url: '/create-bill',
+    type: 'POST',
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    data: {
+        "user_id": userId,
+        "family_id": familyId,
+        "payment_method": paymentMethod
+    },
+    success: function(response) {
+        alert(response.message);
+        window.location.href = "/admin/paiement/facture";
+    },
+    error: function(xhr, status, error) {
+        alert('Une erreur s\'est produite lors de la création de la facture: ' + error);
+    }
+});
+
+});

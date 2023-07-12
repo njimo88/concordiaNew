@@ -2,47 +2,7 @@
 
 @section('content')
 <main class="main" id="main"  style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height:100vh;">
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Créer une facture</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="bill-form">
-          @csrf
 
-          <div class="form-group">
-              <label for="user-search">Chercher un utilisateur</label>
-              <input type="text" class="form-control" id="user-search-input">
-              <select class="form-control user-select" id="user-select"></select>
-          </div>
-      
-          <div class="form-group">
-              <label for="payment-method">Méthode de paiement</label>
-              <select class="form-control" id="payment-method">
-                  @foreach ($paymentMethods as $method)
-                      <option value="{{ $method->id }}">{{ $method->payment_method }}</option>
-                  @endforeach
-              </select>
-          </div>
-      
-          <input type="hidden"  id="user-id" name="user_id">
-          <input type="hidden"  id="family-id" name="family_id">
-      
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-              <button type="button" id="save-button" class="btn btn-primary">Sauvegarder</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 <div style="background-color: white;" class="container  justify-content-center">
@@ -62,9 +22,7 @@
         </div>
         @if ( Route::currentRouteName() === 'facture.showBill')
           <div class="col-4 my-4 d-flex justify-content-end">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                  Créer une facture
-              </button>
+              
             </div>
         @endif
 
@@ -470,95 +428,7 @@
     });
   });
 
-  function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-        var context = this, args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-}
-
-$(document).ready(function() {
-    var searchUser = debounce(function(element) {
-        var query = $(element).val();
-        var userSelect = $('.user-select');
-        userSelect.empty();
-
-        if (query.length >= 3) {
-            $.ajax({
-                url: '/search',
-                type: 'GET',
-                data: {
-                    query: query,
-                    "_token": "{{ csrf_token() }}"
-                },
-                success: function(data) {
-                    if (data.length > 0) {
-                        $.each(data, function(key, value) {
-                            userSelect.append('<option value="' + value.user_id + '" data-family-id="' + value.family_id + '">' + value.lastname + ' ' + value.name + ' '+ value.user_id + ' ' + value.family_id +'</option>');
-                        });
-                    } else {
-                        userSelect.append('<option>Aucun utilisateur trouvé</option>');
-                    }
-                }
-            });
-        }
-    }, 300); 
-
-    $("#user-search-input").on("keyup", function() {
-        searchUser(this);
-    });
-});
-
-$("#user-select").on("change", function() {
-    var selectedOption = $(this).find("option:selected");
-    console.log(selectedOption);
-    var userId = selectedOption.val();
-    var familyId = selectedOption.data('family-id');
-
-    $("#user-id").val(userId);
-    $("#family-id").val(familyId);
-
-});
-
-$("#save-button").on("click", function() {
-    var selectedOption = $("#user-select option:selected");
-    var userId = selectedOption.val();
-    var familyId = selectedOption.data('family-id');
-
-    $("#user-id").val(userId);
-    $("#family-id").val(familyId);
-
-    var paymentMethod = $("#payment-method").val();
-
-    $.ajax({
-        url: '/create-bill',
-        type: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: {
-            "_token": "{{ csrf_token() }}",
-            "user_id": userId,
-            "family_id": familyId,
-            "payment_method": paymentMethod
-        },
-        success: function(response) {
-            alert(response.message);
-        },
-        error: function(xhr, status, error) {
-            alert('Une erreur s\'est produite lors de la création de la facture: ' + error);
-        }
-    });
-});
-
+ 
 var select = $('#product-select');
 
 $.ajax({

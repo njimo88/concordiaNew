@@ -143,8 +143,9 @@ class BillsController extends Controller
                  $bill = $billQuery->where('bills.status', '>=', 10)->get();
              }
          }
+         $paymentMethods = DB::table('bills_payment_method')->get();
      
-         return view('admin.facture', compact('bill'));
+         return view('admin.facture', compact('bill', 'paymentMethods'));
      }
      
 
@@ -533,18 +534,29 @@ public function updateDes(Request $request, $id){
     */
     public function destroy(bills $bill)
     {
-        // Supprimer les liaisons associées à la facture
-        DB::table('liaison_shop_articles_bills')
-            ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
-            ->where('bills.id', $bill->id)
-            ->delete();
+        if ($bill->status == 1) {
+            // Supprimer les liaisons associées à la facture
+            DB::table('liaison_shop_articles_bills')
+                ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+                ->where('bills.id', $bill->id)
+                ->delete();
+        
+            // Supprimer la facture
+            $bill->delete();
+        
+            session()->flash('success', 'La facture et les liaisons associées ont été supprimées avec succès.');
+        } else {
+            // Modifier le statut de la facture
+            $bill->status = 1;
+            $bill->save();
+        
+            session()->flash('success', 'Le statut de la facture a été modifié avec succès.');
+        }
     
-        // Supprimer la facture
-        $bill->delete();
-    
-        session()->flash('success', 'La facture et les liaisons associées ont été supprimées avec succès.');
         return back();
     }
+    
+
     
 
     
@@ -625,7 +637,6 @@ public function updateDes(Request $request, $id){
         ->orderBy('shop_messages.date', 'asc')
         ->get();
         $nb_paiment = calculerPaiements($bill->payment_method,$bill->payment_total_amount,$bill->number);
-        $paymentMethods = DB::table('bills_payment_method')->get();
 
             return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages','paymentMethods'))->with('user', auth()->user());
         }
