@@ -638,7 +638,7 @@ public function updateDes(Request $request, $id){
         ->get();
         $nb_paiment = calculerPaiements($bill->payment_method,$bill->payment_total_amount,$bill->number);
 
-            return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages','paymentMethods'))->with('user', auth()->user());
+            return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages'))->with('user', auth()->user());
         }
 
         abort(403, 'Vous n\'êtes pas autorisé à accéder à cette facture.');
