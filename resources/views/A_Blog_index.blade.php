@@ -138,7 +138,7 @@
           <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 d-flex align-items-center" data-aos="fade-up" data-aos-delay="100">
             <div class="icon-box" style="background-color: #cc0000;">
               <img src="{{ asset('assets/images/1.png') }}" alt="" class="icon-image">
-              <h4 class="title" style="color: white; margin: 5px;"><a href="{{-- route('Nquestionnaire.index') --}}#">Je choisis ma section</a></h4>
+              <h4 class="title" style="color: white; margin: 5px;"><a href="{{-- route('masection') --}}#">Je choisis ma section</a></h4>
             </div>
           </div>
           <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" data-aos="fade-up" data-aos-delay="200">

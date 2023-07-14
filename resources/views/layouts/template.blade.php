@@ -571,7 +571,7 @@
                      @if (auth()->user()->roles->estAutoriserDeVoirGestionDesDroits)<li> <a href="{{  route('index_roles') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-user-check fa-fw mr-1"></span><span>Gestion des droits</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirParametresGeneraux)<li> <a href="{{ route('parametres') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Paramètres</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirSalles)<li> <a href="{{ route('index_salle') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Salles</span> </a></li>@endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirMessageGeneral)               <li> <a href="club-apexclub.html"><i style="color: #f5f503;" class="fa-regular fa-message"></i></span><span>Message Général</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirMessageGeneral)               <li> <a href="{{ route('masection') }}"><i style="color: #f5f503;" class="fa-regular fa-message"></i></span><span>Message Général</span> </a></li>@endif
                   </ul>
                </li>
             @endif

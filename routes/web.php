@@ -203,7 +203,6 @@ Route::get('/anniversaire', [A_ControllerBlog::class, 'anniversaire'])->name('an
 Route::get('/Simple_Post/{id}', [A_ControllerBlog::class, 'Simple_Post'])->name('Simple_Post');
 Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_par_cat1'])->name('A_blog_par_categorie1');
 Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_par_cat2'])->name('A_blog_par_categorie2');
-Route::get('/questionnaire', [A_ControllerBlog::class, 'questionnaire'])->name('questionnaire');
 Route::get('/determinesection/count', [A_ControllerBlog::class, 'countdeterminesection'])->name('countdeterminesection');
 
 });
@@ -399,17 +398,6 @@ Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_p
 
 
 
-#------------------------------- QUIZZ TEST DE PERSONNALITE --------------------------------------------------------
-
-Route::get('/test_de_personnalite',[Controller_Quizz::class, 'index_quizz'])->name('index_quizz');
-Route::post('/questionnaire', [Controller_Quizz::class, 'handle_questionnaire'])->name('include_slider_questionnaire');
-
-Route::post('/questionnaire_baby', [Controller_Quizz::class, 'handle_questionnaire_baby'])->name('baby_formulaire');
-
-Route::post('/questionnaire_25_et_40_ans', [Controller_Quizz::class, 'handle_questionnaire_25_et_40'])->name('questionnaire_25_et_40');
-
-Route::post('/questionnaire_6_et_14', [Controller_Quizz::class, 'handle_questionnaire_6_et_14'])->name('questionnaire_6_et_14');
-
 
 
 #-------------------------------- Statistiques ------------------------------
@@ -475,4 +463,4 @@ Route::post('/saison/{season}/duplicate',[ParametreController::class, 'duplicate
 
 
 
-Route::get('/questionnaire', [QuestionnaireController::class, 'index'])->name('Nquestionnaire.index');
+Route::get('/masection', [QuestionnaireController::class, 'index'])->name('masection');

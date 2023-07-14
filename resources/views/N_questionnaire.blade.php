@@ -2,8 +2,6 @@
 
 @section('content')
 
-@livewire('questionnaire')
+<livewire:questionnaire />
 
-
-@livewireScripts
 @endsection
