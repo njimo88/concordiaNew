@@ -99,7 +99,7 @@
 
 @if($data->id_shop_article == $indice and $aff == 1)  
 
-<main id="main" class="main pt-3" style="background-image: url('{{asset("/assets/images/background.png")}}');">
+<main id="main" class="main pt-3 vw-100 vh-100" style="background-image: url('{{asset("/assets/images/background.png")}}');">
   @if($messageContent)
       <div style="background-color: #fefefe" class="container mb-3 p-3 border rounded">
           <div class="row">
@@ -244,29 +244,26 @@
               <div class=" col-md-3">
                 
               <div class="card"   >
-                        <div class="card-body " style="display: block !important; position :relative" >
-                        {{--  Affichage bloc reprise  --}}
-                          <h4 class="card-title">Date de reprise</h4>
-                          @php
-                          foreach($Data_lesson['start_date'] as $dt){
-                           
-                                     
-                                        $date = new DateTime($dt);
-                                        
-  
-                                        echo "<p style='align-self: flex-start !important;'>" ;
-                                        echo fetcchDayy($dt)." ".fetchjour($dt)." ".fetchMonth($dt)." ".fetchan($dt);
-                                        echo "</p>" ;
-                                        echo "\n";
-                                    
-
-                                        };
-                          @endphp
-                          <div style="position: absolute; bottom: 5px; right: 2px;">
-                            <span style="font-size: medium; text-decoration: underline;">Saison:</span> <span style="font-size: small">{{$data->saison}}/{{$data->saison+1}}</span> 
-                        </div>
-                        
-                        </div>
+                <div class="card-body " style="display: block !important; position :relative" >
+                  {{--  Affichage bloc reprise  --}}
+                  <h4 class="card-title">Date de reprise</h4>
+                  @php
+                      if (!empty($Data_lesson['start_date'])) {
+                          // Trouver la date la plus tôt
+                          $earliestDate = min($Data_lesson['start_date']);
+                          
+                          $date = new DateTime($earliestDate);
+              
+                          echo "<p style='align-self: flex-start !important;'>" ;
+                          echo fetcchDayy($earliestDate)." ".fetchjour($earliestDate)." ".fetchMonth($earliestDate)." ".fetchan($earliestDate);
+                          echo "</p>" ;
+                      }
+                  @endphp
+                  <div style="position: absolute; bottom: 5px; right: 2px;">
+                      <span style="font-size: medium; text-decoration: underline;">Saison:</span> <span style="font-size: small">{{$data->saison}}/{{$data->saison+1}}</span> 
+                  </div>
+              </div>
+              
 
                         
 
@@ -313,7 +310,7 @@
                      }
                             
                        else{
-
+                        foreach($Data_lesson['start_date'] as $dt){
                                  
                                   $date = new DateTime($dt); // recupere date timestamp de la database
                                 
@@ -334,24 +331,24 @@
                                   
                                   };
 
-                              
-                                  foreach($rooms as $room){
-
-                                                foreach($Data_lesson['room'] as $r){
-
-                                                  if($r == $room->id_room and $norepeat == TRUE){
-                                                    echo"</p>";
-                                                    echo " <b style='align-self: flex-start !important;'>lieu: </b>" ;
-                                                    echo "<a class='a' style='font-size: small' href='$room->map' target='_blank'>" . $room->name . "<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . str_replace('-', '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', $room->address) . "</a>";
-
-                                                    $norepeat = FALSE ;
-
-
-                                                  }
-
-                                        };
-
+                                }
+                                  $counter = 1;
+foreach($rooms as $room){
+    foreach($Data_lesson['room'] as $r){
+        if($r == $room->id_room){
+            echo"</p>";
+            echo " <b style='align-self: flex-start !important;'>lieu ";
+            if(count($Data_lesson['room']) > 1) {
+                echo $counter;
+                $counter++;
             }
+            echo ": </b>" ;
+            echo "<a class='a' style='font-size: small' href='$room->map' target='_blank'>" . $room->name .  "</a>";
+        }
+    }
+}
+
+
 
 
                     @endphp
@@ -449,7 +446,7 @@
                                       <div class="row d-flex justify-content-center">
                                         <h1> Descriptif de l'article</h1>
                                         <div class="card">
-                                          <div class="card-body">
+                                          <div style="align-items: start !important;" class="card-body">
                                     
                                             @foreach($article as $at)
                                                     @if ($at->id_shop_article == $indice )
@@ -730,7 +727,7 @@
                                         <div class="row d-flex justify-content-center">
                                           <h1> Descriptif de l'article</h1>
                                           <div class="card">
-                                            <div class="card-body">
+                                            <div style="align-items: start !important;" class="card-body">
                                       
                                               @foreach($article as $at)
                                                       @if ($at->id_shop_article == $indice )

@@ -276,11 +276,12 @@
                                             @if (auth()->user()->roles->supprimer_edit_facture)  
                                                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Supprimer">
                                                     <button href="#" type="button" class="btn btn-sm btn-danger delete-bill"
-                                                    onclick="event.preventDefault(); if(confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {document.getElementById('delete-form').submit();}">
-                                                        <i  class="fas fa-times"></i>
+                                                        onclick="event.preventDefault(); if(confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {document.getElementById('delete-form-{{ $bills->id }}').submit();}">
+                                                        <i class="fas fa-times"></i>
                                                     </button>
+
                                                 </span> 
-                                                <form id="delete-form" action="{{ route('bill.destroy', $bills->id) }}" method="POST" style="display: none;">
+                                                <form id="delete-form-{{ $bills->id }}" action="{{ route('bill.destroy', $bills->id) }}" method="POST" style="display: none;">
                                                     @csrf
                                                     @method('DELETE')
                                                 </form>

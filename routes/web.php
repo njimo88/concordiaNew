@@ -20,7 +20,7 @@ use App\Http\Controllers\A_Controller;
 use App\Http\Controllers\Auth\ForgotUsernameController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ParametreController;
-
+use App\Http\Controllers\QuestionnaireController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\n_AdminController;
@@ -470,3 +470,9 @@ Route::post('/saison/{season}/duplicate',[ParametreController::class, 'duplicate
 
 
 });
+
+//----questionnaire----------------//
+
+
+
+Route::get('/questionnaire', [QuestionnaireController::class, 'index'])->name('Nquestionnaire.index');

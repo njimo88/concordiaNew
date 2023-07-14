@@ -571,7 +571,7 @@ $(document).ready(function() {
 
 function confirmChange(select) {
         var newAddressee = select.value;
-        var confirmation = confirm("Êtes-vous sûr de vouloir changer l'adresse de livraison ?");
+        var confirmation = confirm("Êtes-vous sûr de vouloir changer le propriétaire de l'article ?");
 
         if (confirmation) {
             // Envoyez une requête AJAX pour mettre à jour l'adresse de livraison

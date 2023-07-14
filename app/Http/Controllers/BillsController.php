@@ -68,62 +68,102 @@ class BillsController extends Controller
         public function deleteDesignation($id)
         {
             $liaison = LiaisonShopArticlesBill::findOrFail($id);
+            
+            $article_title = $liaison->designation;
+            $bill_id = $liaison->bill_id;
+            $user_id = $liaison->id_user;
+            
             $liaison->delete();
+
+             // Add message
+             ShopMessage::create([
+                'message' => 'L\'article <b>' . $article_title . '</b> a été supprimé de la facture.',
+                'date' => now(), 
+                'id_bill' => $bill_id, 
+                'id_customer' => $user_id, 
+                'id_admin' => auth()->id(), 
+                'state' => 'Public', 
+            ]);
+            
+            $this->recalculateBill($bill_id);
+        
+           
         
             return response()->json(['message' => 'La ligne a été supprimée avec succès.']);
         }
         
 
-     public function saveSelection(Request $request)
-    {
-        // Validez les données entrantes
-        $validatedData = $request->validate([
-            'bill_id' => 'required|exists:bills,id',
-            'id_shop_article' => 'required|exists:shop_article,id_shop_article',
-            'quantity' => 'required|integer|min:1',
-            'recalculate' => 'required|boolean',
-            'family_member_id' => 'required|exists:users,user_id'
-        ]);
-
-        // Récupérer l'article
-
-        $article = Shop_article::find($validatedData['id_shop_article']);
-
-        $user = User::find($validatedData['family_member_id']);
-
-        // Créez une nouvelle liaison entre l'article et la facture
-        $liaison = new LiaisonShopArticlesBill;
-        $liaison->bill_id = $validatedData['bill_id'];
-        $liaison->href_product = $article->ref;
-        $liaison->ttc = $article->price;
-        $liaison->addressee = $user->lastname . ' ' . $user->name;
-        $liaison->sub_total = $article->price * $validatedData['quantity'];
-        $liaison->designation = $article->title;
-        $liaison->id_shop_article = $validatedData['id_shop_article'];
-        $liaison->quantity = $validatedData['quantity'];
-        $liaison->id_user = $validatedData['family_member_id'];
-        $liaison->save();
-
-        // Si 'recalculate' est true, recalculez le montant de la facture
-        if ($validatedData['recalculate']) {
-            // Recalculer la facture
-            $this->recalculateBill($validatedData['bill_id']);
+        public function saveSelection(Request $request)
+        {
+            // Validez les données entrantes
+            $validatedData = $request->validate([
+                'bill_id' => 'required|exists:bills,id',
+                'id_shop_article' => 'required|exists:shop_article,id_shop_article',
+                'quantity' => 'required|integer|min:1',
+                'recalculate' => 'required|boolean',
+                'family_member_id' => 'required|exists:users,user_id'
+            ]);
+        
+            // Récupérer l'article
+            $article = Shop_article::find($validatedData['id_shop_article']);
+            $user = User::find($validatedData['family_member_id']);
+        
+            // Créez une nouvelle liaison entre l'article et la facture
+            $liaison = new LiaisonShopArticlesBill;
+            $liaison->bill_id = $validatedData['bill_id'];
+            $liaison->href_product = $article->ref;
+            $liaison->ttc = $article->price;
+            $liaison->addressee = $user->lastname . ' ' . $user->name;
+            $liaison->sub_total = $article->price * $validatedData['quantity'];
+            $liaison->designation = $article->title;
+            $liaison->id_shop_article = $validatedData['id_shop_article'];
+            $liaison->quantity = $validatedData['quantity'];
+            $liaison->id_user = $validatedData['family_member_id'];
+            $liaison->save();
+        
+            // Ajout d'un message pour l'article ajouté
+            ShopMessage::create([
+                'message' => 'L\'article <b>' . $article->title . '</b> a été ajouté à la facture pour : ' . $user->lastname . ' ' . $user->name . '.',
+                'date' => now(), 
+                'id_bill' => $validatedData['bill_id'], 
+                'id_customer' => $user->user_id, 
+                'id_admin' => auth()->id(), 
+                'state' => 'Public', 
+            ]);
+        
+            // Si 'recalculate' est true, recalculez le montant de la facture
+            if ($validatedData['recalculate']) {
+                // Recalculer la facture
+                $this->recalculateBill($validatedData['bill_id']);
+            }
+        
+            return response()->json(['message' => 'Sélection sauvegardée et facture recalculée avec succès.']);
         }
-
-        return response()->json(['message' => 'Sélection sauvegardée et facture recalculée avec succès.']);
-    }
-
+        
     public function recalculateBill($billId)
-{
-    $bill = bills::find($billId);
-    $liaisons = LiaisonShopArticlesBill::where('bill_id', $billId)->get();
-    $total = 0;
-    foreach ($liaisons as $liaison) {
-        $total += $liaison->quantity * $liaison->ttc;
+    {
+        $bill = bills::find($billId);
+        $liaisons = LiaisonShopArticlesBill::where('bill_id', $billId)->get();
+        $oldTotal = number_format($bill->payment_total_amount, 2, ',', ' ');
+        $total = 0;
+        foreach ($liaisons as $liaison) {
+            $total += $liaison->quantity * $liaison->ttc;
+        }
+        $bill->payment_total_amount = $total;
+        $bill->save();
+    
+        $newTotal = number_format($total, 2, ',', ' ');
+        
+        ShopMessage::create([
+            'message' => 'Le total de la facture est passé de : <b>' . $oldTotal . ' €</b> à <b>' . $newTotal . ' €</b>.',
+            'date' => now(), 
+            'id_bill' => $bill->id, 
+            'id_customer' => $bill->user_id, 
+            'id_admin' => auth()->id(), 
+            'state' => 'Public', 
+        ]);
     }
-    $bill->payment_total_amount = $total;
-    $bill->save();
-}
+    
 
 
      
@@ -684,7 +724,7 @@ public function updateDes(Request $request, $id){
         ->toArray();
 
         $messages = DB::table('shop_messages')
-        ->join('users', 'shop_messages.id_customer', '=', 'users.user_id')
+        ->join('users', 'shop_messages.id_admin', '=', 'users.user_id')
         ->where('shop_messages.id_bill', $id)
         ->select('shop_messages.message', 'shop_messages.id_shop_message', 'shop_messages.date', 'shop_messages.somme_payé', 'users.name', 'users.lastname','shop_messages.id_customer','shop_messages.id_admin','shop_messages.state')
         ->orderBy('shop_messages.date', 'asc')
