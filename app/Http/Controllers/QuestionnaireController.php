@@ -10,4 +10,12 @@ class QuestionnaireController extends Controller
     {
         return view('N_questionnaire');
     }
+
+    public function result()
+    {
+        
+        return view('result');
+    }
+
 }
+
