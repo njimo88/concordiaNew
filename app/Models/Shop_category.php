@@ -9,13 +9,11 @@ class Shop_category extends Model
 {
     use HasFactory;
 
-      
     protected $table = 'shop_category';
-    protected $primarykey = 'id_shop_category';
+    protected $primaryKey = 'id_shop_category';
     public $timestamps = false;
 
     protected $fillable = [
-    'id_shop_category',
     'name',
     'image',
     'description',
@@ -30,6 +28,12 @@ class Shop_category extends Model
 {
         return $this->hasMany(Shop_category::class,'id_shop_category_parent','id_shop_category')->orderBy('order_category', 'ASC');
 }
+
+public static function getNameById($id) {
+    $category = self::where('id_shop_category', $id)->first();
+    return $category ? $category->name : 'N/A';
+}
+
 
 
 }

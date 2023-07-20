@@ -32,7 +32,7 @@
                                 <div class="labels">
                                     <label for="role">Rôle</label>
                                 </div>
-                                <select  @if(auth()->user()->role < 100 || Route::currentRouteName() != 'portesOuvertes')
+                                <select  @if(auth()->user()->role < 90 || Route::currentRouteName() === 'portesOuvertes')
                                     disabled 
                                     @endif 
                                     class="border col-md-12 form-group selectpicker @error('role') is-invalid @enderror" 
