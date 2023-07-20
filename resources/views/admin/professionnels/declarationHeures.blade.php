@@ -1003,7 +1003,7 @@ $TotalMaladiepris = 0 ;
 										<button class="btn btn-danger mx-5" type="button" onclick="resetForm()">Reinitialiser</button>
 									</td>
 									<td class="mx-3">
-										<button class="btn btn-success" id="valider-btn" type="button">Valider</button>
+										<button class="btn btn-success" id="valider-btn" type="button">Soumettre</button>
 									</td>
 									@endif
 								</tr>

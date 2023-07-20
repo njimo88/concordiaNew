@@ -554,16 +554,61 @@
                   </ul>
                </li>
             @endif
-            @if ( auth()->user()->roles->estAutoriserDeVoirGestionProfessionnels || auth()->user()->roles->estAutoriserDeVoirCalculDesSalaires || auth()->user()->roles->estAutoriserDeVoirValiderLesHeures)
-               <li class="nav-item">
-                  <a class="nav-link collapsed" data-bs-target="#pro-nav" data-bs-toggle="collapse" href="#"><span style="color: #00f900; margin-right:10px" class="fa fa-id-card-clip fa-fw mr-2 gc-lime"></span><span>Professionnels</span><i class="bi bi-chevron-down ms-auto"></i> </a>
-                  <ul id="pro-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                     @if (auth()->user()->roles->estAutoriserDeVoirGestionProfessionnels)<li> <a href="{{ route('Professionnels.gestion') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-user-tie fa-fw mr-1"></span><span>Gestion</span> </a></li> @endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirCalculDesSalaires)<li> <a href="{{ route('proffesional.calculSalary') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-euro-sign fa-fw mr-1"></span><span>Calcul des salaires</span> </a></li> @endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirValiderLesHeures) <li> <a href="{{ route('proffesional.valideHeure') }}"><span style="color: #00f900; margin-right:10px" class="fa fa-clock-rotate-left fa-fw mr-1"></span><span>Valider les heures</span> </a></li> @endif
-                  </ul>
-               </li>
-            @endif
+            @if (auth()->user()->roles->estAutoriserDeVoirGestionProfessionnels || auth()->user()->roles->estAutoriserDeVoirCalculDesSalaires || auth()->user()->roles->estAutoriserDeVoirValiderLesHeures || auth()->user()->roles->estAutoriserDeVoirDeclarerHeure)
+    @php
+        $declarationCount = \App\Models\Declaration::where('soumis', 1)->count();
+    @endphp
+    
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#pro-nav" data-bs-toggle="collapse" href="#">
+                <span style="color: #00f900; margin-right:10px" class="fa fa-id-card-clip fa-fw mr-2 gc-lime"></span>
+                <span>Professionnels</span>
+                @if ($declarationCount > 0)
+                <span class="badge bg-danger mx-2">{{ $declarationCount }}</span>
+                @endif
+                <i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="pro-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                @if (auth()->user()->roles->estAutoriserDeVoirGestionProfessionnels)
+                    <li>
+                        <a href="{{ route('Professionnels.gestion') }}">
+                            <span style="color: #00f900; margin-right:10px" class="fa fa-user-tie fa-fw mr-1"></span>
+                            <span>Gestion</span>
+                        </a>
+                    </li>
+                @endif
+                @if (auth()->user()->roles->estAutoriserDeVoirCalculDesSalaires)
+                    <li>
+                        <a href="{{ route('proffesional.calculSalary') }}">
+                            <span style="color: #00f900; margin-right:10px" class="fa fa-euro-sign fa-fw mr-1"></span>
+                            <span>Calcul des salaires</span>
+                        </a>
+                    </li>
+                @endif
+                @if (auth()->user()->roles->estAutoriserDeVoirValiderLesHeures)
+                    <li>
+                        <a href="{{ route('proffesional.valideHeure') }}">
+                            <span style="color: #00f900; margin-right:10px" class="fa fa-clock-rotate-left fa-fw mr-1"></span>
+                            <span>Valider les heures</span>
+                            @if ($declarationCount > 0)
+                            <span class="badge bg-danger mx-2">{{ $declarationCount }}</span>
+                            @endif
+                        </a>
+                    </li>
+                @endif
+                @if (auth()->user()->roles->estAutoriserDeVoirDeclarerHeure)
+                    <li>
+                        <a href="{{ route('Professionnels.declarerHeure') }}">
+                            <span style="color: #00f900; margin-right:10px" class="fa fa-clock-rotate-left fa-fw mr-1"></span>
+                            <span>Déclarer les heures</span>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+        </li>
+@endif
+
+        
             @if ( auth()->user()->roles->estAutoriserDeVoirGestionDesDroits || auth()->user()->roles->estAutoriserDeVoirParametresGeneraux || auth()->user()->roles->estAutoriserDeVoirSalles || auth()->user()->roles->estAutoriserDeVoirMessageGeneral )
                <li class="nav-item">
                   <a class="nav-link collapsed" data-bs-target="#para-nav" data-bs-toggle="collapse" href="#"><span style="color: #f5f503; margin-right:10px" class="fa fa-screwdriver-wrench fa-fw mr-2 gc-yellow"></span><span>Paramètres</span><i class="bi bi-chevron-down ms-auto"></i> </a>

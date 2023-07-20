@@ -32,6 +32,12 @@ class ProfessionnelsController extends Controller
         return view('admin.professionnels.gestion',compact('pro','users'))->with('user', auth()->user());
     }
 
+    public function declarerHeure()
+    {
+        $pro = Professionnels::where('id_user', auth()->user()->user_id)->get();
+        return view('admin.professionnels.gestion',compact('pro'));
+    }
+
 
     public function refuserDeclaration(Request $request)
 {

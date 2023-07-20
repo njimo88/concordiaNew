@@ -159,6 +159,7 @@ Route::middleware(['auth', 'role:20'])->group(function () {
 
     /*----------------------- Professionnels ------------------------------ */
     Route::get('/admin/Professionnels/gestion',  [ProfessionnelsController::class, 'gestion'])->name('Professionnels.gestion');
+    Route::get('/admin/Professionnels/declarerHeure',  [ProfessionnelsController::class, 'declarerHeure'])->name('Professionnels.declarerHeure');
     Route::put('/admin/Professionnels/gestion/{user_id}',  [ProfessionnelsController::class, 'editPro'])->name('Professionnels.editPro');
     Route::put('/admin/Professionnels/gestion/addPro/{user_id}',  [ProfessionnelsController::class, 'addPro'])->name('Professionnels.addPro');
     Route::get('/admin/Professionnels/gestion/declarationList/{id_user}',  [ProfessionnelsController::class, 'declarationList']);
