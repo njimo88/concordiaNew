@@ -515,39 +515,7 @@ public function valideHeure()
 
     
 
-    public function generatePDF($declaration_id)
-    {
-        $declaration = Declaration::where('id', $declaration_id)->first();
-        $user_id = $declaration->user_id;
-        $user = User::find($user_id); 
-        $pro = Professionnels::where('id_user', $user_id)->first();
-    
-        $data = [ 
-            'user_id' => $user_id, 
-            'pro' => $pro, 
-            'declaration' => $declaration,
-        ];
-    
-        $pdf = PDF::loadView('admin.professionnels.profPDF', $data);
-      
-        setlocale (LC_TIME, 'fr_FR.utf8','fra'); 
-        $monthName = strftime("%B", mktime(0, 0, 0, $declaration->mois+1, 10));
-        $emailContent = "<p>[Ceci est un message automatique]</p>
-    
-        <p>Bonjour,</p>
-    
-        <p>Veuillez trouver ci-joint ma déclaration d'heures pour le mois de : ".$monthName." ".$declaration->annee."</p>
-    
-        <p>Cordialement</p>";
-    
-        $attachmentName = $user->user_id.'-'.$declaration->annee.'-'.$declaration->mois.'.pdf';
-      
-        // Return the PDF as a downloadable response
-        return $pdf->download($attachmentName);
-    }
-    
 
-/*
 
 public function generatePDF($declaration_id)
 {
@@ -587,7 +555,7 @@ public function generatePDF($declaration_id)
         ->send(new DeclarationEmail($emailContent, $attachment, $attachmentName, $user->username));
 
     return redirect()->route('proffesional.valideHeure')->with('success', 'Votre déclaration a bien été envoyée !');
-}*/
+}
 }    
 
 
