@@ -40,6 +40,7 @@ class ProcessEmailQueue extends Command
                  $fromName = $email->fromName;
                  $senderName = $email->senderName;
                  $recipientName = $email->recipientName;
+                 $username = User::where('email', $email->sender)->first()->username;
          
                  if (is_null($fromName) || is_null($senderName) || is_null($recipientName)) {
                      $reason = 'Failed to send queued email due to null fields.';
@@ -53,7 +54,7 @@ class ProcessEmailQueue extends Command
                      continue;
                  }
      
-                 Mail::to($email->recipient)->send(new CommunicationEmail($recipientName, $email->content, $senderName, $email->subject, $email->sender, $fromName));
+                 Mail::to($email->recipient)->send(new CommunicationEmail($recipientName, $email->content, $senderName, $email->subject, $email->sender, $fromName, $username));
      
                  $email->delete();
          

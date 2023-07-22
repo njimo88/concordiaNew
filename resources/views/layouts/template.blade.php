@@ -556,14 +556,16 @@
             @endif
             @if (auth()->user()->roles->estAutoriserDeVoirGestionProfessionnels || auth()->user()->roles->estAutoriserDeVoirCalculDesSalaires || auth()->user()->roles->estAutoriserDeVoirValiderLesHeures || auth()->user()->roles->estAutoriserDeVoirDeclarerHeure)
     @php
-        $declarationCount = \App\Models\Declaration::where('soumis', 1)->count();
+        $declarationCount = \App\Models\Declaration::where('soumis', 1)
+        ->where('valider', 0)
+        ->count();
     @endphp
     
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#pro-nav" data-bs-toggle="collapse" href="#">
                 <span style="color: #00f900; margin-right:10px" class="fa fa-id-card-clip fa-fw mr-2 gc-lime"></span>
                 <span>Professionnels</span>
-                @if ($declarationCount > 0)
+                @if ($declarationCount > 0 && auth()->user()->role >= 90)
                 <span class="badge bg-danger mx-2">{{ $declarationCount }}</span>
                 @endif
                 <i class="bi bi-chevron-down ms-auto"></i>

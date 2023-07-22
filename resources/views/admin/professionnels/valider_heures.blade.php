@@ -19,6 +19,12 @@
 
 @endphp
 <main class="main" id="main">
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
     <div class="container mt-5">
         <h1 class="mb-4">Validation des heures</h1>
         <table class="table table-striped table-hover">

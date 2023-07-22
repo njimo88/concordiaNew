@@ -16,16 +16,19 @@ class CommunicationEmail extends Mailable
     public $senderName;
     public $subject;
     public $email; 
+    public $username;
 
-    public function __construct($name, $content, $senderName, $subject, $senderEmail, $fromName)
-{
-    $this->name = $name;
-    $this->content = $content;
-    $this->senderName = $senderName;
-    $this->subject = $subject;
-    $this->senderEmail = $senderEmail; 
-    $this->fromName = $fromName; 
-}
+    public function __construct($name, $content, $senderName, $subject, $senderEmail, $fromName, $username)
+    {
+        $this->name = $name;
+        $this->content = $content;
+        $this->senderName = $senderName;
+        $this->subject = $subject;
+        $this->senderEmail = $senderEmail; 
+        $this->fromName = $fromName; 
+        $this->username = $username; 
+    }
+    
 
 
     public function build()

@@ -11,6 +11,9 @@ use App\Models\CalculSalaire;
 use App\Models\BasketAn;
 use App\Models\Declaration;
 use Illuminate\Support\Facades\Storage;
+use PDF; 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DeclarationEmail;
 
 require_once(app_path().'/fonction.php');
 
@@ -86,21 +89,36 @@ class ProfessionnelsController extends Controller
     return response()->json(['status' => 'success', 'declaration' => $declaration]);
 }
 
-    public function validerDec(Request $request){
-        $declaration_id = $request->input('declaration_id'); 
-        $declaration = Declaration::find($declaration_id);
-        $pro = Professionnels::where('id_user', $declaration->user_id)->first();
-        $pro->SoldeConges = $pro->SoldeConges + 2.5;
-        $pro->LastDeclarationMonth = ($pro->LastDeclarationMonth + 1)%12;
-        if ($pro->LastDeclarationMonth == 0) {
-            $pro->LastDeclarationYear = $pro->LastDeclarationYear + 1;
-        }
-        $pro->save();
-        $declaration->valider = 1;
-        $declaration->save();
-        return redirect('/valider-heures')->with('success', 'La déclaration a été validée.');
+public function validerDec(Request $request){
+    $declaration_id = $request->input('declaration_id'); 
+    $declaration = Declaration::find($declaration_id);
+    $pro = Professionnels::where('id_user', $declaration->user_id)->first();
+    $pro->SoldeConges = $pro->SoldeConges + 2.5;
+    $pro->LastDeclarationMonth = ($pro->LastDeclarationMonth % 12) + 1;
+    $pro->OldHeuresRealisees = $pro->OldHeuresRealisees + $declaration->heures_realisees;
 
+    if ($pro->LastDeclarationMonth == 1) {
+        $pro->LastDeclarationYear = $pro->LastDeclarationYear + 1;
     }
+    
+    $pro->save();
+    $declaration->valider = 1;
+    $declaration->save();
+
+    session()->flash('success', 'La déclaration a été validée.');
+
+    $response = $this->generatePDF($declaration_id);
+    
+    // After the PDF has been generated, update the saison and OldHeuresRealisees as needed
+    if ($pro->LastDeclarationMonth == 8) {
+        $pro->Saison = $pro->Saison + 1;
+        $pro->OldHeuresRealisees = 0;
+        $pro->save();
+    }
+    
+    return $response;
+}
+
 
 
     public function saveDeclaration(Request $request)
@@ -488,16 +506,89 @@ public function valideHeure()
     public function voir_declaration ($declaration_id)
     {
     
+        $declaration = Declaration::where('id', $declaration_id)->first();
+        $user_id = $declaration->user_id;
+        $pro = Professionnels::where('id_user', $user_id)->first();
+        return view('admin.professionnels.voir_declaration', compact('user_id', 'pro', 'declaration'));
+        
+    }
+
+    
+
+    public function generatePDF($declaration_id)
+    {
+        $declaration = Declaration::where('id', $declaration_id)->first();
+        $user_id = $declaration->user_id;
+        $user = User::find($user_id); 
+        $pro = Professionnels::where('id_user', $user_id)->first();
+    
+        $data = [ 
+            'user_id' => $user_id, 
+            'pro' => $pro, 
+            'declaration' => $declaration,
+        ];
+    
+        $pdf = PDF::loadView('admin.professionnels.profPDF', $data);
+      
+        setlocale (LC_TIME, 'fr_FR.utf8','fra'); 
+        $monthName = strftime("%B", mktime(0, 0, 0, $declaration->mois+1, 10));
+        $emailContent = "<p>[Ceci est un message automatique]</p>
+    
+        <p>Bonjour,</p>
+    
+        <p>Veuillez trouver ci-joint ma déclaration d'heures pour le mois de : ".$monthName." ".$declaration->annee."</p>
+    
+        <p>Cordialement</p>";
+    
+        $attachmentName = $user->user_id.'-'.$declaration->annee.'-'.$declaration->mois.'.pdf';
+      
+        // Return the PDF as a downloadable response
+        return $pdf->download($attachmentName);
+    }
+    
+
+/*
+
+public function generatePDF($declaration_id)
+{
     $declaration = Declaration::where('id', $declaration_id)->first();
     $user_id = $declaration->user_id;
+    $user = User::find($user_id); 
     $pro = Professionnels::where('id_user', $user_id)->first();
-    return view('admin.professionnels.voir_declaration', compact('user_id', 'pro', 'declaration'));
-    
-}
+
+    $data = [ 
+        'user_id' => $user_id, 
+        'pro' => $pro, 
+        'declaration' => $declaration,
+    ];
+
+    $pdf = PDF::loadView('admin.professionnels.profPDF', $data);
+    $pdfOutput = $pdf->output(); 
+
+    setlocale (LC_TIME, 'fr_FR.utf8','fra'); 
+    $monthName = strftime("%B", mktime(0, 0, 0, $declaration->mois+1, 10));
+    $emailContent = "<p>[Ceci est un message automatique]</p>
+
+    <p>Bonjour,</p>
+
+    <p>Veuillez trouver ci-joint ma déclaration d'heures pour le mois de : ".$monthName." ".$declaration->annee."</p>
+
+    <p>Cordialement</p>";
 
 
-}
+    $attachmentName = $user->user_id.'-'.$declaration->annee.'-'.$declaration->mois.'.pdf';
+    // Save the pdf to the storage.
+    $pdf->save(public_path('employee_documents/3-validation/'.$attachmentName));
 
+    $attachment = base64_encode($pdfOutput); 
+
+    Mail::to(['president@gym-concordia.com', 'tresorier@gym-concordia.com'])
+        ->cc($user->email)
+        ->send(new DeclarationEmail($emailContent, $attachment, $attachmentName, $user->username));
+
+    return redirect()->route('proffesional.valideHeure')->with('success', 'Votre déclaration a bien été envoyée !');
+}*/
+}    
 
 
     

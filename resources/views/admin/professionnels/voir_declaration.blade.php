@@ -70,19 +70,20 @@ function sumWeekdayValues($month, $year, $pro) {
 }
 
 $monthNames = [
-    0 => 'Janvier',
-    1 => 'Février',
-    2 => 'Mars',
-    3 => 'Avril',
-    4 => 'Mai',
-    5 => 'Juin',
-    6 => 'Juillet',
-    7 => 'Août',
-    8 => 'Septembre',
-    9 => 'Octobre',
-    10 => 'Novembre',
-    11 => 'Décembre',
+    1 => 'Janvier',
+    2 => 'Février',
+    3 => 'Mars',
+    4 => 'Avril',
+    5 => 'Mai',
+    6 => 'Juin',
+    7 => 'Juillet',
+    8 => 'Août',
+    9 => 'Septembre',
+    10 => 'Octobre',
+    11 => 'Novembre',
+    12 => 'Décembre',
     ];
+
 
     $dayNames = [
         'Monday' => 'Lundi',
@@ -221,7 +222,7 @@ $TotalMaladiepris = 0 ;
                                         
                                                     // Utiliser details_admin si disponible, sinon utiliser details
                                                     $detail_data = $declaration->details_admin ? json_decode($declaration->details_admin, true) : $declaration->details;
-                                                    $details = isset($declaration) ? $detail_data[$day - 1] : null;
+                                                    $details = isset($declaration) && array_key_exists($day - 1, $detail_data) ? $detail_data[$day - 1] : null;
                                                 @endphp
                                                 <tr style="background-color: {{ $color }};">
                                                     <td class="col-2">{{ $formattedDate }}</td>

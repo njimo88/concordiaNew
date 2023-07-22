@@ -60,19 +60,24 @@ public function getEmails(Request $request)
     
     $users = User::whereIn('user_id', $userIds)->get();
 
-    // Mapper les utilisateurs pour récupérer les emails des parents si l'utilisateur est un enfant et qu'il n'a pas d'email
     $emails = $users->map(function ($user) {
-        if ($user->family_level === 'child' && empty($user->email)) {
+        if ($user->family_level === 'child') {
             $parentEmails = User::where('family_id', $user->family_id)
                                 ->where('family_level', 'parent')
                                 ->pluck('email');
-            return $parentEmails;
+            if (!empty($user->email)) {
+                return $parentEmails->push($user->email);
+            } else {
+                return $parentEmails;
+            }
         } else {
-            return $user->email;
+            return collect([$user->email]);
         }
     })->flatten()->unique(); 
+
     return response()->json($emails);
 }
+
 
 
 public function sendEmails(Request $request)
