@@ -15,19 +15,20 @@ class DeclarationEmail extends Mailable
     public $attachment;
     public $attachmentName;
     public $emailContent; 
+    public $emailSubject;
 
-public function __construct($emailContent, $attachment, $attachmentName, $username) 
-{
-    $this->emailContent = $emailContent; 
-    $this->username = $username;
-    $this->attachment = $attachment;
-    $this->attachmentName = $attachmentName;
-}
-
+    public function __construct($emailContent, $attachment, $attachmentName, $username, $emailSubject) 
+    {
+        $this->emailContent = $emailContent; 
+        $this->username = $username;
+        $this->attachment = $attachment;
+        $this->attachmentName = $attachmentName;
+        $this->emailSubject = $emailSubject;
+    }
 
     public function build()
     {
-        $email = $this->subject('Déclaration d\'heures')
+        $email = $this->subject($this->emailSubject)
             ->view('emails.declaration')
             ->attachData(base64_decode($this->attachment), $this->attachmentName, [
                 'mime' => 'application/pdf',

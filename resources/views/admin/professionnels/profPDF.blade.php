@@ -167,6 +167,7 @@ $TotalMaladiepris = 0 ;
     }
 </style>
 
+
 <b><h2>{{ $pro->firstname }} {{ $pro->lastname }} - Mois de {{ $monthNames[$mois] }} {{ $annee }}</h2></b>
 <style>
     .frcontent {
@@ -215,12 +216,12 @@ $TotalMaladiepris = 0 ;
             $details = isset($declaration) && array_key_exists($day - 1, $detail_data) ? $detail_data[$day - 1] : null;
             @endphp
             <tr  style="background-color: {{ $color }};">
-                <td class="date-col">{{ $formattedDate }}</td>
-                <td class="theo-col">{{ $weekdayValue }}</td>
-                <td class="real-col">{{ $details ? $details['heures'] : $weekdayValue }}</td>
-                <td class="conges-col"><input style="margin: 0% !important;padding : 0% !important;" type="checkbox" {!! $details && $details['conges'] ? 'checked' : '' !!} disabled></td>
-                <td class="maladie-col"><input style="margin: 0% !important;padding : 0% !important;" type="checkbox" {!! $details && $details['maladie'] ? 'checked' : '' !!} disabled></td>
-                <td class="remarque-col">{{ $details ? $details['remarque'] : '' }}</td>
+                <td style="margin: 0% !important;padding : 0% !important;" class="date-col">{{ $formattedDate }}</td>
+                <td style="margin: 0% !important;padding : 0% !important;" class="theo-col">{{ $weekdayValue }}</td>
+                <td style="margin: 0% !important;padding : 0% !important;" class="real-col">{{ $details ? $details['heures'] : $weekdayValue }}</td>
+                <td style="margin: 0% !important;padding : 0% !important;" class="conges-col"><input style="margin: 0% !important;padding : 0% !important;" type="checkbox" {!! $details && $details['conges'] ? 'checked' : '' !!} disabled></td>
+                <td style="margin: 0% !important;padding : 0% !important;" class="maladie-col"><input style="margin: 0% !important;padding : 0% !important;" type="checkbox" {!! $details && $details['maladie'] ? 'checked' : '' !!} disabled></td>
+                <td style="margin: 0% !important;padding : 0% !important;" class="remarque-col">{{ $details ? $details['remarque'] : '' }}</td>
             </tr>
             @endfor
         </tbody>

@@ -465,5 +465,5 @@ Route::post('/saison/{season}/duplicate',[ParametreController::class, 'duplicate
 
 
 Route::get('/masection', [QuestionnaireController::class, 'index'])->name('masection');
-Route::get('/result', [QuestionnaireController::class, 'result'])->name('masection');
+Route::get('/result', [QuestionnaireController::class, 'result'])->name('result');
 
