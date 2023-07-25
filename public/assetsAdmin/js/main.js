@@ -640,13 +640,13 @@ $('#myTableArticle').on('click', 'thead th', function() {
           }
         });
       });
-  
-   /*---------------------------------sorting by column myTableMembers --------------------------------------*/
-  
-   $('#myTableMembers').DataTable({ 
+  // Function to initialize DataTable
+function initDataTable() {
+  return $('#myTableMembers').DataTable({ 
     pageLength: 100,
     info: false,
     bLengthChange: false,
+    searching: false,
     language: {
        search: "Rechercher&nbsp;:",
        lengthMenu: "Afficher _MENU_ entrées",
@@ -660,48 +660,79 @@ $('#myTableArticle').on('click', 'thead th', function() {
            next: "Suivant",
            previous: "Précédent"
        }
-   },
-   order: [[1, 'asc']],
-   drawCallback: function(settings) {
-     var api = this.api();
-     api.column(1, {
-       order: 'applied'
-     }).nodes();
-   },
-   columnDefs: [
-     {
-       targets: 3,
-       type: 'datetime-dd-mm-yyyy'
-     },
-     {
-       targets: 4,
-       sortable: false
-     }
-   ]
- });
- 
- 
- $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
-     var b = d.split(/\D+/);
-     return new Date(b[2], b[1] - 1, b[0], 0, 0, 0);
- };
- 
- 
- // Appliquer la recherche
- $('#myTableMembers thead input').on('keyup change', function() {
-   table
-     .column($(this).parent().index() + ':visible')
-     .search(this.value)
-     .draw();
- });
- 
- $('#myTableMembers').on('click', 'thead th', function() {
-   var colIndex = $(this).index();
-   var isAsc = $(this).hasClass('asc');
-   table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
- });
+    },
+    order: [[1, 'asc']],
+    drawCallback: function(settings) {
+      var api = this.api();
+      api.column(1, {
+          order: 'applied'
+      }).nodes();
+    },
+    columnDefs: [
+      {
+        targets: 3,
+        type: 'datetime-dd-mm-yyyy'
+      },
+      {
+        targets: 4,
+        sortable: false
+      },
+      { targets: 0, width: '200px' },
+      { targets: 1, width: '200px' }
+    ]
+  });
+}
 
-  
+// Function to add data type for date sorting
+$.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
+  var b = d.split(/\D+/);
+  return new Date(b[2], b[1] - 1, b[0], 0, 0, 0);
+};
+
+$(document).ready(function() {
+
+  /*----------------------- members------------------------------*/
+  $('#search').on('input', function() {
+    var search = $(this).val();
+
+    $.ajax({
+      url: "/admin/members/search",
+      method: 'GET',
+      data: {
+        search: search
+      },
+      success: function(data) {
+        if ($.fn.dataTable.isDataTable('#myTableMembers')) {
+          $('#myTableMembers').DataTable().destroy();
+        }
+        $('#myTableMembers tbody').html(data);
+        initDataTable();
+      }
+    });
+  });
+
+  // Initialize DataTable if not already initialized
+  if (! $.fn.DataTable.isDataTable('#myTableMembers')) {
+    initDataTable();
+  }
+
+  /*---------------------------------sorting by column myTableMembers --------------------------------------*/
+  // Apply the search
+  $('#myTableMembers thead input').on('keyup change', function() {
+    table
+      .column($(this).parent().index() + ':visible')
+      .search(this.value)
+      .draw();
+  });
+     
+  $('#myTableMembers').on('click', 'thead th', function() {
+    var colIndex = $(this).index();
+    var isAsc = $(this).hasClass('asc');
+    table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
+  });
+
+});
+
   
 
   /*---------------------------------modal myTableMembers familymem--------------------------------------*/
@@ -1249,3 +1280,4 @@ $("#save-button").on("click", function() {
 });
 
 });
+

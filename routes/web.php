@@ -119,6 +119,8 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/admin/members/editUser/{user_id}', [n_AdminController::class, 'editUsermodal']);
     Route::get('/admin/members/delete/{user_id}', [n_AdminController::class, 'DeleteUser'])->name('admin.DeleteUser');
     Route::get('/admin/members/deletemodal/{user_id}', [n_AdminController::class, 'DeleteUsermodal']);
+    Route::get('/admin/members/search', [n_AdminController::class, 'search'])->name('members.search');
+
 
     Route::get('/admin/portes', [n_AdminController::class, 'PortOuvindex'])->name('portesOuvertes');
     Route::get('/admin/usersget', [n_AdminController::class, 'getUsers'])->name('users.get');

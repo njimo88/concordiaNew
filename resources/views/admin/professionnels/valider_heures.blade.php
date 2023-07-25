@@ -40,7 +40,7 @@
                 @forelse($declaration as $item)
                     <tr>
                         <td>{{ $item->lastname }} {{ $item->name }}</td>
-                        <td>{{ $moisTraduits[strftime('%B', mktime(0, 0, 0, $item->mois +1 %12, 10))] }}</td>
+                        <td>{{ $moisTraduits[strftime('%B', mktime(0, 0, 0, $item->mois  %12, 10))] }}</td>
 
                         <td>{{ $item->annee }}</td>
                         <td>

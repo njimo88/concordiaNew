@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f8f04d28f9404732e369cb95297ffd0c",
+    "content-hash": "4e479b85f93867df1382dc958d89dbbb",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -7070,16 +7070,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v10.4.0",
+            "version": "v10.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "2e641c3a5d4414dc2b0fce89ab0c74d73fbf7eb3"
+                "reference": "6662926a7ac52cdf3d52508b0d4f6c41cc8618bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/2e641c3a5d4414dc2b0fce89ab0c74d73fbf7eb3",
-                "reference": "2e641c3a5d4414dc2b0fce89ab0c74d73fbf7eb3",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/6662926a7ac52cdf3d52508b0d4f6c41cc8618bf",
+                "reference": "6662926a7ac52cdf3d52508b0d4f6c41cc8618bf",
                 "shasum": ""
             },
             "require": {
@@ -7142,7 +7142,7 @@
             ],
             "support": {
                 "issues": "https://github.com/yajra/laravel-datatables/issues",
-                "source": "https://github.com/yajra/laravel-datatables/tree/v10.4.0"
+                "source": "https://github.com/yajra/laravel-datatables/tree/v10.6.2"
             },
             "funding": [
                 {
@@ -7150,7 +7150,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-28T07:33:58+00:00"
+            "time": "2023-07-15T04:00:38+00:00"
         }
     ],
     "packages-dev": [

@@ -124,16 +124,30 @@ class n_AdminController extends Controller
 
 
 
-    public function members()
+    public function members(Request $request)
     {
         $roles = Role::all();
-
-        $n_users = User::orderBy('name', 'asc')
-                ->select('user_id', 'username', 'name', 'lastname', 'birthdate', 'phone','family_id')
-                ->get();
-        
-        return view('admin.members', compact('n_users','roles'));
+        return view('admin.members', compact('roles'));
     }
+
+    public function search(Request $request)
+    {
+        $query = User::query();
+    
+        if ($request->has('search') && $request->search !== '') {
+            $query->where('username', 'like', '%' . $request->search . '%')
+                ->orWhere('name', 'like', '%' . $request->search . '%')
+                ->orWhere('lastname', 'like', '%' . $request->search . '%')
+                ->orWhere('email', 'like', '%' . $request->search . '%');
+        }
+    
+        $users = $query->get();
+        
+        return view('admin.members_search_results', compact('users'));
+    }
+    
+
+
     
     public function Editer($user_id){
         $famille = User::where('family_id', $user_id)->get();
