@@ -1085,7 +1085,7 @@ $TotalMaladiepris = 0 ;
 											@if(isset($declaration))
 											@for ($day = 1; $day <= $daysInMonth; $day++)
 											@php
-												$date = mktime(0, 0, 0, $mois+1, $day, $annee);
+												$date = mktime(0, 0, 0, $mois, $day, $annee);
 												
 													$weekday = date('l', $date);
 													$formattedDate = $dayNames[$weekday] . ' ' . $day . ' ' . $monthNames[$mois] . ' ' . $annee;
@@ -1119,7 +1119,7 @@ $TotalMaladiepris = 0 ;
 											@else
 													@for ($day = 1; $day <= $daysInMonth; $day++)
 													@php
-													$date = mktime(0, 0, 0, $mois+1, $day, $annee);
+													$date = mktime(0, 0, 0, $mois, $day, $annee);
 													$weekday = date('l', $date);
 													$formattedDate = $dayNames[$weekday] . ' ' . $day . ' ' . $monthNames[$mois] . ' ' . $annee;
 													$color = ColorFont($date);

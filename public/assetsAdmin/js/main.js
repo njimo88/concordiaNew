@@ -642,7 +642,7 @@ $('#myTableArticle').on('click', 'thead th', function() {
       });
   // Function to initialize DataTable
 function initDataTable() {
-  return $('#myTableMembers').DataTable({ 
+  return $('#myTableMembers').DataTable({
     pageLength: 100,
     info: false,
     bLengthChange: false,
@@ -670,15 +670,15 @@ function initDataTable() {
     },
     columnDefs: [
       {
-        targets: 3,
-        type: 'datetime-dd-mm-yyyy'
+        targets: 2,  // changed to 2 as third column is no longer a date
+        type: 'string' // changed type to string as third column is no longer a date
       },
       {
-        targets: 4,
+        targets: 3,
         sortable: false
       },
-      { targets: 0, width: '200px' },
-      { targets: 1, width: '200px' }
+      { targets: 0, width: '300px' },
+      { targets: 1, width: '300px' }
     ]
   });
 }
@@ -724,7 +724,7 @@ $(document).ready(function() {
       .search(this.value)
       .draw();
   });
-     
+
   $('#myTableMembers').on('click', 'thead th', function() {
     var colIndex = $(this).index();
     var isAsc = $(this).hasClass('asc');

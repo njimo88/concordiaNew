@@ -11,11 +11,18 @@
         </ul>
     </div>
 @endif
-
+<style>
+    .btn-close {
+  background-size: 72%;
+  align-self: end;
+}
+</style>
     <div style="--bs-modal-width: 80vw !important; height: 95vh !important;" class="modal fade " id="editusermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content" id="editusermodalContainer">
                 
+            <div class="modal-content d-flex justify-content-center" id="editusermodalContainer">
+                <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+
             </div>
         </div>
            
@@ -174,10 +181,9 @@
                             <table style="width:100%;" id="myTableMembers" class="table cust-datatable dataTable no-footer border">
                                 <thead>
                                     <tr>
-                                        <th class="border">username</th>
+                                        <th class="border d-none d-md-table-cell">username</th> 
                                         <th class="border">Nom Prénom</th>
-                                        <th class="border">Téléphone</th>
-                                        <th class="border">D Naissance</th>
+                                        <th class="border d-none d-md-table-cell">Infos</th> 
                                         <th class="border">Action</th>
                                     </tr>
                                 </thead>
@@ -185,6 +191,7 @@
                                    
                                 </tbody>
                             </table>
+                            
                         </div>
                         
                     </div>

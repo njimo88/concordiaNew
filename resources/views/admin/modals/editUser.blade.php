@@ -1,6 +1,6 @@
 
 <div style="max-width: 80vw !important;" class="container rounded bg-white m-0 my-4">
-                    
+               
                         
                     
 
@@ -12,6 +12,8 @@
                     @method('PUT')
                     <div class="col-md-3 border-right">
                         <div class="d-flex flex-column align-items-center text-center p-3 py-2">
+                            <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+
                             @if($n_users->image)
                                     <img class="rounded-circle mt-5" width="150px" src="{{  $n_users->image }}" >
                                 @elseif ($n_users->gender == 'male')

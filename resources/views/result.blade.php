@@ -1,43 +1,79 @@
 @extends('layouts.app')
 
 @section('content')
+
 <style>
     .container {
-    padding: 2em;
-}
-
-.score-card {
-    box-shadow: 0 4px 6px 0 hsla(0, 0%, 0%, 0.2);
-    transition: all 0.3s ease-in-out;
-    background-color: white !important;
-    border-radius: 10px;
-}
-
-.score-card:hover {
-    transform: scale(1.05);
-}
-
-.score-percentage {
-    font-weight: bold;
-}
-
-.score-bar {
-    width: 100%;
-    transition: height 0.5s ease-in-out;
-}
-
-.score-image {
-    width: 60%;
-    height: 60%;
-    object-fit: cover;
-}
-
-.no-score {
-    text-align: center;
-    color: #999 !important;
-}
-
-</style>
+        padding: 2em;
+    }
+    
+    .score-card {
+        box-shadow: 0 4px 6px 0 hsla(0, 0%, 0%, 0.2);
+        transition: all 0.3s ease-in-out;
+        background-color: white !important;
+        border-radius: 10px;
+        min-height: 400px;
+    }
+    
+    .score-card:hover {
+        transform: scale(1.05);
+    }
+    
+    .score-percentage {
+        font-weight: bold;
+    }
+    
+    .score-image {
+        width: 60%;
+        height: 60%;
+        object-fit: cover;
+    }
+    
+    .no-progress-image {
+        width: 45%;
+        height: 45%;
+        margin-bottom: 144px;
+    }
+    
+    @media (max-width: 575.98px) { 
+      .score-image {
+        width: 60%;
+      }
+    
+      .score-card {
+        flex: 0 0 50%; 
+        min-height: 390px;
+      }
+    
+      
+    }
+    
+    .no-score {
+        text-align: center;
+        color: #999 !important;
+    }
+    
+    .progress.vertical {
+      width: 30px;
+      height: 200px;
+      display: inline-block;
+      position: relative;
+      margin: 0 auto;
+    }
+    
+    .progress.vertical .progress-bar {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+      background: linear-gradient(to top, rgb(111, 0, 255), rgb(0, 17, 255));
+      animation: grow 2s ease-in-out;
+    }
+    
+    @keyframes grow {
+      0% { height: 0%; }
+    }
+    </style>
+    
 <main class="main" id="main">
     <div class="container">
         <h1 class="text-center mb-5">Vos scores :</h1>
@@ -56,10 +92,16 @@
                         $percentage = ($score / $maxScore) * 100; 
                         $category = \App\Models\Shop_category::find($sortedScores->keys()[$index]);
                     @endphp
-                    <div class="col-lg-2 col-md-4 col-sm-6 text-center mb-4">
-                        <div class="score-card">
+                    <div class="col-md-2 col-4 text-center mb-4">
+                        <div class="score-card row justify-content-center">
                             <p class="mb-1 score-percentage">{{ round($percentage, 2) }}%</p>
-                            <div class="score-bar" style="height: {{ $percentage }}%; background-image: url('{{ asset('assets/images/carre-violet.jpg') }}')"></div>
+                            @if ($percentage == 0)
+                                <img src="{{ asset('assets/images/int.png') }}" class="no-progress-image">
+                            @else
+                                <div class="progress vertical p-0 mb-3">
+                                    <div class="progress-bar" role="progressbar" style="height: {{ $percentage }}%;" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            @endif
                             <a href="/SubCategorie_front/{{ $category->id_shop_category }}">
                                 <img class="score-image" src="{{ $category->image }}" alt="{{ $category->name }}">
                                 <p class="mt-2 score-name">{{ $category->name }}</p>
