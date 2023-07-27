@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Question;
 use App\Models\Answer;
 use App\Models\Shop_category;
+use App\Models\SystemSetting;
 
 class Questionnaire extends Component
 {
@@ -22,37 +23,50 @@ class Questionnaire extends Component
 
     public function submitAnswer() {
         $answer = Answer::find($this->selectedAnswer);
-
+    
         if (!$answer) {
             session()->flash('error', 'Invalid answer selected');
             return;
         }
-
+    
         $shopCategory = Shop_category::find($answer->lien);
         if($shopCategory) {
             session(['scores' => [$shopCategory->id_shop_category => 100]]);
+            $this->updateSystemSetting(); 
             return redirect()->route('result');
         }
         
         if(is_numeric($answer->lien)) {
             session(['category' => $answer->lien]);
             $this->calculateFinalScores();
+            $this->updateSystemSetting(); 
             return redirect()->route('result');
         }
-
+    
         $this->updateIntermediateScores();
-
+    
         $this->currentQuestion = Question::firstWhere('id', $answer->lien);
         if (!$this->currentQuestion) {
             $this->calculateFinalScores();
+            $this->updateSystemSetting(); 
             return redirect()->route('result');
         }
         $this->answers = Answer::where('question_id', $this->currentQuestion->id)->get();
         $this->imageSize = $this->getImageSize(count($this->answers));
         session()->save();
         $this->emit('questionUpdated');
-
+    
     }
+    
+    public function updateSystemSetting() {
+        
+        $setting = SystemSetting::where('name', 'determin_sec')->first();
+        if ($setting) {
+            $setting->value += 1;
+            $setting->save();
+        }
+    }
+    
 
     public function getImageSize($count) {
         switch($count) {

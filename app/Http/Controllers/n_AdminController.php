@@ -30,16 +30,9 @@ class n_AdminController extends Controller
     public function index()
 
     {
-        if (auth()->user()->role == 40 || auth()->user()->role == 30){
-            $saison_actu = saison_active() ;
 
-            $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_actuel','shop_article.stock_ini')
-            ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
-            return view('Statistiques/Home_stat_teacher',compact('shop_article_lesson'))->with('user', auth()->user());
-
-        }else{
-            // evolution du graphe nbre inscrit en annee glissante sur 10 ans
-                    $annee_actu = saison_active() ; // recupere l'annee de la saison active
+        $determinSecValue = SystemSetting::where('name', 'determin_sec')->first()->value;
+        $annee_actu = saison_active() ; // recupere l'annee de la saison active
                     // recupere l'annee du debut des activites de l'association (au depart 2015)
                     $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->first('value');
                     $annee_creation = $date_de_rentree->value;
@@ -64,9 +57,13 @@ class n_AdminController extends Controller
 
                     $get_stat_pages = statistiques_visites::where('page', '!=', '/')->orderBy('nbre_visitors', 'desc')
                     ->limit(10)->get();
+
+                    $saison_actu = saison_active() ;
+
+                    $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_actuel','shop_article.stock_ini')
+                    ->join('shop_article', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')->where('saison', $saison_actu)->get();
                    
-                   return view('admin.index',compact('annee_creation','annee_actu','nbre_visit','get_stat_pages'))->with('user', auth()->user());
-        }
+                   return view('admin.index',compact('annee_creation','annee_actu','nbre_visit','get_stat_pages','shop_article_lesson' , 'determinSecValue'))->with('user', auth()->user());
 
 
     }

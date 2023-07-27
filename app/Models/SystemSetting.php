@@ -18,6 +18,7 @@ class SystemSetting extends Model
         'value',
         'Message',
         'percentage',
+        'date_de_rentree',
     ];
 
     public $timestamps = false;

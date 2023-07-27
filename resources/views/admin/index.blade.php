@@ -12,13 +12,32 @@ require_once(app_path().'/fonction.php');
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <main id="main" class="main">
 
-@php $saison_actu = saison_active() ;@endphp
+@php
+ $saison_actu = saison_active() ;
+$saison_active = saison_active() ;
+      $annee_creation = 2015 ;
+      $years = array();
+      $years  = generateArray($annee_creation,$annee_actu,1);
+      $stat_values_per_year = array();
+
+      foreach ($years as $i) {
+
+         $stat_values_per_year[] = nbr_inscrits_based_on_date($i) ; // get the number of subscribers by year
+
+      }
+
+    
+
+
+@endphp
 
     <section class="section dashboard">
 
-      <div class="row d-flex justify-contetnt-center p-0">
+      <div class="row d-flex justify-content-center ">
+         @if (auth()->user()->role >= 90)
+            
          
-      <div class="col-6 col-md-2 p-0 "style="margin:0px -7px" >
+      <div class="col-6 col-md-2 ">
                    <div class="card info-card sales-card p-3">
 
                       <div class="card-body pt-4" style="min-height: 87px;">
@@ -33,7 +52,7 @@ require_once(app_path().'/fonction.php');
                       </div>
                    </div>
                 
-                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
+                <div class="col-6 col-md-2 ">
                    <div class="card info-card sales-card p-3">
 
                       <div class="card-body pt-4" style="min-height: 87px;">
@@ -46,8 +65,8 @@ require_once(app_path().'/fonction.php');
                          </div>
                       </div>
                    </div>
-                
-                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
+                   @endif 
+                <div class="col-6 col-md-2 ">
                    <div class="card info-card sales-card p-3">
 
                       <div class="card-body pt-4" style="min-height: 87px;">
@@ -62,7 +81,7 @@ require_once(app_path().'/fonction.php');
                    </div>
                 </div>
 
-                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
+                <div class="col-6 col-md-2 ">
                    <div class="card info-card sales-card p-3">
 
                       <div class="card-body pt-4" style="min-height: 87px;">
@@ -76,20 +95,19 @@ require_once(app_path().'/fonction.php');
                       </div>
                    </div>
                 </div>
-                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
-                   <div class="card info-card sales-card p-3">
-
+                <div class="col-6 col-md-2 ">
+                  <div class="card info-card sales-card p-3">
                       <div class="card-body pt-4" style="min-height: 87px;">
-                         <h5 style="font-size:15px;">Déterm. Section </h5>
-                         <div >
-                            <i style=" color: #a900d4; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-question "></i> </div>
-                          
-                               <h6  style="font-size:14px; text-align:left">145</h6>
-                           
-                         </div>
+                          <h5 style="font-size:15px;">Déterm. Section </h5>
+                          <div>
+                              <i style=" color: #a900d4; font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-question "></i> 
+                          </div>
+                          <h6 style="font-size:14px; text-align:left">{{ $determinSecValue }}</h6>
                       </div>
-                   </div>
-                <div class="col-6 col-md-2 p-0" style="margin:0px -7px">
+                  </div>
+              </div>
+              
+                <div class="col-6 col-md-2 ">
                    <div class="card info-card sales-card p-3">
 
                       <div class="card-body pt-4" style="min-height: 87px;">
@@ -144,25 +162,219 @@ require_once(app_path().'/fonction.php');
 
 <div class="row">
 
-
+   @if(\App\Models\shop_article_1::isUserTeacher(auth()->user()->user_id))
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   
+       <div class="container">
+   
+               
+   
+                               @php 
+   
+   
+                                           $id_teacher = auth()->user()->user_id ;
+                                           $my_articles = [] ;
+                                           $add = [] ;
+                                           $calcul = 0 ;
+                                           $calcul_tab = [] ;
+   
+                               @endphp
+   
+   
+                               @foreach($shop_article_lesson as $data)
+   
+   
+                               @php 
+                               $add [] = (array)json_decode($data->teacher) ; 
+                            
+   
+                               if (isset($add)) {
+                                       foreach ($add as $teacherArray) {
+                                                   
+                                               foreach($teacherArray as  $t){
+                                                           
+                                                   if ($id_teacher === $t){
+                                                           array_push($my_articles,$data->title."   ".(int)$data->stock_ini - (int)$data->stock_actuel ."/".$data->stock_ini);
+   
+                                                           
+                                                          
+                                                if((int)$data->stock_ini != 0){
+   
+                                                           $calcul =round( ( (int)$data->stock_ini - (int)$data->stock_actuel ) * 100 / (int)$data->stock_ini ,0);
+                                                                   if ($calcul>100){
+                                                                       array_push($calcul_tab,100);
+                                                                   }
+                                                                   else{
+                                                                       array_push($calcul_tab,$calcul);
+                                                                   }
+                                                                   
+   
+                                                          
+   
+                                                           }else{
+                                                               array_push($calcul_tab,0);
+                                                           }
+   
+   
+                                                           
+                                                          
+                                                         
+                                                   }
+   
+                                               }
+   
+                                            
+   
+                                           }
+                                           
+   
+                                       }
+   
+                                       $add = [] ;
+                                       $calcul = 0 ;
+   
+                               @endphp
+   
+                               
+                               @endforeach
+   
+                               @php 
+                               
+                               $my_articles = array_unique($my_articles) ;
+                              
+                             
+                               @endphp 
+   
+                    
+                        
+                      <!--   <canvas id="myChart"  style="margin-left:-120px;"  width="955" height="750"></canvas> -->
+   
+                         <div class="chart-container d-flex justify-content-center " >
+   
+                                       <canvas id="myChart" ></canvas>
+   
+                         </div>
+   
+                   </div>
+                   </div>
+   
+                 
+   
+                   
+       </div>
+   
+   
+   
+   
+                  
+                
+   
+   
+                   <script>
+   
+   
+                   var xValues = <?php echo json_encode($my_articles); ?>; 
+   
+                   var yValues = <?php echo json_encode($calcul_tab); ?>; 
+                  //var yValues =[100,100,100,100,100,100,100,100];
+   
+                   var colors = [] ;
+                  // var barColors = ["red", "blue","orange","brown"];
+   
+                   for (var i = 0; i < yValues.length; i++) {
+   
+   
+                       switch (yValues[i] > 0) {
+               case (yValues[i] < 20):
+                   colors.push('#f2362c');
+                   break;
+               case (yValues[i] >= 20 && yValues[i] < 40):
+                   colors.push('#eb9c15');
+                   break;
+               case (yValues[i] >= 40 && yValues[i] < 60):
+                   colors.push('#dfe62c');
+                   break;
+               case (yValues[i] >= 60 && yValues[i] < 80):
+                   colors.push('#c9eb34');
+                   break;
+               case (yValues[i] >= 80 && yValues[i] < 100):
+                   colors.push('#007ebd');
+                   break;
+               case (yValues[i] == 100):
+                   colors.push('#7dd600');
+                   break;
+           }
+                           }
+   
+                   new Chart("myChart", {
+                   type: "bar",
+                   data: {
+                       labels: xValues,
+                       datasets: [{
+                           label: 'Pourcentage',
+                       backgroundColor: colors,
+                       data: yValues
+   
+                       }]
+                       
+                   },
+                   
+                   options: {
+                       responsive:true,
+                       maintainAspectRatio: true,
+                       legend: {
+                           display: false,
+                           title: {
+                                       display:false,
+                                       text: 'Pourcentage'
+                                   }
+                                                                   
+                       },
+                       title: {
+                       display: true,
+                       text: "Statistiques des cours"
+                       },
+                       scales: {
+                           yAxes: [{
+                           ticks: {
+                               min: 0,
+                               max: 100,
+                               beginAtZero: true
+                           },
+                           xAxes: [{
+                                   ticks: {
+                                       autoSkip: false,
+                                       maxRotation: 90,
+                                       minRotation: 90,
+                                       maxTicksLimit: 20
+                                   },
+                                  
+                                   }],
+                           
+                           }]
+                       },
+                   },
+                  
+     minBarLength: 1, // display bars for values that are equal to 0
+     plugins: {
+               datalabels: {
+                   display: false, // désactiver l'affichage des étiquettes de données
+                  
+               }
+           },
+           hover: {
+               mode: null // désactiver le survol des étiquettes
+           }
+                   });
+   
+   
+                   </script>
+   
+   
+   
+   @else
 <div class="col-12 col-md-8">
 
-@php
-      $annee_creation = 2015 ;
-      $years = array();
-      $years  = generateArray($annee_creation,$annee_actu,1);
-      $stat_values_per_year = array();
-
-      foreach ($years as $i) {
-
-         $stat_values_per_year[] = nbr_inscrits_based_on_date($i) ; // get the number of subscribers by year
-
-      }
-
-    
-
-
-@endphp
       
 
                
@@ -172,12 +384,14 @@ require_once(app_path().'/fonction.php');
                <canvas id="myChart" style="width:100%;"></canvas>
 </div>
 
-           
+     @endif      
 
             
 
 
 
+@if (auth()->user()->role >= 90)
+   
 
 <div class="col-12 col-md-4">
 
@@ -187,7 +401,7 @@ require_once(app_path().'/fonction.php');
 
 
 </div>
-
+@endif
 
 
 

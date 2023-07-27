@@ -34,6 +34,19 @@ class shop_article_1 extends Model
     
         return count($teachers) > 1;
     }
+
+    public static function isUserTeacher($user_id) {
+        $articles = self::all();
+        foreach ($articles as $article) {
+            $teachers = json_decode($article->teacher, true);
+    
+            if(in_array($user_id, $teachers)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
     
 
