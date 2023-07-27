@@ -419,21 +419,25 @@ public function declarationHeures($id)
 {
     $user_id = $id;
     $pro = Professionnels::where('id_user', $user_id)->first();
-    
+
+    // Calculate next month and year
+    $nextMonth = $pro->LastDeclarationMonth == 12 ? 1 : $pro->LastDeclarationMonth + 1;
+    $nextYear = $pro->LastDeclarationMonth == 12 ? $pro->LastDeclarationYear + 1 : $pro->LastDeclarationYear;
     // Check if the professional has a row in the declarations table
     $declaration = Declaration::where('user_id', $user_id)
-    ->where('mois',  $pro->LastDeclarationMonth)
-    ->where('annee',  $pro->LastDeclarationYear)
+    ->where('mois',  $nextMonth)
+    ->where('annee',  $nextYear)
     ->first();
+
     // Pass the declaration data to the view if it exists
     if ($declaration) {
         return view('admin.professionnels.declarationHeures', compact('user_id', 'pro', 'declaration'));
     }
     
-
     // Display the simple view if no declaration data exists
     return view('admin.professionnels.declarationHeures', compact('user_id', 'pro'));
 }
+
 
 
     public function declaration($id, Request $request)
@@ -568,7 +572,7 @@ public function generatePDF($declaration_id)
     $pdfOutput = $pdf->output(); 
 
     setlocale (LC_TIME, 'fr_FR.utf8','fra'); 
-    $monthName = ucfirst(strftime("%B", mktime(0, 0, 0, $declaration->mois+1, 10)));
+    $monthName = ucfirst(strftime("%B", mktime(0, 0, 0, $declaration->mois, 10)));
 
 $emailContent = "<p><i>[Ceci est un message automatique]</i></p>
 

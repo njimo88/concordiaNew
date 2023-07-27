@@ -891,8 +891,8 @@ $HeuresTheoriques = array(
     $pro->dimanche
 );
 
-$mois 	= 	$pro->LastDeclarationMonth;
-$annee 	= 	$pro->LastDeclarationYear;
+$mois 	= 	$pro->LastDeclarationMonth == 12 ? 1 : $pro->LastDeclarationMonth + 1;
+$annee 	= 	$pro->LastDeclarationMonth == 12 ? $pro->LastDeclarationYear + 1 : $pro->LastDeclarationYear;
 
 $VolumeMensueldu = round($pro->VolumeHebdo * 52 / 12, 2);
 	if (($pro->LastDeclarationMonth+1)%12 >= 8) {
