@@ -424,8 +424,14 @@ function MiseAuPanier($user_id, $id_article)
 function countArticle($user_id, $idArticle)
 {
     $saison = saison_active();
+
     // Récupérer tous les articles achetés par l'utilisateur au cours de la saison active
-    $articles = Donne_articles_Paye_d_un_user_aucours_d_une_saison($user_id, $saison);
+    $articles = LiaisonShopArticlesBill::where('liaison_shop_articles_bills.id_user', $user_id)
+                ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+                ->where('shop_article.saison', $saison)
+                ->get()
+                ->pluck('id_shop_article')
+                ->toArray();
 
     // Initialiser le compteur à 0
     $count = 0;
@@ -435,10 +441,10 @@ function countArticle($user_id, $idArticle)
             $count++;
         }
     }
-
     // Retourner le nombre de fois que l'idArticle a été trouvé
     return $count;
 }
+
 
  function canAddMoreOfArticle($selected_user_id , Shop_article $article)
     {
