@@ -21,7 +21,7 @@ use App\Models\LiaisonShopArticlesShopReductions;
 use App\Models\LiaisonUserShopReduction;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
-
+use Yajra\DataTables\Facades\DataTables;
 
 
 require_once(app_path().'/fonction.php');
@@ -214,33 +214,69 @@ class BillsController extends Controller
 
      public function index(Request $request)
      {
-         if ($request->has('statusOldBills')) {
-             $bill = DB::table('old_bills')
-             ->join('users', 'old_bills.user_id', '=', 'users.user_id')
-             ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
-             ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
-             ->select('old_bills.*', 'old_bills.status as bill_status', 'bills_payment_method.icon', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status', 'bills_status.row_color')
-             ->orderBy('old_bills.date_bill', 'desc')
-             ->get();
-         }else{
-             $billQuery = DB::table('bills')
-             ->join('users', 'bills.user_id', '=', 'users.user_id')
-             ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-             ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-             ->select('bills.*', 'bills.status as bill_status', 'bills_payment_method.icon', 'users.name', 'users.lastname', 'bills_payment_method.payment_method', 'bills_payment_method.image', 'bills_status.status', 'bills_status.image_status', 'bills_status.row_color')
-             ->orderBy('bills.date_bill', 'desc');
-     
-             if ($request->has('statusLessThan10')) {
-                 $bill = $billQuery->where('bills.status', '<', 10)->get();
-             }else {
-                 $bill = $billQuery->where('bills.status', '>=', 10)->get();
-             }
-         }
+         
          $paymentMethods = DB::table('bills_payment_method')->get();
      
-         return view('admin.facture', compact('bill', 'paymentMethods'));
+         return view('admin.facture', compact('paymentMethods'));
      }
-     
+
+
+    public function getData(Request $request)
+    {
+        if ($request->has('statusOldBills')) {
+            $query = DB::table('old_bills')
+            ->join('users', 'old_bills.user_id', '=', 'users.user_id')
+            ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+            ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+            ->select('old_bills.*', 'old_bills.status as bill_status', 'bills_payment_method.icon', 'users.name', 'users.lastname', 'bills_payment_method.payment_method as payment_method_alias', 'bills_payment_method.image', 'bills_status.status as status_alias', 'bills_status.image_status', 'bills_status.row_color')
+            ->orderBy('old_bills.date_bill', 'desc');
+        }elseif ($request->has('statusLessThan10')) {
+            $query = DB::table('bills')
+                ->join('users', 'bills.user_id', '=', 'users.user_id')
+                ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+                ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+                ->select('bills.*', 'bills.status as bill_status', 'bills_payment_method.icon', 'users.name', 'users.lastname', 'bills_payment_method.payment_method as payment_method_alias', 'bills_payment_method.image', 'bills_status.status as status_alias', 'bills_status.image_status', 'bills_status.row_color')
+                ->where('bills.status', '<', 10)
+                ->orderBy('bills.date_bill', 'desc');
+        }
+         else {
+            $query = DB::table('bills')
+                ->join('users', 'bills.user_id', '=', 'users.user_id')
+                ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+                ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+                ->select('bills.*', 'bills.status as bill_status', 'bills_payment_method.icon', 'users.name', 'users.lastname', 'bills_payment_method.payment_method as payment_method_alias', 'bills_payment_method.image', 'bills_status.status as status_alias', 'bills_status.image_status', 'bills_status.row_color')
+                ->where('bills.status', '>=', 10)
+                ->orderBy('bills.date_bill', 'desc');
+                
+        }
+    
+        $data = DataTables::of($query)
+            ->addColumn('full_name', function($row) {
+                return $row->name . ' ' . $row->lastname;
+            })
+            ->editColumn('date_bill', function($row) {
+                return date("d/m/Y à H:i", strtotime($row->date_bill));
+            })
+            ->addColumn('payment_total_amount', function($row) {
+                return number_format($row->payment_total_amount, 2, ',', ' ');
+            })
+            ->addColumn('deleteLink', function($row) {
+                return route('bill.destroy', ['bill' => $row->id]);
+            })
+            
+            ->addColumn('supprimer_edit_facture', function($row) {
+                return auth()->user()->roles->supprimer_edit_facture;
+            })
+            
+            ->addColumn('showBillLink', function($row) {
+                return route('facture.showBill', ['id' => $row->id]);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+
+    
+        return $data;
+    }
 
      public function miseAjourStock()
      {

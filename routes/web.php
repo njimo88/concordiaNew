@@ -127,6 +127,7 @@ Route::middleware(['auth', 'role:20'])->group(function () {
 
      /*----------------------- Factures ------------------------------ */
     Route::get('/admin/paiement/facture', [BillsController::class, 'index'])->name('paiement.facture');
+    Route::get('/admin/paiement/facture/data', [BillsController::class, 'getData'])->name('paiement.facture.data');
     Route::get('/admin/paiement/facture/{id}', [BillsController::class, 'delete'])->name('paiement.deleteFacture');
     Route::get('/admin/paiement/factureFamille/{id}',  [BillsController::class, 'family'])->name('factureFamille');
     Route::get('/admin/paiement/facture/get-old-bills/{user_id}',  [BillsController::class, 'getOldBills']);

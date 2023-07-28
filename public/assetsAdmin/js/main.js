@@ -312,73 +312,151 @@
 
 })();
 
+$(function () {
+  var table = $('#myTable').DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: "/admin/paiement/facture/data",
+      pageLength: 10000, 
+      lengthChange: false,
+      language: {
+          url: "//cdn.datatables.net/plug-ins/1.10.16/i18n/French.json"
+      },
+      info: false,
+      bLengthChange: false,
+      paging: false,
+      columnDefs: [
+          {
+              targets: 3,
+              type: 'date-eu'
+          },
+          {
+              targets: 4,
+              type: 'num'
+          },
+          {
+              targets: 5,
+              type: 'num'
+          }
+      ],
+      createdRow: function(row, data, dataIndex){
+          $(row).css('background-color', data.row_color);
+      },
+      columns: [
+          { 
+              data: 'id', 
+              name: 'id',
+              orderable: true,
+              render: function (data, type, row) {
+                  if(row.supprimer_edit_facture){
+                      return '<a target="_blank" href="'+ row.showBillLink +'" class="user-link a text-black">' + parseInt(data) + '</a>';
+                  } else {
+                      return parseInt(data);
+                  }
+              }
+          },
+          { 
+              data: 'full_name', 
+              name: 'full_name',
+              orderable: true,
+              render: function(data, type, row){
+                  return '<b>' + data + '</b>';
+              } 
+          },
+          { 
+              data: 'payment_method', 
+              name: 'payment_method', 
+              orderable: true,
+              render: function (data, type, row) {
+                  return '<img style="height: 30px" src="' + row.icon + '" alt=""><span style="display: none;">' + data + '</span>';
+              }
+          },
+          {
+              data: 'date_bill',
+              name: 'date_bill',
+              orderable: true,
+              render: function (data, type, row) {
+                  var parts = data.split(' ');
+                  return parts[0];
+              }
+          },
+          { 
+              data: 'payment_total_amount', 
+              name: 'payment_total_amount', 
+              orderable: true,
+              render: function (data, type, row) {
+                  return '<td data-user-id="' + row.user_id + '" class="bill a" style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">' + parseFloat(data).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) + ' <i class="fa-solid fa-euro-sign"></i></td>';
+              }
+          },
+          { 
+              data: 'status', 
+              name: 'status', 
+              orderable: true,
+              render: function (data, type, row) {
+                  return '<img src="' + row.image_status + '" alt="' + data + '"><span style="display: none;">' + row.bill_status + '</span>';
+              }
+          },
+          { 
+              data: 'action', 
+              name: 'action', 
+              orderable: false,
+              searchable: false,
+              render: function (data, type, row) {
+                var buttons = '';
+                if (row.supprimer_edit_facture) {
+                    buttons += '<span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Modifier">' +
+                        '<a target="_blank" href="' + row.showBillLink + '" class="btn btn-sm btn-success">' +
+                        '<i class="fas fa-pencil-alt"></i>' +
+                        '</a>' +
+                        '</span>';
+                }
+                
+                buttons += '<span class="d-inline-block mx-2" tabindex="0" data-bs-toggle="tooltip" title="Factures famille">' +
+                    '<button data-family-id="' + row.family_id + '" type="button" class="btn btn-sm btn-primary familybill">' +
+                    '<i class="fas fa-house"></i>' +
+                    '</button>' +
+                    '</span>';
+                
+                if (row.supprimer_edit_facture) {
+                  buttons += '<span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Supprimer">' +
+                  '<button href="#" type="button" class="btn btn-sm btn-danger delete-bill" ' +
+                  'onclick="event.preventDefault(); if(confirm(\'Êtes-vous sûr de vouloir supprimer cette facture ?\')) {' +
+                  'document.getElementById(\'delete-form-' + row.id + '\').submit();}">' +
+                  '<i class="fas fa-times"></i>' +
+                  '</button>' +
+                  '</span>' +
+                  '<form id="delete-form-' + row.id + '" action="' + row.deleteLink + '" method="POST" style="display: none;">' +
+                  '<input type="hidden" name="_token" value="' + document.querySelector('meta[name="csrf-token"]').getAttribute('content') + '">' +
+                  '<input type="hidden" name="_method" value="DELETE">' +
+                  '</form>';
+            
+                }
+                return buttons;
+            }
+          },
+      ],
+      order: [[0, 'asc']],
+      drawCallback: function (settings) {
+          var api = this.api();
+          api.column(0, {
+              order: 'applied'
+          }).nodes();
+      },
+      dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+  });
 
-/*my table Sort-------------------------------------------------------------------*/
-$('#myTable').DataTable({
-  info: false,
-    bLengthChange: false,
-    paging: false, // Désactiver la pagination
-    lengthChange: false, 
-    language: {
-      search: "",
-      searchPlaceholder: "Rechercher...",
-      lengthMenu: "Afficher _MENU_ entrées",
-      zeroRecords: "Aucun résultat trouvé",
-      info: "Affichage de l'entrée _START_ à _END_ sur _TOTAL_ entrées",
-      infoEmpty: "Affichage de l'entrée 0 à 0 sur 0 entrée",
-      infoFiltered: "(filtré à partir de _MAX_ entrées au total)",
-      paginate: {
-          first: "Premier",
-          last: "Dernier",
-          next: "Suivant",
-          previous: "Précédent"
-      }
-    },
-  order: [],
-  drawCallback: function(settings) {
-    var api = this.api();
-    api.column(0, {
-      order: 'applied'
-    }).nodes();
-  },
-  columnDefs: [
-    {
-      targets: 3,
-      type: 'datetime-dd-mm-yyyy'
-    },{
-      targets: 4,
-      type: 'numeric-comma'
-    }
-  ],
-  dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+  $('#oldBills').click(function(e) {
+      e.preventDefault();
+      table.ajax.url("/admin/paiement/facture/data?statusOldBills=true").load();
+  });
+
+  $('#filterStatus').click(function(e) {
+      e.preventDefault();
+      table.ajax.url("/admin/paiement/facture/data?statusLessThan10=true").load();
+  });
 });
 
- 
-$.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
-    var b = d.split(/\D/);
-    return new Date(b[2], b[1] - 1, b[0], b[3], b[4], b[5]);
-};
 
-
-$.fn.dataTable.ext.type.order['numeric-comma-pre'] = function ( d ) {
-  
-  return parseFloat(d.replace(' ', '').replace(',', '.'));
-};
-
-
-// Apply the search
-$('#myTable thead input').on('keyup change', function() {
-  table
-    .column($(this).parent().index() + ':visible')
-    .search(this.value)
-    .draw();
-});
-
-$('#myTable').on('click', 'thead th', function() {
-  var colIndex = $(this).index();
-  var isAsc = $(this).hasClass('asc');
-  table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
-});
 /*my table end-------------------------------------------------------------------*/
 /*myTableArticle Sort-------------------------------------------------------------------*/
 $('#ArticleTable').DataTable({
@@ -815,7 +893,6 @@ $(document).ready(function() {
   /*---------------------------------modal myTableMembers familybill---------------------------------------*/
 
   $('#myTable').on('click', '.familybill', function(){
-    console.log('test');
     $('#factureFamille').modal('show');
   
     // Get the bill ID from the clicked element
@@ -1145,45 +1222,6 @@ $(document).ready(function() {
   });
 });
 
-
-$(document).ready(function() {
-  $('#filterStatus').click(function(e) {
-      e.preventDefault();
-
-      $.ajax({
-          url: "/admin/paiement/facture", 
-          method: 'GET',
-          data: {
-              "_token": $('meta[name="csrf-token"]').attr('content'),
-              "statusLessThan10": true
-          },
-          success: function(response) {
-            window.location.href = "/admin/paiement/facture?statusLessThan10=true";
-        }
-        
-      });
-  });
-});
-
-$(document).ready(function() {
-  $('#oldBills').click(function(e) {
-      e.preventDefault();
-
-      $.ajax({
-          url: "/admin/paiement/facture", 
-          method: 'GET',
-          data: {
-              "_token": $('meta[name="csrf-token"]').attr('content'),
-              "statusOldBills": true
-          },
-          success: function(response) {
-            console.log(response);
-            window.location.href = "/admin/paiement/facture?statusOldBills=true";
-        }
-        
-      });
-  });
-});
 
 
 function debounce(func, wait, immediate) {

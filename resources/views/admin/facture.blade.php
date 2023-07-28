@@ -114,7 +114,7 @@
   <div class="pagetitle row justify-content-between align-items-center">
     <div class="col-md-8 row">
         <div class="col-md-4">
-            <a href="{{ route('paiement.facture') }}"><h1>Liste des factures</h1></a>
+            <h1>Liste des factures</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
@@ -226,72 +226,9 @@
                                 <th style="min-width:100px;"><a >Total</a></th>
                                 <th style="min-width:150px;"><a >Statut</a></th>
                                 <th style="min-width:150px">Actions</th>
-                            </thead>                            
+                            </thead> 
                             <tbody>
-                                @foreach ($bill as $bills )
-                               
-                                    <tr  style="background-color: {{ $bills->row_color}}"> 
-                                        <td>
-                                            @if (auth()->user()->roles->supprimer_edit_facture)
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Afficher Facture">
-                                                <a type="button" target="_blank" class=" user-link a text-black "  href="{{ route('facture.showBill', ['id' => $bills->id]) }}">{{ intval($bills->id) }}</i></a>
-                                              </span>
-                                            @else
-                                                {{ intval($bills->id) }}
-                                            @endif
-                                        </td>
-                                        <td style="font-weight : bold;">{{ $bills->name}} {{ $bills->lastname}}</td> 
-                                        <td><img style="height: 30px" src="{{ $bills->icon}}" alt="">
-                                            <span style="display: none;">{{ $bills->payment_method}}</span>
-                                        </td>
-                                          
-                                        <td><?php echo date("d/m/Y à H:i", strtotime($bills->date_bill)); ?></td>
-
-                                        <td data-user-id="{{ $bills->user_id }}"  class="bill a" style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">{{ number_format($bills->payment_total_amount, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
-                                        
-                                        <td>
-                                            <img src="{{ $bills->image_status }}" alt="Caution acceptée">
-                                            <span style="display: none;">{{ $bills->bill_status}}</span>
-                                        </td>
-                                        <td> 
-                                            <!-- Bouton de modification -->
-                                            @if (auth()->user()->roles->supprimer_edit_facture)
-                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Modifier">
-                                                    <a  target="_blank" href="{{ route('facture.showBill', ['id' => $bills->id]) }}" class="btn btn-sm btn-success">
-                                                        <i class="fas fa-pencil-alt"></i>
-                                                    </a>
-                                                </span>
-                                            @endif
-                                        
-                                            
-                                        
-                                            <!-- Bouton des factures famille -->
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Factures famille">
-                                                <button data-family-id="{{ $bills->family_id }}" type="button" class="btn btn-sm btn-primary familybill">
-                                                    <i  class="fas fa-house"></i>
-                                                </button>
-                                            </span> 
-
-                                            <!-- Bouton de suppression -->
-                                            @if (auth()->user()->roles->supprimer_edit_facture)  
-                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Supprimer">
-                                                    <button href="#" type="button" class="btn btn-sm btn-danger delete-bill"
-                                                        onclick="event.preventDefault(); if(confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {document.getElementById('delete-form-{{ $bills->id }}').submit();}">
-                                                        <i class="fas fa-times"></i>
-                                                    </button>
-
-                                                </span> 
-                                                <form id="delete-form-{{ $bills->id }}" action="{{ route('bill.destroy', $bills->id) }}" method="POST" style="display: none;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-                                            @endif
-                                        </td>
-                                        
-                                        
-                                    </tr>        
-                                @endforeach  
-                            </tbody>
+                            </tbody>                           
                         </table>
                     </div>
                 </div>
