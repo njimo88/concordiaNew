@@ -1,64 +1,51 @@
-
 <style>
-    .dataTables_wrapper .dataTables_filter {
-float: left !important;
-text-align: left !important;
-}
+    .invoice {
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #f9f9f9; 
+    }
+
+    .invoice-header {
+        font-weight: bold;
+        background-color: #f2f2f2; 
+        
+    }
+
+    .invoice-items {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr; 
+        gap: 5px;
+        margin-left: 20px;
+    }
+
+    .invoice-item {
+        display: contents; 
+    }
+
+    .invoice-item:nth-child(odd) {
+        background-color: #f1f1f1; 
+    }
+
+    .invoice-item:nth-child(even) {
+        background-color: #ffffff; 
+    }
 </style>
 
-<table class="table table-bordered  table-striped table-hover" id="myTableadminmember" style="max-width:1000px; table-layout: fixed;">
-    <thead>
-        <tr>
-            <th style="min-width:50px;">ID Facture</th>
-            <th style="min-width:150px;">Nom</th>
-            <th style="min-width:150px;">Moyen de paiement</th>
-            <th style="min-width:100px;">Date</th>
-            <th style="min-width:100px;">Total</th>
-            <th style="min-width:150px;">Statut</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($bill as $bills )
-        <tr style="background-color: yellow;">
-            <td colspan="6" style="font-weight: bold;">Facture n°: {{ $bills->id }}</td>
-        </tr>
-            <tr >
-                <td>
-                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Afficher Facture">
-                        <a type="button" class=" user-link a text-black" href="{{ route('facture.showBill',$bills->id) }}">{{ $bills->id }}</a>
-                    </span>
-                </td>
-                <td style="font-weight : bold; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ $bills->lastname}} {{ $bills->name}}</td>                                 
-                <td><img style="height: 30px" src="{{ $bills->image }}" alt="">
-                    <span style="display: none;">{{ $bills->payment_method }}</span>
-                </td>
-                <td><?php echo date("d/m/Y à H:i", strtotime($bills->date_bill)); ?></td>
-                <td data-user-id="{{ $bills->user_id }}" class="bill a" style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">{{ number_format($bills->payment_total_amount, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
-                <td>
-                    <img src="{{ $bills->image_status }}" alt="Caution acceptée">
-                    <span style="display: none;">{{ $bills->status }}</span>
-                </td>
-            </tr>
-            <tr style="background-color: rgb(255, 0, 13);">
-                <td colspan="6" style="font-weight: bold;">Produits :</td>
-            </tr>
+@foreach ($bill as $bills)
+    <div class="invoice">
+        <div style="background-color: {{ $bills->row_color == 'none' ? '#00ff00' : $bills->row_color }} !important;" class="invoice-header p-2">Facture n°: {{ $bills->id }}</div>
+        <div class="invoice-items">
             @foreach($bills->liaisons as $liaison)
-            
-              
-                                <tr>
-                                    <td class="col-4">{{ $liaison->designation }}</td>
-                                    <td>{{ $liaison->quantity }}</td>
-                                    <td>{{ number_format($liaison->ttc, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></td>
-                                    <td>{{ $liaison->liaison_user_lastname }} {{ $liaison->liaison_user_name }}</td>
-                                </tr>
-              
+                <div class="invoice-item">
+                    <span>{{ $liaison->designation }}</span>
+                    <span>{{ $liaison->quantity }} x {{ number_format($liaison->ttc, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></span>
+                    <span>{{ $liaison->liaison_user_lastname }} {{ $liaison->liaison_user_name }}</span>
+                </div>
             @endforeach
-            <tr style="background-color: #f5f5f5">
-                <td colspan="6" style="border-bottom: 3px solid #333;"></td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+        </div>
+    </div>
+@endforeach
+
 
                    
 

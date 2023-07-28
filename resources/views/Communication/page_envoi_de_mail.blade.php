@@ -49,6 +49,34 @@
       border-color: #17a2b8;
   }
 </style>
+<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
+<script>
+  CKEDITOR.replace('editor1', {
+    filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
+    filebrowserBrowseUrl: "/elfinder/ckeditor",
+    filebrowserUploadMethod: 'form',
+    language: 'fr',
+    toolbar: [
+        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+        { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll'] },
+        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
+        { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
+        { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+        { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
+        '/',
+        { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+        { name: 'colors', items: ['TextColor', 'BGColor'] },
+        { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
+        { name: 'document', items: ['Source', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates'] },
+    ],
+    uiColor: '#FFDC6E',
+    on: {
+        loaded: function() {
+            ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
+        }
+    },
+  });
+  </script>
 <main class="main" id="main">
   <?php
 $successMessage = $_GET['successMessage'] ?? '';
@@ -152,7 +180,7 @@ if (!empty($successMessage)) {
                       <textarea style="height: 40px;" type="text" name="titre" class="form-control" required></textarea>
                       <br>
                     <label></label>
-                      <textarea name="editor1"  id="ckeditor" class="form-control" required></textarea>
+                    <textarea name="editor1"  id="ckeditor" class="form-control" required></textarea>
                       </div>
                       
                     </form>
@@ -213,7 +241,7 @@ if (!empty($successMessage)) {
                       listItem.appendChild(checkbox);
 
                       const buyerName = document.createElement('span');
-                      buyerName.textContent = buyer.lastname + ' ' + buyer.name;
+                      buyerName.textContent = buyer.name + ' ' + buyer.lastname;
                       listItem.appendChild(buyerName);
 
                       unselectedUsers.appendChild(listItem);

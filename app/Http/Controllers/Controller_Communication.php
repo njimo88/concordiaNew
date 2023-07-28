@@ -168,7 +168,7 @@ public function historique (){
 
 public function getBuyersForShopArticle($id) {
     $buyersIds = retourner_buyers_dun_shop_article($id);
-    $buyers = User::whereIn('user_id', $buyersIds)->select('user_id', 'name', 'lastname')->orderBy('name')->get();
+    $buyers = User::whereIn('user_id', $buyersIds)->select('user_id', 'name', 'lastname')->orderBy('lastname', 'asc')->orderBy('name', 'asc')->get();
     return response()->json($buyers);
 }
 
