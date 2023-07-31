@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('process:email-queue')->everyMinute();
-
+        $schedule->job(new ClickAsso)->dailyAt('00:00');
 
     }
     

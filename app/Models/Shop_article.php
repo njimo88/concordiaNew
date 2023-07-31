@@ -59,6 +59,10 @@ class Shop_article extends Model
         ->count();
 }
     
+public function liaisonShopArticlesBill()
+{
+    return $this->hasMany(LiaisonShopArticlesBill::class, 'id_shop_article');
+}
 
 
 

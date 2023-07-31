@@ -21,6 +21,7 @@ use App\Http\Controllers\Auth\ForgotUsernameController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ParametreController;
 use App\Http\Controllers\QuestionnaireController;
+use App\Http\Controllers\ClickAssoController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\n_AdminController;
@@ -124,6 +125,12 @@ Route::middleware(['auth', 'role:20'])->group(function () {
 
     Route::get('/admin/portes', [n_AdminController::class, 'PortOuvindex'])->name('portesOuvertes');
     Route::get('/admin/usersget', [n_AdminController::class, 'getUsers'])->name('users.get');
+
+
+
+    /*----------------------- ClickAsso ------------------------------ */
+    Route::get('/admin/clickasso', [ClickAssoController::class, 'index'])->name('users.clickasso');
+    Route::get('/trigger-job', [ClickAssoController::class, 'triggerJob']);
 
      /*----------------------- Factures ------------------------------ */
     Route::get('/admin/paiement/facture', [BillsController::class, 'index'])->name('paiement.facture');

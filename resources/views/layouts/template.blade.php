@@ -481,7 +481,7 @@
                   <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#"><span style="margin-right: 5px; color:#007b00;" class="fa fa-users fa-fw mr-2 gc-green"></span> <span>Utilisateurs</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if(auth()->user()->roles->estAutoriserDeVoirMembres)<li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-solid fa-user"></i><span>Membres</span> </a></li>@endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirClickAsso)<li> <a href="{{route('utilisateurs.members')}}"> <i style="color: #007b00" class="fa-light fa-at"></i><span>ClickAsso</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirClickAsso)<li> <a href="{{route('users.clickasso')}}"> <i style="color: #007b00" class="fa-light fa-at"></i><span>ClickAsso</span> </a></li>@endif
                      @if (SystemSetting::getValue(2) == 1 && auth()->user()->roles->estAutoriserDeVoirPortesOuvertes)
                       <li> <a href="{{ route('portesOuvertes') }}"> <i style="color: #007b00" class="fa-sharp fa-solid fa-door-open"></i><span>Portes Ouvertes</span> </a></li>
                     @endif

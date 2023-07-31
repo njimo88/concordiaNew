@@ -11,6 +11,8 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Traits\HasPermissions;
 use App\Models\Role;
 use App\Models\Basket;
+use App\Models\bills;
+use App\Models\LiaisonShopArticlesBill;
 use Illuminate\Contracts\Auth\CanResetPassword;
 
 
@@ -66,6 +68,16 @@ class User extends Authenticatable implements CanResetPassword
     public function belongsToFamily($familyId)
 {
     return $this->family_id === intval($familyId);
+}
+
+public function bills()
+{
+    return $this->hasMany(bills::class, 'user_id');
+}
+
+public function liaisonShopArticlesBill()
+{
+    return $this->hasMany(LiaisonShopArticlesBill::class, 'id_user');
 }
 
 

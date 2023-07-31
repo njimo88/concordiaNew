@@ -25,4 +25,11 @@ class LiaisonShopArticlesBill extends Model
         'id_shop_article',
         'id_user',
     ];
+
+
+    public function shopArticle()
+{
+    return $this->belongsTo(Shop_article::class, 'id_shop_article');
+}
+
 }
