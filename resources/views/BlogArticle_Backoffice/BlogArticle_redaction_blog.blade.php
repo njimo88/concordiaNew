@@ -91,7 +91,7 @@
     
       <td>{{$data->nom_categorie}}</td>
      
-      <td><input style="vertical-align:center;" class="input" for="catenvoi" type="checkbox" name="category1[]" value="{{$data->Id_categorie1}}"></td>
+      <td><input style="vertical-align:center;" class="input" for="catenvoi" type="checkbox" name="category1[]" value="{{$data->Id_categorie}}"></td>
      
     </tr>
 
@@ -123,7 +123,7 @@
     
       <td>{{$data->nom_categorie}}</td>
      
-      <td><input style="vertical-align:center;" class="input" for="catenvoi" type="checkbox" name="category2[]" value="{{$data->Id_categorie2}}" ></td>
+      <td><input style="vertical-align:center;" class="input" for="catenvoi" type="checkbox" name="category2[]" value="{{$data->Id_categorie}}" ></td>
      
 
     </tr>

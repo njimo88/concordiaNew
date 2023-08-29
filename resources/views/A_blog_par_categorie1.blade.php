@@ -40,14 +40,14 @@ use Illuminate\Pagination\Paginator;
       
                                             /* we use json_decode to make this transformation : JSON arrays become PHP numeric arrays */
       
-                                                $a_macategorie1 = json_decode($a_article->categorie1) ;
+                                                $a_macategorie1 = json_decode($a_article->categorie) ;
                                                 
                                                 
                                                 foreach($a_macategorie1 as $i){
       
                                                     foreach($a_categorie1 as $j){
       
-                                                        if($i == ($j->Id_categorie1)){
+                                                        if($i == ($j->Id_categorie)){
       
                                           @endphp  
                                                         
@@ -68,7 +68,7 @@ use Illuminate\Pagination\Paginator;
                                             /* we use json_decode to make this transformation : JSON arrays become PHP numeric arrays */
       
       
-                                            $a_macategorie2 = json_decode($a_article->categorie2) ;
+                                            $a_macategorie2 = json_decode($a_article->categorie) ;
       
       
       
@@ -77,7 +77,7 @@ use Illuminate\Pagination\Paginator;
       
                                             foreach($a_categorie2 as $j){
       
-                                                if($i == ($j->Id_categorie2)){
+                                                if($i == ($j->Id_categorie)){
       
       
                                             @endphp  

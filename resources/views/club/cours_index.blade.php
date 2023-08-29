@@ -65,7 +65,8 @@ $saison_active = saison_active() ;
                   @foreach($shop_article_first as $data)
                                     
                   <div class="input-container">
-                    <img class="px-2" style="height: 30px " src="{{ asset('assets/images/logo-admin-list.png') }}" alt="vvvvvvvvvvvvvvv">
+                    <img class="px-2" style="height: 30px " src="{{ asset('assets/images/logo-admin-list.png') }}" alt="vvvvvvvvvvvvvvv" onclick="generatePDF({{ $data->id_shop_article }})">
+
                     <input readonly onclick="toggleElement('{{ $data->id_shop_article }}')" class="btn m-0" style="font-weight: bold; text-align: left;" value="{{$data->title}}   ({{ $data->usersActiveCount() }} / {{$data->stock_ini}})">
                   </div>
                   <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
@@ -101,7 +102,7 @@ $saison_active = saison_active() ;
             </div>
                 <br>
 
-                                                      <table class="table table-hover" style="background-color:lime; color:black"> 
+                                                      <table class="table table-hover" style="color:black"> 
                                                         <tbody>
                                                       @foreach($users_saison_active as $dt)
 
@@ -110,7 +111,7 @@ $saison_active = saison_active() ;
                                                                 
                                                       
                                                        
-                                               <tr>
+                                               <tr style="background-color: {{ $dt->row_color == 'none' ? 'lime' : $dt->row_color }};">
                                                                         
                                                              
                                                                     
@@ -132,6 +133,9 @@ $saison_active = saison_active() ;
                                                                        
                                                                     
                                                                     </td>
+                                                                    @if (Auth :: user () -> role >= 90)
+                                                                      <td><a target="_blank" href="{{ route('facture.showBill', ['id' => $dt->id]) }}"><i class="fas fa-file-invoice" style="color: black;"></i></a></td>
+                                                                    @endif
                                                                     <td>
                                                                     <i class="fas fa-eye openmodal" style="color:blue;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-user-id="{{$dt->user_id}}"></i> 
                                                                     </td>
@@ -209,6 +213,10 @@ $saison_active = saison_active() ;
       document.getElementById('saison').addEventListener('change', function() {
           document.getElementById('seasonForm').submit();
       });
+
+      function generatePDF(courseId) {
+    window.open('/generate-pdf/' + courseId, '_blank');
+}
 
       
       </script>

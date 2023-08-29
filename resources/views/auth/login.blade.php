@@ -1,83 +1,181 @@
 @extends('layouts.app')
 
 @section('content')
-<main class="main" id="main" style="background-image: url('{{asset("/assets/images/background.png")}}'); height:100vh; " >
-<div class=" container d-flex justify-content-center" >
-    <div class="row mt-5 col-12 col-md-10 col-lg-8 sign-up-form sign-up-formrelogin d-flex justify-content-center">
-      <!-- Left (Form Image) -->
-      <div class="form-image p-0 col-lg-5">
-        <img src="{{asset('assets\images\marinaeno1200500069.jpg')}}" alt="" />
-      </div>
-      <!-- Right (Form Content) -->
-      <form class="form-content col-12 col-lg-7 p-3  justify-content-center" method="POST" action="{{ route('login') }}">
-        <!-- Form Heading -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+    --primary-color: #482683;
+    --secondary-color: #482683;
+    --tertiary-color: #0077b6;
+    --gray-color: #b0b0b0;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Raleway', sans-serif;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+}
+body {
+    background-color: #f2f2f2;
+}
+
+ .container {
+    background-color: #f2f2f2;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.box {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 45px;
+    width: 375px;
+    max-width: 95%;
+    box-shadow: 5px 5px 10px 1px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 480px) {
+    .box {
+        padding: 75px 25px;
+    }
+}
+
+
+.box h1 {
+    font-size: 35px;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.box form label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 3px;
+}
+
+.box form div {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--gray-color);
+}
+
+.box form div:hover {
+    border-bottom-color: var(--secondary-color);
+}
+
+.box form div:first-of-type {
+    margin-bottom: 35px;
+}
+
+.box form div i {
+    font-size: 15px;
+    padding-left: 10px;
+    color: var(--gray-color);
+}
+
+.box form div:hover i {
+    color: var(--secondary-color);
+}
+
+.box form div input {
+    font-size: 12px;
+    outline: none;
+    border: none;
+    padding: 10px;
+    min-width: 0;
+    flex: 1;
+}
+
+.box form div input::placeholder {
+    opacity: 1;
+    color: var(--gray-color);
+    font-size: 12px;
+}
+
+.box a {
+    color: var(--gray-color);
+    text-decoration: none;
+    font-size: 12px;
+    display: block;
+}
+
+.box a:hover {
+    color: var(--secondary-color);
+}
+
+.box form .forgot {
+    margin-top: 15px;
+    float: right;
+}
+
+.box form input[type="submit"] {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 15px;
+    margin-top: 25px;
+    border-radius: 250px;
+}
+
+.box form input[type="submit"]:hover {
+    background-color: var(--tertiary-color);
+    cursor: pointer;
+}
+
+.box .sign-up {
+    text-align: center;
+    text-transform: uppercase;
+}
+</style>
+<div class="container">
+  <div class="box">
+    <a href="{{ route('A_blog') }}">
+        <img src="{{ asset('assets/images/LogoHB.png') }}" alt="Logo" style="display: block; margin: 0 auto 45px auto;" width="200px">
+    </a>
+      <form class="" method="POST" action="{{ route('login') }}">
         @csrf
-        <div class="form-heading ">
-          <a href="{{ route('A_blog') }}"><img src="{{asset('assets\images\logo.png')}}" alt="" /></a>
-          <h1>Connexion</h1>
-          <p>&nbsp;</p>
-        </div>
-        <!-- Input Wrap -->
-        <div class="input-wrap  px-5 py-2">
-          
-          <div class="input">
-            <input type="username" id="username" placeholder="Nom d'utilisateur" class=" @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus />
-            @error('username')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-            
+          <label for="username">Nom d'utilisateur</label>
+          <div>
+              <i class="fa-solid fa-user"></i>
+              <input type="username" id="username" placeholder="Nom d'utilisateur" class="@error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus />
+          </div>
+          @error('username')
+          <span class="invalid-feedback" role="alert">
+              <strong>{{ $message }}</strong>
+          </span>
+          @enderror
+
+          <label for="password">Mot de passe</label>
+          <div>
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="password" placeholder="Mot de passe" class="@error('password') is-invalid @enderror" name="password" required autocomplete="current-password" />
+          </div>
+          @error('password')
+          <span class="invalid-feedback" role="alert">
+              <strong>{{ $message }}</strong>
+          </span>
+          @enderror
+
+          <div sty style="text-align: center; margin-top: 15px;border: none;">
+            <a style="margin: 0 auto;" href="{{ route('password.request') }}">Vous avez oublié votre mot de passe?</a>
           </div>
 
-
-          <div class="input">
-            <input type="password" id="password" placeholder="Mot de passe" class=" @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" />
-            @error('password')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
-          </div>
-
-          <!--<div class="form-group">
-            <label for="remember">
-                <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                Se souvenir de moi
-            </label>
-        </div>-->
-        
-        
-        <div class="d-flex justify-content-center mt-3">
-          <button class="btn btn-primary" type="submit" >
-            Connexion</button>
-        </div>
-
-          
-        </div>
-        <div class="d-flex justify-content-center my-2">
-          <a href="{{ route('username.reminder') }}">Identifiant oublié ?</a>
-        </div>
-        @if (Route::has('password.request'))
-        <div class="d-flex justify-content-center my-2">
-          <a  href="{{ route('password.request') }}">
-            Vous avez oublié votre mot de passe ?
-          </a> <br>
-          
-        </div>
-        <div class="d-flex justify-content-center my-2">
-          <span>Pas encore de compte ?  <a  href="{{ route('register') }}">
-            Créer un compte ici
-          </a> </span>
-        </div>
-        
-    @endif
-
-
+        <input type="submit" value="Login">
       </form>
-    </div>
+      <div style="text-align:center; margin-top: 20px;">
+          <a href="{{ route('username.reminder') }}">Identifiant oublié?</a><br>
+          <a href="{{ route('register') }}" class="sign-up">Créer un compte ici</a>
+      </div>
   </div>
-  </main>
-  
+</div>
 @endsection
-

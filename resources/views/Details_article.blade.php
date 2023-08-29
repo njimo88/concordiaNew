@@ -17,50 +17,7 @@
                     
 
 
-                       function fetchMonth($date) {
-
-                           $lemois = ( new DateTime($date) )->format('n');
-
-                          $months = array(
-                                            1 =>  'Janvier',
-                                            2 => 'Fevrier',
-                                            3 =>  'Mars',
-                                            4 => 'Avril',
-                                             5 => 'Mai',
-                                             6 =>  'Juin',
-                                             7 => 'Juillet ', 
-                                             8 => 'Aout',
-                                             9 => 'Septembre',
-                                             10 => 'Octobre',
-                                             11 => 'Novembre', 
-                                            12 =>  'Decembre',);
-
-
-                               foreach($months as $key=>$j){
-
-                                    if ($key == $lemois){
-                                    return $j ;
-                                      }
-                              }                                                                        
-                                                                                  
-                       }
                        
-                       function fetchan($date) {
-
-                         $an = ( new DateTime($date) )->format('Y');
-
-                        return $an ;                                                             
-                                                                                  
-                       }
-
-                       function fetchjour($date)   {
-
-                         $jour = ( new DateTime($date) )->format('d');
-
-                        return $jour ;
-                                      
-                                                                                                    
-                          }
 
 
 

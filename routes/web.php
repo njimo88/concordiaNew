@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\n_AdminController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\BillsController;
+use App\Http\Controllers\TraitementSupp;
 use App\Models\old_bills;
 use App\Http\Controllers\ProfessionnelsController;
 use App\Mail\UserEmail;
@@ -57,7 +58,7 @@ Auth::routes();
 
 /*Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');*/
 Route::middleware(['auth'])->group(function () {
-    Route::get('/users/family', [App\Http\Controllers\UsersController::class, 'family'])->name('users.family');
+    Route::get('/users/family', [TraitementSupp::class, 'mafamille'])->name('users.family');
     Route::post('/users/family/addMember', [App\Http\Controllers\UsersController::class, 'addMember'])->name('users.addMember');
     Route::post('/users/family/addEnfant', [App\Http\Controllers\UsersController::class, 'addEnfant'])->name('users.addEnfant');
     Route::put('/users/family/editFamille/{user_id}', [App\Http\Controllers\UsersController::class, 'editFamille'])->name('users.editFamille');
@@ -71,9 +72,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/profils', [App\Http\Controllers\UsersController::class, 'edit'])->name('users.edit-profil');
     Route::put('/users/profils', [App\Http\Controllers\UsersController::class, 'update'])->name('users.update-profil');
 
-    Route::get('/users/factures-devis', [App\Http\Controllers\UsersController::class, 'facture'])->name('users.FactureUser');
+    Route::get('/users/factures-devis', [TraitementSupp::class, 'mesfactures'])->name('users.FactureUser');
     Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
-    Route::get('/users/factures-devis/showBill/{id}', [BillsController::class, 'showBill'])->name('user.showBill');
+    Route::get('/users/factures-devis/showBill/{id}', [TraitementSupp::class, 'mafacture'])->name('user.showBill');
     Route::get('/search', [BillsController::class, 'search']);
     Route::get('/family-members/{family_id}', [BillsController::class, 'familySearch']);
     Route::post('/create-bill', [BillsController::class, 'createBill'])->name('create-bill');
@@ -202,7 +203,7 @@ Route::middleware(['auth', 'role:20'])->group(function () {
 
 /*---------------------------------ABBé------------------------------------------*/
 
-Route::get('/', [A_ControllerBlog::class, 'index'])->name('A_blog')->middleware('visitor.counter');
+Route::get('/', [TraitementSupp::class, 'carouselblog'])->name('A_blog')->middleware('visitor.counter');
 Route::get('/fetch-posts', [A_ControllerBlog::class, 'fetchPosts']);
 
 Route::get('/home', [A_ControllerBlog::class, 'index']);
@@ -211,7 +212,7 @@ Route::middleware(['PageCounterMiddleware'])->group(function () {
 
 
 Route::get('/anniversaire', [A_ControllerBlog::class, 'anniversaire'])->name('anniversaire');
-Route::get('/Simple_Post/{id}', [A_ControllerBlog::class, 'Simple_Post'])->name('Simple_Post');
+Route::get('/Simple_Post/{id}', [TraitementSupp::class, 'blog'])->name('Simple_Post');
 Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_par_cat1'])->name('A_blog_par_categorie1');
 Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_par_cat2'])->name('A_blog_par_categorie2');
 Route::get('/determinesection/count', [A_ControllerBlog::class, 'countdeterminesection'])->name('countdeterminesection');
@@ -244,9 +245,9 @@ Route::get('/mode_strict', [A_Controller_categorie::class, 'mode_strict'])->name
 
 Route::middleware(['PageCounterMiddleware'])->group(function () {
 
-Route::get('/Categorie_front', [A_Controller_categorie::class, 'MainShop'])->name('index_categorie');
-Route::get('/SubCategorie_front/{id}', [A_Controller_categorie::class, 'Shop_souscategorie'])->name('sous_categorie');
-Route::get('/details_article/{id}', [A_Controller_categorie::class, 'Handle_details'])->name('details_article');
+Route::get('/Categorie_front', [TraitementSupp::class, 'shop_categories'])->name('index_categorie');
+Route::get('/SubCategorie_front/{id}', [TraitementSupp::class, 'sub_shop_categories'])->name('sous_categorie');
+Route::get('/details_article/{id}', [TraitementSupp::class, 'singleProduct'])->name('details_article');
 Route::put('/commander_article/{id}', [A_Controller_categorie::class, 'commander_article'])->name('commander_article');
 Route::put('/Passer_au_paiement/{id}', [A_Controller_categorie::class, 'Passer_au_paiement'])->name('Passer_au_paiement');
 Route::get('/commanderModal/{shop_id}/{user_id}', [A_Controller_categorie::class, 'commanderModal']);
@@ -381,6 +382,7 @@ Route::middleware(['auth'])->group(function () {
 
 /*----------------------- Club - cours ------------------------------ */
 Route::get('/club/cours_index', [Controller_club::class, 'index_cours'])->name('index_cours');
+Route::get('/generate-pdf/{id}', [Controller_club::class, 'generatePdf'])->name('generate.pdf');
 
 Route::post('/get_data_table/{article_id}', [Controller_club::class, 'get_data_table'])->name('get_data_table');
 
@@ -476,4 +478,25 @@ Route::post('/saison/{season}/duplicate',[ParametreController::class, 'duplicate
 
 Route::get('/masection', [QuestionnaireController::class, 'index'])->name('masection');
 Route::get('/result', [QuestionnaireController::class, 'result'])->name('result');
+
+
+/****-------------------Traitement Supplementaire  ----------*/
+Route::get('/fusionsql', [TraitementSupp::class, 'fusionsql'])->name('fusionsql');
+Route::get('/jsoncorrection', [TraitementSupp::class, 'jsoncorrection'])->name('jsoncorrection');
+Route::get('/fusionnertable', [TraitementSupp::class, 'fusionnertable'])->name('fusionnertable');
+Route::get('/carouselblog', [TraitementSupp::class, 'carouselblog'])->name('carouselblog');
+Route::get('/tousLesArticles', [TraitementSupp::class, 'tousLesArticles'])->name('tousLesArticles');
+Route::get('/blog/{id}', [TraitementSupp::class, 'blog'])->name('blog');
+Route::get('/shop', [TraitementSupp::class, 'shop'])->name('shop');
+Route::get('/shop_categories', [TraitementSupp::class, 'shop_categories'])->name('shop_categories');
+Route::get('/sub_shop_categories/{id}', [TraitementSupp::class, 'sub_shop_categories'])->name('sub_shop_categories');
+Route::get('/boutique/{id}', [TraitementSupp::class, 'boutique'])->name('boutique');
+Route::get('/singleProduct/{id}', [TraitementSupp::class, 'singleProduct'])->name('singleProduct');
+Route::get('/basket', [TraitementSupp::class, 'basket'])->name('basket');
+Route::get('/paiement', [TraitementSupp::class, 'paiement'])->name('paiement');
+Route::get('/fichepaiement/{id}/{nombre_cheques}', [TraitementSupp::class, 'fichepaiement'])->name('fichepaiement');
+Route::get('/mesfactures', [TraitementSupp::class, 'mesfactures'])->name('mesfactures');
+Route::get('/mafacture/{id}', [TraitementSupp::class, 'mafacture'])->name('mafacture');
+Route::get('/mafamille', [TraitementSupp::class, 'mafamille'])->name('mafamille');
+
 

@@ -224,7 +224,7 @@
                           </div>
                           <div class="col-md-6 col-12">
                               <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
-                              @if(!auth()->user()->roles->changer_designation_facture || Route::currentRouteName() !== 'facture.showBill')
+                              @if(!auth()->user()->roles->changer_designation_facture && Route::currentRouteName() !== 'facture.showBill')
                               <select disabled name="designation"
                                   class="border form-select mt-3 @error('role') is-invalid @enderror" name="status"
                                   id="status" autocomplete="status" autofocus role="listbox">
@@ -267,10 +267,12 @@
               @else
               <td>{{ $shop->addressee }}</td>
               @endif
+              @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
               <td> <!-- New column for delete button -->
                   <button type="button" class="btn btn-sm btn-danger delete-des my-4"
                       data-id="{{ $shop->id_liaison }}">Supprimer</button>
               </td>
+              @endif
           </tr>
           @endforeach
       </tbody>
@@ -284,11 +286,12 @@
         </div>
     </div>
 @endif
+@if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
 <div class="d-flex justify-content-end m-3">
   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AjouteProduit">
     <i class="fa-solid fa-plus"></i> &nbsp; Ajouter un produit
 </div>
-
+@endif
 <div class="modal fade" id="AjouteProduit" tabindex="-1" aria-labelledby="AjouteProduitLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -389,6 +392,7 @@
         <div class="col-11 my-2">
           {!! html_entity_decode(nl2br(e($message->message))) !!}
         </div>
+        
     <div class="col-1 my-2 d-flex justify-content-end">
       <button style="display: flex ; align-self:flex-end"class="btn  btn-outline-danger delete-button" data-id="{{ $message->id_shop_message  }}">
         <i class="fas fa-times"></i>

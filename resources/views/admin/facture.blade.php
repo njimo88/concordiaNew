@@ -217,6 +217,13 @@
                          
                     </div>
                     <div class="overflow-x">
+                        <div class="input-group mb-3 mx-5">
+                            <input type="text" id="customSearch" class="form-control" placeholder="Recherche..." aria-label="Recherche" aria-describedby="search-addon" autocomplete="off">
+                            <div class="input-group-append">
+                                <button id="submitSearch" class="btn btn-outline-primary" type="button">Chercher</button>
+                            </div>
+                        </div>
+                        
                         <table style="width:100%;" id="myTable"  class="table cust-datatable dataTable no-footer">
                             <thead>
                                 <th style="min-width:50px;"> <a>ID</a></th>

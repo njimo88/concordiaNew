@@ -48,8 +48,7 @@ use Illuminate\Support\Facades\Route;
     box-shadow: 0px 0px 10px #cccccc;
     padding: 20px;
 }
-              </style>
- <style>
+
   .logo-container {
     position: relative;
     width: 200px;
@@ -74,7 +73,7 @@ use Illuminate\Support\Facades\Route;
  <!-- Search Modal -->
  <div class="modal fade" id="search-modal" tabindex="-1" role="dialog" aria-labelledby="search-modal-label" aria-modal="true">
   <div class="modal-dialog modal-lg">
-      <div class="modal-content" style="background-color: #c4d8e7; outline: 0 none;">
+      <div class="modal-content" style="background-color: #f2f2f2; outline: 0 none;">
           <div class="modal-header d-flex justify-content-center">
             <div class="col-lg-11">
               <select id="search-type" name="search-type" class="form-control custom-select-with-icons" style="text-align-last:center;">
@@ -190,7 +189,8 @@ use Illuminate\Support\Facades\Route;
   </div>
 <header id="header" class="header d-flex align-items-center">
 
-    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+  <div class="container-fluid container-xl d-flex align-items-center justify-content-between justify-content-lg-center">
+
       @guest
      
       <a href="{{ route('A_blog') }}" class="logo d-flex align-items-center">
@@ -204,17 +204,23 @@ use Illuminate\Support\Facades\Route;
       
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="{{ route('A_blog') }}"><span><img src="{{ asset("/assets/images/Accueil.png") }}" width="24">&nbsp;Accueil</span></a></li>
-          <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Club.png") }}" width="24">&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+          @if (Route::has('login'))
+            <li><a href="{{ route('login') }}" class="btn btn-danger text-white mx-2 btn-arrow btn-hover-negatif">
+              Connexion <i style="color: white; font-size:19px !important;" class='bx bxs-user'></i>
+          </a>
+          </li>
+          @endif
+          <li><a href="{{ route('A_blog') }}"><span>&nbsp;Accueil</span></a></li>
+          <li class="dropdown"><a href="#"><span>&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
             <ul>
               <li class="dropdown">
-                <a href="{{ route('Simple_Post',13000) }}"><span><img src="{{ asset("/assets/images/Comite.png") }}" width="24">&nbsp;Comité Directeur</span></a>
+                <a href="{{ route('Simple_Post',13000) }}"><span>&nbsp;Comité Directeur</span></a>
               </li>
               <li class="dropdown">
-                <a href="{{ route('Simple_Post',13002) }}"><span><img src="{{ asset("/assets/images/Partenaires.png") }}" width="24">&nbsp;Partenaires</span></a>
+                <a href="{{ route('Simple_Post',13002) }}"><span>&nbsp;Partenaires</span></a>
               </li>
               <li class="dropdown">
-                <a href="#"><span><img src="{{ asset("/assets/images/Communication.png") }}" width="24">&nbsp;Communication</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+                <a href="#"><span>&nbsp;Communication</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
                 <ul>
                   <li><a target="_blank" href="https://www.facebook.com/GymConcordia"><span><i class="bi bi-facebook"></i>&nbsp;&nbsp;Facebook</span></a></li>
                   <li><a target="_blank" href="https://www.instagram.com/gym_concordia"><span><i class="bi bi-instagram"></i>&nbsp;&nbsp;Instagram</span></a></li>
@@ -226,17 +232,17 @@ use Illuminate\Support\Facades\Route;
                 
               </li>
               <li class="dropdown">
-                <a href="{{route('index_mentions_legales')}}"><span><img src="{{ asset("/assets/images/Reglements.png") }}" width="24">&nbsp;Mentions Légales</span></a>
+                <a href="{{route('index_mentions_legales')}}"><span>&nbsp;Mentions Légales</span></a>
               </li>
               <li class="dropdown">
-                <a href="#" class="liens"  data-toggle="modal" data-target="#contactModal"><span><img src="{{ asset("/assets/images/message.png") }}" width="24">&nbsp;Prendre contact</span></a>
+                <a href="#" class="liens"  data-toggle="modal" data-target="#contactModal"><span>&nbsp;Prendre contact</span></a>
               </li>
               
             </ul>
           </li>
           <li class="dropdown">
                 <a href="{{ route('index_categorie') }}">
-                    <span><img src="{{ asset("/assets/images/Inscriptions.png") }}" width="24">&nbsp;Achats</span>
+                    <span>&nbsp;Achats</span>
                     @if($categories->filter(function ($category) {
                             return strlen($category->id_shop_category) === 1;
                         })->count() > 0)
@@ -305,9 +311,9 @@ use Illuminate\Support\Facades\Route;
               
             </li>
         
-          <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Informations.png") }}" width="24">&nbsp;Nos Activités</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+          <li class="dropdown"><a href="#"><span>&nbsp;Nos Activités</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
             <ul>
-              <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Sections.png") }}" width="24">&nbsp;Nos Sections&nbsp;<i class="bi bi-chevron-down dropdown-indicator"></i></span></a>
+              <li class="dropdown"><a href="#"><span>&nbsp;Nos Sections&nbsp;<i class="bi bi-chevron-down dropdown-indicator"></i></span></a>
                   <!-- First level dropdown: categories with one digit id -->
                   @php
                       $category = Shop_category::select('id_shop_category', 'name', 'image')
@@ -343,14 +349,12 @@ use Illuminate\Support\Facades\Route;
                         @endforeach
                     </ul>
               </li>
-              <li><a href="{{ route('Simple_Post',13224) }}"><span><img src="{{ asset("/assets/images/sport-etudes.png") }}" width="24">&nbsp;Sport-Etudes</span></a>
-              <li><a href="{{ route('Simple_Post',13005) }}"><span><img src="{{ asset("/assets/images/HorairesBureau.png") }}" width="24">&nbsp;Horaires Bureau</span></a>
+              <li><a href="{{ route('Simple_Post',13224) }}"><span>&nbsp;Sport-Etudes</span></a>
+              <li><a href="{{ route('Simple_Post',13005) }}"><span>&nbsp;Horaires Bureau</span></a>
             </ul>
           </li>
-          <li><a href="#" data-toggle="modal" data-target="#search-modal"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
-          @if (Route::has('login'))
-            <li><a href="{{ route('login') }}">Connexion<i style="color: white; font-size:19px !important;" class='bx bxs-user'></i></a></li>
-          @endif
+          <li><a href="#" data-toggle="modal" data-target="#search-modal"><span>&nbsp;Recherche</span></a></li>
+          
           </ul>
         </nav><!-- .navbar -->
   
@@ -362,17 +366,17 @@ use Illuminate\Support\Facades\Route;
         </a>
         <nav id="navbar" class="navbar">
           <ul>
-            <li><a href="{{ route('A_blog') }}"><span><img src="{{ asset("/assets/images/Accueil.png") }}" width="24">&nbsp;Accueil</span></a></li>
-            <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Club.png") }}" width="24">&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+            <li><a href="{{ route('A_blog') }}"><span>&nbsp;Accueil</span></a></li>
+            <li class="dropdown"><a href="#"><span>&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
               <ul>
                 <li class="dropdown">
-                  <a href="{{ route('Simple_Post',13000) }}"><span><img src="{{ asset("/assets/images/Comite.png") }}" width="24">&nbsp;Comité Directeur</span></a>
+                  <a href="{{ route('Simple_Post',13000) }}"><span>&nbsp;Comité Directeur</span></a>
                 </li>
                 <li class="dropdown">
-                  <a href="{{ route('Simple_Post',13002) }}"><span><img src="{{ asset("/assets/images/Partenaires.png") }}" width="24">&nbsp;Partenaires</span></a>
+                  <a href="{{ route('Simple_Post',13002) }}"><span>&nbsp;Partenaires</span></a>
                 </li>
                 <li class="dropdown">
-                  <a href="#"><span><img src="{{ asset("/assets/images/Communication.png") }}" width="24">&nbsp;Communication</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+                  <a href="#"><span>&nbsp;Communication</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
                   <ul>
                     <li><a target="_blank" href="https://www.facebook.com/GymConcordia"><span><i class="bi bi-facebook"></i>&nbsp;&nbsp;Facebook</span></a></li>
                     <li><a target="_blank" href="https://www.instagram.com/gym_concordia"><span><i class="bi bi-instagram"></i>&nbsp;&nbsp;Instagram</span></a></li>
@@ -384,17 +388,17 @@ use Illuminate\Support\Facades\Route;
                   
                 </li>
                 <li class="dropdown">
-                  <a href="{{route('index_mentions_legales')}}"><span><img src="{{ asset("/assets/images/Reglements.png") }}" width="24">&nbsp;Mentions Légales</span></a>
+                  <a href="{{route('index_mentions_legales')}}"><span>&nbsp;Mentions Légales</span></a>
                 </li>
                 <li class="dropdown">
-                  <a href="#" class="liens"  data-toggle="modal" data-target="#contactModal"><span><img src="{{ asset("/assets/images/message.png") }}" width="24">&nbsp;Prendre contact</span></a>
+                  <a href="#" class="liens"  data-toggle="modal" data-target="#contactModal"><span>&nbsp;Prendre contact</span></a>
                 </li>
                 
               </ul>
             </li>
             <li class="dropdown">
                   <a href="{{ route('index_categorie') }}">
-                      <span><img src="{{ asset("/assets/images/Inscriptions.png") }}" width="24">&nbsp;Achats</span>
+                      <span>&nbsp;Achats</span>
                       @if($categories->filter(function ($category) {
                               return strlen($category->id_shop_category) === 1;
                           })->count() > 0)
@@ -463,9 +467,9 @@ use Illuminate\Support\Facades\Route;
                 
               </li>
           
-            <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Informations.png") }}" width="24">&nbsp;Nos Activités</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
+            <li class="dropdown"><a href="#"><span>&nbsp;Nos Activités</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
               <ul>
-                <li class="dropdown"><a href="#"><span><img src="{{ asset("/assets/images/Sections.png") }}" width="24">&nbsp;Nos Sections&nbsp;<i class="bi bi-chevron-down dropdown-indicator"></i></span></a>
+                <li class="dropdown"><a href="#"><span>&nbsp;Nos Sections&nbsp;<i class="bi bi-chevron-down dropdown-indicator"></i></span></a>
                     <!-- First level dropdown: categories with one digit id -->
                     @php
                         $category = Shop_category::select('id_shop_category', 'name', 'image')
@@ -501,29 +505,23 @@ use Illuminate\Support\Facades\Route;
                           @endforeach
                       </ul>
                 </li>
-                <li><a href="{{ route('Simple_Post',13224) }}"><span><img src="{{ asset("/assets/images/sport-etudes.png") }}" width="24">&nbsp;Sport-Etudes</span></a>
-                <li><a href="{{ route('Simple_Post',13005) }}"><span><img src="{{ asset("/assets/images/HorairesBureau.png") }}" width="24">&nbsp;Horaires Bureau</span></a>
+                <li><a href="{{ route('Simple_Post',13224) }}"><span>&nbsp;Sport-Etudes</span></a>
+                <li><a href="{{ route('Simple_Post',13005) }}"><span>&nbsp;Horaires Bureau</span></a>
               </ul>
             </li>
-            <li><a href="#" data-toggle="modal" data-target="#search-modal"><span><img src="{{ asset("/assets/images/Reglements (1).png") }}" width="24">&nbsp;Recherche</span></a></li>
+            <li><a href="#" data-toggle="modal" data-target="#search-modal"><span>&nbsp;Recherche</span></a></li>
             <li class="dropdown">
-              <a href="#"><span>@if(auth()->user()->image)
-                <img style="max-height: 35px" class="rounded-circle" src="{{  auth()->user()->image }}" >
-             @elseif (auth()->user()->gender == 'male')
-                <img style="max-height: 35px" class="rounded-circle" src="{{ asset('assets\images\user.jpg') }}" alt="male">
-             @elseif (auth()->user()->gender == 'female')
-                <img style="max-height: 35px" class="rounded-circle" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
-             @endif <span style="font-weight: 100">{{ auth()->user()->lastname }} </span>{{ auth()->user()->name }}</span> <i class="bi bi-chevron-down dropdown-indicator"></i>
+              <a href="#"><span> <span style="font-weight: 100">{{ auth()->user()->lastname }} </span>{{ auth()->user()->name }}</span> <i class="bi bi-chevron-down dropdown-indicator"></i>
               </a>
               
               <ul>
                 @if (auth()->user()->role >= 20)
-                <li><a href="{{ route('admin.index') }}"><span><img src="{{ asset("/assets/images/admin.png") }}" width="24">&nbsp;Administration</span></a></li>
+                <li><a href="{{ route('admin.index') }}"><span>&nbsp;Administration</span></a></li>
              @endif
               
-                <li><a href="{{ route('users.family') }}"><span><img src="{{ asset("/assets/images/Famille (1).png") }}" width="24">&nbsp;Ma Famille</span></a></li>
-                <li><a href="{{ route('users.FactureUser') }}"><span><img src="{{ asset("/assets/images/Factures.png") }}" width="24">&nbsp;Mes Factures/Devis</span></a></li>
-                <li><a href="{{ route('logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();"><span><img src="{{ asset("/assets/images/logout.png") }}" width="20">&nbsp;Déconnecter</span></a></li>
+                <li><a href="{{ route('users.family') }}"><span>&nbsp;Ma Famille</span></a></li>
+                <li><a href="{{ route('users.FactureUser') }}"><span>&nbsp;Mes Factures/Devis</span></a></li>
+                <li><a href="{{ route('logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();"><span>&nbsp;Déconnecter</span></a></li>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                   @csrf
                 </form>
@@ -540,7 +538,7 @@ use Illuminate\Support\Facades\Route;
             @if(count($paniers) > 0)
                 <li><a href="{{ route('panier', auth()->user()->user_id) }}"style="color:red"><i style="color:red;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier ({{ count($paniers) }})</a></li>
             @else
-                <li><a href="{{ route('panier', auth()->user()->user_id) }}" ><i style="color:white;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier</a></li>
+                <li><a href="{{ route('basket', auth()->user()->user_id) }}" ><i style="color:white;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier</a></li>
             @endif
           </ul>
         </nav><!-- .navbar -->

@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\A_Blog_Post;
-use App\Models\A_Categorie1;
-use App\Models\A_Categorie2;
 use App\Models\Shop_article;
 use App\Models\User;
+use App\Models\Category;
 use App\Models\Shop_category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BlogArticle_Controller extends Controller
 {
@@ -35,8 +36,8 @@ class BlogArticle_Controller extends Controller
     function edit_blog_index($id){
         $Id = $id ;
         $blog  =  A_Blog_Post::where('id_blog_post_primaire', $id)->get();
-        $Categorie1 = A_Categorie1::get() ;
-        $Categorie2 = A_Categorie2::get() ;
+        $Categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+        $Categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
         return view('BlogArticle_Backoffice/BlogArticle_edit_blog',compact('blog','Categorie2','Categorie1','Id'))->with('user', auth()->user()) ;
 
     }
@@ -47,14 +48,14 @@ class BlogArticle_Controller extends Controller
 
         if(isset($request->category1)){
                                  
-            $blog->categorie1 =  json_encode($request->category1,JSON_NUMERIC_CHECK);
+            $blog->categorie =  json_encode($request->category1,JSON_NUMERIC_CHECK);
            
             $blog->save();  
         }
         
         if(isset($request->category2)){
                                  
-            $blog->categorie2 =  json_encode($request->category2,JSON_NUMERIC_CHECK);
+            $blog->categorie =  json_encode($request->category2,JSON_NUMERIC_CHECK);
            
             $blog->save();  
         }
@@ -114,8 +115,8 @@ class BlogArticle_Controller extends Controller
 
     function index_article_redaction()
     {
-        $Categorie1 = A_Categorie1::get() ;
-        $Categorie2 = A_Categorie2::get() ;
+        $Categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+        $Categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
 
         return view('BlogArticle_Backoffice/BlogArticle_redaction_blog',compact('Categorie1','Categorie2'))->with('user', auth()->user()) ;
 
@@ -131,8 +132,8 @@ class BlogArticle_Controller extends Controller
         $Blog->date_post = $request->input('date_post');
         $Blog->titre = $request->input('titre');
         $Blog->contenu = $request->input('editor1');
-        $Blog->categorie1 = json_encode($request->input('category1'),JSON_NUMERIC_CHECK);
-        $Blog->categorie2 = json_encode($request->input('category2'),JSON_NUMERIC_CHECK);
+        $Blog->categorie = json_encode($request->input('category1'),JSON_NUMERIC_CHECK);
+        $Blog->categorie = json_encode($request->input('category2'),JSON_NUMERIC_CHECK);
 
         
 
@@ -166,8 +167,8 @@ class BlogArticle_Controller extends Controller
 
     function index_article_category(){
 
-        $requete_categorie1 = A_Categorie1::paginate(30) ;
-        $requete_categorie2 = A_Categorie2::paginate(30) ;
+        $requete_categorie1  = Category::whereBetween('id_categorie', [100, 199])->paginate(30);
+        $requete_categorie2 = Category::whereBetween('id_categorie', [200, 299])->paginate(30);
 
         return view('BlogArticle_Backoffice/BlogArticle_index_category',compact('requete_categorie1','requete_categorie2'))->with('user', auth()->user())  ;
 
@@ -209,7 +210,7 @@ class BlogArticle_Controller extends Controller
         */
         if ($cate == 1){
 
-            $cate1  = new A_Categorie1();
+            $cate1  = new Category();
    
  
             $cate1->nom_categorie = $request->input('titre');
@@ -226,7 +227,7 @@ class BlogArticle_Controller extends Controller
           
         }
         else{
-            $cate2  = new A_Categorie2();
+            $cate2  = new Category();
             $cate2->nom_categorie = $request->input('titre');
             $cate2->image  = $request->input('image');
             $cate2->categorie_URL = '' ;
@@ -255,9 +256,9 @@ class BlogArticle_Controller extends Controller
  function delete($id)
     {
         
-        $cate1 = A_Categorie1::where('Id_categorie1', $id)->delete();
+        $cate1 = Category::where('Id_categorie', $id)->delete();
 
-        $cate2 = A_Categorie2::where('Id_categorie2', $id)->delete();
+        $cate2 = Category::where('Id_categorie', $id)->delete();
 
       
       //  return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
@@ -270,8 +271,8 @@ class BlogArticle_Controller extends Controller
 function edit_index($id){
 
     $Id =$id;
-    $cate1 = A_Categorie1::where('Id_categorie1', $id)->get();
-    $cate2 = A_Categorie2::where('Id_categorie2', $id)->get();
+    $cate1 = Category::where('Id_categorie', $id)->get();
+    $cate2 = Category::where('Id_categorie', $id)->get();
 
     return view('BlogArticle_Backoffice/index_category_edit',compact('cate1','cate2','Id'))->with('user', auth()->user());
 
@@ -280,8 +281,8 @@ function edit_index($id){
 
 function edit_cate(Request $request, $id){
 
-    $cate1=A_Categorie1::find($id);
-    $cate2=A_Categorie2::find($id);
+    $cate1=Category::find($id);
+    $cate2=Category::find($id);
 
     
     if ($cate1){

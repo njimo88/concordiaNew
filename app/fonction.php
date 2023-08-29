@@ -105,14 +105,23 @@ function hasFamilyMemberWithAgeInRange($familyMembers, $agemin, $agemax) {
 
 
 //sortir les membres de la famille qui ont l'age requis
-function getFamilyMembersMeetingAgeCriteria($family, $agemin, $agemax) {
-    $members = collect($family)->filter(function($member) use ($agemin, $agemax) {
-        $age = Carbon::parse($member->birthdate)->age;
-        return ($age >= $agemin && $age <= $agemax);
-    })->values();
+function getFamilyMembersWithAgeInRange($familyMembers, $agemin, $agemax) {
+    $filteredMembers = [];
+
+    foreach ($familyMembers as $member) {
+        $birthdate = Carbon::parse($member->birthdate);
+        $now = Carbon::now();
+        $daysSinceBirth = $now->diffInDays($birthdate);
+        $age = $daysSinceBirth / 365.25;
+        
+        if ($age >= $agemin && $age <= $agemax) {
+            $filteredMembers[] = $member;
+        }
+    }
     
-    return $members;
+    return $filteredMembers;
 }
+
 
 
 // sortir les users qui peuvent acheter  l'article
@@ -140,7 +149,8 @@ function getArticleUsers($article) {
         return in_array($user->user_id, $selectedUsers) && ($article->sex_limit == null || $article->sex_limit == 0 || $user->gender == $article->sex_limit);
     })->values();
 
-    $familyMembersMeetingAgeCriteria = getFamilyMembersMeetingAgeCriteria($family, $article->agemin, $article->agemax);
+    $familyMembersMeetingAgeCriteria = getFamilyMembersWithAgeInRange($family, $article->agemin, $article->agemax);
+    $familyMembersMeetingAgeCriteria = collect($familyMembersMeetingAgeCriteria);
     $familyMembersMeetingAgeCriteria = $familyMembersMeetingAgeCriteria->filter(function($user) use ($article) {
         return ($article->sex_limit == null || $user->gender == $article->sex_limit);
     })->values();
@@ -1686,74 +1696,61 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
 
 
     function nbr_inscrits_based_on_date($saison)
-    {
-            // Date de rentree saison actuelle
-       $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->first('date_de_rentree');
-       $date_de_rentree_value = $date_de_rentree->date_de_rentree;
+{
+     // Tableau pour stocker les périodes de calcul
+     $periodes = [];
+
+     // Obtenir la date d'aujourd'hui
+     $date_today = date("Y-m-d");
+ 
+     $currentYear = date("Y");
+     $todayMonthDay = date("m-d");
+         if ($todayMonthDay < "06-20") {
+             // Si nous sommes avant le 20 juin
+             $season_start_date = date("Y-m-d", strtotime(($saison) . "-06-20"));
+             $season_end_date = date("Y-m-d", strtotime($saison+1 . "-" . $todayMonthDay));
+         } else {
+             // Si nous sommes après le 20 juin
+             $season_start_date = date("Y-m-d", strtotime($saison . "-06-20"));
+             $season_end_date = date("Y-m-d", strtotime($saison . "-" . $todayMonthDay));
+         }
+ 
+     // Ajouter la période au tableau
+     $periodes[] = "Période : " . $season_start_date . " à " . $season_end_date;
+ 
 
 
-
-
-
-
-
-          // modification de l'annee de la date du jour en fonction de la saison passee en parametre
-          // Date de rentree saison passee en parametre 
-
-       $original_date = new DateTime($date_de_rentree_value);
-       $new_date = $original_date->setDate($saison, $original_date->format('m'), $original_date->format('d'))->format('Y-m-d');
-
-
-        // Annee de la saison actuelle
-       $saison_active = saison_active() ;
-
-        // date d'aujourd'hui
-        $date_today = date("Y-m-d");
-
-      
-        // requete pour avoir le nombre de user inscrit au cours d'une saison donnee
-             
-       $result = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
+    // requête pour avoir le nombre d'utilisateurs inscrits pendant cette période pour les 'bills'
+    $result = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
        ->leftjoin('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
        ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
        ->where('type_article',0)
        ->where('type','facture')
        ->where('status','>',9)
        ->where('saison',$saison)
-       ->whereBetween('date_bill', [$new_date,$date_today])
+       ->whereBetween('date_bill', [$season_start_date, $season_end_date])
        ->distinct()
        ->count('liaison_shop_articles_bills.id_user');
 
-
-
-       $result_old_bills = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
+    // requête pour avoir le nombre d'utilisateurs inscrits pendant cette période pour les 'old_bills'
+    $result_old_bills = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
        ->leftjoin('old_bills', 'liaison_shop_articles_bills.bill_id', '=', 'old_bills.id')
        ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
        ->where('type_article',0)
        ->where('type','facture')
        ->where('status','>',9)
        ->where('saison',$saison)
-       ->whereBetween('date_bill', [$new_date,$date_today])
+       ->whereBetween('date_bill', [$season_start_date, $season_end_date])
        ->distinct()
        ->count('liaison_shop_articles_bills.id_user');
 
+    // Calcul du résultat final
+    $final_result =  $result + $result_old_bills;
 
-       $final_result =  $result +  $result_old_bills  ;
+    return ['result' => $final_result, 'periodes' => $periodes];
+}
 
 
-
-
-
-
-    /*   $result = $this->db->query("SELECT COUNT(*) as cc FROM `liaison_shop_articles_bills` LEFT JOIN `bills` 
-       ON bills.id_bill = liaison_shop_articles_bills.id_bill 
-       WHERE liaison_shop_articles_bills.id_shop_article = '$row->id_article_inscription'
-        AND bills.type = 'facture' AND bills.state != 'Commande suspendue'");  */
-       
-     
-    return   $final_result ;
-
-    }
 
 
     function generateArray($start, $end, $step) {
@@ -2002,3 +1999,61 @@ function chiffreEnLettre($nombre) {
 
 
 
+
+function fetchMonth($date) {
+
+    $lemois = ( new DateTime($date) )->format('n');
+
+   $months = array(
+                     1 =>  'Janvier',
+                     2 => 'Fevrier',
+                     3 =>  'Mars',
+                     4 => 'Avril',
+                      5 => 'Mai',
+                      6 =>  'Juin',
+                      7 => 'Juillet ', 
+                      8 => 'Aout',
+                      9 => 'Septembre',
+                      10 => 'Octobre',
+                      11 => 'Novembre', 
+                     12 =>  'Decembre',);
+
+
+        foreach($months as $key=>$j){
+
+             if ($key == $lemois){
+             return $j ;
+               }
+       }                                                                        
+                                                           
+}
+
+function fetchan($date) {
+
+  $an = ( new DateTime($date) )->format('Y');
+
+ return $an ;                                                             
+                                                           
+}
+function fetchjour($date)   {
+
+  $jour = ( new DateTime($date) )->format('d');
+
+ return $jour ;
+               
+                                                                             
+   }
+
+   function fetchDayName($date) {
+    $dayName = (new DateTime($date))->format('l');
+    $days = array(
+        'Monday' => 'Lundi',
+        'Tuesday' => 'Mardi',
+        'Wednesday' => 'Mercredi',
+        'Thursday' => 'Jeudi',
+        'Friday' => 'Vendredi',
+        'Saturday' => 'Samedi',
+        'Sunday' => 'Dimanche'
+    );
+    return $days[$dayName];
+}

@@ -12,7 +12,7 @@
    display: inline-block;
    padding: 10px 30px;
    color: #fff;
-   background-color: #182983;
+   
    border: none;
    position: relative;
    cursor: pointer;
@@ -49,15 +49,15 @@ $saison_active = saison_active() ;
         
         <div class="col-md-8">
         <h4>Mes articles</h4>
-        <button type="button" class="btn btn-primary">Article</button>
-        <button type="button" class="btn btn-primary">Anciens articles</button>
+        <button style="background-color: #182983 !important;" type="button" class="btn btn-primary">Article</button>
+        <button style="background-color: #182983 !important;" type="button" class="btn btn-primary">Anciens articles</button>
 
         @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
         <!-- Button trigger modal pour choisir le type d'article-->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+<button style="background-color: #182983 !important;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
 Créer un article
 </button>
-  <button id="updateStock"  class="btn">
+  <button style="background-color: #182983 !important;" id="updateStock"  class="btn">
       <i class="fas fa-sync"></i> Mettre à jour le stock
   </button>
 <br>
@@ -214,7 +214,7 @@ Créer un article
 
       
                 
-<table id="myTable" class="table table-bordred table-striped">
+<table id="myTableArticle" class="table table-bordred table-striped">
      
      <thead>
      
@@ -259,10 +259,8 @@ Créer un article
   @endphp
 
   @if ($now->between($startValidity, $endValidity))
-    <!-- If current date is between start and end dates, display green icon -->
     <i class="fa fa-circle text-success"></i>
   @else
-    <!-- Else, display red icon -->
     <i class="fa fa-circle text-danger"></i>
   @endif
 </td>

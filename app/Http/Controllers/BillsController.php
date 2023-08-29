@@ -59,6 +59,8 @@ class BillsController extends Controller
 }
 
 
+
+
         public function familySearch($family_id) {
             $familyMembers = User::where('family_id', $family_id)->get();
             return response()->json($familyMembers);
@@ -249,7 +251,18 @@ class BillsController extends Controller
                 ->orderBy('bills.date_bill', 'desc');
                 
         }
-    
+
+        if ($request->input('searchTerm')) {
+            $searchTerm = $request->input('searchTerm');
+            
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('users.name', 'LIKE', '%' . $searchTerm . '%')
+                  ->orWhere('users.lastname', 'LIKE', '%' . $searchTerm . '%')
+                    ->orWhere('bills.id', 'LIKE', '%' . $searchTerm . '%')
+                    ->orWhere('bills.payment_total_amount', 'LIKE', '%' . $searchTerm . '%');
+            });
+        }
+        
         $data = DataTables::of($query)
             ->addColumn('full_name', function($row) {
                 return $row->name . ' ' . $row->lastname;

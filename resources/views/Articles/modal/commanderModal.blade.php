@@ -1,6 +1,12 @@
+<style>
+    .btn:hover {
+        background-color: #63c3d1 !important;
+    }
+</style>
+
 <div class="modal-body p-5">
     <h4><span style="font-weight:bold;color:blue">{{ $shop->title }}</span></h4>
-    <img style="max-height: 200px" src="{{ $shop->image }}" alt="">
+    <img class="mb-3" style="max-height: 200px" src="{{ $shop->image }}" alt="">
     <h5>Ce produit a été ajouté a votre Panier !</h5>
     <hr>
     <h5>Avez-vous terminé vos achats ?</h5>
@@ -24,9 +30,9 @@ Vous vous apprêtez à devenir adhérent. Il vous faut pour cela confirmer en co
             <input type="hidden" name="declinaison" id="declinaison" value="{{ $declinaison }}">
             <input type="hidden" name="selected_user_id" id="selected_user_id" value="{{ $user_id }}">
             @if($needMember != 0)
-            <button type="submit" class="mx-1 btn btn-success" id="continueButton" {{$needMember ? 'disabled' : ''}}>Continuer mes achats</button>
+            <button  type="submit" class="mx-1 btn " id="continueButton" {{$needMember ? 'disabled' : ''}}>Continuer mes achats</button>
             @else
-            <button type="submit" class="mx-1 btn btn-success">Continuer mes achats</button>
+            <button  type="submit" class="mx-1 btn ">Continuer mes achats</button>
             @endif
         </form>
         <form action="{{ route("Passer_au_paiement", $shop->id_shop_article) }}" method="post">
@@ -36,9 +42,9 @@ Vous vous apprêtez à devenir adhérent. Il vous faut pour cela confirmer en co
             <input type="hidden" name="declinaison" id="declinaison" value="{{ $declinaison }}">
             <input type="hidden" name="selected_user_id" id="selected_user_id" value="{{ $user_id }}">
             @if($needMember != 0)
-            <button type="submit" class="mx-1 btn btn-warning" id="paymentButton" {{$needMember ? 'disabled' : ''}}>Passer au paiement</button>
+            <button  type="submit" class="mx-1 btn btn-rouge" id="paymentButton" {{$needMember ? 'disabled' : ''}}>Passer au paiement</button>
             @else
-            <button type="submit" class="mx-1 btn btn-warning">Passer au paiement</button>
+            <button  type="submit" class="mx-1 btn btn-rouge">Passer au paiement</button>
             @endif
         </form>
     </div>

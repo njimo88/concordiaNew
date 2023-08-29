@@ -28,6 +28,7 @@
                                                 $n_users->birthdate
                                             @endif
                                         </td>
+                                        
                                         <td> 
                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Les membres de ma famille">
                                                 <img data-user-id="{{ $n_users->family_id }}"  type="button" class="familymem editbtn2 mx-2" src="{{ asset('assets/images/familyy.png') }}"> 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Shop_article;
 use App\Models\shop_article_1;
+use PDF;
 
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Laravel\Ui\Presets\Preset;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 require_once(app_path().'/fonction.php');
 
@@ -27,15 +29,27 @@ class Controller_club extends Controller
     
         /*------------------------------------- requetes pour les teachers ------------------------------*/
        
-        $users_saison_active = User::select('users.user_id','users.name','users.lastname','users.phone','users.birthdate','users.email','liaison_shop_articles_bills.id_shop_article')
+        $users_saison_active = User::select(
+            'users.user_id',
+            'users.name',
+            'users.lastname',
+            'users.phone',
+            'users.birthdate',
+            'users.email',
+            'liaison_shop_articles_bills.id_shop_article',
+            'bills_status.row_color',
+            'bills.id'
+        )
             ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
             ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+            ->join('bills_status', 'bills.status', '=', 'bills_status.id')  // This is the new join to get the row_color
             ->where('shop_article.saison', $saison_actu)
             ->where('bills.status', '>', 9)
             ->distinct('users.user_id')
             ->orderBy('users.name', 'ASC')
-            ->get();
+            ->get(); 
+        
     
         /* ------------------------------------------requetes pour l'admin------------------------------*/
         
@@ -64,7 +78,169 @@ class Controller_club extends Controller
         return view('club/cours_index',compact('saison_list','shop_article_first','users_saison_active','saison_actu'))->with('user', auth()->user());
     }
     
+    public function generatePdf($id) {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+        ob_end_clean(); 
+        ob_start();
+        $course = Shop_article::find($id);
+        $courseName = $course->title;
+    
+        Carbon::setLocale('fr');
+        $currentDate = Carbon::now()->isoFormat('D MMMM YYYY');
+        
+        $saison = $course->saison;
+        $nextSaison = $saison + 1;
+    
+        $personnes = User::select(
+            'users.user_id',
+            'users.name',
+            'users.lastname',
+            'users.birthdate',
+            'liaison_shop_articles_bills.id_shop_article',
+            'bills.id',
+            'bills.status'
+        )
+            ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+            ->where('shop_article.id_shop_article', $id)
+            ->distinct('users.user_id')
+            ->orderBy('users.name', 'ASC')
+            ->get(); 
+    
+            $pdfContent = "
+            
 
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
+        body, table {
+            font-family: 'Roboto', sans-serif;
+            font-size: 10px; // Réduire la taille de la police
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%; 
+        }
+
+        td, th {
+            min-width: 10px;
+            border: 1px solid #333; 
+            padding: 5px; 
+            white-space: nowrap; // Nom Prénom sur une seule ligne
+        }
+
+        th {
+            height: 110px;
+        }
+
+        .header {
+            position: relative;
+            width: 100%;
+        }
+
+        .header-text {
+            font-size: 16px;
+            width: 80%;
+            float: left;
+        }
+
+        .logo-container {
+            width: 20%;
+            float: right;
+            text-align: right;
+            height: 100px ;
+        }
+
+        .logo {
+            height: 100px;  // Taille naturelle
+            width: auto;
+        }
+    </style>
+            <div class='header'>
+                <div class='header-text'>
+                    Liste du Groupe <b>\"{$courseName} ({$saison}-{$nextSaison})\"</b> au {$currentDate}
+                </div>
+                <div class='logo-container'>
+                    <img class='logo' src='https://www.gym-concordia.com/assets/images/LogoHB.png' alt='Logo'>
+                </div>
+                <div style='clear:both;'></div>
+            </div>
+            <br>
+            <div style='text-decoration: underline;font-size: 16px;'>{$courseName}</div>
+            <br>
+            <table border='1'>
+            <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nom Prénom</th>
+            <th>Date Naiss</th>";
+
+for ($i = 1; $i <= 30; $i++) { 
+    $pdfContent .= "<th></th>";
+}
+
+$pdfContent .= "</tr>
+    </thead>
+            <tbody>";
+    
+        $counter = 0;
+        foreach ($personnes as $person) {
+            if ($person->status != 1) {
+                $counter++;
+            }
+            $formattedDate = date('d/m/Y', strtotime($person->birthdate));
+            $pdfContent .= "
+            <tr " . ($person->status == 1 ? "style='text-decoration: line-through;'" : "") . ">
+                <td>" . ($person->status != 1 ? $counter : "") . "</td>
+                <td>{$person->name} {$person->lastname}</td>
+                <td>{$formattedDate}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>";
+        }
+    
+        $pdfContent .= "
+            </tbody>
+        </table>";
+    
+        $pdf = PDF::loadHTML($pdfContent);
+        $pdf->setPaper('a4', 'landscape'); 
+        header('Content-Type: application/pdf');
+        return $pdf->stream();
+    }
+    
+    
 
     public function get_data_table(Request $request, $article_id){
 

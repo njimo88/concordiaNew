@@ -27,12 +27,14 @@ class ClickAssoController extends Controller
     {
         $cookie = $this->getLogin();
 
-        return view('admin.clickAsso', ['cookie' => $cookie]);
+        return view('admin.clickasso', ['cookie' => $cookie]);
     }
+
 
     public function triggerJob()
     {
-        ClickAsso::dispatchNow();
+        ClickAsso::dispatch();
         return response()->json(['status' => 'Job dispatched']);
     }
+    
 }

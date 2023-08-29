@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class Shop_article extends Model
 {
@@ -64,6 +65,46 @@ public function liaisonShopArticlesBill()
     return $this->hasMany(LiaisonShopArticlesBill::class, 'id_shop_article');
 }
 
+
+public static function getArticlesByCategories($categoryIds, $saison_active)
+{
+    $categoryIds = (int) $categoryIds;
+    // Commencez par votre requête DB::table
+    $n_var = DB::table('shop_article')
+        ->leftJoin('shop_article_1', function($join)
+        {
+            $join->on('shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')
+                 ->where('shop_article.type_article', '=', 1);
+        })
+        ->join('liaison_shop_articles_shop_categories', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_shop_categories.id_shop_article')
+        ->join('shop_category', 'shop_category.id_shop_category', '=', 'liaison_shop_articles_shop_categories.id_shop_category')
+        ->select('shop_article.*', 'shop_article_1.lesson', 'shop_category.*', 'shop_article.image as image') 
+        ->where('shop_article.saison', '=', $saison_active)
+        ->whereJsonContains('shop_article.categories', [$categoryIds])
+        ->get()
+        ->map(function ($item) {
+            $lesson = json_decode($item->lesson, true);
+            $item->start_date = isset($lesson['start_date'][0]) ? $lesson['start_date'][0] : null;
+            return $item;
+        })
+        ->all();
+        usort($n_var, function ($a, $b) {
+        return strcmp($a->start_date, $b->start_date);
+    }); 
+
+    $user =  Auth::user();
+    $user_id = Auth::id();
+
+    if ($user_id === null || $user->role < 90) {
+        $n_var = filterArticlesByValidityDate($n_var);
+    }
+
+    if ($user_id === null || $user->role  < 90) {
+        return getFilteredArticles($n_var);
+    }
+
+    return $n_var;
+}
 
 
 

@@ -94,15 +94,13 @@
 			</g>
 		</g>
 	</svg>
-	<h2>Réouverture du site internet <br> le 26 mai 2023 à 12h00</h2>
-	<div>
-		<p>Désolé pour la gêne occasionnée. <br> Nous effectuons 
-			actuellement une maintenance importante. <br> Vous pouvez nous suivre 
-			 sur <a target="_blank" href="https://www.facebook.com/GymConcordia/?locale=fr_FR">
-				Facebook</a> ou <a target="_blank" href="https://www.instagram.com/gym_concordia/?__coig_restricted=1">
-					Instagram</a> </p>
-		<p>Nous serons de retour trés vite &mdash; La Gym Concordia</p>
-	</div>
+	@php
+
+		use App\Models\SystemSetting;
+		$message = SystemSetting::where('name', 'maintenance')->first();
+	@endphp
+
+	{!! $message->Message !!}
 	<br>
 	<div class="m-3">
 		<img style="width: 100%" src="https://www.gym-concordia.com/2023-05-15%20-%20Reinscriptions.jpg" alt="">

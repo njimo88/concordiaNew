@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\A_Blog_Post;
-use App\Models\A_Categorie1;
-use App\Models\A_Categorie2;
 use App\Models\liaison_blog_posts;
 use App\Models\liaison_blog_terms;
 use Illuminate\Pagination\Paginator;
@@ -14,7 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Mockery\Generator\StringManipulation\Pass\Pass;
 use PhpParser\Node\Stmt\Else_;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Category;
 
 require_once(app_path().'/fonction.php');
 
@@ -84,8 +82,8 @@ public function index(Request $request)
         ->select('blog_posts.*', 'users.name', 'users.lastname', 'users.email')
         ->paginate(10);
 
-    $a_categorie1 = A_Categorie1::select('Id_categorie1', 'image')->get();
-    $a_categorie2 = A_Categorie2::select('Id_categorie2', 'image')->get();
+    $a_categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+    $a_categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
 
     // Article d'accueil
     $post = DB::table('blog_posts')
@@ -119,8 +117,8 @@ public function Simple_Post($id){
     ->first();
 
 
-    $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
-    $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
+    $a_categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+    $a_categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
     return view('club.Simple_Post',compact('a_article','a_categorie1','a_categorie2'))->with('user', auth()->user());
 }
 
@@ -130,8 +128,8 @@ public function recherche_par_cat1(Request $request, $id) {
     $blogs = A_Blog_Post::whereJsonContains('categorie1', intval($id))->latest('date_post')->paginate(6);
 
 
-    $a_categorie1 = A_Categorie1::select('Id_categorie1', 'image')->get();
-    $a_categorie2 = A_Categorie2::select('Id_categorie2', 'image')->get();
+    $a_categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+    $a_categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
     $a_result = $id;
 
     return view('A_blog_par_categorie1', compact('blogs', 'a_result', 'a_categorie1', 'a_categorie2'))->with('user', auth()->user());
@@ -144,8 +142,8 @@ public function recherche_par_cat2(Request $request, $id) {
 
     $blogs = A_Blog_Post::whereJsonContains('categorie2', intval($id))->latest('date_post')->paginate(6);
 
-    $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
-    $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
+    $a_categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+    $a_categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
  
    
     $a_result = $id ;
@@ -189,7 +187,7 @@ public function recherche_par_cat2(Request $request, $id) {
            }
            $cat2 = array_unique($cat2);
            $cat2 = json_encode($cat2);
-           $a_ma_requete->categorie1 = $cat2;
+           $a_ma_requete->categorie = $cat2;
            $a_ma_requete->save();
 
          
@@ -232,7 +230,7 @@ public function recherche_par_cat2(Request $request, $id) {
            }
            $cat2 = array_unique($cat2);
            $cat2 = json_encode($cat2);
-           $a_ma_requete->categorie2 = $cat2;
+           $a_ma_requete->categorie = $cat2;
            $a_ma_requete->save();
 
          

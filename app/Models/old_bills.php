@@ -18,6 +18,8 @@ class old_bills extends Model
         'user_id',
         'family_id',
         'ref',
-        'total_charges'
+        'total_charges',
+        'amount_paid',
+        'number',
     ];
 }

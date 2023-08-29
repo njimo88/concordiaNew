@@ -5,8 +5,9 @@
     <div id="app">
       @include('layouts.navbar')
         @yield('content')
+      @include('layouts.footer')
     </div>
-
+    
     <!-- Vendor JS Files -->
     <script src="{{ asset('assets\vendor\aos\aos.js') }}"></script>
     <script src="{{ asset('assets\vendor\glightbox\js\glightbox.min.js') }}"></script>
@@ -25,6 +26,8 @@
     <script src="//g.tutorialjinni.com/mojoaxel/bootstrap-select-country/dist/js/bootstrap-select-country.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{{ asset('assets\js\main.js') }}"></script>
     @livewireScripts
 </body>

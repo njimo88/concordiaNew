@@ -316,7 +316,8 @@ $(function () {
   var table = $('#myTable').DataTable({
       processing: true,
       serverSide: true,
-      ajax: "/admin/paiement/facture/data",
+      searching: false,
+            ajax: "/admin/paiement/facture/data",
       pageLength: 10000, 
       lengthChange: false,
       language: {
@@ -380,14 +381,15 @@ $(function () {
                   return parts[0];
               }
           },
-          { 
-              data: 'payment_total_amount', 
-              name: 'payment_total_amount', 
-              orderable: true,
-              render: function (data, type, row) {
-                  return '<td data-user-id="' + row.user_id + '" class="bill a" style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">' + parseFloat(data).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) + ' <i class="fa-solid fa-euro-sign"></i></td>';
-              }
-          },
+          {
+            data: 'payment_total_amount',
+            name: 'payment_total_amount',
+            orderable: true,
+            render: function(data, type, row) {
+                return '<td data-user-id="' + row.user_id + '" class="bill a" style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">' + data + ' <i class="fa-solid fa-euro-sign"></i></td>';
+            }
+        }
+        ,
           { 
               data: 'status', 
               name: 'status', 
@@ -454,7 +456,22 @@ $(function () {
       e.preventDefault();
       table.ajax.url("/admin/paiement/facture/data?statusLessThan10=true").load();
   });
+  $('#customSearch').on('keyup', function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        var searchTerm = $(this).val();
+        table.ajax.url("/admin/paiement/facture/data?searchTerm=" + searchTerm).load();
+    }
 });
+
+$('#submitSearch').on('click', function(e) {
+    e.preventDefault();
+    var searchTerm = $('#customSearch').val();
+    table.ajax.url("/admin/paiement/facture/data?searchTerm=" + searchTerm).load();
+});
+
+});
+
 
 
 /*my table end-------------------------------------------------------------------*/
@@ -531,12 +548,38 @@ $('#ArticleTable').on('click', 'thead th', function() {
   table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
 });
 /*myTableArticle end-------------------------------------------------------------------*/
+$.fn.dataTable.ext.type.order['img-src-string-pre'] = function(d) {
+  const img = $(d).find('img');
+  const src = img.attr('src') || '';
+  
+  // Extract the filename without extension for sorting
+  const filename = src.split('/').pop().split('.')[0];
+  return filename;
+};
+
+$.fn.dataTable.ext.type.order['status-class-pre'] = function(d) {
+  if ($(d).hasClass('text-success')) {
+      return 1; 
+  } else {
+      return 0; 
+  }
+};
+
+$.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function (d) {
+  var b = d.split(/\D/);
+  return new Date(b[2], b[1] - 1, b[0], b[3], b[4], b[5]);
+};
+
+$.fn.dataTable.ext.type.order['numeric-comma-pre'] = function (d) {
+  return parseFloat(d.replace(' ', '').replace(',', '.'));
+};
+
 $('#myTableArticle').DataTable({
   info: false,
-    bLengthChange: false,
-    paging: false, // Désactiver la pagination
-    lengthChange: false, 
-    language: {
+  bLengthChange: false,
+  paging: false,
+  lengthChange: false,
+  language: {
       search: "",
       searchPlaceholder: "Rechercher...",
       lengthMenu: "Afficher _MENU_ entrées",
@@ -550,45 +593,40 @@ $('#myTableArticle').DataTable({
           next: "Suivant",
           previous: "Précédent"
       }
-    },
+  },
   order: [],
   drawCallback: function(settings) {
-    var api = this.api();
-    api.column(0, {
-      order: 'applied'
-    }).nodes();
+      var api = this.api();
+      api.column(0, {
+          order: 'applied'
+      }).nodes();
   },
   columnDefs: [
     {
-      targets: 3,
-      type: 'datetime-dd-mm-yyyy'
-    },{
-      targets: 4,
-      type: 'numeric-comma'
-    }
+      targets: 0, 
+      type: 'img-src-string',
+  },
+  {
+      targets: 3, 
+      type: 'status-class'
+  },
+      {
+          targets: 3,
+          type: 'datetime-dd-mm-yyyy'
+      },
+      {
+          targets: 4,
+          type: 'numeric-comma'
+      }
   ],
   dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
 });
 
- 
-$.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function ( d ) {
-    var b = d.split(/\D/);
-    return new Date(b[2], b[1] - 1, b[0], b[3], b[4], b[5]);
-};
-
-
-$.fn.dataTable.ext.type.order['numeric-comma-pre'] = function ( d ) {
-  
-  return parseFloat(d.replace(' ', '').replace(',', '.'));
-};
-
-
-// Apply the search
 $('#myTableArticle thead input').on('keyup change', function() {
   table
-    .column($(this).parent().index() + ':visible')
-    .search(this.value)
-    .draw();
+      .column($(this).parent().index() + ':visible')
+      .search(this.value)
+      .draw();
 });
 
 $('#myTableArticle').on('click', 'thead th', function() {
@@ -596,6 +634,7 @@ $('#myTableArticle').on('click', 'thead th', function() {
   var isAsc = $(this).hasClass('asc');
   table.order([colIndex, isAsc ? 'asc' : 'desc']).draw();
 });
+
   
   $('#myTableabb').on('click', 'thead th', function() {
     var colIndex = $(this).index();

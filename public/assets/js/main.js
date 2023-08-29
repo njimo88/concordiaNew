@@ -373,6 +373,7 @@ $('#myTable').on('click', 'thead th', function() {
 $('#myTablefacture').DataTable({
   pageLength: 100,
   info: false,
+  
   "language": {
     "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
   },
@@ -488,9 +489,24 @@ $('.detailsUser').click(function() {
    });
    });
 
-   document.getElementById('existing-image').addEventListener('click', function() {
-    document.getElementById('file-input').click();
-  });
+   $(document).ready(function() {
+    checkScrollPosition();
+
+    $(window).scroll(checkScrollPosition);
+
+    function checkScrollPosition() {
+        if ($(window).scrollTop() > 100) {
+            $('.top-cta').fadeIn();
+        } else {
+            $('.top-cta').fadeOut();
+        }
+    }
+
+    $('.top-cta').click(function() {
+        $('html, body').animate({scrollTop : 0}, 800);
+        return false;
+    });
+});
 
   document.getElementById('file-input').addEventListener('change', function() {
     let file = this.files[0];

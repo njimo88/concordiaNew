@@ -8,7 +8,7 @@
       margin-right: calc(-50vw + 50%);
   }
 </style>
-<main class="main mw-100" id="main" style="background-image: url('{{asset("/assets/images/background.png")}}'); " >
+<main class="main mw-100" id="main" style="background-color : #f2f2f2" >
 <div class=" container d-flex justify-content-center" >
     <div class="mb-5 row mt-5 col-12 col-md-10 col-lg-8 sign-up-form sign-up-formrelogin d-flex justify-content-center">
       <!-- Left (Form Image) -->

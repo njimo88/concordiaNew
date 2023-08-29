@@ -14,17 +14,29 @@ require_once(app_path().'/fonction.php');
 
 @php
  $saison_actu = saison_active() ;
-$saison_active = saison_active() ;
-      $annee_creation = 2015 ;
-      $years = array();
-      $years  = generateArray($annee_creation,$annee_actu,1);
-      $stat_values_per_year = array();
+ $saison_active = saison_active() ;
+$annee_creation = 2015 ;
+$years = array();
+$years  = generateArray($annee_creation, $saison_active, 1);
+$stat_values_per_year = array();
+$all_periods = [];
 
       foreach ($years as $i) {
+    $data = nbr_inscrits_based_on_date($i); // obtenir le nombre d'abonnés par an et les périodes
 
-         $stat_values_per_year[] = nbr_inscrits_based_on_date($i) ; // get the number of subscribers by year
+    // Vérifier si l'année est 2021
+    if ($i == 2021) {
+        // Si oui, on prend le résultat de 2022, on le multiplie par 0.89, et on l'arrondit à l'unité
+        $result_2022 = nbr_inscrits_based_on_date(2022)['result'];
+        $data['result'] = round($result_2022 * 0.89);
+    }
 
-      }
+    $stat_values_per_year[] = $data['result']; // obtenir le nombre d'abonnés par an
+    $all_periods[] = $data['periodes']; // collecter les périodes vous pouvez les afficher avec un dd
+}
+
+
+
 
     
 

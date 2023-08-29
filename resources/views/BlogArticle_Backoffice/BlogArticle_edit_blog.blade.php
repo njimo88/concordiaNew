@@ -128,7 +128,7 @@ $date = Carbon::now();
  
 
   @php
-                                $json_cate = json_decode($data1->categorie1) ;  
+                                $json_cate = json_decode($data1->categorie) ;  
                                 
                             @endphp
 
@@ -140,7 +140,7 @@ $date = Carbon::now();
                             
                                     <td>{{$data->nom_categorie}}</td>
                                     
-                                    <td><input style="vertical-align:center;" class="input" for="catenvoi" type="checkbox" name="category1[]"  value="{{$data->Id_categorie1 }}" {{ in_array($data->Id_categorie1 ,$json_cate) ? 'checked ': " "}}></td>
+                                    <td><input style="vertical-align:center;" class="input" for="catenvoi" type="checkbox" name="category1[]"  value="{{$data->Id_categorie }}" {{ in_array($data->Id_categorie ,$json_cate) ? 'checked ': " "}}></td>
                                     
                                 
 
@@ -172,7 +172,7 @@ $date = Carbon::now();
  
 
   @php
-                                $json_cate = json_decode($data1->categorie2) ;  
+                                $json_cate = json_decode($data1->categorie) ;  
                                 
                             @endphp
 
@@ -184,7 +184,7 @@ $date = Carbon::now();
                             
                                     <td>{{$data->nom_categorie}}</td>
                                     
-                                    <td><input class="input" style="vertical-align:center;" for="catenvoi" type="checkbox" name="category2[]"  value="{{$data->Id_categorie2 }}" {{ in_array($data->Id_categorie2 ,$json_cate) ? 'checked ': " "}}></td>
+                                    <td><input class="input" style="vertical-align:center;" for="catenvoi" type="checkbox" name="category2[]"  value="{{$data->Id_categorie }}" {{ in_array($data->Id_categorie ,$json_cate) ? 'checked ': " "}}></td>
                                     
                                 
 
