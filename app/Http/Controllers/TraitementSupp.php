@@ -105,18 +105,22 @@ class TraitementSupp extends Controller
 
     public function carouselblog()
     {
-        $posts = A_Blog_Post::latest()->paginate(5);
+        $posts = A_Blog_Post::latest()
+        ->where('status', '=', 'Publié')
+        ->paginate(5);
         $categorie = Category::all();
 
         $saison  = saison_active();
 
-        $shop_articles = Shop_article::where('type_article', '=', '2')
-        ->where('saison', '=', $saison)
-        ->get();
+        $all_valid_articles = Shop_article::where('type_article', '=', '2')
+            ->where('saison', '=', $saison)
+            ->get();
 
-        $shop_articles = filterArticlesByValidityDate($shop_articles);
+        $filtered_articles = filterArticlesByValidityDate($all_valid_articles);
 
-        $shop_articles = $shop_articles->take(7); 
+        $shop_articles = $filtered_articles->shuffle()->take(7);
+
+ 
 
         // Récupérer les images du répertoire Slider
         $images = File::files(public_path('uploads/Slider'));
@@ -583,9 +587,15 @@ $bill = DB::table('bills')
         ->orderBy('shop_messages.date', 'asc')
         ->get(); 
 
-        $shop_articles = Shop_article::
-        where('type_article', '=', '2')
-        ->paginate(7);
+        $saison  = saison_active();
+
+        $all_valid_articles = Shop_article::where('type_article', '=', '2')
+            ->where('saison', '=', $saison)
+            ->get();
+
+        $filtered_articles = filterArticlesByValidityDate($all_valid_articles);
+
+        $shop_articles = $filtered_articles->shuffle()->take(7);
 
 
         $nb_paiment = calculerPaiements($bill->payment_method,$bill->payment_total_amount,$bill->number);
