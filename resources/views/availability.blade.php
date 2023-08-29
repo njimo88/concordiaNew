@@ -1,10 +1,10 @@
 @if ($data->stock_actuel > $data->alert_stock)
     @if ($data->type_article == 0)
-        <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponibles</span>
+        <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponible</span>
     @elseif ($data->type_article == 1)
-        <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponibles</span>
+        <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Places Disponible</span>
     @elseif ($data->type_article == 2)
-        <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Disponibles</span>
+        <span style="color:green;"><i class="fas fa-check-circle" style="color:green;"></i> Disponible</span>
     @endif
 @elseif ($data->stock_actuel > 0 && $data->stock_actuel <= $data->alert_stock)
     @if ($data->type_article == 0)

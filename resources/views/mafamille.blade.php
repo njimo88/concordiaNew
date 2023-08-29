@@ -98,7 +98,7 @@ border: 2px solid #272E5C;
 </div>
 @endif
 
-<section style="background-image: url('{{asset("/assets/images/famillee.jpeg")}}');" class=" bg-light position-relative bg-cover top-banner">
+<section style="background-image: url('{{asset("/assets/images/famillee.jpeg")}}');" class=" bg-light position-relative bg-cover top-banner-page">
     <img loading="lazy" src="{{ asset("/assets/images/gymm.jpg") }}" alt="Blog" title="Blog" class="d-none">
     <div class="dark-overlay"></div>
     <div class="position-absolute bottom-0 start-50 translate-middle-x container-xl z-100">

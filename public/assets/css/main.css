@@ -3291,9 +3291,12 @@ button:hover {
 }
 
 .h1{
-    font-size: 5vw !important;
+    font-size: 4vw !important;
 }
 
+.top-banner-page{
+  height: 250px;
+}
 
 
 a .fa-solid {
@@ -3414,9 +3417,7 @@ a:hover {
   background-color: #000;
 }
 
-.top-banner {
-  height: 275px;
-}
+
 
 .bg-cover {
   background-size: cover;

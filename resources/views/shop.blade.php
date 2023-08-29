@@ -1,9 +1,12 @@
 
 <style>
     .carousel-img {
-        max-height: 300px;
-        width: 100%;  
-    }
+    height: 300px;       
+    width: 100%;  
+    object-fit: cover;  
+    display: block;     
+}
+
 
 .col-md-3 {
     margin: 0 7px;  
@@ -59,6 +62,24 @@
   background: #482683 !important;
 }
 
+@media (max-width: 768px) {
+    .col-md-3 {
+        max-width: 80%; 
+        margin: 0 auto; 
+    }
+
+    .carousel-img {
+        height: 300px; 
+    }
+
+    .card-title {
+        font-size: 0.9rem;
+    }
+
+    
+}
+
+
 
 </style>
 
@@ -81,7 +102,7 @@
                                     <img src="{{ $article->image }}" alt="{{ $article->title }}" class="carousel-img card-img-top">
                                     <div class="card-body">
                                         <h5 class="card-title">{!! $article->title !!}</h5>
-                                        <p class="card-text">{{ $article->short_description }}</p>
+                                        <p class="card-text">{!! Str::limit(strip_tags($article->short_description), 90, '...') !!}</p>
                                         @include('availability', ['data' => $article])
                                         <div class="card-price">{{ number_format($article->price, 2) }} €</div>
                                     </div>
@@ -117,10 +138,9 @@
             {
                 breakpoint: 768,
                 settings: {
-                    slidesToShow: 1,
+                    slidesToShow: 1,  
                     slidesToScroll: 1,
                     centerPadding: '10px'
-
                 }
             }
         ]
