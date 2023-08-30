@@ -108,7 +108,7 @@
                     <span><i class="fas fa-star"></i></span>
                     <span><i class="fas fa-star"></i></span>
                     <span><i class="fas fa-star-half-alt"></i></span>
-                    <span>(350 ratings)</span>
+                    <span>(350 votes)</span>
                 </div>
                 
                 <p class="product-description">{!! $articl->description !!}</p>
@@ -455,6 +455,25 @@
             margin-bottom: 10px;
         }
     }
+
+    @media (max-width: 768px) {
+    .product-price {
+        font-size: 18px;
+    }
+
+    .product-name {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .original-price {
+        font-size: 1.1rem;
+    }
+
+    .reduced-price, .price {
+        font-size: 1.5rem;
+    }
+}
 </style>
 
 

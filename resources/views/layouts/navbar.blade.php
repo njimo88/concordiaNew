@@ -507,8 +507,26 @@ use Illuminate\Support\Facades\Route;
             </li>
             <li><a href="#" data-toggle="modal" data-target="#search-modal"><span>&nbsp;Recherche</span></a></li>
             <li class="dropdown">
-              <a href="#"><span> <span style="font-weight: 100">{{ auth()->user()->lastname }} </span>{{ auth()->user()->name }}</span> <i class="bi bi-chevron-down dropdown-indicator"></i>
-              </a>
+               <style>
+                  .dropdown img {
+                    width: 50px;
+                    height: 50px;
+                    object-fit: cover;
+                    margin-right: 10px;
+                  }
+                </style>
+              <li class="dropdown">
+                <a href="#">
+                    @if(auth()->user()->image) {{-- Si l'utilisateur a une image --}}
+                        <img src="{{ auth()->user()->image}}" class="rounded-circle" alt="{{ auth()->user()->name }}">
+                    @elseif(auth()->user()->gender == 'male') {{-- Si le genre de l'utilisateur est masculin --}}
+                        <img src="{{ asset('assets/images/user.jpg') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
+                    @else {{-- Sinon (supposant que le seul autre genre possible est féminin) --}}
+                        <img src="{{ asset('assets/images/femaleuser.png') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
+                    @endif
+                    <span><span style="font-weight: 100"></span>{{ auth()->user()->lastname }} {{ auth()->user()->name }}</span> 
+                    <i class="bi bi-chevron-down dropdown-indicator"></i>
+                </a>
               
               <ul>
                 @if (auth()->user()->role >= 20)

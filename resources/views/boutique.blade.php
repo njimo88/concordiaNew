@@ -213,6 +213,7 @@
         font-size: 24px;
         color: #6C63FF;
         padding: 15px 0;
+        margin-bottom: 20px;
     }
 
     .container .box-container .box .btn{
@@ -249,6 +250,14 @@
     }
     .container .box-container .box{
         min-height: auto; 
+    }
+
+    .container .box-container .box h3 {
+        font-size: 18px; 
+    }
+
+    .container .box-container .box .price {
+        font-size: 18px;
     }
 }
 
