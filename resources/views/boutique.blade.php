@@ -36,7 +36,7 @@
                 @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock || $article->stock_actuel <= 0)
                     <div class="availability-badge @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock) availability-warning @else availability-danger @endif">
                         @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock)
-                                {{$article->stock_actuel}} restants
+                                {{$article->stock_actuel}} restant(s)
                         @elseif ($article->stock_actuel <= 0)
                                 Complet
                         @endif
@@ -121,14 +121,14 @@
 
 .badge-container {
     position: absolute;
-    top: -18px;
-    right: -26px;
+    top: -15px;
+right: -9px;
     z-index: 1;
 }
 
 .new-badge img {
-    width: auto; 
-    height: 71px !important; 
+    width: 100px    !important; 
+    height: auto !important; 
 }
     .container{
     background: #f6f8fa;
@@ -198,7 +198,7 @@
 
     .container .box-container .box h3{
         color:#444;
-        font-size: 24px;
+        font-size: 18px;
         padding:10px 0;
     }
 
@@ -215,6 +215,7 @@
         color: #6C63FF;
         padding: 15px 0;
         margin-bottom: 20px;
+        font-weight: bold;
     }
 
     .container .box-container .box .btn{

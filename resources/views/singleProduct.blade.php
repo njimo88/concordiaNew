@@ -45,7 +45,7 @@
                             <strong>Lieu :</strong>
                             <ul class="location-list">
                                 @foreach($locations as $location)
-                                    <li>{{ $location }}</li>
+                                    <li><a style="color: #182881" href="https://www.google.com/maps/search/{{ urlencode($location) }}" target="_blank">{{ $location }}</a></li>
                                 @endforeach
                             </ul>
                         </div>
@@ -427,9 +427,7 @@
         grid-column: 1 / span 2; /* Cela prend toute la largeur */
     }
 }
-.product-div-right {
-            text-align: justify;
-        }
+
     /* Media queries */
     @media screen and (max-width: 992px) {
         .product-div {

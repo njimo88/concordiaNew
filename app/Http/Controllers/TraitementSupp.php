@@ -232,7 +232,7 @@ public function boutique($id)
     $saison_active = saison_active();
     
     $articles = Shop_article::getArticlesByCategories($id, $saison_active);
-
+ 
     return view('boutique', compact('articles' ,'breadcrumb' ,'info2' ));
 }
 
