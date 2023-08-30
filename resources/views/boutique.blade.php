@@ -15,9 +15,10 @@
         @endforeach
     </div>
 
-    <h2 class="heading mb-5 mt-3">{{ $info2->name }}</h2>
+    <h2 class="heading  mt-3">{{ $info2->name }}</h2>
+    <p class="sub-heading mb-5"> {!! $info2->description !!} </p>
 
-    <div class="box-container">
+    <div class="box-container mt-5">
         @foreach($articles as $article)
             <div class="box">
         <a href="{{ route('singleProduct',['id' => $article->id_shop_article]) }}" target="_blank">
@@ -118,15 +119,15 @@
 
 .badge-container {
     position: absolute;
-    top: -19px;
-right: -33px;
+    top: -18px;
+    right: -26px;
     transform: rotate(15deg);
     z-index: 1;
 }
 
 .new-badge img {
     width: auto; 
-    height: 100px !important; /* Adjust the size as needed */
+    height: 71px !important; /* Adjust the size as needed */
 }
     .container{
     background: #f6f8fa;
@@ -164,10 +165,10 @@ right: -33px;
     }
 
     .container .sub-heading{
-        text-align: center;
+        text-align: center !important;
         color: #79797a;
         font-size: 16px;
-        margin-bottom: 50px;
+        margin-bottom: 50px !important;
     margin-left: auto; /* centrage horizontal gauche */
     margin-right: auto; /* centrage horizontal droit */
     }
