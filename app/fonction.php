@@ -1054,16 +1054,14 @@ function envoiEmail($userEmail, $message,$receiverEmail,$userName) {
    
     // Set the SMTP credentials dynamically
 $config = [
-    'driver' => "smtp",
-    'host' => "smtp.ionos.fr",
-    'port' => 465,
+    'driver' => config('mail.driver'),
+    'host' => config('mail.host'),
+    'port' => config('mail.port'),
     'from' => ['address' => $userEmail, 'name' => $userName],
-    'encryption' => "ssl",
-    'username' => "webmaster@gym-concordia.com",
-    'password' => "mickmickmath&67_mickmickmath&67"
+    'encryption' => config('mail.encryption'),
+    'username' => config('mail.username'),
+    'password' => config('mail.password')
 ];
-
-
     Mail::mailer('smtp')->to($receiverEmail)->send(new ContactFormMail($userEmail, $message,$userName));
 }
 

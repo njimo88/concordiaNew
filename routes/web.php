@@ -405,7 +405,6 @@ Route::get('/historique_appel/{id}', [Controller_club::class, 'display_historiqu
 #-------------------------------pdf generate-------------------
 
 #-------------------------------route pour gerer l'envoi de mail  generate-------------------
-Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');
 
 }); 
 
@@ -500,3 +499,4 @@ Route::get('/mafacture/{id}', [TraitementSupp::class, 'mafacture'])->name('mafac
 Route::get('/mafamille', [TraitementSupp::class, 'mafamille'])->name('mafamille');
 
 
+Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');

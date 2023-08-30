@@ -4,68 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
-require_once(app_path().'/fonction.php');
+use App\Mail\ContactFormMail;
 
 class Prendre_Contact_Controller extends Controller
 {
-    //
-
-    function traitement_prendre_contact(Request $request){
-
-        $email =   $request->input('email') ;
-        $message = $request->input('message') ;
-        $nom     = $request->input('name') ;
-
-
-        
-
-            if ($request->input('send_me') == 1){
-
-              // receiveEmailFromUser($request,'bureau@gym-concordia.com');
-              envoiEmail($email, $message,'bureau@gym-concordia.com',$nom) ;
-            
-
-
-            }elseif($request->input('send_me') == 2){
-
-         //receiveEmailFromUser($request,'tresorier@gym-concordia.com');
-            envoiEmail($email, $message,'tresorier@gym-concordia.com',$nom) ;
-            
-              
-
-            }elseif($request->input('send_me') == 3){
-
-               // receiveEmailFromUser($request,'president@gym-concordia.com');
-              // receiveEmailFromUser($request,'nnkp066@gmail.com');
-
-             envoiEmail($email, $message,'president@gym-concordia.com',$nom) ;
-            
-               
-              
-            }
-
-          
-
-           return redirect()->back()->with('success', 'votre message a été envoyé avec succès!')->with('sent', true);
-
-
-           //return 'ok';
-
-
-
-
-
-
-    }
-
-
-    
-
-
-
-
-
-
-
+  public function traitement_prendre_contact(Request $request)
+  {
+      $validatedData = $request->validate([
+          'email' => 'required|email',
+          'message' => 'required|string',
+          'name' => 'required|string',
+          'send_me' => 'required|in:1,2,3'
+      ]);
+  
+      $this->sendEmail($validatedData);
+  
+      return redirect()->back()->with('success', 'votre message a été envoyé avec succès!')->with('sent', true);
+  }
+  
+  private function sendEmail($data)
+  {
+      $recipients = [
+          1 => 'webmaster@gym-concordia.com',
+          2 => 'tresorier@gym-concordia.com',
+          3 => 'president@gym-concordia.com',
+      ];
+  
+      $receiverEmail = $recipients[$data['send_me']];
+      Mail::to($receiverEmail)->send(new ContactFormMail($data));
+  }
 
 }

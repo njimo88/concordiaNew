@@ -81,7 +81,15 @@ public static function getArticlesByCategories($categoryIds, $saison_active)
         ->whereJsonContains('shop_article.categories', [$categoryIds])
         ->distinct('shop_article.id_shop_article')
         ->get()
-        ; 
+        ->map(function ($item) {
+            $lesson = json_decode($item->lesson, true);
+            $item->start_date = isset($lesson['start_date'][0]) ? $lesson['start_date'][0] : null;
+            return $item;
+        })
+        ->all();
+        usort($n_var, function ($a, $b) {
+        return strcmp($a->start_date, $b->start_date);
+    }); 
 
 
     $user =  Auth::user();
