@@ -16,8 +16,10 @@
     </div>
 
     <h2 class="heading  mt-3">{{ $info2->name }}</h2>
-    <p class="sub-heading mb-5"> {!! $info2->description !!} </p>
-
+    <div style="display: block">
+        <p class="sub-heading mb-5"> {!! $info2->description !!} </p>
+    </div>  
+    <hr>
     <div class="box-container mt-5">
         @foreach($articles as $article)
             <div class="box">
@@ -121,13 +123,12 @@
     position: absolute;
     top: -18px;
     right: -26px;
-    transform: rotate(15deg);
     z-index: 1;
 }
 
 .new-badge img {
     width: auto; 
-    height: 71px !important; /* Adjust the size as needed */
+    height: 71px !important; 
 }
     .container{
     background: #f6f8fa;

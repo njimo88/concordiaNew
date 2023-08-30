@@ -84,7 +84,7 @@
 </section>
 <section class="container-fluid bg-white py-4">
     <div class="container-xxl">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" style="text-align: justify;">
             <div class="col-12 col-xl-10">
                 <div class="content py-3">
                     {!! $content !!}

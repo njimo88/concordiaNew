@@ -427,7 +427,9 @@
         grid-column: 1 / span 2; /* Cela prend toute la largeur */
     }
 }
-
+.product-div-right {
+            text-align: justify;
+        }
     /* Media queries */
     @media screen and (max-width: 992px) {
         .product-div {
@@ -435,7 +437,7 @@
         }
 
         .product-div-right {
-            text-align: center;
+            text-align: justify;
         }
 
         .product-rating {

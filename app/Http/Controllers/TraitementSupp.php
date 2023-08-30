@@ -140,9 +140,10 @@ class TraitementSupp extends Controller
 
     public function tousLesArticles()
 {
-    $posts = A_Blog_Post::latest()
-        ->where('status', '=', 'Publié')
+    $posts = A_Blog_Post::where('status', '=', 'Publié')
+        ->orderBy('date_post', 'desc')
         ->paginate(9);
+
 
     $categorie = Category::all();
 
