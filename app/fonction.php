@@ -85,7 +85,6 @@ function getFilteredArticles($articles) {
             return ($article->selected_limit == 0 );
         })->values();
     }
-    
     return $filteredArticles;
 }
 

@@ -15,33 +15,30 @@
         @endforeach
     </div>
 
-    <h2 class="heading">{{ $info2->name }}</h2>
-    <h2 class="sub-heading col-md-6 col-10">Explorez nos formations de qualité et nos produits soigneusement sélectionnés. Que vous souhaitiez enrichir vos connaissances ou dénicher le meilleur du marché, notre boutique répond à vos besoins</h2>
+    <h2 class="heading mb-5 mt-3">{{ $info2->name }}</h2>
 
     <div class="box-container">
         @foreach($articles as $article)
             <div class="box">
+        <a href="{{ route('singleProduct',['id' => $article->id_shop_article]) }}" target="_blank">
+
+            <div class="badge-container">
                 @if($article->nouveaute == 1)
-                    <div class="new-badge">Nouveauté</div>
+                    <div class="new-badge"><img src="{{ asset('assets\images\Nouveau.png') }}" alt=""></div>
                 @endif
+            </div>
+
                 <img src="{{ asset($article->image) }}" alt="{{ $article->title }}">
                 <h3>{{ $article->title }}</h3>
-                <div class="availability-badge @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock) availability-warning @else availability-danger @endif">
-                    @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock)
-                        @if ($article->type_article == 0 || $article->type_article == 1)
-                            {{$article->stock_actuel}} restantes
-                        @else
-                            {{$article->stock_actuel}} restants
+                @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock || $article->stock_actuel <= 0)
+                    <div class="availability-badge @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock) availability-warning @else availability-danger @endif">
+                        @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock)
+                                {{$article->stock_actuel}} restants
+                        @elseif ($article->stock_actuel <= 0)
+                                Complet
                         @endif
-                                        
-                    @else
-                        @if ($article->type_article == 0 || $article->type_article == 1)
-                            Complète
-                        @else
-                            Complet
-                        @endif
-                    @endif
-                </div>
+                    </div>
+                @endif
                 
                 <style>
                    
@@ -64,8 +61,9 @@
                     @endif
                 </div>
     
-                <a href="{{ route('singleProduct',['id' => $article->id_shop_article]) }}" class="btn mt-2">Acheter</a>
+                <a target="_blank" href="{{ route('singleProduct',['id' => $article->id_shop_article]) }}" class="btn mt-2">Acheter</a>
             </div>
+        </a>
         @endforeach
     </div>
     
@@ -85,30 +83,30 @@
         transition: .3s ease;
     }
     .availability-badge {
-        position: absolute;
-        top: 491px;
-        right: -28px;
-        color: white;
-        font-size: 14px;
-        padding: 5px 15px;
-        transform: rotate(-45deg);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        z-index: 1;
-    }
+  position: absolute;
+  transform: rotate(-45deg);
+  top: 10px;
+    left: -25px;
+  color: white;
+  font-size: 14px;
+  padding: 5px 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
 
 .availability-warning {
     background-color: #FFC107;
 }
 
 .availability-danger {
-    background-color: #DC3545;
+    background-color: #ef0514;
 }
 
-    .container .box-container .box .new-badge {
+ /*   .container .box-container .box .new-badge {
     position: absolute;
     top: 10px;
     left: -25px;
-    background-color: #e7f00d;  /* Vert */
+    background-color: #e7f00d;  
     color: black;
     font-size: 14px;
     padding: 5px 15px;
@@ -116,7 +114,20 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     z-index: 1;
 }
+*/
 
+.badge-container {
+    position: absolute;
+    top: -19px;
+right: -33px;
+    transform: rotate(15deg);
+    z-index: 1;
+}
+
+.new-badge img {
+    width: auto; 
+    height: 100px !important; /* Adjust the size as needed */
+}
     .container{
     background: #f6f8fa;
     padding:15px 9%;
@@ -175,6 +186,7 @@
         cursor: pointer;
         position: relative;
         min-height: auto;
+        padding-top: 50px;
     }
 
     .container .box-container .box img{

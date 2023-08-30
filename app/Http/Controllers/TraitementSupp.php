@@ -223,10 +223,15 @@ public function getBreadcrumb($categoryId, $categories)
 public function boutique($id)
 {
     $info = Shop_category::where('active', 1)->get();
+
     $breadcrumb = $this->getBreadcrumb($id, $info);
+
     $info2 = Shop_category::select('name','description')->where('id_shop_category','=',$id)->first();
+
     $saison_active = saison_active();
+    
     $articles = Shop_article::getArticlesByCategories($id, $saison_active);
+
     return view('boutique', compact('articles' ,'breadcrumb' ,'info2' ));
 }
 
