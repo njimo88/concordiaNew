@@ -38,6 +38,8 @@
                         @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock)
                                 {{$article->stock_actuel}} restant(s)
                         @elseif ($article->stock_actuel <= 0)
+                        {{ $article->stock_actuel }}
+                        {{ $article->id_shop_article }}
                                 Complet
                         @endif
                     </div>

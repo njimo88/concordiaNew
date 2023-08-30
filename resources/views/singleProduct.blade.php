@@ -45,7 +45,7 @@
                             <strong>Lieu</strong>
                             <ul class="location-list">
                                 @foreach($locations as $location)
-                                    <li>
+                                    <li class="mt-2">
                                         <a  style="color: #182881" href="{{ $location['map'] }}" target="_blank" >{{ $location['name'] }}</a>
                                         <br>
                                         <a style="color: #182881" href="{{ $location['map'] }}" target="_blank" class="text-xs">{{ $location['address'] }}</a>
@@ -56,7 +56,9 @@
                         
                         <div class="locations-section">
                             <strong>Reprise</strong>
-                            <p>{{ $repriseDate }}</p>
+                            <ul class="schedule-list">
+                                    <li>{{ $repriseDate }}</li> 
+                            </ul>
                         </div>
                         
                         
@@ -74,17 +76,21 @@
                                 <h4 class="card-title">{{ $articl->type_article == 2 ? 'Commander' : 'Inscrire' }}</h4>
                                 <p class="info-message">Se connecter pour commander</p>
                                 <a href="{{ route('login') }}" class="btn">Se connecter</a>
-                            @else
-                                <h4 class="card-title">{{ $articl->type_article == 2 ? 'Commander' : 'Inscrire' }}</h4>
-                                @if (count($selectedUsers) > 0)
-                                    <select onchange="updatePriceToDisplay()" class="select-form" name="buyers" id="buyers">
-                                        @foreach ($selectedUsers as $user)
-                                            <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
                                 @else
-                                    <p class="info-message">Votre famille ne correspond pas à cet article.</p>
+                                @if ($articl->stock_actuel > 0) <!-- Vérification du stock ajoutée ici -->
+                                    <h4 class="card-title">{{ $articl->type_article == 2 ? 'Commander' : 'Inscrire' }}</h4>
+                                    @if (count($selectedUsers) > 0)
+                                        <select onchange="updatePriceToDisplay()" class="select-form" name="buyers" id="buyers">
+                                            @foreach ($selectedUsers as $user)
+                                                <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
+                                    @else
+                                        <p class="info-message">Votre famille ne correspond pas à cet article.</p>
+                                    @endif
+                                @else <!-- Message si l'article est en rupture de stock -->
+                                    <p class="info-message">Désolé, cet article est actuellement en rupture de stock.</p>
                                 @endif
                             @endguest
                         </div>

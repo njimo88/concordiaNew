@@ -241,12 +241,14 @@ public function singleProduct($id) {
 
     // Obtenez l'article initial avec son ID
     $articl = Shop_article::where('id_shop_article', $id)->firstOrFail();
-    
+
     // Effectuez une jointure en fonction du type d'article
     if ($articl->type_article == 1) {
         $articl = Shop_article::where('shop_article.id_shop_article', $id)
             ->join('shop_article_1', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')
+            ->select('shop_article.*', 'shop_article_1.*' , 'shop_article.stock_actuel as stock_actuel')
             ->firstOrFail();
+
 
         $teacherIds = json_decode($articl->teacher, true);
         $teachers = User::whereIn('user_id', $teacherIds)->get();
@@ -292,13 +294,12 @@ public function singleProduct($id) {
             ->firstOrFail();
     }
 
+
     $selectedUsers = array();
     $coursVente = SystemSetting::find(5);
-
     if (Auth::check()) {
         $selectedUsers = getArticleUsers($articl);
     }
-
     if ($articl->type_article == 1) {
         return view('singleProduct', compact('articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate'));
     } else {
