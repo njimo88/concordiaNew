@@ -39,7 +39,6 @@
 
 .footer-logo {
     max-width: 150px;
-    margin: 0 auto;
     display: block;
 }
 
@@ -73,13 +72,12 @@ table td {
                 <div class="row row-infos">
                     <div class="col-12 pt-3 pb-4">
                         <a href="https://www.concordia.fr/">
-                            <img src="{{ asset('assets\images\LogoHB.png') }}" alt="Logo Gym Concordia" class="img-fluid footer-logo">
                         </a>
                     </div>
 
                     <div class="col-12 col-md-5 pt-1">
                         <div class="content">
-                            <h5><span style="color: #482683;"><strong>Concordia Siège National</strong></span></h5>
+                            <img src="{{ asset('assets\images\LogoHB.png') }}" alt="Logo Gym Concordia" class="img-fluid footer-logo">
                             <hr>
                             <table class="alignleft" style="width: 100%; border-collapse: collapse;">
                                 <tbody>
@@ -88,8 +86,7 @@ table td {
                                         <td style="width: 83.5351%;"><span style="color: #482683;"><a style="color: #482683;" href="tel:0805659999">0 805 65 99 99</a></span></td>
                                     </tr>
                                     <tr style="height: 30px;">
-                                        <td style="width: 16.2162%;"><i style="color: #482683;font-size: 30px;" class="fa-solid fa-envelope" ></i></td>
-                                        <td style="width: 83.5351%;"><span style="color: #482683;"><a style="color: #482683;" href="mailto:bureau@gym-concordia.com">bureau@gym-concordia.com</a></span></td>
+                                        <td style="width: 16.2162%;"></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -107,15 +104,13 @@ table td {
                             <a href="https://www.youtube.com/user/GymConcordia" target="_blank"style="color: #482683;" class="d-block m-2"><i class="bi bi-youtube"></i></a>
                             <a href="https://www.tiktok.com/discover/gym-concordia-schiltigheim?lang=fr"style="color: #482683;" target="_blank" class="d-block m-2"><i class="bi bi-tiktok"></i></a>
                         </div>
+                        <div class="content text-end text-md-end">
+                            <p><span style="color: #482683;">Réalisation : <a style="color: #482683;"  target="_blank" rel="noopener">Forma-SIS - N.DJILLY</a></span><br>
+                                <span style="color: #482683;"><a style="color: #482683;" href="{{route('index_mentions_legales')}}" target="_blank">Mentions légales</a> | <a style="color: #482683;" href="{{route('index_politique')}}" target="_blank" rel="noopener">Politique de confidentialité</a></span>
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-10 pt-3 pt-md-0">
-                <div class="content text-center text-md-end">
-                    <p><span style="color: #482683;">Réalisation : <a style="color: #482683;"  target="_blank" rel="noopener">Révélations-Communication</a></span><br>
-                        <span style="color: #482683;"><a style="color: #482683;" href="{{route('index_mentions_legales')}}" target="_blank">Mentions légales</a> | <a style="color: #482683;" href="{{route('index_politique')}}" target="_blank" rel="noopener">Politique de confidentialité</a></span>
-                    </p>
+                        
                 </div>
             </div>
         </div>

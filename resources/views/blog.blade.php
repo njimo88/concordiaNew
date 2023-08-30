@@ -12,7 +12,7 @@
 @php
     preg_match('/<img.+src=[\'"](?P<src>.+?)[\'"].*>/i', $posts->contenu, $image);
     $firstImage = !empty($image['src']) ? $image['src'] : 'default-image.jpg';
-    setlocale(LC_TIME, 'french');
+    setlocale(LC_TIME, "fr_FR.UTF-8");
     $date = \Carbon\Carbon::parse($posts->date_post);
     $formatted = strftime('%A %d %B %Y à %H:%M:%S', $date->timestamp);
     if ($date->format('H:i:s') === '00:00:00') {
@@ -113,7 +113,7 @@
                 <div class="d-flex align-items-center justify-content-between px-md-5 mb-2">
                     <h1 class=" fw-black h1 text-gym">Articles</h1>
                     <a href="/tousLesArticles" class="fw-bold ms-1 text-end  d-flex align-items-center text-gym">
-                        <span class="span ">Voir tout les Articles</span>
+                        <span class="span ">Voir tous les Articles</span>
                         <i class="fa-solid fa-circle-plus text-gym"></i>
                     </a>
                 </div>

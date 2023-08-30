@@ -108,6 +108,7 @@ class TraitementSupp extends Controller
         $posts = A_Blog_Post::latest()
         ->where('status', '=', 'Publié')
         ->paginate(5);
+
         $categorie = Category::all();
 
         $saison  = saison_active();
@@ -139,7 +140,10 @@ class TraitementSupp extends Controller
 
     public function tousLesArticles()
 {
-    $posts = A_Blog_Post::latest()->paginate(9);
+    $posts = A_Blog_Post::latest()
+        ->where('status', '=', 'Publié')
+        ->paginate(9);
+
     $categorie = Category::all();
 
     return view('tousLesArticles', compact('posts', 'categorie'));
@@ -148,8 +152,13 @@ class TraitementSupp extends Controller
 public function blog ($id )
 {
     $posts = A_Blog_Post::FindOrFail($id);
+
     $categorie = Category::all();
-    $carouselle = A_Blog_Post::latest()->paginate(5);
+    
+    $carouselle =  A_Blog_Post::latest()
+    ->where('status', '=', 'Publié')
+    ->paginate(5);
+
     return view('blog', compact('posts', 'categorie', 'carouselle'));
 }
 
@@ -607,7 +616,11 @@ $bill = DB::table('bills')
     }
 
     public function mafamille(){
-        $posts = A_Blog_Post::latest()->paginate(5);
+        
+        $posts = A_Blog_Post::latest()
+        ->where('status', '=', 'Publié')
+        ->paginate(5);
+
         $n_users = User::where('family_id', Auth::user()->family_id)->orderBy('family_level', 'desc')->get();
         if (is_null($n_users)) {
             return view('mafamille' ,compact('posts'))->with('user', auth()->user());

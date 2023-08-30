@@ -90,7 +90,7 @@
                 <div class="d-flex align-items-center justify-content-between px-md-5 mb-2">
                     <h1 class="fw-black h1 text-gym">Boutique</h1>
                     <a href="/shop_categories" class="fw-bold ms-1 text-end d-flex align-items-center text-gym">
-                        <span class="span">Voir tout les Articles</span>
+                        <span class="span">Voir tous les Articles</span>
                         <i class="fa-solid fa-circle-plus text-gym"></i>
                     </a>
                 </div>

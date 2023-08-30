@@ -214,7 +214,7 @@ use Illuminate\Support\Facades\Route;
           <li class="dropdown"><a href="#"><span>&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
             <ul>
               <li class="dropdown">
-                <a href="{{ route('Simple_Post',13000) }}"><span>&nbsp;Comité Directeur</span></a>
+                <a href="{{ route('Simple_Post',13792) }}"><span>&nbsp;Organisation</span></a>
               </li>
               <li class="dropdown">
                 <a href="{{ route('Simple_Post',13002) }}"><span>&nbsp;Partenaires</span></a>
@@ -226,8 +226,6 @@ use Illuminate\Support\Facades\Route;
                   <li><a target="_blank" href="https://www.instagram.com/gym_concordia"><span><i class="bi bi-instagram"></i>&nbsp;&nbsp;Instagram</span></a></li>
                   <li><a target="_blank" href="https://www.youtube.com/user/GymConcordia"><span><i class="bi bi-youtube"></i>&nbsp;&nbsp;Youtube</span></a></li>
                   <li><a target="_blank" href="https://www.tiktok.com/discover/gym-concordia-schiltigheim?lang=fr"><span><i class="bi bi-tiktok"></i>&nbsp;&nbsp;TikTok</span></a></li>
-                  <li><a target="_blank" href="#"><span><i class="bi bi-camera-video"></i>&nbsp;&nbsp;Videos</span></a></li>
-                  <li><a target="_blank" href="#"><span><i class="bi bi-newspaper"></i>&nbsp;&nbsp;Presse</span></a></li>
                 </ul>
                 
               </li>
@@ -370,7 +368,7 @@ use Illuminate\Support\Facades\Route;
             <li class="dropdown"><a href="#"><span>&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
               <ul>
                 <li class="dropdown">
-                  <a href="{{ route('Simple_Post',13000) }}"><span>&nbsp;Comité Directeur</span></a>
+                  <a href="{{ route('Simple_Post',13792) }}"><span>&nbsp;Organisation</span></a>
                 </li>
                 <li class="dropdown">
                   <a href="{{ route('Simple_Post',13002) }}"><span>&nbsp;Partenaires</span></a>
@@ -382,8 +380,6 @@ use Illuminate\Support\Facades\Route;
                     <li><a target="_blank" href="https://www.instagram.com/gym_concordia"><span><i class="bi bi-instagram"></i>&nbsp;&nbsp;Instagram</span></a></li>
                     <li><a target="_blank" href="https://www.youtube.com/user/GymConcordia"><span><i class="bi bi-youtube"></i>&nbsp;&nbsp;Youtube</span></a></li>
                   <li><a target="_blank" href="https://www.tiktok.com/discover/gym-concordia-schiltigheim?lang=fr"><span><i class="bi bi-tiktok"></i>&nbsp;&nbsp;TikTok</span></a></li>
-                  <li><a target="_blank" href="#"><span><i class="bi bi-camera-video"></i>&nbsp;&nbsp;Videos</span></a></li>
-                    <li><a target="_blank" href="#"><span><i class="bi bi-newspaper"></i>&nbsp;&nbsp;Presse</span></a></li>
                   </ul>
                   
                 </li>

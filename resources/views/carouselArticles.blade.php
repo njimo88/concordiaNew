@@ -5,7 +5,7 @@
                 <div class="d-flex align-items-center justify-content-between px-md-5 mb-2">
                     <h1 class=" fw-black h1">Articles</h1>
                     <a href="/tousLesArticles" class="fw-bold ms-1 text-white text-end plus-link d-flex align-items-center">
-                        <span class="span">Voir tout les Articles</span>
+                        <span class="span">Voir tous les Articles</span>
                         <i class="fa-solid fa-circle-plus" style="color: #ffffff;"></i>
                       </a>
                       
