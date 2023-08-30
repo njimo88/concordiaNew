@@ -42,17 +42,23 @@
                         </div>
 
                         <div class="locations-section">
-                            <strong>Lieu :</strong>
+                            <strong>Lieu</strong>
                             <ul class="location-list">
                                 @foreach($locations as $location)
                                     <li>
                                         <a  style="color: #182881" href="{{ $location['map'] }}" target="_blank" >{{ $location['name'] }}</a>
                                         <br>
-                                        <a href="{{ $location['map'] }}" target="_blank" class="text-xs">{{ $location['address'] }}</a>
+                                        <a style="color: #182881" href="{{ $location['map'] }}" target="_blank" class="text-xs">{{ $location['address'] }}</a>
                                     </li>
                                 @endforeach
                             </ul>
                         </div>
+                        
+                        <div class="locations-section">
+                            <strong>Reprise</strong>
+                            <p>{{ $repriseDate }}</p>
+                        </div>
+                        
                         
                         
 

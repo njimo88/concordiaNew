@@ -248,57 +248,64 @@ public function singleProduct($id) {
             ->join('shop_article_1', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')
             ->firstOrFail();
 
-            $teacherIds = json_decode($articl->teacher, true);
-            $teachers = User::whereIn('user_id', $teacherIds)->get();
+        $teacherIds = json_decode($articl->teacher, true);
+        $teachers = User::whereIn('user_id', $teacherIds)->get();
 
-            $schedules = [];  // Cette liste va contenir toutes les plages horaires
-            if(isset($articl->lesson)) {
-                $Data_lesson = json_decode($articl->lesson,true);
-                foreach($Data_lesson['start_date'] as $index => $startDate) {
-                    $startHour = (new DateTime($startDate))->format('H:i');
-                    $endHour = (new DateTime($Data_lesson['end_date'][$index]))->format('H:i');
-                    $dayName = (new DateTime($startDate))->format('l');
-                    $dayName = fetchDayName($dayName);
-                    $schedules[] = "$dayName de $startHour à $endHour";
-                }
+        $schedules = []; 
+        if(isset($articl->lesson)) {
+            $Data_lesson = json_decode($articl->lesson,true);
+            $formattedDates = [];
+            foreach($Data_lesson['start_date'] as $index => $startDate) {
+                setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8'); 
+        
+                $startHour = (new DateTime($startDate))->format('H:i');
+                $endHour = (new DateTime($Data_lesson['end_date'][$index]))->format('H:i');
+                $dayWithHours = strftime('%A', strtotime($startDate)) . " de $startHour à $endHour";
+                $schedules[] = $dayWithHours;
+        
+                $dayWithoutHours = strftime('%A %d %B %Y', strtotime($startDate));
+                $formattedDates[] = $dayWithoutHours;
             }
+        
+            usort($formattedDates, function($a, $b) {
+                return strtotime($a) <=> strtotime($b);
+            });
+        
+            $repriseDate = $formattedDates[0] ?? 'Pas d\'horaire disponible';
+        }
 
-            $rooms = Room::whereIn('id_room', $Data_lesson['room'])->get();
-            $locations = [];  
-
-            foreach($Data_lesson['room'] as $roomId) {
-                $room = $rooms->where('id_room', $roomId)->first();
-                if($room) {
-                    $locations[] = [
-                        'name' => $room->name,
-                        'address' => $room->address,
-                        'map' => $room->map
-                    ];  
-                }
+        $rooms = Room::whereIn('id_room', $Data_lesson['room'])->get();
+        $locations = [];  
+        foreach($Data_lesson['room'] as $roomId) {
+            $room = $rooms->where('id_room', $roomId)->first();
+            if($room) {
+                $locations[] = [
+                    'name' => $room->name,
+                    'address' => $room->address,
+                    'map' => $room->map
+                ];  
             }
-
-            
-
+        }
     } elseif ($articl->type_article == 2) {
         $articl = Shop_article::where('shop_article.id_shop_article', $id)
             ->join('shop_article_2', 'shop_article.id_shop_article', '=', 'shop_article_2.id_shop_article')
             ->firstOrFail();
     }
-    
+
     $selectedUsers = array();
     $coursVente = SystemSetting::find(5);
-    
+
     if (Auth::check()) {
         $selectedUsers = getArticleUsers($articl);
     }
-    
-    if ($articl->type_article == 1){
-        return view('singleProduct', compact('articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente'));
+
+    if ($articl->type_article == 1) {
+        return view('singleProduct', compact('articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate'));
     } else {
         return view('singleProduct', compact('articl', 'selectedUsers', 'coursVente'));
     }
-
 }
+
 
 public function basket (){
     if (Auth::check()){
