@@ -264,12 +264,16 @@ public function singleProduct($id) {
             }
 
             $rooms = Room::whereIn('id_room', $Data_lesson['room'])->get();
-            $locations = [];  // Cette liste va contenir tous les noms des salles
+            $locations = [];  
 
             foreach($Data_lesson['room'] as $roomId) {
                 $room = $rooms->where('id_room', $roomId)->first();
                 if($room) {
-                    $locations[] = $room->name;  // Remplacez 'id_name' par 'name'
+                    $locations[] = [
+                        'name' => $room->name,
+                        'address' => $room->address,
+                        'map' => $room->map
+                    ];  
                 }
             }
 

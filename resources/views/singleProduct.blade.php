@@ -45,10 +45,16 @@
                             <strong>Lieu :</strong>
                             <ul class="location-list">
                                 @foreach($locations as $location)
-                                    <li><a style="color: #182881" href="https://www.google.com/maps/search/{{ urlencode($location) }}" target="_blank">{{ $location }}</a></li>
+                                    <li>
+                                        <a  style="color: #182881" href="{{ $location['map'] }}" target="_blank" >{{ $location['name'] }}</a>
+                                        <br>
+                                        <a href="{{ $location['map'] }}" target="_blank" class="text-xs">{{ $location['address'] }}</a>
+                                    </li>
                                 @endforeach
                             </ul>
                         </div>
+                        
+                        
 
                     @elseif($articl->type_article == 2)
                         <!-- Ici, vous affichez l'image directement comme vous l'avez mentionné -->
@@ -143,7 +149,10 @@
 </div>
 
 <style>
-    /* Reset some default styles */
+
+.text-xs {
+    font-size: 0.75rem; 
+}
     body, html {
         margin: 0;
         padding: 0;
