@@ -17,6 +17,7 @@ use App\Models\SystemSetting;
 use App\Models\bills;
 use App\Models\liaison_shop_articles_bills;
 use App\Models\PaiementImmediat;
+use PDF;
 
 
 use DateTime;
@@ -227,7 +228,7 @@ public function boutique($id)
 
     $breadcrumb = $this->getBreadcrumb($id, $info);
 
-    $info2 = Shop_category::select('name','description')->where('id_shop_category','=',$id)->first();
+    $info2 = Shop_category::select('name','description','id_shop_category')->where('id_shop_category','=',$id)->first();
 
     $saison_active = saison_active();
     
@@ -646,6 +647,20 @@ $bill = DB::table('bills')
             return view('mafamille',compact('n_users','posts'))->with('user', auth()->user());
         }
     }
+
+
+
+public function generatePDF($id) {
+    $info2 = Shop_category::select('name','description')->where('id_shop_category','=',$id)->first();
+
+    $saison_active = saison_active();
+    $articles = Shop_article::getArticlesByCategories($id, $saison_active);
+
+    $pdf = PDF::loadView('pdfBoutique', compact('info2', 'articles'));
+    $pdf->setPaper('a4', 'landscape');
+
+    return $pdf->stream($info2->name . '.pdf');
+}
 
 
 }

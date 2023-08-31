@@ -2,9 +2,72 @@
     "poppins": {
         "normal": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/poppins_normal_d55f957c8f8197e1feaa744ab80bcfaf",
         "200": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/poppins_200_d55f957c8f8197e1feaa744ab80bcfaf",
-        "300": "poppins_300_d55f957c8f8197e1feaa744ab80bcfaf"
+        "300": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/poppins_300_d55f957c8f8197e1feaa744ab80bcfaf",
+        "500": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/poppins_500_6a6f5e017da7e062546fd806ab3b249c",
+        "600": "poppins_600_272b14b77a21dc5827f4570eff556c8f"
     },
     "roboto": {
         "normal": "roboto_normal_7bc701b343c10631f60048716b96e4f7"
+    },
+    "montserrat": {
+        "300_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/montserrat_300_italic_fb5a415793464dedbdefb17fc42d396a",
+        "italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/montserrat_italic_9a283117545b9246f20d56faf2071ead",
+        "500_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/montserrat_500_italic_a8d93c9bcd6408024258001b80e0033a",
+        "600_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/montserrat_600_italic_0cee389f6c978f7f2708882291d2fee9",
+        "bold_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/montserrat_bold_italic_cabe9904a9b42c276b45035227289afd",
+        "300": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/montserrat_300_39b1972e72c43f1f0e368a33cc82c0ce",
+        "normal": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/montserrat_normal_b74b751c20b429298921949795391ef1",
+        "500": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/montserrat_500_a34ab50d0b60a015b62e11133b0bf05b",
+        "600": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/montserrat_600_54346339d706ca965bcbed499d2795db",
+        "bold": "montserrat_bold_4b7576218464d90344a2d2769cab2f75"
+    },
+    "open sans": {
+        "300_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/open_sans_300_italic_5caea7c0c761279338afba906361c994",
+        "italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/open_sans_italic_2827702099c558640b5d0b382c2e599e",
+        "600_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/open_sans_600_italic_e4f5fe1a32795dc308932b5b6c89cddb",
+        "bold_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/open_sans_bold_italic_e10c0668d1297ade2766bc68cffc3144",
+        "300": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/open_sans_300_1d6849e351b30d7d7fb264a1878f4b3a",
+        "normal": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/open_sans_normal_e3f9da90edb379e243cceabb2fdb3f0a",
+        "500": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/open_sans_500_206276ec5153db0ed3baebdafc92e714",
+        "600": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/open_sans_600_2a60ebfba7bda514848a0bbbd15b621a",
+        "bold": "open_sans_bold_074d893389082c36506eb383f9ca70e7"
+    },
+    "raleway": {
+        "300_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/raleway_300_italic_2dc72fd3c0b78420f254b2cbda974e97",
+        "italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/raleway_italic_6fed1aede0d5ffbebceab79c962269a0",
+        "500_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/raleway_500_italic_6927bc067d2ebdb90cb3772b9a98569e",
+        "600_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/raleway_600_italic_7172e9e22028a65bd11e3d249ab7bdea",
+        "bold_italic": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/raleway_bold_italic_24144e9116208d732a90c9d5c5aa2601",
+        "300": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/raleway_300_f8d2ec01b0b71b68e16aaba12280981f",
+        "normal": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/raleway_normal_7c961367c4ea677ee00dbeeb506a20c3",
+        "500": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/raleway_500_0a38ab613485e25337e1ba092e318cb3",
+        "600": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/raleway_600_6c644471e33d16f8d5451769c698c373",
+        "bold": "raleway_bold_0c255ad52d963afba588d147c173f8ba"
+    },
+    "remixicon": {
+        "normal": "remixicon_normal_3bb7bcbe50afcab53542a77a097e886e"
+    },
+    "boxicons": {
+        "normal": "boxicons_normal_29cb19fbfb90ef61e3b99f58d1084746"
+    },
+    "slick": {
+        "normal": "slick_normal_730b234fbb873e9249864d31d5c1a673"
+    },
+    "font awesome 6 brands": {
+        "normal": "font_awesome_6_brands_normal_fe9f8889de14dac4e5423b59c7c9c4d7"
+    },
+    "font awesome 6 free": {
+        "normal": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/font_awesome_6_free_normal_63ceaa3a26a25d15acc67a2a92a86505",
+        "900": "font_awesome_6_free_900_e28be8b0559d1fb8cc4e17872df29e2a"
+    },
+    "font awesome 5 brands": {
+        "normal": "font_awesome_5_brands_normal_fe9f8889de14dac4e5423b59c7c9c4d7"
+    },
+    "font awesome 5 free": {
+        "900": "C:\\Users\\d-nji\\OneDrive\\Desktop\\DEV\\Concordia\\storage\\fonts\/font_awesome_5_free_900_e28be8b0559d1fb8cc4e17872df29e2a",
+        "normal": "font_awesome_5_free_normal_63ceaa3a26a25d15acc67a2a92a86505"
+    },
+    "fontawesome": {
+        "normal": "fontawesome_normal_06860fa9961d464ff5b77a2ec3345004"
     }
 }

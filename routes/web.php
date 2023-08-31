@@ -497,6 +497,7 @@ Route::get('/fichepaiement/{id}/{nombre_cheques}', [TraitementSupp::class, 'fich
 Route::get('/mesfactures', [TraitementSupp::class, 'mesfactures'])->name('mesfactures');
 Route::get('/mafacture/{id}', [TraitementSupp::class, 'mafacture'])->name('mafacture');
 Route::get('/mafamille', [TraitementSupp::class, 'mafamille'])->name('mafamille');
+Route::get('/generatePDFboutique/{id}', [TraitementSupp::class, 'generatePDF'])->name('generatePDFboutique');
 
 
 Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');

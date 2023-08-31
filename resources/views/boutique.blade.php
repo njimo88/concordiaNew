@@ -4,16 +4,30 @@
 
 <div class="container">
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <a class="breadcrumb__step breadcrumb__step--active" href="{{ route('shop_categories') }}">Categories</a>
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            <div class="breadcrumb">
+                <a class="breadcrumb__step breadcrumb__step--active" href="{{ route('shop_categories') }}">Categories</a>
     
-        @foreach($breadcrumb as $crumb)
-            <a class="breadcrumb__step" href="{{ route('sub_shop_categories', ['id' => $crumb->id_shop_category]) }}">
-                {{$crumb->name}}
-            </a>
-        @endforeach
+                @foreach($breadcrumb as $crumb)
+                    <a class="breadcrumb__step" href="{{ route('sub_shop_categories', ['id' => $crumb->id_shop_category]) }}">
+                        {{$crumb->name}}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+        
+        <div class="col-lg-6 col-md-12 mt-lg-0 mt-3 d-flex justify-content-lg-end">
+            @if(auth()->user() && auth()->user()->role >= 90)
+                <a href="{{ route('generatePDFboutique', ['id' => $info2->id_shop_category]) }}" target="_blank">
+                    <img src="{{ asset('assets/images/pdf.png') }}" alt="Télécharger en PDF" class="btn-img">
+                </a>
+            @endif
+       </div>
     </div>
+    
+    
+    
 
     <h2 class="heading  mt-3">{{ $info2->name }}</h2>
     <div style="display: block">
@@ -38,8 +52,6 @@
                         @if ($article->stock_actuel > 0 && $article->stock_actuel <= $article->alert_stock)
                                 {{$article->stock_actuel}} restant(s)
                         @elseif ($article->stock_actuel <= 0)
-                        {{ $article->stock_actuel }}
-                        {{ $article->id_shop_article }}
                                 Complet
                         @endif
                     </div>
