@@ -281,7 +281,7 @@ body, html {
           <div class="modal-body">
             {!! $Bons->text !!}
               
-              <a href="{{ route('detail_paiement', ['id' => 5, 'nombre_cheques' => 1]) }}" class="btn btn-primary mr-2">Valider ma commande</a>
+              <a href="{{ route('fichepaiement', ['id' => 5, 'nombre_cheques' => 1]) }}" class="btn btn-primary mr-2">Valider ma commande</a>
               <button type="button" class="btn-rouge " data-dismiss="modal">Annuler</button>
           </div>
       </div>
@@ -344,7 +344,7 @@ for (var i = 1; i <= maxPayments; i++) {
 document.getElementById('valider_commande').addEventListener('click', function(event) {
     event.preventDefault(); // Empêcher le comportement par défaut du lien
     var nombre_cheques_value = nombre_cheques.value; // Récupérer la valeur sélectionnée
-    var url = '{{ route('detail_paiement', ['id' => 4, 'nombre_cheques' => ':nombre_cheques']) }}';
+    var url = '{{ route('fichepaiement', ['id' => 4, 'nombre_cheques' => ':nombre_cheques']) }}';
     url = url.replace(':nombre_cheques', nombre_cheques_value); // Remplacer la valeur de la variable dans l'URL
     window.location.href = url; // Rediriger vers la page detail_paiement avec le nombre de chèques sélectionné
 });

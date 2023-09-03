@@ -573,6 +573,10 @@ $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function (d) {
 $.fn.dataTable.ext.type.order['numeric-comma-pre'] = function (d) {
   return parseFloat(d.replace(' ', '').replace(',', '.'));
 };
+$.fn.dataTable.ext.type.order['stock-number-pre'] = function (data) {
+  var matches = data.match(/(-?\d+)\//);
+  return matches ? parseInt(matches[1], 10) : 0;
+};
 
 $('#myTableArticle').DataTable({
   info: false,
@@ -602,14 +606,14 @@ $('#myTableArticle').DataTable({
       }).nodes();
   },
   columnDefs: [
-    {
-      targets: 0, 
-      type: 'img-src-string',
-  },
-  {
-      targets: 3, 
-      type: 'status-class'
-  },
+      {
+          targets: 0,
+          type: 'img-src-string'
+      },
+      {
+          targets: 3,
+          type: 'status-class'
+      },
       {
           targets: 3,
           type: 'datetime-dd-mm-yyyy'
@@ -617,10 +621,15 @@ $('#myTableArticle').DataTable({
       {
           targets: 4,
           type: 'numeric-comma'
+      },
+      {
+          targets: 6,
+          type: 'stock-number'
       }
   ],
-  dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+  dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 d-flex justify-content-end'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
 });
+
 
 $('#myTableArticle thead input').on('keyup change', function() {
   table
