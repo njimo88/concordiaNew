@@ -28,7 +28,7 @@ a:hover {
 }
 
 .my-custom-btn {
-    background-color: #272e5c !important;
+    background-color: #666675 !important;
     border-color: #272e5c !important;
     color: white !important;
     padding: 10px 20px !important;
@@ -74,18 +74,33 @@ fieldset {
             {{ session('error') }}
         </div>
     @endif
-    <section class="container-fluid ps-4 py-4" style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif">
+    <section class="container-fluid ps-4 py-2" style="background-color: @if ( $bill->row_color == 'none' ) #00ff00 @else {{ $bill->row_color }} @endif">
         <div class="container-xxl">
-            <div class="row justify-content-center">
-                <div class="col-12 col-xl-10">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-12 col-xl-5">
                     <p class="fw-bold text-white mb-0 link-white">
                         <i class="far fa-lg fa-newspaper me-2 me-md-3 text-white"></i>
                         <a href="#" rel="category tag">Facture n°{{ $bill->id }}</a>&nbsp;&nbsp;/ &nbsp;&nbsp;{{ $bill->bill_status }}
                     </p>
                 </div>
+                
+                @if ($bill->status >= 70)
+                <div class="col-auto">
+                    <form method="post" action="{{ route('generatePDFfacture', $bill->id) }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="my-custom-btn btn btn-primary my-2">Facture <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
+                    </form>
+                    <form method="post" action="{{ route('generatePDFreduction_Fiscale', $bill->id) }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="my-custom-btn btn btn-primary my-2">Réduction Fiscale  <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
+                    </form>
+                </div>
+                @endif
+                
             </div>
         </div>
     </section>
+    
     <section class="container-fluid  py-4" style="background-color: #f2f2f2 ">
         <div class="container-xxl bg-white p-4 shadow">
             <div class="row justify-content-center">
