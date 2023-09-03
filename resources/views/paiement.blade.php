@@ -51,9 +51,14 @@ body, html {
     background-color: #ebf5ff;
 }
 
-.main {
-    padding: 80px 0;
+.container {
+    font-family: 'Arial', sans-serif;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    margin-top: 5rem !important;
 }
+
 .content-wrapper {
     display: flex;
     justify-content: space-between;
@@ -137,8 +142,8 @@ body, html {
 }
 
 </style>
-<main id="main" class="main vh-100">
-<div class="container">
+
+<div class="container ">
     <div class="row">
         <div class="col-md-8 left-section p-5">
             <h3 class="summary-title">Récapitulatif</h3>
@@ -181,7 +186,6 @@ body, html {
         </div>
     </div>
 </div>
-</main>
  <!-- Modal -->
  <div class="modal fade" id="Espèces" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -277,7 +281,7 @@ body, html {
           <div class="modal-body">
             {!! $Bons->text !!}
               
-              <a href="{{ route('fichepaiement', ['id' => 5, 'nombre_cheques' => 1]) }}" class="btn btn-primary mr-2">Valider ma commande</a>
+              <a href="{{ route('detail_paiement', ['id' => 5, 'nombre_cheques' => 1]) }}" class="btn btn-primary mr-2">Valider ma commande</a>
               <button type="button" class="btn-rouge " data-dismiss="modal">Annuler</button>
           </div>
       </div>
@@ -340,7 +344,7 @@ for (var i = 1; i <= maxPayments; i++) {
 document.getElementById('valider_commande').addEventListener('click', function(event) {
     event.preventDefault(); // Empêcher le comportement par défaut du lien
     var nombre_cheques_value = nombre_cheques.value; // Récupérer la valeur sélectionnée
-    var url = '{{ route('fichepaiement', ['id' => 4, 'nombre_cheques' => ':nombre_cheques']) }}';
+    var url = '{{ route('detail_paiement', ['id' => 4, 'nombre_cheques' => ':nombre_cheques']) }}';
     url = url.replace(':nombre_cheques', nombre_cheques_value); // Remplacer la valeur de la variable dans l'URL
     window.location.href = url; // Rediriger vers la page detail_paiement avec le nombre de chèques sélectionné
 });

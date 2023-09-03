@@ -420,7 +420,7 @@ section {
   .navbar .active,
   .navbar .active:focus,
   .navbar li:hover>a {
-    color: #fff;
+    color: #482683;
   }
 
   .navbar .dropdown ul {
