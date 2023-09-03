@@ -33,16 +33,16 @@
 }
 
 .container{
-    background:linear-gradient(45deg, #6C63FF, #83eaf1);  /* Changed the color gradient for a fresher look */
+    background:linear-gradient(45deg, #6C63FF, #83eaf1);  
     padding:15px 9%;
     padding-bottom: 100px;
-    max-width: 100% !important;  /* Added this to ensure the container is always 100% of the screen width */
-    min-height: 100vh;  /* Added this to ensure the container is always 100% of the screen height */
+    max-width: 100% !important;  
+    min-height: 100vh;  
 }
 
 .container .heading{
     text-align: center;
-    padding-bottom: 25px;  /* Slight adjustment */
+    padding-bottom: 25px; 
     color:#fff;
     text-shadow: 0 5px 10px rgba(0,0,0,.15);
     font-size: 50px;
@@ -51,12 +51,12 @@
 .container .box-container{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-    gap:25px;  /* Increased gap for more breathing room */
+    gap:25px; 
 }
 
 .container .box-container .box{
-    box-shadow: 0 8px 15px rgba(0,0,0,.12); /* Softened the shadow */
-    border-radius: 10px; /* Increased the border-radius for rounder edges */
+    box-shadow: 0 8px 15px rgba(0,0,0,.12); 
+    border-radius: 10px; 
     background: #fff;
     text-align: center;
     padding:30px 20px;
@@ -66,32 +66,32 @@
 }
 
 .container .box-container .box img{
-    height: 90px;  /* Adjusted the height */
-    margin-bottom: 15px;  /* Added a margin for separation */
+    height: 90px;  
+    margin-bottom: 15px; 
 }
 
-.container .box-container .box h3{
-    color:#444;
-    font-size: 24px; /* Slightly bigger font-size */
-    padding:10px 0;
+.container .box-container .box h3 {
+  color: #444;
+  font-size: 21px;
+  padding: 10px 0;
 }
 
-.container .box-container .box p{
-    color:#777;
-    font-size: 16px; /* Increased font-size for better readability */
-    line-height: 1.9; /* Adjusted line height */
-    height: 150px;  /* Fixed height to ensure all boxes are of the same height */
-    overflow: hidden;  /* To handle overflow from longer descriptions */
+.container .box-container .box p {
+  color: #777;
+  font-size: 16px;
+  line-height: 1.9;
+  height: 244px;
+  overflow: hidden;
 }
 
 .container .box-container .box .btn{
     margin-top: 15px;
     display: inline-block;
-    background:#6C63FF; /* Changed color to match gradient */
+    background:#6C63FF; 
     color:#fff;
     font-size: 17px;
-    border-radius: 7px; /* Adjusted border-radius */
-    padding: 10px 30px; /* Made the button slightly bigger */
+    border-radius: 7px; 
+    padding: 10px 30px; 
     position: absolute;
     bottom: 20px;
     left: 50%;
@@ -99,13 +99,13 @@
 }
 
 .container .box-container .box .btn:hover{
-    background: #555; /* Darkened on hover */
+    background: #555; 
     letter-spacing: 1px;
 }
 
 .container .box-container .box:hover{
     box-shadow: 0 10px 25px rgba(0,0,0,.18);
-    transform: translateY(-5px); /* A gentle upward lift on hover */
+    transform: translateY(-5px); 
 }
 
 @media (max-width:768px){

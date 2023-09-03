@@ -550,7 +550,7 @@ use Illuminate\Support\Facades\Route;
             @endphp
 
             @if(count($paniers) > 0)
-                <li><a href="{{ route('panier', auth()->user()->user_id) }}"style="color:red"><i style="color:red;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier ({{ count($paniers) }})</a></li>
+                <li><a href="{{ route('basket', auth()->user()->user_id) }}"style="color:red"><i style="color:red;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier ({{ count($paniers) }})</a></li>
             @else
                 <li><a href="{{ route('basket', auth()->user()->user_id) }}" ><i style="color:white;font-size:1.2rem " class="mx-1 fa-sharp fa-regular fa-cart-shopping"></i>Panier</a></li>
             @endif
