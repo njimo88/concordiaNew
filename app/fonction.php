@@ -1692,60 +1692,43 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
 
 
 
-    function nbr_inscrits_based_on_date($saison)
-{
-     // Tableau pour stocker les périodes de calcul
-     $periodes = [];
-
-     // Obtenir la date d'aujourd'hui
-     $date_today = date("Y-m-d");
- 
-     $currentYear = date("Y");
-     $todayMonthDay = date("m-d");
-         if ($todayMonthDay < "06-20") {
-             // Si nous sommes avant le 20 juin
-             $season_start_date = date("Y-m-d", strtotime(($saison) . "-06-20"));
-             $season_end_date = date("Y-m-d", strtotime($saison+1 . "-" . $todayMonthDay));
-         } else {
-             // Si nous sommes après le 20 juin
-             $season_start_date = date("Y-m-d", strtotime($saison . "-06-20"));
-             $season_end_date = date("Y-m-d", strtotime($saison . "-" . $todayMonthDay));
-         }
- 
-     // Ajouter la période au tableau
-     $periodes[] = "Période : " . $season_start_date . " à " . $season_end_date;
- 
-
-
-    // requête pour avoir le nombre d'utilisateurs inscrits pendant cette période pour les 'bills'
-    $result = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
-       ->leftjoin('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
-       ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
-       ->where('type_article',0)
-       ->where('type','facture')
-       ->where('status','>',9)
-       ->where('saison',$saison)
-       ->whereBetween('date_bill', [$season_start_date, $season_end_date])
-       ->distinct()
-       ->count('liaison_shop_articles_bills.id_user');
-
-    // requête pour avoir le nombre d'utilisateurs inscrits pendant cette période pour les 'old_bills'
-    $result_old_bills = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
-       ->leftjoin('old_bills', 'liaison_shop_articles_bills.bill_id', '=', 'old_bills.id')
-       ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
-       ->where('type_article',0)
-       ->where('type','facture')
-       ->where('status','>',9)
-       ->where('saison',$saison)
-       ->whereBetween('date_bill', [$season_start_date, $season_end_date])
-       ->distinct()
-       ->count('liaison_shop_articles_bills.id_user');
-
-    // Calcul du résultat final
-    $final_result =  $result + $result_old_bills;
-
-    return ['result' => $final_result, 'periodes' => $periodes];
-}
+    function nbr_inscrits_based_on_date($saison) {
+        $periodes = [];
+        $date_today = date("Y-m-d");
+        $currentYear = date("Y");
+        $todayMonthDay = date("m-d");
+        if ($todayMonthDay < "06-20") {
+            $season_start_date = date("Y-m-d 00:00:00", strtotime(($saison) . "-06-20"));
+            $season_end_date = date("Y-m-d 23:59:59", strtotime($saison+1 . "-" . $todayMonthDay));
+        } else {
+            $season_start_date = date("Y-m-d 00:00:00", strtotime($saison . "-06-20"));
+            $season_end_date = date("Y-m-d 23:59:59", strtotime($saison . "-" . $todayMonthDay));
+        }
+        $periodes[] = "Période : " . $season_start_date . " à " . $season_end_date;
+        $result = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
+           ->leftjoin('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+           ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
+           ->where('type_article',0)
+           ->where('type','facture')
+           ->where('status','>',9)
+           ->where('saison',$saison)
+           ->whereBetween('date_bill', [$season_start_date, $season_end_date])
+           ->distinct()
+           ->count('liaison_shop_articles_bills.id_user');
+        $result_old_bills = DB::table('liaison_shop_articles_bills')->select('liaison_shop_articles_bills.id_user')
+           ->leftjoin('old_bills', 'liaison_shop_articles_bills.bill_id', '=', 'old_bills.id')
+           ->leftjoin('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')
+           ->where('type_article',0)
+           ->where('type','facture')
+           ->where('status','>',9)
+           ->where('saison',$saison)
+           ->whereBetween('date_bill', [$season_start_date, $season_end_date])
+           ->distinct()
+           ->count('liaison_shop_articles_bills.id_user');
+        $final_result =  $result + $result_old_bills;
+        return ['result' => $final_result, 'periodes' => $periodes];
+    }
+    
 
 
 
