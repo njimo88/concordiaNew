@@ -51,14 +51,9 @@ body, html {
     background-color: #ebf5ff;
 }
 
-.container {
-    font-family: 'Arial', sans-serif;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    background: #fff;
-    margin-top: 5rem !important;
+.main {
+    padding: 80px 0;
 }
-
 .content-wrapper {
     display: flex;
     justify-content: space-between;
@@ -142,8 +137,8 @@ body, html {
 }
 
 </style>
-
-<div class="container" style="margin-bottom: 6rem !important;">
+<main id="main" class="main vh-100">
+<div class="container">
     <div class="row">
         <div class="col-md-8 left-section p-5">
             <h3 class="summary-title">Récapitulatif</h3>
@@ -186,6 +181,7 @@ body, html {
         </div>
     </div>
 </div>
+</main>
  <!-- Modal -->
  <div class="modal fade" id="Espèces" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
