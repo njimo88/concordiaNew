@@ -150,29 +150,35 @@ a {
     </div>
 </section>
 <div  class="container">
-    <aside class="sidebar">
-        <h3>Statistiques des factures</h3>
-        <ul>
-            <li>Factures totales : <span>{{ count($bill) }}</span></li>
-        </ul>
-    </aside>
-    
     <div class="toggle-section">
-        <h2>Gestion des factures</h2>
-        <p>Choisissez les types de facture que vous souhaitez visualiser:</p>
-        
-        <!-- Toggle for Facture -->
-        <div class="toggle-container mt-3 d-flex align-items-center">
-            <input type="checkbox" id="factureCheckbox" checked>
-            <label for="factureCheckbox" class="button mr-2"></label>
-            <span class="toggle-label mr-2">Facture</span>
+
+        <!-- Titre -->
+        <div class="mb-3">
+            <h2>Gestion des factures</h2>
         </div>
+    
+        <!-- Ligne des éléments de bascule -->
+        <div class="d-flex align-items-center">
+    
+            <div>
+                Factures totales : <span>{{ count($bill) }}</span>
+            </div>
+
+            <div class="toggle-container mx-3 d-flex align-items-center">
+                <input type="checkbox" id="factureCheckbox" checked>
+                <label for="factureCheckbox" class="button me-2"></label>
+                <span class="toggle-label me-2">Facture</span>
+            </div>
         
-        <!-- Toggle for Devis -->
-        <div class="toggle-container mt-3 d-flex align-items-center">
-            <input type="checkbox" id="devisCheckbox" checked>
-            <label for="devisCheckbox" class="button mr-2"></label>
-            <span class="toggle-label mr-2">Devis</span>
+            <!-- Toggle for Devis -->
+            <div class="toggle-container me-3 d-flex align-items-center">
+                <input type="checkbox" id="devisCheckbox" checked>
+                <label for="devisCheckbox" class="button me-2"></label>
+                <span class="toggle-label me-2">Devis</span>
+            </div>
+    
+            <!-- Total bills -->
+            
         </div>
     </div>
     
