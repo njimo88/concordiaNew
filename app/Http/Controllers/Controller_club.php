@@ -547,42 +547,24 @@ public function enregister_appel_method($id , Request $request){
 
 
 function display_historique_method($id){
-
     $id_cours = $id ;
     $tab = [] ;
-    $tab2 = [] ;
-    $present = [] ;
-    $appel = appels::where('id_cours',$id)->get();
+    $attendance = [];
 
-    foreach($appel as $data){
+    $appel = appels::where('id_cours', $id)->get();
 
-        foreach ((array)json_decode($data->presents) as $key => $value) {
-            $tab[] = $key ;
-            $tab2[] = $value ;
-           
-          
-       }
-       $present [] = array( $data->date => $tab2) ;
-        $tab2 = [] ;
-
-
+    foreach ($appel as $data) {
+        foreach (json_decode($data->presents, true) as $userId => $presenceStatus) {
+            $attendance[$userId][$data->date] = $presenceStatus;
+        }
     }
 
-    $users = User::select("*")->whereIn('user_id', $tab)
-    ->orderBy('name', 'ASC')
-    ->get();
-    
-    /*
-       foreach ($present as $value) {
-        foreach($value as $key => $val)
-        dd($key) ;
+    $users = User::select("*")
+                 ->whereIn('user_id', array_keys($attendance))
+                 ->orderBy('name', 'ASC')
+                 ->get();
 
-       } 
-
-       */
-      //$present = json_encode($present,JSON_NUMERIC_CHECK) ;
-
-      
-    return view('club/historique_view',compact('id_cours','appel','users','present'))->with('user', auth()->user());
+    return view('club/historique_view', compact('id_cours', 'appel', 'users', 'attendance'))->with('user', auth()->user());
 }
+
 }

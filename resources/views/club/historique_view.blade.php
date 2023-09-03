@@ -29,71 +29,32 @@ $saison_active = saison_active() ;
 
 
 
-<table  class="table">
+<table class="table">
   <thead>
-    <tr>
-      <th>Date</th>
-      @foreach($appel as $data1)
-
-          
-               <th>{{$data1->date}}</th>
-
-       @php   $tab_date[] = $data1->date  ;  $num = 1; @endphp 
-           
-
-                
-      @endforeach
-
-
-    </tr>
-  </thead>
-          
-        
-
-  <tbody>
-
-  @foreach($users as $data)
       <tr>
-   
-            <td>{{$data->name}} {{$data->lastname}}</td>
-
-                @foreach($tab_date as $dt)
-                <td>
-                @foreach($appel as $data1)
-                    @if( $data1->date == $dt)
-
-                      @foreach(json_decode($data1->presents) as $key =>  $op)
-                              @if($key == $data->user_id)
-
-                                  @if ($op == 1)
-
-                                              <div style="color:green"> <i class="fa fa-check"></i> </div>
-
-                                              @else
-
-                                              <div style="color:red"> <i class="fa-solid fa-xmark"></i> </div>
-
-                                   @endif
-
-
-
-
-                              @endif
-                      
-                      @endforeach
-
-                    @endif
-                @endforeach
-                </td> 
+          <th>Date</th>
+          @foreach($appel as $data1)
+             <th>{{$data1->date}}</th>
+          @endforeach
+      </tr>
+  </thead>
+  <tbody>
+      @foreach($users as $user)
+          <tr>
+              <td>{{$user->name}} {{$user->lastname}}</td>
+              @foreach($appel as $data1)
+                  <td>
+                      @if(isset($attendance[$user->user_id][$data1->date]))
+                          @if ($attendance[$user->user_id][$data1->date] == 1)
+                              <div style="color:green"><i class="fa fa-check"></i></div>
+                          @else
+                              <div style="color:red"><i class="fa-solid fa-xmark"></i></div>
+                          @endif
+                      @endif
+                  </td>
               @endforeach
-      </tr>      
-
-  @endforeach
-
-     
-   
-
- 
+          </tr>
+      @endforeach
   </tbody>
 </table>
 
