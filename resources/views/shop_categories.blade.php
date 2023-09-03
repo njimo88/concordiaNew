@@ -112,6 +112,9 @@
     .container{
         padding:20px;
     }
+    .container .box-container .box p{
+        height: 191px;
+    }
 }
 
 </style>

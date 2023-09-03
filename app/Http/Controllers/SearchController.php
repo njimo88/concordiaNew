@@ -10,10 +10,12 @@ require_once(app_path().'/fonction.php');
 
 class SearchController extends Controller
 {
-    public function searchBlog(Request $request)
+        public function searchBlog(Request $request)
     {
         $query = $request->input('query');
-        $results = A_Blog_Post::where('titre', 'like', '%' . $query . '%')->get();
+        $results = A_Blog_Post::where('titre', 'like', '%' . $query . '%')
+                                ->orderBy('date_post', 'desc')  
+                                ->get();
         return response()->json($results);
     }
 
@@ -21,13 +23,17 @@ class SearchController extends Controller
     {
         $query = $request->input('query');
         if (Auth::check() && Auth::user()->role >= 90) {
-            $results = Shop_article::where('title', 'like', '%' . $query . '%')->get();
+            $results = Shop_article::where('title', 'like', '%' . $query . '%')
+                                    ->get();
         } else {
             $activeSaison = saison_active();
-            $results = Shop_article::where('title', 'like', '%' . $query . '%')->where('saison', $activeSaison)->get();
+            $results = Shop_article::where('title', 'like', '%' . $query . '%')
+                                    ->where('saison', $activeSaison)
+                                    ->get();
         }
         return response()->json($results);
     }
+
 
     public function searchResults(Request $request)
     {
@@ -46,6 +52,7 @@ class SearchController extends Controller
             }
         } else {
             // Invalid search type, return an error
+
         }
 
         return view('search-results', ['results' => $results, 'query' => $searchQuery, 'searchType' => $searchType]);
