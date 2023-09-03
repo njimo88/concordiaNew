@@ -174,7 +174,7 @@ $all_periods = [];
 
 <div class="row">
 
-   @if(\App\Models\shop_article_1::isUserTeacher(auth()->user()->user_id))
+   @if(\App\Models\shop_article_1::isUserTeacher(auth()->user()->user_id) && auth()->user()->role < 90)
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    
        <div class="container">

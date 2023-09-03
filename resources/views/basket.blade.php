@@ -150,7 +150,11 @@ a{
         box-shadow: 0 6px 10px rgba(0,0,0,0.1);
         transform: translateY(-2px);
     }
-
+.btn-success {
+    background-color: #129e3c;
+    border-color: #129e3c;
+    color: white;
+}
 </style>
 <main style="background-color: #ebf5ff !important; min-height: 90vh; " class="main" id="main ">
 <div class="card my-5">
