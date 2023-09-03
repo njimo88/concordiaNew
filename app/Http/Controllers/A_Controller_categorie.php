@@ -123,7 +123,7 @@ class A_Controller_categorie extends Controller
 
             $result = MiseAuPanier($selected_user_id, $id_article);
             if ($result == 0) {
-                return redirect()->route('panier');}
+                return redirect()->route('basket');}
                 elseif ($result == $need_member) {
                     $shop1 = Shop_article::where('id_shop_article', $need_member)->firstOrFail();
                     $currentPrice = getReducedPrice($shop1->id_shop_article,$shop1->price,$selected_user_id);
@@ -138,7 +138,7 @@ class A_Controller_categorie extends Controller
                     if ($existingBasketItem) {
                         // If the existing article is the same, do not add
                         if ($existingBasketItem->ref == $need_member) {
-                            return redirect()->route('panier');
+                            return redirect()->route('basket');
                         }
                 
                         // If the existing article is different, only add if the new article is more expensive
@@ -147,7 +147,7 @@ class A_Controller_categorie extends Controller
                             $existingBasketItem->delete();  // Remove the cheaper article
                         } else {
                             // Do not add the new article
-                            return redirect()->route('panier');
+                            return redirect()->route('basket');
                         }
                     }
                 
@@ -165,7 +165,7 @@ class A_Controller_categorie extends Controller
                     }
                     $addcommand->save();
                     applyFamilyDiscount($shop1,$selected_user_id);
-                    return redirect()->route('panier');
+                    return redirect()->route('basket');
                 }elseif (is_numeric($result)) { // Si le résultat est diff_price
                     //ajouter l'article avec le prix réduit au panier
                 
@@ -183,7 +183,7 @@ class A_Controller_categorie extends Controller
                     if ($existingBasketItem) {
                         // If the existing article is the same, do not add
                         if ($existingBasketItem->ref == $need_member) {
-                            return redirect()->route('panier');
+                            return redirect()->route('basket');
                         }
                 
                         // If the existing article is different, only add if the new article is more expensive
@@ -192,7 +192,7 @@ class A_Controller_categorie extends Controller
                             $existingBasketItem->delete();  // Remove the cheaper article
                         } else {
                             // Do not add the new article
-                            return redirect()->route('panier');
+                            return redirect()->route('basket');
                         }
                     }
                 
@@ -210,11 +210,11 @@ class A_Controller_categorie extends Controller
                     }
                     $addcommand->save();
                     applyFamilyDiscount($shop1,$selected_user_id);
-                    return redirect()->route('panier');
+                    return redirect()->route('basket');
                 }
                 }
                 else{
-                    return redirect()->route('panier');
+                    return redirect()->route('basket');
                 }}
     else{
 
