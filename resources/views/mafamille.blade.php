@@ -161,7 +161,7 @@ border: 2px solid #272E5C;
                                 </div>
                                 <div>
                                     
-                                    <a data-toggle="modal" data-target="#editFamille{{ $n_users->user_id }}" class="btn">View profile</a>
+                                    <a data-toggle="modal" data-target="#editFamille{{ $n_users->user_id }}" class="btn">Voir Profil</a>
                                 </div>
                             </div>
                         </div>
