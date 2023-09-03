@@ -60,13 +60,16 @@ table td {
     font-size: 24px;
 }
 
-
-
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
 
 </style>
 
-<section class="container-fluid bg-primary text-danger p-4 slice-footer reveal reveal-visible">
-    <div class="container-xxl">
+<section class="clearfix container-fluid bg-primary text-danger p-4 slice-footer reveal reveal-visible">
+    <div class=" container-xxl">
         <div class="row d-flex justify-content-center">
             <div class="col-12 col-lg-10">
                 <div class="row row-infos">

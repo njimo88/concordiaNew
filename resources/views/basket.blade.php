@@ -60,7 +60,6 @@
 .main{
     margin: 0;
     padding: 2vh 0;
-    width: 100%;
 }
 .col-2, .col{
     padding: 0 1vh;
@@ -72,9 +71,7 @@ a{
     margin-left: auto;
     font-size: 0.7rem;
 }
-img{
-    width: 3.5rem;
-}
+
 .back-to-shop{
     margin-top: 4.5rem;
 }
@@ -107,25 +104,7 @@ input:focus::-webkit-input-placeholder
 {
       color:transparent;
 }
-.btn{
-    background-color: #272e5c;
-    border-color: #272e5c;
-    color: white;
-    width: 100%;
-    font-size: 0.7rem;
-    margin-top: 4vh;
-    padding: 1vh;
-    border-radius: 0;
-}
-.btn:focus{
-    box-shadow: none;
-    outline: none;
-    box-shadow: none;
-    color: white;
-    -webkit-box-shadow: none;
-    -webkit-user-select: none;
-    transition: none; 
-}
+
 .btn:hover{
     color: white !important;
     background-color:  #c20012 !important;
@@ -133,10 +112,7 @@ input:focus::-webkit-input-placeholder
 a{
     color: black; 
 }
-a:hover{
-    color: black;
-    text-decoration: none;
-}
+
  #code{
     background-image: linear-gradient(to left, rgba(255, 255, 255, 0.253) , rgba(255, 255, 255, 0.185)), url("https://img.icons8.com/small/16/000000/long-arrow-right.png");
     background-repeat: no-repeat;
@@ -176,7 +152,7 @@ a:hover{
     }
 
 </style>
-<main style="background-color: #ebf5ff !important;" class="main vh-100" id="main ">
+<main style="background-color: #ebf5ff !important;" class="main" id="main ">
 <div class="card my-5">
     <div class="row">
         <div class="col-md-8 cart">

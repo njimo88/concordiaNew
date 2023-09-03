@@ -97,6 +97,15 @@ border: 2px solid #272E5C;
     {{ session()->get('success') }}
 </div>
 @endif
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 <section style="background-image: url('{{asset("/assets/images/famillee.jpeg")}}');" class=" bg-light position-relative bg-cover top-banner-page">
     <img loading="lazy" src="{{ asset("/assets/images/gymm.jpg") }}" alt="Blog" title="Blog" class="d-none">
