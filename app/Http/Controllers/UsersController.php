@@ -245,7 +245,7 @@ public function detail_paiement($id,$nombre_cheques)
     
 
     if($paniers->count() == 0){
-        return redirect()->route('panier');}
+        return redirect()->route('basket');}
         else{
     $bill = new bills;
     $bill->user_id = auth()->user()->user_id;
@@ -342,7 +342,7 @@ public function detail_paiement($id,$nombre_cheques)
 
     public function Vider_panier(){
         DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
-        return redirect()->route('panier');
+        return redirect()->route('basket');
     }
 
   public function payer_article(){
