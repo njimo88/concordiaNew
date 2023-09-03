@@ -206,7 +206,7 @@ Route::middleware(['auth', 'role:20'])->group(function () {
 Route::get('/', [TraitementSupp::class, 'carouselblog'])->name('A_blog')->middleware('visitor.counter');
 Route::get('/fetch-posts', [A_ControllerBlog::class, 'fetchPosts']);
 
-Route::get('/home', [A_ControllerBlog::class, 'index']);
+Route::get('/home', [TraitementSupp::class, 'carouselblog']);
 
 Route::middleware(['PageCounterMiddleware'])->group(function () {
 
