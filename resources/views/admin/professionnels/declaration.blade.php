@@ -649,7 +649,7 @@ function Soumettre ( $mois , $annee , $user_id , $info )
 ?>
 <div class="row">
     <div class="col-12" align="center">
-        <a href="{{ route('Professionnels.gestion') }}"> <img  style="height: 100px " src="{{ asset('assets/images/logo.png') }}" alt=""></a> 
+        <a href="{{ route('Professionnels.gestion') }}"> <img  style="height: 100px " src="{{ asset('assets/images/LogoHB.png') }}" alt=""></a> 
     </div>
 </div>
 @php
