@@ -213,7 +213,7 @@ a{
                 <div class="col">PRIX TOTAL</div>
                 <div class="col text-right">{{ number_format($total, 2, ',', ' ') }}&nbsp;€</div>
             </div>
-            <a href="{{ route('payer_article') }}" class="btn btn-success">VALIDER</a>
+            <a href="{{ route('paiement') }}" class="btn btn-success">VALIDER</a>
             <a href="{{ route('Vider_panier', auth()->user()->user_id) }}" class="btn btn-danger my-2 ">Vider le panier</a>
         </div>
     </div>

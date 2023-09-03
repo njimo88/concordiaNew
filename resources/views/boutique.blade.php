@@ -78,7 +78,7 @@
                     @endif
                 </div>
     
-                <a target="_blank" href="{{ route('singleProduct',['id' => $article->id_shop_article]) }}" class="btn mt-2">Acheter</a>
+                <a  href="{{ route('singleProduct',['id' => $article->id_shop_article]) }}" class="btn mt-2">Acheter</a>
             </div>
         </a>
         @endforeach

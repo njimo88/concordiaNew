@@ -10,7 +10,7 @@
       <!-- Form Heading -->
       @csrf
       <div class="form-heading">
-        <img src="{{asset('assets\images\logo.png')}}" alt="" />
+        <img src="{{asset('assets\images\LogoHB.png')}}" alt="" />
         <h1>Creation d'un compte parent</h1>
       </div>
 

@@ -143,7 +143,7 @@ body, html {
 
 </style>
 
-<div class="container ">
+<div class="container" style="margin-bottom: 6rem !important;">
     <div class="row">
         <div class="col-md-8 left-section p-5">
             <h3 class="summary-title">Récapitulatif</h3>
