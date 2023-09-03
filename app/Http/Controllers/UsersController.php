@@ -78,9 +78,9 @@ class UsersController extends Controller
             "vads_trans_id" => $vads_trans_id,
             "vads_version" => "V2",
             "vads_url_success" => route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment]),
-            "vads_url_cancel" => route('panier', ['message' => 'Transaction annulée']),
-            "vads_url_error" => route('panier', ['message' => 'Erreur lors de la transaction']),
-            "vads_url_refused" => route('panier', ['message' => 'Transaction refusée']),
+            "vads_url_cancel" => route('basket', ['message' => 'Transaction annulée']),
+            "vads_url_error" => route('basket', ['message' => 'Erreur lors de la transaction']),
+            "vads_url_refused" => route('basket', ['message' => 'Transaction refusée']),
             // New keys for automatic redirection
             "vads_redirect_success_timeout" => "0",
             "vads_redirect_error_timeout" => "0",
@@ -245,7 +245,7 @@ public function detail_paiement($id,$nombre_cheques)
     
 
     if($paniers->count() == 0){
-        return redirect()->route('panier');}
+        return redirect()->route('basket');}
         else{
     $bill = new bills;
     $bill->user_id = auth()->user()->user_id;
@@ -342,7 +342,7 @@ public function detail_paiement($id,$nombre_cheques)
 
     public function Vider_panier(){
         DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
-        return redirect()->route('panier');
+        return redirect()->route('basket');
     }
 
   public function payer_article(){
