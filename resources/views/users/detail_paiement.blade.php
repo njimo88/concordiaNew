@@ -37,7 +37,7 @@ $formattedDate = strtr(now()->isoFormat('dddd D MMMM YYYY à HH:mm:ss'), $englis
 echo $formattedDate;
 }
 ?>
-<main id="main" class="main" style="min-height : 100vh; padding : 2px 0; background-image: url('{{asset("/assets/images/background.png")}}');">
+<main id="main" class="main" style="min-height : 100vh; padding : 2px 0; background-color : #ebf5ff">
     <div style="background-color:white;"  class="container rounded px-2 mt-5" >
         @if (session('success'))
             <div style="display: -webkit-inline-box !important;" class="alert alert-success mt-3 col-12">
