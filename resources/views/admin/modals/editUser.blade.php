@@ -227,8 +227,7 @@
                                 <div class="labels">
                                     <label for="password">Changer MDP</label>
                                   </div>
-                                <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id || Route::currentRouteName() != 'portesOuvertes')
-                                readonly @endif class="form-control" type="password" id="password" placeholder=" " class=" @error('password') is-invalid @enderror" name="password"  autocomplete="new-password" />
+                                <input  class="form-control" type="password" id="password" placeholder=" " class=" @error('password') is-invalid @enderror" name="password"  autocomplete="new-password" />
                                 @error('password')
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $message }}</strong>

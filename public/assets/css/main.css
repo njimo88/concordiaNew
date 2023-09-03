@@ -20,9 +20,9 @@
 :root {
   --color-default: #222222;
   --color-primary: #b1c4ff;
-  --color-secondary: #482683;
+  --color-secondary: #b90310;
   --breadcrumb-theme-1: #6C63FF;      
-  --breadcrumb-theme-2: #482683;         
+  --breadcrumb-theme-2: #fff;         
   --breadcrumb-theme-3: #83eaf1;      
   --breadcrumb-theme-4: #5a50cb;      
 }
@@ -420,7 +420,7 @@ section {
   .navbar .active,
   .navbar .active:focus,
   .navbar li:hover>a {
-    color: #482683;
+    color: #fff;
   }
 
   .navbar .dropdown ul {
@@ -549,7 +549,7 @@ section {
   .navbar a:hover,
   .navbar a:focus {
     background-color: #2581c4;
-    color: #482683 !important;
+    color: #fff !important;
   }
 
   .navbar a i,
@@ -572,7 +572,7 @@ section {
     padding: 8px 20px;
     border-radius: 4px;
     margin: 15px;
-    color: #482683;
+    color: #fff;
   }
 
   .navbar .getstarted:hover,
@@ -3232,7 +3232,7 @@ button:hover {
 .news-card {
   overflow: hidden;
   margin-bottom: 30px;
-  min-height: 500px;
+  min-height: 480px;
 }
 
 .news-card .news-img {
