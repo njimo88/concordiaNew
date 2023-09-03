@@ -7,7 +7,8 @@
 <style>
     body {
         font-family: 'Roboto', sans-serif;
-        background-color: #ebf5ff;
+        background-color:  #ebf5ff;
+
         color: #333;
     }
 
@@ -38,11 +39,11 @@
 
 
 
-<main class="main vh-100 mt-4" id="main" sty>
+<main class="main mt-4 vh-100" id="main">
 <!-- Insert your logo -->
 <img width="80%" class="bank-logo" src="{{ asset("assets/images/BP.png") }}" alt="Logo de La Banque Postale">
 
-<div class="container p-4 border border-dark shadow-lg mb-5" style="        background-color: #fefefe;
+<div class="container p-4 border border-dark shadow-lg" style="        background-color: #fefefe;
 " >
 
 <div class="row">
@@ -54,7 +55,7 @@
         <div class="col-md-12 d-flex justify-content-center">
              <img style="width: 200px;height:200px;" src="{{ asset("assets/images/pst.jpg") }}" alt="Instructions">
         </div>
-        <div class="d-flex justify-content-center mb-5">
+        <div class="d-flex justify-content-center">
             <form method="POST" action="https://scelliuspaiement.labanquepostale.fr/vads-payment/">
                 <input type="hidden" name="vads_action_mode" value="INTERACTIVE" />
                 <input type="hidden" name="vads_amount" value="{{ $total*100 }}" />
@@ -74,9 +75,9 @@
                 <input type="hidden" name="vads_payment_cards" value="VISA;MASTERCARD" />
                 <input type="hidden" name="vads_payment_config" value="{{ $payment_config }}" /> 
                 <input type="hidden" name="vads_site_id" value="31118669" />
-                <input type="hidden" name="vads_url_cancel" value="{{ route('basket', ['message' => 'Transaction annulée']) }}" />
-                <input type="hidden" name="vads_url_error" value="{{ route('basket', ['message' => 'Erreur lors de la transaction']) }}" />
-                <input type="hidden" name="vads_url_refused" value="{{ route('basket', ['message' => 'Transaction refusée']) }}" />
+                <input type="hidden" name="vads_url_cancel" value="{{ route('panier', ['message' => 'Transaction annulée']) }}" />
+                <input type="hidden" name="vads_url_error" value="{{ route('panier', ['message' => 'Erreur lors de la transaction']) }}" />
+                <input type="hidden" name="vads_url_refused" value="{{ route('panier', ['message' => 'Transaction refusée']) }}" />
                 <input type="hidden" name="vads_url_success" value="{{ route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment]) }}" />
                 <input type="hidden" name="vads_trans_date" value="{{ $utcDate }}" />
                 <input type="hidden" name="vads_trans_id" value="{{ $vads_trans_id }}" />
@@ -90,7 +91,7 @@
             
                 <button type="submit" class="btn">
                     <i class="fas fa-credit-card"></i>
-                    <span>Payer {{ number_format($total, 2, ',', ' ') }} €</span>
+                    <span>Payer {{ number_format($total, 2, ',', ' ') }}&nbsp;€</span>
                 </button>
             </form>
             
@@ -100,36 +101,6 @@
 
 
 <style>
-.btn-pay {
-    font-size: 1rem;
-    padding: 10px 20px;
-    color: #fff;
-    background: #f44336; /* red */
-    border: none;
-    border-radius: .25rem;
-    transition: background 0.5s;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-    line-height: 1.5;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    user-select: none;
-}
-
-.btn-pay:hover {
-    animation: pulse 1s ease-in-out infinite;
-    background: #969cc1; /* indigo */
-}
-
-.btn-pay i {
-    margin-right: .5rem;
-}
 
 @keyframes pulse {
     0% { transform: scale(1); }

@@ -568,7 +568,9 @@ function display_historique_method($id){
 
     }
 
-    $users = User::select("*")->whereIn('user_id', $tab)->get();
+    $users = User::select("*")->whereIn('user_id', $tab)
+    ->orderBy('name', 'ASC')
+    ->get();
     
     /*
        foreach ($present as $value) {
