@@ -152,7 +152,7 @@ a{
     }
 
 </style>
-<main style="background-color: #ebf5ff !important; height: 90vh;" class="main" id="main ">
+<main style="background-color: #ebf5ff !important; min-height: 90vh; " class="main" id="main ">
 <div class="card my-5">
     <div class="row">
         <div class="col-md-8 cart">
