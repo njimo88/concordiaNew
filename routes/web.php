@@ -94,7 +94,7 @@ Route::post('/generatePDFreduction_Fiscale/{id}', [generatePDF::class, 'generate
 
     /*-----------Panier----------*/
     Route::middleware(['auth'])->group(function () {
-    Route::get('/panier', [App\Http\Controllers\UsersController::class, 'panier'])->name('panier');
+    Route::get('/panier', [TraitementSupp::class, 'basket'])->name('panier');
     Route::get('/payer_article', [App\Http\Controllers\UsersController::class, 'payer_article'])->name('payer_article');
     Route::get('/Vider_panier/{id}', [App\Http\Controllers\UsersController::class, 'Vider_panier'])->name('Vider_panier');
     Route::get('/payment_form/{nombre_virment}/{total}', [App\Http\Controllers\UsersController::class, 'showForm'])->name('payment_form');
@@ -102,7 +102,7 @@ Route::post('/generatePDFreduction_Fiscale/{id}', [generatePDF::class, 'generate
 
     
     /*-----------Paiement----------*/
-    Route::get('/detail_paiement/{id}/{nombre_cheques}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
+    Route::get('/detail_paiement/{id}/{nombre_cheques}', [TraitementSupp::class, 'fichepaiement'])->name('detail_paiement');
 
 });
 

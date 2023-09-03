@@ -449,7 +449,7 @@ foreach ($paniers as $panier) {
     
 
     if($paniers->count() == 0){
-        return redirect()->route('panier');}
+        return redirect()->route('basket');}
         else{
     $bill = new bills;
     $bill->user_id = auth()->user()->user_id;

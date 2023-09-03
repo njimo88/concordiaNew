@@ -78,9 +78,9 @@ class UsersController extends Controller
             "vads_trans_id" => $vads_trans_id,
             "vads_version" => "V2",
             "vads_url_success" => route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment]),
-            "vads_url_cancel" => route('panier', ['message' => 'Transaction annulée']),
-            "vads_url_error" => route('panier', ['message' => 'Erreur lors de la transaction']),
-            "vads_url_refused" => route('panier', ['message' => 'Transaction refusée']),
+            "vads_url_cancel" => route('basket', ['message' => 'Transaction annulée']),
+            "vads_url_error" => route('basket', ['message' => 'Erreur lors de la transaction']),
+            "vads_url_refused" => route('basket', ['message' => 'Transaction refusée']),
             // New keys for automatic redirection
             "vads_redirect_success_timeout" => "0",
             "vads_redirect_error_timeout" => "0",
