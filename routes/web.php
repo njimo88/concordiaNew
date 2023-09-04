@@ -402,6 +402,11 @@ Route::post('/form_appel/{id}', [Controller_club::class, 'enregister_appel_metho
 
 Route::get('/historique_appel/{id}', [Controller_club::class, 'display_historique_method'])->name('historique_appel');
 
+Route::get('/historique_appel/generate-pdf/{id}', [Controller_club::class, 'generate_historique_appel']);
+
+
+
+
 #-------------------------------pdf generate-------------------
 
 #-------------------------------route pour gerer l'envoi de mail  generate-------------------

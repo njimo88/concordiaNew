@@ -174,23 +174,19 @@ $all_periods = [];
 
 <div class="row">
 
-   @if(\App\Models\shop_article_1::isUserTeacher(auth()->user()->user_id) && auth()->user()->role < 90)
+   @if(\App\Models\shop_article_1::isUserTeacher(auth()->user()->user_id) )
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
    
        <div class="container">
-   
-               
-   
-                               @php 
-   
-   
-                                           $id_teacher = auth()->user()->user_id ;
-                                           $my_articles = [] ;
-                                           $add = [] ;
-                                           $calcul = 0 ;
-                                           $calcul_tab = [] ;
-   
-                               @endphp
+            @php 
+
+                $id_teacher = auth()->user()->user_id ;
+                $my_articles = [] ;
+                $add = [] ;
+                $calcul = 0 ;
+                $calcul_tab = [] ;
+
+            @endphp
    
    
                                @foreach($shop_article_lesson as $data)
@@ -415,6 +411,7 @@ $all_periods = [];
 </div>
 @endif
 
+ 
 
 
 

@@ -13,7 +13,12 @@ $saison_active = saison_active() ;
   <div class="row">
     <div class="col-md-4"><a href="{{route('index_cours')}}"><button>Retour</button></a></div>
     <div class="col-md-4"></div>
-    <div class="col-md-4"><a class="btn btn-primary" href=""><button id="generate-pdf">Generer PDF </button></a></div>
+    <div class="col-md-4">
+        <a class="btn btn-primary" id="generate-pdf" href="/generate-pdf/{{ $id_cours }}">
+            Generer PDF
+        </a>
+    </div>
+    
   
   </div>
     
@@ -97,7 +102,11 @@ function generatePDF(callback) {
   
 }
 
+ var courseId = {{ $id_cours }} ;
 
+function generatePDF(courseId) {
+    window.open('/generate-pdf/' + courseId, '_blank');
+}
 
 
 </script>

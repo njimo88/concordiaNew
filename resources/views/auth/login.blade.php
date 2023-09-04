@@ -55,10 +55,16 @@ body {
 
 .box form label {
     display: block;
-    font-size: 12px;
+    font-size: 14px;
     margin-bottom: 3px;
+    color: #000;
 }
 
+.sign-up  {
+  font-size: 15px !important;
+  font-weight: bold !important;
+  color: #0077b6 !important;
+}
 .box form div {
     display: flex;
     align-items: center;
@@ -99,7 +105,7 @@ body {
 }
 
 .box a {
-    color: var(--gray-color);
+    color: black;
     text-decoration: none;
     font-size: 12px;
     display: block;

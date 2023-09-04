@@ -567,4 +567,8 @@ function display_historique_method($id){
     return view('club/historique_view', compact('id_cours', 'appel', 'users', 'attendance'))->with('user', auth()->user());
 }
 
+ 
+
+ 
+
 }
