@@ -17,36 +17,58 @@
                 {{ session('error') }}
             </div>
         @endif
-        <div class="col-3">
-            <h3 style="color: black" class="my-4  ml-0">Facture n°{{ $bill->id }}</h3>
-        </div>
-        @if ( Route::currentRouteName() === 'facture.showBill')
-          <div class="col-4 my-4 d-flex justify-content-end">
-              
-            </div>
-        @endif
 
-        
-          @if ($bill->status >= 70)
-          <div class="row col-5 d-flex justify-content-end" >
-            <div class="col-5 d-flex justify-content-end" >
-              <form method="post" action="{{ route('generatePDFfacture', $bill->id) }}">
-                @csrf
-                <button type="submit" class="my-custom-btn btn btn-primary my-4">Facture <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
-              </form>
-            </div>
-          <div class="col-5 d-flex justify-content-end" >
-            <form method="post" action="{{ route('generatePDFreduction_Fiscale', $bill->id) }}">
-              @csrf
-              <button type="submit" class="my-custom-btn btn btn-primary my-4">Réduction Fiscale  <img src="{{ asset("assets\images\pdf-icon.png") }}" alt=""></button>
-            </form>
+        <div class="row "> 
+
+          <div class="col-md-3 col-sm-12 text-center"> <!-- Facture Column -->
+              <h3 class="my-4 ml-0" style="color: black">Facture n°{{ $bill->id }}</h3>
           </div>
+      
+          @if ($bill->status >= 70)
+          <div class="col-md-9 col-sm-12 text-md-right text-center"> <!-- Buttons Column -->
+              <div class="row justify-content-end">
+                  
+                  <div class="col-md-3 col-sm-3 d-flex justify-content-end">
+                      <form method="post" action="{{ route('generatePDFfacture', $bill->id) }}" class="mx-md-0 mx-auto">
+                          @csrf
+                          <button type="submit" class="custom-btn btn btn-primary">
+                              Fac <img src="{{ asset('assets/images/pdf-icon.png') }}" alt="PDF Icon" class="ml-2 icon-size">
+                          </button>
+                      </form>
+                  </div>
+      
+                  <!-- Réduction Fiscale Button -->
+                  <div class="col-md-2 col-sm-4 d-flex justify-content-star">
+                      <form method="post" action="{{ route('generatePDFreduction_Fiscale', $bill->id) }}" class="mx-md-0 mx-auto">
+                          @csrf
+                          <button type="submit" class="custom-btn btn btn-primary">
+                              Red Fisc <img src="{{ asset('assets/images/pdf-icon.png') }}" alt="PDF Icon" class="ml-2 icon-size">
+                          </button>
+                      </form>
+                  </div>
+      
+              </div>
+          </div>
+          @endif
+      
       </div>
+      <hr>
+      
+           <style>
+            .custom-btn {
+    font-size: 14px;     /* Reduce the font size */
+    padding: 8px 15px;   /* Adjust button padding */
+    border-radius: 5px;  /* Add a bit of border-radius */
+    width: 100%;         /* Full width to fill the parent container */
+    margin: 20px 0;      /* Top and bottom margin */
+}
 
-          @endif          
-          
-        
-        <hr>
+.icon-size {
+    max-width: 16px;
+    vertical-align: middle; /* Align icon with the text */
+}
+
+           </style>
         
         @if (auth()->user()->roles->changer_status_facture && Route::currentRouteName() === 'facture.showBill')
         
@@ -135,11 +157,27 @@
           ?>
         <br>
         <span style="font-weight:bold">Référence commande </span>: {{ $bill->ref }} <br>
-        <span style="font-weight:bold">Mode de paiement </span>: {{ $bill->method }} <br>
-        Paiement en {{ $bill->number }} fois <br>
-        <span style="font-weight:bold">Frais </span>: {{ number_format($bill->total_charges, 2, ',', ' ') }} €<br>
-        <span style="font-weight:bold">Coût TTC </span>: {{ number_format($bill->payment_total_amount, 2, ',', ' ') }} €<br>
-      </div>
+    
+    <span style="font-weight:bold">Mode de paiement </span>:
+    <select name="payment_method" id="payment_method">
+        @foreach($paymentMethods as $method)
+            <option value="{{ $method->id }}" {{ $bill->payment_method == $method->id ? 'selected' : '' }}>
+                {{ $method->payment_method }}
+            </option>
+        @endforeach
+    </select>
+    <br>
+    
+    Paiement en {{ $bill->number }} fois <br>
+    
+    <span style="font-weight:bold">Frais </span>: {{ number_format($bill->total_charges, 2, ',', ' ') }} €<br>
+    
+    <div class="form-group">
+      <label for="payment_total_amount"><strong style="color: black">Coût TTC:</strong></label>
+      <input style="width: 30%" type="text" id="payment_total_amount" class="form-control" name="payment_total_amount" value="{{ number_format($bill->payment_total_amount, 2, ',', ' ') }} €">
+    </div>
+    <br>
+</div>
       <div class="col-md-4 col-12 p-3">
         <h4>Détail paiement</h4>
         <fieldset class="large-8 left">
@@ -197,86 +235,132 @@
       </div>
     </div>
     @if (count($shop) > 0)
-    <table id="" style="width: 98%; margin:0px auto !important" class="table">
-      <thead>
-          <th><a>Désignation</a></th>
-          <th><a>Quantité</a></th>
-          <th><a>Prix</a></th>
-          <th><a>Sous-total</a></th>
-          <th><a></a></th>
-          <th><a></a></th> <!-- New column for delete button -->
-      </thead>
-      <tbody>
-          @foreach ($shop as $shop)
-          <tr>
-              @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
-              <form action="{{ route('facture.updateDes', $shop->id_liaison) }}" method="post">
-                  @csrf
-                  @method('PUT')
-              @else
-              <form>
-                  @endif
+    <style>
+      @media (max-width: 768px) { /* Apply styles for screens smaller than 768px */
+        table.table {
+          font-size: 0.8em; /* Reduces font size */
+        }
+      }
+    </style>
+    
+    <style>
+      
+.td img {
+  height: 70px
+}      .td {
+          display: flex;
+          gap: 33px;
+          align-items: center;
+      }
+
+      .td select{
+          width: 80%
+      }
   
-                  <td style="width: 600px;">
-                      <div class="row">
-                          <div class="col-md-2 col-12">
-                              <img style="height: 70px" src="{{ $shop->image }}" alt="">
-                          </div>
-                          <div class="col-md-6 col-12">
-                              <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
-                              @if(!auth()->user()->roles->changer_designation_facture && Route::currentRouteName() !== 'facture.showBill')
-                              <select disabled name="designation"
-                                  class="border form-select mt-3 @error('role') is-invalid @enderror" name="status"
-                                  id="status" autocomplete="status" autofocus role="listbox">
-                                  @foreach($designation as $title)
-                                  @if($title == $shop->designation)
-                                  <option value="{{ $title }}" role="option" selected>{{ $title }}</option>
-                                  @endif
-                                  @endforeach
-                              </select>
-                              @else
-                              <select name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror"
-                                  name="status" id="status" autocomplete="status" autofocus role="listbox">
-                                  <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
-                                  @foreach($designation as $title)
-                                  <option value="{{ $title }}" role="option">{{ $title }}</option>
-                                  @endforeach
-                              </select>
+      @media (max-width: 767px) {
+         .btn-primary{
+        margin: 15px auto;
+      }
+          .td {
+              flex-direction: column;
+              gap: 10px;
+          }
+
+
+          tr{
+            display: grid;
+            justify-items: center;
+          }        
+  
+          .td select, .td button {
+             width: 100%;
+          }
+           .td img {
+            height: 150px !important  ;
+          }
+
+          .td select {
+              width: 200% !important;
+              font-size: 14px;  
+              align-self: center;
+          }
+  
+          .td button {
+              font-size: 14px;  
+              padding: 4px 8px; 
+          }
+          
+      }
+
+  </style>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th><a>Désignation</a></th>
+            <th class="d-none d-md-table-cell"><a>Quantité</a></th>
+            <th class="d-none d-md-table-cell"><a>Prix</a></th>
+            <th class="d-none d-md-table-cell"><a>Sous-total</a></th>
+            <th><a></a></th>
+            <th><a></a></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($shop as $shop)
+        <tr class="responsive-table-row">
+          @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
+          <form action="{{ route('facture.updateDes', $shop->id_liaison) }}" method="post">
+              @csrf
+              @method('PUT')
+          @else
+          <form>
+              @endif
+
+              <td style="width: 45%;">
+                      <div class="td">
+                          <img style="height: 70px" src="{{ $shop->image }}" alt="">
+                          <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
+                          @if(!auth()->user()->roles->changer_designation_facture )
+                          <select disabled name="designation"
+                              class="border form-select mt-3 @error('role') is-invalid @enderror" name="status"
+                              id="status" autocomplete="status" autofocus role="listbox">
+                              @foreach($designation as $title)
+                              @if($title == $shop->designation)
+                              <option value="{{ $title }}" role="option" selected>{{ $title }}</option>
                               @endif
-                          </div>
-                          @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
-                          <div class="col-md-2 col-12">
-                              <button type="submit" class="btn btn-sm btn-warning mt-3">Changer</button>
-                          </div>
+                              @endforeach
+                          </select>
+                          @else
+                          <select name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror"
+                              name="status" id="status" autocomplete="status" autofocus role="listbox">
+                              <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
+                              @foreach($designation as $title)
+                              <option value="{{ $title }}" role="option">{{ $title }}</option>
+                              @endforeach
+                          </select>
                           @endif
-                      </div>
-                  </td>
-  
-              </form>
-  
-              <td>{{ $shop->quantity }} </td>
-              <td>{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
-              <td>{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
-              @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
-              <td>
-                  <select name="addressee" class="border form-select mt-3 family-select" onchange="confirmChange(this)"
-                      data-liaison-id="{{ $shop->id_liaison }}">
-                      <option value="{{ $shop->id_user }}" selected>{{ $shop->addressee }}</option>
-                  </select>
+                      @if (auth()->user()->roles->changer_designation_facture )
+                          <button type="submit" class="btn btn-sm btn-warning mt-3">Changer</button>
+                      @endif
+                    </div>
               </td>
-              @else
-              <td>{{ $shop->addressee }}</td>
-              @endif
-              @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
-              <td> <!-- New column for delete button -->
-                  <button type="button" class="btn btn-sm btn-danger delete-des my-4"
-                      data-id="{{ $shop->id_liaison }}">Supprimer</button>
-              </td>
-              @endif
-          </tr>
-          @endforeach
-      </tbody>
-  </table>
+          </form>
+            <td class="d-none d-md-table-cell">{{ $shop->quantity }} </td>
+            <td class="d-none d-md-table-cell">{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
+            <td class="d-none d-md-table-cell">{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
+            <td>
+                <select name="addressee" class="border form-select mt-3 family-select" onchange="confirmChange(this)" data-liaison-id="{{ $shop->id_liaison }}">
+                    <option value="{{ $shop->id_user }}" selected>{{ $shop->addressee }}</option>
+                </select>
+            </td>
+            <td>
+                <button type="button" class="btn btn-sm btn-danger delete-des my-4 cc" data-id="{{ $shop->id_liaison }}">Supprimer</button>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+
   
   
   @else
@@ -434,6 +518,44 @@
 <div style="height: 25px"></div>
 </main>
 <script>
+document.getElementById("payment_method").addEventListener("change", function() {
+    updateBillDetails({
+        payment_method: this.value,
+        bill_id: {{ $bill->id }}
+    });
+});
+
+// Handle Coût TTC input change
+document.getElementById("payment_total_amount").addEventListener("blur", function() {
+    updateBillDetails({
+        payment_total_amount: this.value.replace('€', '').trim(),
+        bill_id: {{ $bill->id }}
+    });
+});
+
+function updateBillDetails(data) {
+    fetch('/update-bill-details', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Détails mis à jour avec succès!');
+        } else {
+            alert('Erreur lors de la mise à jour des détails.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Erreur lors de la mise à jour des détails.');
+    });
+}
+
  $(document).ready(function() {
   $('.delete-button').click(function() {
     console.log('delete');

@@ -780,7 +780,9 @@ public function updateDes(Request $request, $id){
         ->get();
         $nb_paiment = calculerPaiements($bill->payment_method,$bill->payment_total_amount,$bill->number);
 
-            return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages'))->with('user', auth()->user());
+        $paymentMethods = DB::table('bills_payment_method')->get();
+
+            return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages','paymentMethods'));
         }
 
         abort(403, 'Vous n\'êtes pas autorisé à accéder à cette facture.');
@@ -830,5 +832,25 @@ public function updateDes(Request $request, $id){
         return redirect()->back();
       }
       
+      public function updateBillDetails(Request $request) {
+        try {
+            $bill = bills::find($request->input('bill_id'));
+    
+            if ($request->has('payment_method')) {
+                $bill->payment_method = $request->input('payment_method');
+            }
+            
+            if ($request->has('payment_total_amount')) {
+                $bill->payment_total_amount = $request->input('payment_total_amount');
+            }
+    
+            $bill->save();
+    
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
+        }
+    }
+    
 
 }

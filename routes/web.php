@@ -149,6 +149,7 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::delete('/admin/supprimer-message/{id}', [BillsController::class, 'messageDestroy'])->name('message.destroy');
     Route::post('/update-addressee/{liaisonId}', [BillsController::class, 'updateAddressee'])->name('facture.updateAddressee');
     Route::delete('/delete-designation/{id}', [BillsController::class, 'deleteDesignation'])->name('delete-designation');
+    Route::post('/update-bill-details', [BillsController::class, 'updateBillDetails']);
 
 
 
