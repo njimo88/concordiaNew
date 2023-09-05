@@ -469,8 +469,8 @@ use Illuminate\Support\Facades\Route;
                     <!-- First level dropdown: categories with one digit id -->
                     @php
                         $category = Shop_category::select('id_shop_category', 'name', 'image')
-                                  ->where('id_shop_category', 1)
-                                  ->first();
+                          ->where('id_shop_category', 1)
+                          ->first();
                     @endphp
                       <ul>
                           @foreach($categories->filter(function ($subCategory) use ($category) {
