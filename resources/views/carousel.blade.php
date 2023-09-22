@@ -136,6 +136,16 @@ img[alt="Logo"] {
 
     </style>
 @if(count($imageUrls) == 1)
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <section style="background-image: url('{{ $imageUrls[0] }}');" class="bg-light position-relative bg-cover top-banner">
     <img loading="lazy" src="{{ asset("/assets/images/gymm.jpg") }}" alt="Blog" title="Blog" class="d-none">
     <div class="dark-overlay"></div>
