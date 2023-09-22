@@ -203,6 +203,7 @@ right: -9px;
         position: relative;
         min-height: auto;
         padding-top: 50px;
+        border: solid 1px gray;
     }
 
     .container .box-container .box img{

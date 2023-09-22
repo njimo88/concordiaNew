@@ -1,5 +1,9 @@
 
 <style>
+    .card{
+        border: solid 1px gray;
+        border-radius: 2px;
+    }
     .carousel-img {
     height: 300px;       
     width: 100%;  
