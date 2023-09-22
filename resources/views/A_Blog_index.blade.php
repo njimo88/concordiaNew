@@ -15,94 +15,94 @@
 }
 
 </style>
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="modal fade" id="contactModal" tabindex="-1" style="z-index:100000" data-backdrop="static" data-keyboard="false" aria-labelledby="contactModalLabel" aria-hidden="true" data-target="#myModal">
-      
- 
-
-     
-  <div class="modal-dialog  modal-lg">
-       <div style="background-color: #d8e3ff" class="modal-content">
-           <div class="modal-header border m-4 mb-0" style="background-color: white;">
-               <h5 class="modal-title" id="contactModalLabel" style=" font-size: 1.5em;font-weight: 400; font-family: Arial, Helvetica, sans-serif">Envoyer un Message</h5>
-               <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
-                   <span aria-hidden="true">&times;</span>
-               </button>
-           </div>
-           <form action="{{route('traitement_prendre_contact')}}" id="sendMailForm" method="post" class="form-example">
-             @csrf
-               <div class="modal-body p-5 py-3">
-               <fieldset class="form-group">
-                           <div class="form cf form-group row">
-
-                           <div class="plan cf form-group col-sm-10">
-
-                               <input type="radio" name="send_me" id="bureau" value="1" >
-                               <label class="bureau-label four col" for="bureau">
-                                   Bureau
-                               </label>
-
-                               <input  type="radio" name="send_me" id="tresorier" value="2">
-                               <label class="tresorier-label four col" for="tresorier">
-                                   Trésorier
-                               </label>
-
-                               <input  type="radio"name="send_me" id="president" value="3">
-                               <label class="president-label four col" for="president">
-                                   Président
-                               </label>
-
-                           </div>
-                           </div>
-                       </fieldset>
-                       <div class="form-row row mt-5">
-                          
-                           @if (!auth()->user())
-                           <div class="form-group col-md-5">
-                           <label class="text-dark" for="name">&nbsp;Prénom - Nom</label>
-                           <input placeholder="Prénom - Nom" class="form-control mt-2" type="text" name="name" value="" required>
-                           </div>
-                           <div class="form-group col-md-7">
-                           <label class="text-dark" for="email">&nbsp;Email</label>
-                           <input placeholder="Email" class="form-control mt-2" type="email" name="email" value="" required>
-                           </div>
-                           @else
-                           <div class="form-group col-md-5">
-                           <label class="text-dark" for="name">&nbsp;Prénom - Nom</label>
-                           <input placeholder="Prénom - Nom" class="form-control mt-2" type="text" name="name" value="{{auth()->user()->lastname}} {{auth()->user()->name}} " required readonly style="background-color: grey; color:#fff">
-                           </div>
-
-                           <div class="form-group col-md-7">
-                           <label class="text-dark" for="email">&nbsp;Email</label>
-                           <input placeholder="Email" class="form-control mt-2" type="email" name="email" value="{{auth()->user()->email}}" required readonly style="background-color: grey; color:#ffffff">
-                           </div>
-
-                           @endif
-                       </div>
-                           <div class="form-row">
-                       <div class="form-group col-md-12">
-                           <label class="text-dark" for="message">&nbsp;Votre Message</label>
-                           <textarea style="width: 100%; height: 150px;" placeholder="Votre message" class="form-control mt-2" required name="message" value=""></textarea>
-                       </div>
-                   </div>
-                   <div class='form-row mt-3'>
-                       <div class='form-group col-md-12' style="text-align:-webkit-center">
-                           <div class='g-recaptcha' name="captchaTest" data-sitekey='6Lft5c8UAAAAAORHh9eDop9d3C8R2IJfrBqc0Sx3'></div>
-                       </div>
-                   </div>
-                   <div class="row d-flex justify-content-between m-1 mt-4">
-                     <div class="col-3 d-flex justify-content-center">
-                       <button type="button" class="cancel btn btn-secondary" data-dismiss="modal">Annuler</button>
-                     </div>
-                     <div class="col-3 d-flex justify-content-center">
-                       <button type="submit" class="submit btn btn-primary">Envoyer</button>
-                     </div>
-                 </div>
-               </div>
-               
-           </form>
-       </div>
-   </div>
+  <div class="modal-dialog modal-lg">
+      <div style="background-color: #d8e3ff" class="modal-content">
+          <div class="modal-header border m-4 mb-0" style="background-color: white;">
+              <h5 class="modal-title" id="contactModalLabel" style="font-size: 1.5em;font-weight: 400; font-family: Arial, Helvetica, sans-serif">Envoyer un Message</h5>
+              <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <form action="{{route('traitement_prendre_contact')}}" id="sendMailForm" method="post" class="form-example">
+              @csrf
+              <div class="modal-body p-5 py-3">
+                  <fieldset class="form-group">
+                      <div class="form cf form-group row">
+                          <div class="plan cf form-group col-sm-10">
+                              <input type="radio" name="send_me" id="bureau" value="1">
+                              <label class="bureau-label four col" for="bureau">Bureau</label>
+                              <input type="radio" name="send_me" id="tresorier" value="2">
+                              <label class="tresorier-label four col" for="tresorier">Trésorier</label>
+                              <input type="radio" name="send_me" id="president" value="3">
+                              <label class="president-label four col" for="president">Président</label>
+                          </div>
+                      </div>
+                  </fieldset>
+                  <div class="form-row row mt-5">
+                      @if (!auth()->user())
+                      <div class="form-group col-md-5">
+                          <label class="text-dark" for="name">&nbsp;Prénom - Nom</label>
+                          <input placeholder="Prénom - Nom" class="form-control mt-2" type="text" name="name" value="" required>
+                      </div>
+                      <div class="form-group col-md-7">
+                          <label class="text-dark" for="email">&nbsp;Email</label>
+                          <input placeholder="Email" class="form-control mt-2" type="email" name="email" value="" required>
+                      </div>
+                      @else
+                      <div class="form-group col-md-5">
+                          <label class="text-dark" for="name">&nbsp;Prénom - Nom</label>
+                          <input placeholder="Prénom - Nom" class="form-control mt-2" type="text" name="name" value="{{auth()->user()->lastname}} {{auth()->user()->name}}" required readonly style="background-color: grey; color:#fff">
+                      </div>
+                      <div class="form-group col-md-7">
+                          <label class="text-dark" for="email">&nbsp;Email</label>
+                          <input placeholder="Email" class="form-control mt-2" type="email" name="email" value="{{auth()->user()->email}}" required readonly style="background-color: grey; color:#ffffff">
+                      </div>
+                      @endif
+                  </div>
+                  <div class="form-row">
+                      <div class="form-group col-md-12">
+                          <label class="text-dark" for="message">&nbsp;Votre Message</label>
+                          <textarea style="width: 100%; height: 150px;" placeholder="Votre message" class="form-control mt-2" required name="message" value=""></textarea>
+                      </div>
+                  </div>
+                  <div class="row d-flex justify-content-between m-1 mt-4">
+                      <div class="col-3 d-flex justify-content-center">
+                          <button type="button" class="cancel btn btn-secondary" data-dismiss="modal">Annuler</button>
+                      </div>
+                      <div class="col-3 d-flex justify-content-center">
+                          <button type="submit" class="submit btn btn-primary">Envoyer</button>
+                      </div>
+                  </div>
+              </div>
+          </form>
+      </div>
+  </div>
 </div>
+
+<script src="https://www.google.com/recaptcha/api.js?render=6Lfcl0UoAAAAAN81l-w_Z0T7Qs0NPkaHkvmX5ubS"></script>
+<script>
+  grecaptcha.ready(function() {
+      grecaptcha.execute('6Lfcl0UoAAAAAN81l-w_Z0T7Qs0NPkaHkvmX5ubS', {action: 'submit'}).then(function(token) {
+          var form = document.getElementById('sendMailForm');
+          var input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'g-recaptcha-response';
+          input.value = token;
+          form.appendChild(input);
+      });
+  });
+</script>
+
 
 
 <!-- header Content -->
