@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Intervention\Image\ImageManagerStatic as Image;
 use setasign\Fpdi\Fpdi;
-
+use Illuminate\Support\Facades\File;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\Shop_article;
 use App\Models\shop_article_0;
@@ -351,11 +351,9 @@ $versement = floor($versement);
 
         if ($shop->count() <= 7) {
 
-    
     // Chargement de l'image de fond
     $image = Image::make(public_path('assets/images/Facture_page.png'));
     $image->resize(700, 1000); // Replace 800 and 1200 with the desired width and height
-
 
     $now = now();
     $image->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 449, 234, function($font)  {
@@ -439,7 +437,6 @@ $versement = floor($versement);
     $fontSize = 10;
     // Boucle sur les produits
     foreach ($shop as $product) {
-
     // Imprimer la référence
     $image->text($product->href_product, $x, $y, function($font) use ($fontSize) {
         $font->file(public_path('fonts/arial.ttf'));
@@ -451,9 +448,13 @@ $versement = floor($versement);
 
 
     $imagePath = public_path(ltrim($product->image, '/'));
-    $shopImage = Image::make($imagePath)->resize(47, 46);
-    $image->insert($shopImage, 'top-left', 108, $y + (-15)); 
+
+    if (File::exists($imagePath)) {
+        $shopImage = Image::make($imagePath)->resize(47, 46);
+        $image->insert($shopImage, 'top-left', 108, $y + (-15));
+    }
     
+     
     $titleLines = wordwrap($product->designation, 40, "\n", true);
     $titleLinesArray = explode("\n", $titleLines);
 
@@ -487,7 +488,6 @@ foreach ($addresseeLinesArray as $i => $addresseeLine) {
     
 
 
-
     $image->text($product->quantity, $x + 355, $y, function($font) use ($fontSize) {
         $font->file(public_path('fonts/arial.ttf'));
         $font->size($fontSize);
@@ -519,12 +519,9 @@ foreach ($addresseeLinesArray as $i => $addresseeLine) {
     // Ajouter l'espacement entre les produits
     $y += 54;
 }
-    
-
     // Conversion de l'image modifiée en PDF
     $pdf = PDF::loadHTML('<img src="data:image/' . $image->mime . ';base64,' . base64_encode($image->encode()) . '">');
     return $pdf->download('Facture-'.$bill->id.'.pdf');}
-
 
     elseif ($shop->count() > 7 && $shop->count() < 23) {
         $shop = $shop->toArray();
@@ -603,8 +600,12 @@ foreach ($addresseeLinesArray as $i => $addresseeLine) {
     });
 
     $imagePath = public_path(ltrim($product->image, '/'));
-    $shopImage = Image::make($imagePath)->resize(47, 46);
-    $image->insert($shopImage, 'top-left', 108, $y + (-15)); 
+
+    if (File::exists($imagePath)) {
+        $shopImage = Image::make($imagePath)->resize(47, 46);
+        $image->insert($shopImage, 'top-left', 108, $y + (-15));
+    }
+     
     
     $titleLines = wordwrap($product->designation, 40, "\n", true);
     $titleLinesArray = explode("\n", $titleLines);
@@ -684,8 +685,12 @@ foreach ($secondGroup as $product) {
     });
 
     $imagePath = public_path(ltrim($product->image, '/'));
-    $shopimage2 = Image::make($imagePath)->resize(47, 46);
-    $image2->insert($shopimage2, 'top-left', 108, $y2 + (-15)); 
+
+    if (File::exists($imagePath)) {
+        $shopimage2 = Image::make($imagePath)->resize(47, 46);
+     $image2->insert($shopimage2, 'top-left', 108, $y2 + (-15)); 
+    }
+    
     
     $titleLines = wordwrap($product->designation, 40, "\n", true);
     $titleLinesArray = explode("\n", $titleLines);
@@ -885,8 +890,11 @@ $image->text($product->href_product, $x, $y, function($font) use ($fontSize) {
 });
 
 $imagePath = public_path(ltrim($product->image, '/'));
-$shopImage = Image::make($imagePath)->resize(47, 46);
+if (File::exists($imagePath)) {
+    $shopImage = Image::make($imagePath)->resize(47, 46);
 $image->insert($shopImage, 'top-left', 108, $y + (-15)); 
+}
+
 
 $titleLines = wordwrap($product->designation, 40, "\n", true);
 $titleLinesArray = explode("\n", $titleLines);
@@ -965,8 +973,11 @@ foreach ($thirdGroup as $product) {
     });
     
     $imagePath = public_path(ltrim($product->image, '/'));
-    $shopimage3 = Image::make($imagePath)->resize(47, 46);
+    if (File::exists($imagePath)) {
+        $shopimage3 = Image::make($imagePath)->resize(47, 46);
     $image3->insert($shopimage3, 'top-left', 108, $y2 + (-15)); 
+    }
+    
     
     $titleLines = wordwrap($product->designation, 40, "\n", true);
     $titleLinesArray = explode("\n", $titleLines);
@@ -996,7 +1007,6 @@ foreach ($thirdGroup as $product) {
     
     
     // Imprimer la quantité
-    
     
     
     
@@ -1043,8 +1053,11 @@ $image2->text($product->href_product, $x, $y2, function($font) use ($fontSize) {
 });
 
 $imagePath = public_path(ltrim($product->image, '/'));
-$shopimage2 = Image::make($imagePath)->resize(47, 46);
-$image2->insert($shopimage2, 'top-left', 108, $y2 + (-15)); 
+
+if (File::exists($imagePath)) {
+    $shopimage2 = Image::make($imagePath)->resize(47, 46);
+ $image2->insert($shopimage2, 'top-left', 108, $y2 + (-15)); 
+}
 
 $titleLines = wordwrap($product->designation, 40, "\n", true);
 $titleLinesArray = explode("\n", $titleLines);
@@ -1295,8 +1308,11 @@ public function generatePDFfactureOutput($id)
         $font->valign('top');
     });
     $imagePath = public_path(ltrim($product->image, '/'));
-    $shopImage = Image::make($imagePath)->resize(47, 46);
-    $image->insert($shopImage, 'top-left', 108, $y + (-15)); 
+    
+    if (File::exists($imagePath)) {
+        $shopImage = Image::make($imagePath)->resize(47, 46);
+    $image->insert($shopImage, 'top-left', 108, $y + (-15));
+    }
     
     $titleLines = wordwrap($product->designation, 40, "\n", true);
     $titleLinesArray = explode("\n", $titleLines);
@@ -1445,8 +1461,11 @@ public function generatePDFfactureOutput($id)
     });
 
     $imagePath = public_path(ltrim($product->image, '/'));
-    $shopImage = Image::make($imagePath)->resize(47, 46);
-    $image->insert($shopImage, 'top-left', 108, $y + (-15)); 
+    if (File::exists($imagePath)) {
+        $shopimage = Image::make($imagePath)->resize(47, 46);
+    $image->insert($shopimage, 'top-left', 108, $y + (-15));
+    }
+    
     
     $titleLines = wordwrap($product->designation, 40, "\n", true);
     $titleLinesArray = explode("\n", $titleLines);
@@ -1526,8 +1545,10 @@ foreach ($secondGroup as $product) {
     });
 
     $imagePath = public_path(ltrim($product->image, '/'));
-    $shopimage2 = Image::make($imagePath)->resize(47, 46);
-    $image2->insert($shopimage2, 'top-left', 108, $y2 + (-15)); 
+    if (File::exists($imagePath)) {
+        $shopimage2 = Image::make($imagePath)->resize(47, 46);
+    $image2->insert($shopimage2, 'top-left', 108, $y2 + (-15));
+    }
     
     $titleLines = wordwrap($product->designation, 40, "\n", true);
     $titleLinesArray = explode("\n", $titleLines);
@@ -1722,8 +1743,10 @@ $image->text($product->href_product, $x, $y, function($font) use ($fontSize) {
 });
 
 $imagePath = public_path(ltrim($product->image, '/'));
-$shopImage = Image::make($imagePath)->resize(47, 46);
-$image->insert($shopImage, 'top-left', 108, $y + (-15)); 
+if (File::exists($imagePath)) {
+    $shopimage = Image::make($imagePath)->resize(47, 46);
+$image->insert($shopimage, 'top-left', 108, $y + (-15));
+}
 
 $titleLines = wordwrap($product->designation, 40, "\n", true);
 $titleLinesArray = explode("\n", $titleLines);
@@ -1802,8 +1825,10 @@ foreach ($thirdGroup as $product) {
     });
     
     $imagePath = public_path(ltrim($product->image, '/'));
-    $shopimage3 = Image::make($imagePath)->resize(47, 46);
-    $image3->insert($shopimage3, 'top-left', 108, $y2 + (-15)); 
+    if (File::exists($imagePath)) {
+        $shopimage3 = Image::make($imagePath)->resize(47, 46);
+    $image3->insert($shopimage3, 'top-left', 108, $y2 + (-15));
+    }
     
     $titleLines = wordwrap($product->designation, 40, "\n", true);
     $titleLinesArray = explode("\n", $titleLines);
@@ -1881,8 +1906,10 @@ $image2->text($product->href_product, $x, $y2, function($font) use ($fontSize) {
 });
 
 $imagePath = public_path(ltrim($product->image, '/'));
-$shopimage2 = Image::make($imagePath)->resize(47, 46);
-$image2->insert($shopimage2, 'top-left', 108, $y2 + (-15)); 
+if (File::exists($imagePath)) {
+    $shopimage2 = Image::make($imagePath)->resize(47, 46);
+$image2->insert($shopimage2, 'top-left', 108, $y2 + (-15));
+}
 
 $titleLines = wordwrap($product->designation, 40, "\n", true);
 $titleLinesArray = explode("\n", $titleLines);

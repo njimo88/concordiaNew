@@ -948,8 +948,8 @@ class Article_Controller extends Controller
                             }
                             
                                 if(shop_article_1::hasMultipleTeachers($id_article)) {
-                                    $article->image = asset('\uploads\users\froze\multiple_teachers_image.png');
-                                    $article->save(); 
+                                    $article->image = '/uploads/users/froze/multiple_teachers_image.png';
+                                    $article->save();
                                 } else {
                                     $article1 =  shop_article_1::find($id_article);
                                     $teachers = json_decode($article1->teacher, true);
