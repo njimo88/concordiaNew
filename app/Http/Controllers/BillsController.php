@@ -713,7 +713,7 @@ public function updateDes(Request $request, $id){
     ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
     ->where('bills.family_id', $family_id)
     ->select('bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.image as image', 'users.name', 'users.lastname')
-    ->get();
+    ->orderBy('bills.date_bill', 'desc');
 
     foreach ($bill as $b) {
         $b->liaisons = DB::table('liaison_shop_articles_bills')
