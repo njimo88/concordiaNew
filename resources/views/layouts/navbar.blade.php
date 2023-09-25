@@ -203,7 +203,7 @@ use Illuminate\Support\Facades\Route;
       
       
       <nav id="navbar" class="navbar">
-        <ul>
+        <ul style="order: 2">
           @if (Route::has('login'))
             <li><a href="{{ route('login') }}" class="btn btn-danger text-white mx-2 btn-arrow btn-hover-negatif">
               Connexion <i style="color: white; font-size:19px !important;" class='bx bxs-user'></i>
@@ -213,10 +213,10 @@ use Illuminate\Support\Facades\Route;
           <li><a href="{{ route('A_blog') }}"><span>&nbsp;Accueil</span></a></li>
           <li class="dropdown"><a href="#"><span>&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
             <ul>
-              <li class="dropdown">
+              <li class="">
                 <a href="{{ route('Simple_Post',13792) }}"><span>&nbsp;Organisation</span></a>
               </li>
-              <li class="dropdown">
+              <li class="">
                 <a href="{{ route('Simple_Post',13002) }}"><span>&nbsp;Partenaires</span></a>
               </li>
               <li class="dropdown">
@@ -229,7 +229,7 @@ use Illuminate\Support\Facades\Route;
                 </ul>
                 
               </li>
-              <li class="dropdown">
+              <li class="">
                 <a href="{{route('index_mentions_legales')}}"><span>&nbsp;Mentions Légales</span></a>
               </li>
               <li class="dropdown">
@@ -318,11 +318,12 @@ use Illuminate\Support\Facades\Route;
                                 ->where('id_shop_category', 1)
                                 ->first();
                   @endphp
+                  
                     <ul>
                         @foreach($categories->filter(function ($subCategory) use ($category) {
                             return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
                         }) as $subCategory)
-                        <li class="dropdown">
+                        <li class="{{ $subCategoryCount > 0 ? 'dropdown' : '' }}">
                             <a href="{{ route('sous_categorie', ['id' =>  $subCategory->id_shop_category]) }}">
                                 <span><img src="{{ $subCategory->image }}" width="24">&nbsp;{{ $subCategory->name }}</span>
                                 @if($categories->filter(function ($subSubCategory) use ($subCategory) {
@@ -367,10 +368,10 @@ use Illuminate\Support\Facades\Route;
             <li><a href="{{ route('A_blog') }}"><span>&nbsp;Accueil</span></a></li>
             <li class="dropdown"><a href="#"><span>&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
               <ul>
-                <li class="dropdown">
+                <li class="">
                   <a href="{{ route('Simple_Post',13792) }}"><span>&nbsp;Organisation</span></a>
                 </li>
-                <li class="dropdown">
+                <li class="">
                   <a href="{{ route('Simple_Post',13002) }}"><span>&nbsp;Partenaires</span></a>
                 </li>
                 <li class="dropdown">
@@ -383,7 +384,7 @@ use Illuminate\Support\Facades\Route;
                   </ul>
                   
                 </li>
-                <li class="dropdown">
+                <li class="">
                   <a href="{{route('index_mentions_legales')}}"><span>&nbsp;Mentions Légales</span></a>
                 </li>
                 <li class="dropdown">
@@ -476,7 +477,7 @@ use Illuminate\Support\Facades\Route;
                           @foreach($categories->filter(function ($subCategory) use ($category) {
                               return strlen($subCategory->id_shop_category) === 3 && strpos($subCategory->id_shop_category, $category->id_shop_category) === 0;
                           }) as $subCategory)
-                          <li class="dropdown">
+                          <li class="{{ $subCategoryCount > 0 ? 'dropdown' : '' }}">
                               <a href="{{ route('sous_categorie', ['id' =>  $subCategory->id_shop_category]) }}">
                                   <span><img src="{{ $subCategory->image }}" width="24">&nbsp;{{ $subCategory->name }}</span>
                                   @if($categories->filter(function ($subSubCategory) use ($subCategory) {
@@ -506,42 +507,47 @@ use Illuminate\Support\Facades\Route;
               </ul>
             </li>
             <li><a href="#" data-toggle="modal" data-target="#search-modal"><span>&nbsp;Recherche</span></a></li>
-            <li class="dropdown">
-               <style>
-                  .dropdown img {
+            <style>
+
+              @media (max-width: 768px) {  
+                  .nav-list .dropdown {
+                      order: -1; 
+                  }
+              }
+              .dropdown img {
                     width: 50px;
                     height: 50px;
                     object-fit: cover;
                     margin-right: 10px;
                   }
-                </style>
-              <li class="dropdown">
-                <a href="#">
-                    @if(auth()->user()->image) {{-- Si l'utilisateur a une image --}}
-                        <img src="{{ auth()->user()->image}}" class="rounded-circle" alt="{{ auth()->user()->name }}">
-                    @elseif(auth()->user()->gender == 'male') {{-- Si le genre de l'utilisateur est masculin --}}
-                        <img src="{{ asset('assets/images/user.jpg') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
-                    @else {{-- Sinon (supposant que le seul autre genre possible est féminin) --}}
-                        <img src="{{ asset('assets/images/femaleuser.png') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
-                    @endif
-                    <span><span style="font-weight: 100"></span>{{ auth()->user()->lastname }} {{ auth()->user()->name }}</span> 
-                    <i class="bi bi-chevron-down dropdown-indicator"></i>
-                </a>
-              
-              <ul>
-                @if (auth()->user()->role >= 20)
-                <li><a href="{{ route('admin.index') }}"><span>&nbsp;Administration</span></a></li>
-             @endif
-              
-                <li><a href="{{ route('users.family') }}"><span>&nbsp;Ma Famille</span></a></li>
-                <li><a href="{{ route('users.FactureUser') }}"><span>&nbsp;Mes Factures/Devis</span></a></li>
-                <li><a href="{{ route('logout') }}"onclick="event.preventDefault();document.getElementById('logout-form').submit();"><span>&nbsp;Déconnecter</span></a></li>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                  @csrf
-                </form>
-              </ul>
-            </li>
-            
+            </style>
+            <!-- HTML -->
+<li class="dropdown">
+  <a href="#">
+      @if(auth()->user()->image) {{-- Check for user image --}}
+          <img src="{{ auth()->user()->image }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
+      @elseif(auth()->user()->gender == 'male') {{-- Check for male gender --}}
+          <img src="{{ asset('assets/images/user.jpg') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
+      @else {{-- Assuming female for any other case --}}
+          <img src="{{ asset('assets/images/femaleuser.png') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
+      @endif
+      <span>{{ auth()->user()->lastname }} {{ auth()->user()->name }}</span>
+      <i class="bi bi-chevron-down dropdown-indicator"></i>
+  </a>
+
+  <ul class="user-options">
+      @if (auth()->user()->role >= 20)
+          <li><a href="{{ route('admin.index') }}"><span>&nbsp;Administration</span></a></li>
+      @endif
+
+      <li><a href="{{ route('users.family') }}"><span>&nbsp;Ma Famille</span></a></li>
+      <li><a href="{{ route('users.FactureUser') }}"><span>&nbsp;Mes Factures/Devis</span></a></li>
+      <li><a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><span>&nbsp;Déconnecter</span></a></li>
+      <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+          @csrf
+      </form>
+  </ul>
+</li>
             @php
                 $paniers = DB::table('basket')
                             ->select('basket.id')
