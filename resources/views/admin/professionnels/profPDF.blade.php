@@ -134,15 +134,10 @@ $TotalMaladiepris = 0 ;
         width: 50%;
     }
        
-    @font-face {
-        font-family: 'Poppins';
-        font-style: normal;
-        font-weight: 200;
-        src: url({{ public_path('fonts/Poppins/Poppins-Regular.ttf') }}) format('truetype');
-    }
+    
 
     body {
-        font-family: 'Poppins', sans-serif;
+        font-family: Arial, Helvetica, sans-serif !important;
     }
 
     .table td, .table th, .small-text {

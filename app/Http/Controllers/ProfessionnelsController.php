@@ -110,7 +110,7 @@ public function validerDec(Request $request){
     $response = $this->generatePDF($declaration_id);
     
     // After the PDF has been generated, update the saison and OldHeuresRealisees as needed
-    if ($pro->LastDeclarationMonth == 8) {
+    if ($pro->LastDeclarationMonth == 7) {
         $pro->Saison = $pro->Saison + 1;
         $pro->OldHeuresRealisees = 0;
         $pro->save();
