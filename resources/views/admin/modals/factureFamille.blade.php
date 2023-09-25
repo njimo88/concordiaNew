@@ -33,7 +33,7 @@
 
 @foreach ($bill as $bills)
     <div class="invoice">
-        <div style="background-color: {{ $bills->row_color == 'none' ? '#00ff00' : $bills->row_color }} !important;" class="invoice-header p-2">Facture n°: {{ $bills->id }}</div>
+        <div style="background-color: {{ $bills->row_color == 'none' ? '#00ff00' : $bills->row_color }} !important;" class="invoice-header p-2">Facture n°: <a target="_blank" href="{{ route('facture.showBill',$bills->id) }}">{{ $bills->id }}</a> </div>
         <div class="invoice-items">
             @foreach($bills->liaisons as $liaison)
                 <div class="invoice-item">
