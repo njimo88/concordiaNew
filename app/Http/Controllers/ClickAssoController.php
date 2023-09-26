@@ -38,17 +38,15 @@ class ClickAssoController extends Controller
         return $response->json();
     }
 
-    public function deleteAllMembersForYear($year)
-    {
-        $cookie = $this->getLogin();
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            '.ASPXAUTH' => $cookie,
-        ])->delete(self::BASE_URL . "interface/deletemembers?year={$year}");
-        return $response->json();
-    }
+    
     private function getLogin()
     {
+
+        if (session()->has('clickasso_cookie')) {
+            return session('clickasso_cookie');
+        }
+
+
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])->post('https://application.clickasso.fr/api/Common/Login', [
@@ -59,6 +57,9 @@ class ClickAssoController extends Controller
         ]);
 
         $data = $response->json();
+        // Store the cookie in session for subsequent use
+        session(['clickasso_cookie' => $data['Cookie'] ?? null]);
+
 
         return $data['Cookie'] ?? null;
     }
@@ -111,8 +112,8 @@ private function transformToInterfaceMember($member)
         return [
             'Id' => '', 
             'ExternalId' => $member->user_id,
-            'FirstName' => $member->name,
-            'LastName' => $member->lastname,
+            'FirstName' => $member->lastname,
+            'LastName' => $member->name,
             'Gender' => $gender,
             'BirthDate' => $member->birthdate,
             'BirthCountry' => $member->nationality,
@@ -125,7 +126,7 @@ private function transformToInterfaceMember($member)
             'Country' => $member->country,
             'MedicalCertificate' => $medicalCertificateDate,
             'Email' => $member->role > 15 ? 'contact@gym-concordia.com' : $member->email,
-            'Phone' => $member->role > 15 ? '0805659999' : $member->phone,
+            'Phone' => $member->role > 15 ? '0783664250' : $member->phone,
             'Group' => $groupJson  
         ];
     }
@@ -142,6 +143,7 @@ private function transformToInterfaceMember($member)
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
             ->where('shop_article.type_article', 0)
             ->where('bills.status', '>', 9)
+            ->where('shop_article.saison ', $this->getActiveFiscalYear())
             ->select(DB::raw('DISTINCT liaison_shop_articles_bills.id_user'))
             ->get();
 
@@ -161,10 +163,21 @@ private function transformToInterfaceMember($member)
         $cookie = $this->getLogin();
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            '.ASPXAUTH' => $cookie,
-        ])->post(self::BASE_URL . "interface/updatemembers?year={$year}", $members);
-        return response()->json(['status' => 'Sync completed']);
+            'Cookie' => '.ASPXAUTH=' . $cookie,
+            ])->post(self::BASE_URL . "interface/updatemembers?year={$year}", $members);
+        return $response->json();
 
+    }
+
+    public function deleteAllMembersForYear($year)
+    {
+        $cookie = $this->getLogin();
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Cookie' => '.ASPXAUTH=' . $cookie,
+        ])->delete(self::BASE_URL . "interface/deletemembers?year={$year}");
+        dd ($response->json());
+        return $response->json();
     }
 
     public function index()

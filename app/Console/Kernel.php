@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('process:email-queue')->everyMinute();
         $schedule->job(new ClickAsso)->dailyAt('00:00');
         $schedule->command('bills:transfer')->dailyAt('00:00');
+        $schedule->job(new \App\Jobs\SyncWithClickAssoJob)->dailyAt('00:00');
     }
     
 

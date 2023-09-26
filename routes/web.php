@@ -132,8 +132,8 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     /*----------------------- ClickAsso ------------------------------ */
     Route::get('/admin/clickasso', [ClickAssoController::class, 'index'])->name('users.clickasso');
     Route::post('/sync-with-clickasso', [ClickAssoController::class, 'syncWithClickAsso']);
-
-
+    Route::delete('/delete-all-members-for-year/{year}', [ClickAssoController::class, 'deleteAllMembersForYear']);
+    
      /*----------------------- Factures ------------------------------ */
     Route::get('/admin/paiement/facture', [BillsController::class, 'index'])->name('paiement.facture');
     Route::get('/admin/paiement/facture/data', [BillsController::class, 'getData'])->name('paiement.facture.data');
