@@ -21,7 +21,7 @@
                         </select>
                     </div>
                     <div class="col-lg-3 mt-5">
-                        <input type="hidden" id="selected-user-id" name="selected_user_id">
+                        <input type="hidden" id="selected_user_id" name="selected_user_id" value="{{ $user->user_id }}">
                         <button type="submit" class="btn btn-dark">Ajouter</button>
                     </div>
                 </form>

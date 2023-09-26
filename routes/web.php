@@ -131,7 +131,8 @@ Route::middleware(['auth', 'role:20'])->group(function () {
 
     /*----------------------- ClickAsso ------------------------------ */
     Route::get('/admin/clickasso', [ClickAssoController::class, 'index'])->name('users.clickasso');
-    Route::get('/trigger-job', [ClickAssoController::class, 'triggerJob']);
+    Route::post('/sync-with-clickasso', [ClickAssoController::class, 'syncWithClickAsso']);
+
 
      /*----------------------- Factures ------------------------------ */
     Route::get('/admin/paiement/facture', [BillsController::class, 'index'])->name('paiement.facture');

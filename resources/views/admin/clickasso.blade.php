@@ -25,10 +25,29 @@
     
 </main>
 <script>
-    function triggerJob() {
-        fetch('/trigger-job')
-            .then(response => response.json())
-            .then(data => console.log(data));
-    }
-    </script>
+function triggerJob() {
+    fetch('/sync-with-clickasso', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        alert(data.status);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error while syncing with ClickAsso.');
+    });
+}
+
+</script>
 @endsection

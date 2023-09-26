@@ -343,6 +343,7 @@ public function getSalaireMinimum()
         $addUser = new Professionnels();
         $addUser->id_user = $selectedUserId;
         $addUser->lastname = $user->name;
+        $addUser->matricule = 122;
         $addUser->firstname = $user->lastname;
         $addUser->email = $user->email;
         $addUser->save();
@@ -589,8 +590,11 @@ $emailContent = "<p><i>[Ceci est un message automatique]</i></p>
 
     $attachment = base64_encode($pdfOutput); 
 
-$emailSubject = $monthName . " " . $declaration->annee . " - Fiche Heures";
-
+    $emailSubject = $monthName . " " . $declaration->annee . " - Fiche Heures";
+    if ($declaration->mois == 8) { 
+        $emailSubject = "Aout " . $declaration->annee . " - Fiche Heures";
+    }
+    
 Mail::to(['president@gym-concordia.com', 'tresorier@gym-concordia.com'])
         ->cc($user->email)
         ->send(new DeclarationEmail($emailContent, $attachment, $attachmentName, $user->username, $emailSubject));
@@ -598,6 +602,9 @@ Mail::to(['president@gym-concordia.com', 'tresorier@gym-concordia.com'])
 
     return redirect()->route('proffesional.valideHeure')->with('success', 'Votre déclaration a bien été envoyée !');
 }
+
+
+
 }    
 
 
