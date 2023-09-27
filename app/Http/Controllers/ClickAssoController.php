@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\ClickAsso;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+require_once(app_path().'/fonction.php');
 
 class ClickAssoController extends Controller
 {
@@ -138,10 +139,14 @@ private function transformToInterfaceMember($member)
 
     private function getMembersForClickAsso()
     {
+
+        $saison = saison_active();
+        
         $members = DB::table('liaison_shop_articles_bills')
             ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
             ->where('shop_article.type_article', 0)
+            ->where ('shop_article.saison', $saison)
             ->where('bills.status', '>', 9)
             ->where('shop_article.saison ', $this->getActiveFiscalYear())
             ->select(DB::raw('DISTINCT liaison_shop_articles_bills.id_user'))
@@ -160,6 +165,7 @@ private function transformToInterfaceMember($member)
             return response()->json(['status' => 'Failed', 'message' => 'Failed to get the active fiscal year.']);
         }
         $members = $this->getMembersForClickAsso();
+        dd ($members);
         $cookie = $this->getLogin();
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -170,15 +176,27 @@ private function transformToInterfaceMember($member)
     }
 
     public function deleteAllMembersForYear($year)
-    {
+{
+    try {
         $cookie = $this->getLogin();
-        $response = Http::withHeaders([
+
+        $response = Http::timeout(180)  
+        ->withHeaders([
             'Content-Type' => 'application/json',
             'Cookie' => '.ASPXAUTH=' . $cookie,
         ])->delete(self::BASE_URL . "interface/deletemembers?year={$year}");
-        dd ($response->json());
+
+
+        if (!$response->successful()) {
+            return response()->json(['status' => 'Failed', 'message' => $response->body()], $response->status());
+        }
+
         return $response->json();
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'Failed', 'message' => $e->getMessage()]);
     }
+}
+
 
     public function index()
     {

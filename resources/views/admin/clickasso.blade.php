@@ -71,9 +71,15 @@ function deleteMembers() {
         alert(data.status);
     })
     .catch(error => {
+    error.json().then(data => {
+        console.error(data.message);
+        alert(data.message);
+    }).catch(() => {
         console.error('Error:', error);
         alert('Il y a eu une erreur lors de la suppression des membres.');
     });
+});
+
 }
 
 </script>
