@@ -9,6 +9,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+require_once(app_path().'/fonction.php');
+
 
 class SyncWithClickAssoJob implements ShouldQueue
 {
@@ -117,15 +119,18 @@ class SyncWithClickAssoJob implements ShouldQueue
 
     private function getMembersForClickAsso()
     {
+        $saison = saison_active();
+        
         $members = DB::table('liaison_shop_articles_bills')
             ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
             ->where('shop_article.type_article', 0)
             ->where('bills.status', '>', 9)
+            ->where ('shop_article.saison', $saison)
             ->select(DB::raw('DISTINCT liaison_shop_articles_bills.id_user'))
             ->get();
 
-        return $members->map(function ($member) {
+        return $members->map(function($member) {
             return $this->transformToInterfaceMember($member);
         });
     }
