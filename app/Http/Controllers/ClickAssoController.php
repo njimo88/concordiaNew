@@ -146,12 +146,10 @@ private function transformToInterfaceMember($member)
             ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
             ->where('shop_article.type_article', 0)
-            ->where ('shop_article.saison', $saison)
             ->where('bills.status', '>', 9)
-            ->where('shop_article.saison ', $this->getActiveFiscalYear())
+            ->where ('shop_article.saison', $saison)
             ->select(DB::raw('DISTINCT liaison_shop_articles_bills.id_user'))
             ->get();
-
 
         return $members->map(function($member) {
             return $this->transformToInterfaceMember($member);
@@ -165,7 +163,6 @@ private function transformToInterfaceMember($member)
             return response()->json(['status' => 'Failed', 'message' => 'Failed to get the active fiscal year.']);
         }
         $members = $this->getMembersForClickAsso();
-        dd ($members);
         $cookie = $this->getLogin();
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -177,6 +174,7 @@ private function transformToInterfaceMember($member)
 
     public function deleteAllMembersForYear($year)
 {
+    
     try {
         $cookie = $this->getLogin();
 
