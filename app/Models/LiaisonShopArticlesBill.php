@@ -33,4 +33,7 @@ class LiaisonShopArticlesBill extends Model
     return $this->belongsTo(Shop_article::class, 'id_shop_article');
 }
 
+
+
+
 }

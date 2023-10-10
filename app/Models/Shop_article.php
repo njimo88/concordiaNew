@@ -111,6 +111,26 @@ public function declinaisons()
     return $this->hasMany(Declinaison::class, 'shop_article_id');
 }
 
+public function updateInitialStock()
+    {
+        if ($this->type_article != 2 || !$this->declinaisons()->exists()) {
+            return;
+        }
+
+        $totalInitialStock = $this->declinaisons()->sum('stock_ini_d');
+
+        $this->stock_ini = $totalInitialStock;
+        $this->save();
+    }
+
+    public function getDisplayNameAttribute()
+{
+    if ($this->type_article == 2 && $this->declinaisons()->count() > 0) {
+        return $this->title . ' [' . $this->declinaisons->first()->libelle . ']';
+    }
+
+    return $this->title;
+}
 
 
 }

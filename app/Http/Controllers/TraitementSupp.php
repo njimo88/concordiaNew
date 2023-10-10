@@ -17,6 +17,7 @@ use App\Models\SystemSetting;
 use App\Models\bills;
 use App\Models\liaison_shop_articles_bills;
 use App\Models\PaiementImmediat;
+use App\Models\Declinaison;
 use PDF;
 
 
@@ -301,38 +302,41 @@ public function singleProduct($id) {
     if (Auth::check()) {
         $selectedUsers = getArticleUsers($articl);
     }
+    $declinaisons = Declinaison::where('shop_article_id', $articl->id_shop_article)->get();
+
     if ($articl->type_article == 1) {
-        return view('singleProduct', compact('articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate'));
+        return view('singleProduct', compact('articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate', 'declinaisons'));
+
     } else {
-        return view('singleProduct', compact('articl', 'selectedUsers', 'coursVente'));
+        return view('singleProduct', compact('articl', 'selectedUsers', 'coursVente', 'declinaisons'));
     }
 }
 
 
-public function basket (){
-    if (Auth::check()){
-
+public function basket()
+{
+    if (Auth::check()) {
         $paniers = DB::table('basket')
-    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
-    ->leftJoin('shop_article_2', 'shop_article_2.id_shop_article', '=', 'basket.ref')
-    ->where('basket.user_id', '=', auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id', 'shop_article_2.declinaison', 'basket.declinaison', 'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
-    ->orderBy('basket.pour_user_id')
-    ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'), DB::raw("JSON_UNQUOTE(JSON_EXTRACT(shop_article_2.declinaison, '$[0].libelle')) as declinaison_libelle"), 'basket.reduction')
-    ->get();
+            ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+            ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+            ->leftJoin('declinaisons', 'declinaisons.id', '=', 'basket.declinaison') 
+            ->where('basket.user_id', '=', auth()->user()->user_id)
+            ->groupBy('basket.pour_user_id', 'basket.declinaison', 'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction', 'declinaisons.libelle') // Group by declinaisons.libelle
+            ->orderBy('basket.pour_user_id')
+            ->orderBy('basket.ref')
+            ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'), 'declinaisons.libelle as declinaison_libelle', 'basket.reduction') // Fetch declinaisons.libelle
+            ->get();
 
         $total = 0;
         foreach ($paniers as $panier) {
             $total += $panier->total_qte * $panier->prix;
         }
-        // Retourner la vue avec les données récupérées
-        return view('basket', compact('paniers','total'))->with('user', auth()->user());
-    }else{
+        return view('basket', compact('paniers', 'total'))->with('user', auth()->user());
+    } else {
         return redirect()->route('login');
     }
 }
+
 
 public function paiement(){
 
@@ -596,7 +600,8 @@ $bill = DB::table('bills')
         if ($user->belongsToFamily($bill->family_id) || Route::currentRouteName() === 'facture.showBill') {
         
         $shop = DB::table('liaison_shop_articles_bills')
-        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison')
+        ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') // Left join with the declinaisons table
+        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle') 
         ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
         ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
         ->where('bills.id', '=', $id)

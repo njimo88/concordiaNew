@@ -343,7 +343,8 @@ $versement = floor($versement);
 
     // Récupération des informations de produits
     $shop = DB::table('liaison_shop_articles_bills')
-        ->select('quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'liaison_shop_articles_bills.id_liaison','liaison_shop_articles_bills.href_product')
+    ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') // Left join with the declinaisons table
+        ->select('quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'liaison_shop_articles_bills.id_liaison','liaison_shop_articles_bills.href_product', 'declinaisons.libelle as declinaison_libelle')
         ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
         ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
         ->where('bills.id', '=', $id)
@@ -455,18 +456,24 @@ $versement = floor($versement);
     }
     
      
-    $titleLines = wordwrap($product->designation, 40, "\n", true);
-    $titleLinesArray = explode("\n", $titleLines);
+    $title = $product->designation;
+if (!is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; 
+}
 
-    foreach ($titleLinesArray as $i => $titleLine) {
-        $image->text($titleLine, $x + 126, $y - 4 + ($i * 12), function($font) use ($fontSize) {
-            $font->file(public_path('fonts/arial.ttf'));
-            $font->size($fontSize);
-            $font->color('#00000');
-            $font->align('left');
-            $font->valign('top');
-        });
-    }
+$titleLines = wordwrap($title, 40, "\n", true);
+$titleLinesArray = explode("\n", $titleLines);
+
+foreach ($titleLinesArray as $i => $titleLine) {
+    $image->text($titleLine, $x + 126, $y - 4 + ($i * 12), function($font) use ($fontSize) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSize);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+
 
 
     $fontSizeSmaller = $fontSize - 3;  
@@ -607,18 +614,25 @@ foreach ($addresseeLinesArray as $i => $addresseeLine) {
     }
      
     
-    $titleLines = wordwrap($product->designation, 40, "\n", true);
-    $titleLinesArray = explode("\n", $titleLines);
+    $title = $product->designation;
+if (!is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; 
+}
+$titleLines = wordwrap($title, 40, "\n", true);
+$titleLinesArray = explode("\n", $titleLines);
 
-    foreach ($titleLinesArray as $i => $titleLine) {
-        $image->text($titleLine, $x + 126, $y - 4 + ($i * 12), function($font) use ($fontSize) {
-            $font->file(public_path('fonts/arial.ttf'));
-            $font->size($fontSize);
-            $font->color('#00000');
-            $font->align('left');
-            $font->valign('top');
-        });
-    }
+foreach ($titleLinesArray as $i => $titleLine) {
+    $image->text($titleLine, $x + 126, $y - 4 + ($i * 12), function($font) use ($fontSize) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSize);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+
+
+
     $fontSizeSmaller = $fontSize - 3;  
     $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
     $addresseeLinesArray = explode("\n", $addresseeLines);
@@ -692,18 +706,24 @@ foreach ($secondGroup as $product) {
     }
     
     
-    $titleLines = wordwrap($product->designation, 40, "\n", true);
-    $titleLinesArray = explode("\n", $titleLines);
+    $title = $product->designation;
+if (!is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; 
+}
 
-    foreach ($titleLinesArray as $i => $titleLine) {
-        $image2->text($titleLine, $x + 126, $y2 - 4 + ($i * 12), function($font) use ($fontSize) {
-            $font->file(public_path('fonts/arial.ttf'));
-            $font->size($fontSize);
-            $font->color('#00000');
-            $font->align('left');
-            $font->valign('top');
-        });
-    }
+$titleLines = wordwrap($title, 40, "\n", true);
+$titleLinesArray = explode("\n", $titleLines);
+
+foreach ($titleLinesArray as $i => $titleLine) {
+    $image2->text($titleLine, $x + 126, $y2 - 4 + ($i * 12), function($font) use ($fontSize) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSize);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+
 
     $fontSizeSmaller = $fontSize - 3;  
     $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
@@ -896,7 +916,12 @@ $image->insert($shopImage, 'top-left', 108, $y + (-15));
 }
 
 
-$titleLines = wordwrap($product->designation, 40, "\n", true);
+$title = $product->designation;
+if (!is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; 
+}
+
+$titleLines = wordwrap($title, 40, "\n", true);
 $titleLinesArray = explode("\n", $titleLines);
 
 foreach ($titleLinesArray as $i => $titleLine) {
@@ -908,6 +933,7 @@ foreach ($titleLinesArray as $i => $titleLine) {
         $font->valign('top');
     });
 }
+
 $fontSizeSmaller = $fontSize - 3;  
 $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
 $addresseeLinesArray = explode("\n", $addresseeLines);
@@ -979,7 +1005,12 @@ foreach ($thirdGroup as $product) {
     }
     
     
-    $titleLines = wordwrap($product->designation, 40, "\n", true);
+    $title = $product->designation;
+    if (!is_null($product->declinaison_libelle)) {
+        $title .= " [" . $product->declinaison_libelle . "]"; // Appending the declinaison libelle in square brackets
+    }
+    
+    $titleLines = wordwrap($title, 40, "\n", true);
     $titleLinesArray = explode("\n", $titleLines);
     
     foreach ($titleLinesArray as $i => $titleLine) {
@@ -991,6 +1022,7 @@ foreach ($thirdGroup as $product) {
             $font->valign('top');
         });
     }
+    
     $fontSizeSmaller = $fontSize - 3;  
     $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
     $addresseeLinesArray = explode("\n", $addresseeLines);
@@ -1059,7 +1091,12 @@ if (File::exists($imagePath)) {
  $image2->insert($shopimage2, 'top-left', 108, $y2 + (-15)); 
 }
 
-$titleLines = wordwrap($product->designation, 40, "\n", true);
+$title = $product->designation;
+if (!is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; // Appending the declinaison libelle in square brackets
+}
+
+$titleLines = wordwrap($title, 40, "\n", true);
 $titleLinesArray = explode("\n", $titleLines);
 
 foreach ($titleLinesArray as $i => $titleLine) {
@@ -1071,6 +1108,8 @@ foreach ($titleLinesArray as $i => $titleLine) {
         $font->valign('top');
     });
 }
+
+
 $fontSizeSmaller = $fontSize - 3;  
 $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
 $addresseeLinesArray = explode("\n", $addresseeLines);
@@ -1314,18 +1353,24 @@ public function generatePDFfactureOutput($id)
     $image->insert($shopImage, 'top-left', 108, $y + (-15));
     }
     
-    $titleLines = wordwrap($product->designation, 40, "\n", true);
-    $titleLinesArray = explode("\n", $titleLines);
+    $title = $product->designation;
+if (!is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; // Appending the declinaison libelle in square brackets
+}
 
-    foreach ($titleLinesArray as $i => $titleLine) {
-        $image->text($titleLine, $x + 126, $y - 4 + ($i * 12), function($font) use ($fontSize) {
-            $font->file(public_path('fonts/arial.ttf'));
-            $font->size($fontSize);
-            $font->color('#00000');
-            $font->align('left');
-            $font->valign('top');
-        });
-    }
+$titleLines = wordwrap($title, 40, "\n", true);
+$titleLinesArray = explode("\n", $titleLines);
+
+foreach ($titleLinesArray as $i => $titleLine) {
+    $image->text($titleLine, $x + 126, $y - 4 + ($i * 12), function($font) use ($fontSize) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSize);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+
     $fontSizeSmaller = $fontSize - 3;  
     $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
     $addresseeLinesArray = explode("\n", $addresseeLines);
@@ -1467,18 +1512,25 @@ public function generatePDFfactureOutput($id)
     }
     
     
-    $titleLines = wordwrap($product->designation, 40, "\n", true);
-    $titleLinesArray = explode("\n", $titleLines);
+    $title = $product->designation;
 
-    foreach ($titleLinesArray as $i => $titleLine) {
-        $image->text($titleLine, $x + 126, $y - 4 + ($i * 12), function($font) use ($fontSize) {
-            $font->file(public_path('fonts/arial.ttf'));
-            $font->size($fontSize);
-            $font->color('#00000');
-            $font->align('left');
-            $font->valign('top');
-        });
-    }
+if (isset($product->declinaison_libelle) && !is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; 
+}
+
+$titleLines = wordwrap($title, 40, "\n", true);
+$titleLinesArray = explode("\n", $titleLines);
+
+foreach ($titleLinesArray as $i => $titleLine) {
+    $image->text($titleLine, $x + 126, $y - 4 + ($i * 12), function($font) use ($fontSize) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSize);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+
 
     $fontSizeSmaller = $fontSize - 3;  
     $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
@@ -1550,18 +1602,25 @@ foreach ($secondGroup as $product) {
     $image2->insert($shopimage2, 'top-left', 108, $y2 + (-15));
     }
     
-    $titleLines = wordwrap($product->designation, 40, "\n", true);
-    $titleLinesArray = explode("\n", $titleLines);
+    $title = $product->designation;
 
-    foreach ($titleLinesArray as $i => $titleLine) {
-        $image2->text($titleLine, $x + 126, $y2 - 4 + ($i * 12), function($font) use ($fontSize) {
-            $font->file(public_path('fonts/arial.ttf'));
-            $font->size($fontSize);
-            $font->color('#00000');
-            $font->align('left');
-            $font->valign('top');
-        });
-    }
+if (isset($product->declinaison_libelle) && !is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; 
+}
+
+$titleLines = wordwrap($title, 40, "\n", true);
+$titleLinesArray = explode("\n", $titleLines);
+
+foreach ($titleLinesArray as $i => $titleLine) {
+    $image2->text($titleLine, $x + 126, $y2 - 4 + ($i * 12), function($font) use ($fontSize) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSize);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+    
     $fontSizeSmaller = $fontSize - 3;  
     $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
     $addresseeLinesArray = explode("\n", $addresseeLines);
@@ -1748,7 +1807,13 @@ if (File::exists($imagePath)) {
 $image->insert($shopimage, 'top-left', 108, $y + (-15));
 }
 
-$titleLines = wordwrap($product->designation, 40, "\n", true);
+$title = $product->designation;
+
+if (isset($product->declinaison_libelle) && !is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; 
+}
+
+$titleLines = wordwrap($title, 40, "\n", true);
 $titleLinesArray = explode("\n", $titleLines);
 
 foreach ($titleLinesArray as $i => $titleLine) {
@@ -1760,6 +1825,7 @@ foreach ($titleLinesArray as $i => $titleLine) {
         $font->valign('top');
     });
 }
+
 $fontSizeSmaller = $fontSize - 3;  
 $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
 $addresseeLinesArray = explode("\n", $addresseeLines);
@@ -1830,18 +1896,26 @@ foreach ($thirdGroup as $product) {
     $image3->insert($shopimage3, 'top-left', 108, $y2 + (-15));
     }
     
-    $titleLines = wordwrap($product->designation, 40, "\n", true);
-    $titleLinesArray = explode("\n", $titleLines);
-    
-    foreach ($titleLinesArray as $i => $titleLine) {
-        $image3->text($titleLine, $x + 126, $y2 - 4 + ($i * 12), function($font) use ($fontSize) {
-            $font->file(public_path('fonts/arial.ttf'));
-            $font->size($fontSize);
-            $font->color('#00000');
-            $font->align('left');
-            $font->valign('top');
-        });
-    }
+    $title = $product->designation;
+
+if (isset($product->declinaison_libelle) && !is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; 
+}
+
+$titleLines = wordwrap($title, 40, "\n", true);
+$titleLinesArray = explode("\n", $titleLines);
+
+foreach ($titleLinesArray as $i => $titleLine) {
+    $image3->text($titleLine, $x + 126, $y2 - 4 + ($i * 12), function($font) use ($fontSize) {
+        $font->file(public_path('fonts/arial.ttf'));
+        $font->size($fontSize);
+        $font->color('#00000');
+        $font->align('left');
+        $font->valign('top');
+    });
+}
+
+
     $fontSizeSmaller = $fontSize - 3;  
     $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
     $addresseeLinesArray = explode("\n", $addresseeLines);
@@ -1911,7 +1985,13 @@ if (File::exists($imagePath)) {
 $image2->insert($shopimage2, 'top-left', 108, $y2 + (-15));
 }
 
-$titleLines = wordwrap($product->designation, 40, "\n", true);
+$title = $product->designation;
+
+if (isset($product->declinaison_libelle) && !is_null($product->declinaison_libelle)) {
+    $title .= " [" . $product->declinaison_libelle . "]"; 
+}
+
+$titleLines = wordwrap($title, 40, "\n", true);
 $titleLinesArray = explode("\n", $titleLines);
 
 foreach ($titleLinesArray as $i => $titleLine) {
@@ -1923,6 +2003,8 @@ foreach ($titleLinesArray as $i => $titleLine) {
         $font->valign('top');
     });
 }
+
+
 $fontSizeSmaller = $fontSize - 3;  
 $addresseeLines = wordwrap($product->addressee, 40, "\n", true);
 $addresseeLinesArray = explode("\n", $addresseeLines);

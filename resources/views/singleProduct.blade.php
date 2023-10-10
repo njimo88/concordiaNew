@@ -65,10 +65,8 @@
                         
 
                     @elseif($articl->type_article == 2)
-                        <!-- Ici, vous affichez l'image directement comme vous l'avez mentionné -->
                         <img style="max-height: 400px" src="{{ $articl->image }}" alt="{{ $articl->name }}">
                     @endif
-                    <!-- Inserted user-status-section here -->
                 <div class="user-status-section mt-2">
                     <div class="card user-card">
                         <div class="card-body">
@@ -76,22 +74,39 @@
                                 <h4 class="card-title">{{ $articl->type_article == 2 ? 'Commander' : 'Inscrire' }}</h4>
                                 <p class="info-message">Se connecter pour commander</p>
                                 <a href="{{ route('login') }}" class="btn">Se connecter</a>
-                                @else
-                                @if ($articl->stock_actuel > 0) <!-- Vérification du stock ajoutée ici -->
-                                    <h4 class="card-title">{{ $articl->type_article == 2 ? 'Commander' : 'Inscrire' }}</h4>
-                                    @if (count($selectedUsers) > 0)
-                                        <select onchange="updatePriceToDisplay()" class="select-form" name="buyers" id="buyers">
-                                            @foreach ($selectedUsers as $user)
-                                                <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
-                                    @else
-                                        <p class="info-message">Votre famille ne correspond pas à cet article.</p>
-                                    @endif
-                                @else <!-- Message si l'article est en rupture de stock -->
-                                    <p class="info-message">Désolé, cet article est actuellement en rupture de stock.</p>
+                            @else
+                            @if ($articl->stock_actuel > 0) 
+                            <h4 class="card-title">{{ $articl->type_article == 2 ? 'Commander' : 'Inscrire' }}</h4>
+                            @if (count($selectedUsers) > 0)
+                                @if(count($declinaisons) > 0)
+                                    <select class="select-form" name="declinaisons" id="declinaisons">
+                                        @foreach ($declinaisons as $declinaison)
+                                            <option value="{{ $declinaison->id }}">{{ $declinaison->libelle }}</option>
+                                        @endforeach
+                                    </select>
                                 @endif
+                                                
+                                <select onchange="updatePriceToDisplay()" class="select-form" name="buyers" id="buyers">
+                                    @foreach ($selectedUsers as $user)
+                                        <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+
+                                
+                                <select class="select-form" name="qte" id="qte">
+                                    @for ($i = 1; $i <= 10; $i++) 
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
+
+                                <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
+                            @else
+                                <p class="info-message">Votre famille ne correspond pas à cet article.</p>
+                            @endif
+                        @else
+                            <p class="info-message">Désolé, cet article est actuellement en rupture de stock.</p>
+                        @endif
+                        
                             @endguest
                         </div>
                     </div>

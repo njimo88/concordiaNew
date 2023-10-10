@@ -144,7 +144,7 @@ body, html {
 </style>
 
 <div class="container ">
-    <div class="row">
+    <div class="row mb-5">
         <div class="col-md-8 left-section p-5">
             <h3 class="summary-title">Récapitulatif</h3>
             <h4 class="p-3">Adresse de facturation : </h4>

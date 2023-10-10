@@ -626,47 +626,148 @@ foreach($Shop_article as $value1){
                                         }
                             </style>
                             
-                            <div class="row roww justify-content-center">
-                                <div class="col-lg-8 py-5">
-                                    <div class="alert alert-danger text-center" role="alert">
-                                        Si vous voulez modifier, réécrivez les anciennes données à conserver et ajoutez les nouvelles à la suite. Si vous voulez remplacer complètement les données, remplissez le formulaire avec les nouvelles données (les anciennes données seront perdues).
-                                    </div>
-                                    <h3 class="mb-4 text-center text-dark">Paramètres spécifiques</h3>
-                            
-                                    <div class="text-center mb-4">
-                                        <div class="inputWrapper"></div>
-                                        <button type="button" class="addInput btn btn-dark">
-                                            <i class="fa fa-plus"></i> Autres Ajouts
-                                        </button>
-                                    </div>
-                            
-                                    <textarea class="form-control" rows="10" id="getData" name="Json_declinaison" hidden></textarea>
-                            
-                                    <div class="form-group">
-                                        @php
-                                        $tableau = [];
-                                        $Data_json = (array) json_decode($data->declinaison,true);
-                                        foreach($Data_json as $tab1){
-                                            foreach($tab1 as $tab2){
-                                                echo '<div class="row mb-4 d-flex justify-content-center">';
-                                                foreach($tab2 as $tab){
-                                        @endphp
-                                        <div class="col-md-3 mb-3">
-                                            <div class="card text-center bg-light" style="width: 10rem;">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">{{$tab}}</h5>
+                            <div class="row justify-content-center py-5" style="background-color: #333333;">
+                                <div class="col-lg-8">
+                                    <h3 class="mb-4 text-center text-white">Paramètres spécifiques</h3>
+                                    <div class="bg-white p-4 shadow rounded">
+                                        <div id="add-declinaison" class="mb-4">
+                                            @csrf
+                                            <input type="hidden" id="shop_article_id" value="{{ $data->id_shop_article }}">
+                                            <div class="form-group">
+                                                <label for="libelle" class="text-secondary">Libelle de la déclinaison :</label>
+                                                <input type="text" class="form-control" id="libelle" name="libelle" placeholder="Entrez le libelle de la déclinaison" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="stock_ini_d" class="text-secondary">Stock Initial :</label>
+                                                <input type="number" class="form-control" id="stock_ini_d" name="stock_ini_d" placeholder="Entrez le stock initial" required>
+                                            </div>
+                                            <button type="button" id="add-declinaison-btn" class="btn" style="background-color: #482683; color: #fff;">Ajouter déclinaison</button>
+                                        </div>
+                                        <div class="declinaisons-list">
+                                            @foreach($declinaisons as $declinaison)
+                                            <div class="row mb-4">
+                                                <div class="col-md-12">
+                                                    <div class="card text-center bg-light shadow">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title text-secondary">{{ $declinaison->libelle }}</h5>
+                                                            <button type="button" class="btn mt-2 delete-declinaison-btn" style="background-color: #63c3d1; color: #fff;" data-id="{{ $declinaison->id }}">Supprimer</button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            @endforeach
                                         </div>
-                                        @php
-                                                }
-                                                echo '</div>';
-                                            }
-                                        }
-                                        @endphp
                                     </div>
                                 </div>
                             </div>
+                            
+                            <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                const addButton = document.getElementById('add-declinaison-btn');
+                                const declinaisonsList = document.querySelector('.declinaisons-list');
+                                var baseURL = "{{ route('delete.declinaison', '') }}";
+                                addButton.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    addDeclinaison();
+                                });
+                            
+                                declinaisonsList.addEventListener('click', function(e) {
+                                    if (e.target.classList.contains('delete-declinaison-btn')) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        deleteDeclinaison(e);
+                                    }
+                                });
+                            
+                                function addDeclinaison() {
+                                    const libelle = document.getElementById('libelle').value;
+                                    const shopArticleId = document.getElementById('shop_article_id').value;
+                                    const stockIniD = document.getElementById('stock_ini_d').value;
+                                    const token = document.querySelector('[name="_token"]').value;
+                            
+                                    if(!libelle.trim()) {
+                                        alert('Le libellé est requis.');
+                                        return;
+                                    }
+                            
+                                    if(!stockIniD.trim() || isNaN(stockIniD) || stockIniD < 0) {
+                                        alert('Le stock initial est invalide.');
+                                        return;
+                                    }
+                            
+                                    const data = new FormData();
+                                    data.append('libelle', libelle);
+                                    data.append('shop_article_id', shopArticleId);
+                                    data.append('stock_ini_d', stockIniD);
+                            
+                                    fetch('{{ route('add.declinaison') }}', {
+                                        method: 'POST',
+                                        body: data,
+                                        headers: {
+                                            'X-Requested-With': 'XMLHttpRequest',
+                                            'X-CSRF-TOKEN': token
+                                        }
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            alert('Déclinaison ajoutée avec succès!');
+                                            document.getElementById('libelle').value = '';
+                                            const declinaisonElement = `
+                                            
+                                                <div class="row mb-4">
+                                                    <div class="col-md-12">
+                                                        <div class="card text-center bg-light shadow">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title text-secondary">${data.libelle}</h5>
+                                                                <button type="button" class="btn mt-2 delete-declinaison-btn" style="background-color: #63c3d1; color: #fff;" data-id="${data.Id}">Supprimer</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+                                            declinaisonsList.insertAdjacentHTML('beforeend', declinaisonElement);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        alert('Une erreur s\'est produite. Veuillez réessayer.');
+                                    });
+                                }
+                                
+                            
+                                function deleteDeclinaison(e) {
+                                    const declinaisonId = e.target.getAttribute('data-id');
+                                    const token = document.querySelector('[name="_token"]').value;
+                            
+                                    if (confirm('Êtes-vous sûr de vouloir supprimer cette déclinaison ?')) {
+                                        fetch(baseURL + '/' + declinaisonId, {
+                                            method: 'DELETE',
+                                            headers: {
+                                                'X-Requested-With': 'XMLHttpRequest',
+                                                'X-CSRF-TOKEN': token
+                                            }
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            if (data.success) {
+                                                e.target.closest('.row.mb-4').remove();
+                                                alert('Déclinaison supprimée avec succès!');
+                                            }
+                                        })
+                                        .catch(error => {
+                                            alert('Une erreur s\'est produite. Veuillez réessayer.');
+                                        });
+                                    }
+                                }
+                            });
+                            </script>
+                            
+                            
+                            
+                            
+                            
+                            
                             
                             
                            

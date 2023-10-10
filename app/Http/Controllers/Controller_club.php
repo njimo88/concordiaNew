@@ -658,7 +658,9 @@ public function exportCSVproduit(Request $request)
         'users.city',
         DB::raw('CAST(users.phone AS CHAR) as phone'),  
         'users.email',
-        'users.family_id'
+        'users.nationality',
+        'users.family_id',
+        'users.role'
     )
     ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
     ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
@@ -674,11 +676,12 @@ public function exportCSVproduit(Request $request)
     $response = new StreamedResponse(function() use ($users_saison_active) {
         $handle = fopen('php://output', 'w');
 
-        // Add CSV headers
-        fputcsv($handle, [
-            'Produit', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Age', 'Adresse', 
-            'Code postal', 'Ville', 'Téléphone', 'Email', 'ID Family'
-        ]);
+    $delimiter = ';';
+
+    fputcsv($handle, [
+        'Produit', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Age','Nationalité', 'Adresse', 
+        'Code postal', 'Ville', 'Téléphone', 'Email', 'ID Family', 'Role'
+    ], $delimiter);
 
         foreach ($users_saison_active as $user) {
             $birthdate = new \DateTime($user->birthdate);
@@ -692,12 +695,14 @@ public function exportCSVproduit(Request $request)
                 $user->gender == 'male' ? 'Homme' : 'Femme',
                 $birthdate->format('d/m/Y'),
                 $age,
+                $user->nationality,
                 $user->address,
                 $user->postal_code,
                 $user->city,
                 $user->phone,
                 $user->email,
-                $user->family_id
+                $user->family_id,
+                $user->role
             ]);
         }
 

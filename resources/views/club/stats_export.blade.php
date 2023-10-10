@@ -47,19 +47,6 @@ button:hover {
 
 </style>
 <main class="main" id="main">
-    <h1>Statistiques - Export</h1>
-    <form action="{{ route('export.csv') }}" method="POST">
-        @csrf
-        <label>Choisir la saison :</label>
-        <select name="saison" id="saison">
-            @foreach($saison_list as $saison)
-                <option value="{{ $saison->saison }}">{{ $saison->saison }}</option>
-            @endforeach
-        </select>
-        <button type="submit">Exporter en CSV</button>
-    </form>
-
-
     <h1 class="mt-5">Statistiques - Export Produit</h1>
     <form action="{{ route('export.csvProduit') }}" method="POST">
         @csrf

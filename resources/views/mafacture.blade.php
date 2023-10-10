@@ -267,13 +267,19 @@ fieldset {
                                                     <img style="height: 70px" src="{{ $shop->image }}" alt="">
                                                 </div>
                                                     <div class="col-md-6 col-12">
-                                                <a href="{{ route('singleProduct', ['id' => $shop->id_shop_article]) }}" style="text-decoration: none;" target="_blank">
-                                                        <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
-                                                        <select  name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror"
-                                                                name="status" id="status" autocomplete="status" autofocus role="listbox">
-                                                            <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
-                                                        </select>
-                                                </a>
+                                                        <a href="{{ route('singleProduct', ['id' => $shop->id_shop_article]) }}" style="text-decoration: none;" target="_blank">
+                                                            <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
+                                                            <select name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
+                                                                <option value="{{ $shop->designation }}" role="option" selected>
+                                                                    {{ $shop->designation }} 
+                                                                    @if(!empty($shop->declinaison_libelle))
+                                                                        [{{ $shop->declinaison_libelle }}]
+                                                                    @endif
+                                                                </option>
+                                                            </select>
+                                                        </a>
+                                                        
+                                                        
 
                                                     </div>
                                                 

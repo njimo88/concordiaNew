@@ -12,6 +12,7 @@ use App\Models\shop_article_0;
 use App\Models\shop_article_1;
 use App\Models\shop_article_2;
 use App\Models\Parametre;
+use App\Models\Declinaison;
 use Illuminate\Http\Request;
 require_once(app_path().'/fonction.php');
 class Article_Controller extends Controller
@@ -676,39 +677,39 @@ class Article_Controller extends Controller
                 
                             
            }
-           elseif($shop_article_2->count() == 1 ){
+           elseif($shop_article_2->count() == 1) {
+    // The new article ID will be $article->id after saving.
+    $newArticleId = $article->id_shop_article;
+    // on appelle le modele shop_article_2 = produit
+    $requete_produit = new shop_article_2;
 
-                $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
-            
-                    // on appelle le modele shop_article_2 = produit
-                $requete_produit = new shop_article_2 ;
+    if(isset($request->editor1)){
+        $article->description = $request->editor1;
+        $article->save();
+    }
 
-                if(isset($request->Json_declinaison)){
-                    $requete_produit->declinaison = $request->input('Json_declinaison');
-                    $requete_produit->save();
-                }
-                if(isset($request->editor1)){
+    $requete_produit->id_shop_article = $newArticleId; 
+    $requete_produit->declinaison = $request->input('thejson');  // It seems you still have a JSON field here, if not required remove this.
+    $requete_produit->save();
+    
+    // Fetch the declinations for the original article.
+    $originalDeclinaisons = Declinaison::where('shop_article_id', $id)->get();
 
-                    $article->description = $request->editor1;
-                    $article->save();
-                }
+    // Loop through each declination and duplicate it for the new article.
+    foreach ($originalDeclinaisons as $declinaison) {
+        $newDeclinaison = new Declinaison();
+        $newDeclinaison->shop_article_id = $newArticleId;
+        $newDeclinaison->libelle = $declinaison->libelle;
+        $newDeclinaison->stock_ini_d = $declinaison->stock_ini_d;
+        $newDeclinaison->stock_actuel_d = $declinaison->stock_actuel_d;
+        $newDeclinaison->save();
+    }
 
+    $article->updateInitialStock();
 
-                $requete_produit->id_shop_article = $requete_article["id_shop_article"]; 
+    return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+}
 
-               // $requete_declinaison =  shop_article_2::select('declinaison')->where('id_shop_article',$id)->get();
-              
-                $requete_produit->declinaison = $request->input('thejson') ;
-
-                $requete_produit->save();
-        
-
-
-            return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
-
-          
-        
-        }
 
 
 
@@ -720,18 +721,26 @@ class Article_Controller extends Controller
 
 // SUPPRESSION D'ARTICLES
 
-    public function delete($id)
-    {
-        
-        $Shop_article = Shop_article::where('id_shop_article', $id)->delete();
-        $shop_article_1 = shop_article_1::where('id_shop_article', $id)->delete();
-        $shop_article_0 = shop_article_0::where('id_shop_article', $id)->delete();
-        $shop_article_2 = shop_article_2::where('id_shop_article', $id)->delete();
-      
-      //  return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
-      return redirect()->back()->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
-
+public function delete($id)
+{
+    // Check if the article is of type 2 and has associated declinaisons
+    $shop_article_2 = shop_article_2::find($id);
+    if ($shop_article_2) {
+        // Delete the associated declinaisons
+        Declinaison::where('shop_article_id', $id)->delete();
     }
+    
+    // Delete other related records
+    $Shop_article = Shop_article::where('id_shop_article', $id)->delete();
+    $shop_article_1 = shop_article_1::where('id_shop_article', $id)->delete();
+    $shop_article_0 = shop_article_0::where('id_shop_article', $id)->delete();
+    if ($shop_article_2) {
+        $shop_article_2->delete();
+    }
+
+    return redirect()->back()->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
+}
+
 
 
 
@@ -760,8 +769,11 @@ class Article_Controller extends Controller
         $articleLicence2 = Shop_article::find($parametre->articles_licence2);
         $articleLicence3 = Shop_article::find($parametre->articles_licence3);
         $articleLicence4 = Shop_article::find($parametre->articles_licence4);
+
+        $declinaisons = Declinaison::where('shop_article_id', $id)->get();
+
     
-        return view('Articles/edit_index',compact('Shop_article','articleLicence1','articleLicence2','articleLicence3','articleLicence4','parametre','shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','Id','rooms'))->with('user', auth()->user());
+        return view('Articles/edit_index',compact('Shop_article','articleLicence1','articleLicence2','articleLicence3','articleLicence4','parametre','shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','Id','rooms', 'declinaisons'))->with('user', auth()->user()) ;
 
     }
 
@@ -1107,9 +1119,6 @@ public function upload(Request $request)
 
 
 }
-
-
-
 
 
 

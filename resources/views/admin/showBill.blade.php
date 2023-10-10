@@ -306,59 +306,61 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($shop as $shop)
-        <tr class="responsive-table-row">
-          @if (auth()->user()->roles->changer_designation_facture && Route::currentRouteName() === 'facture.showBill')
-          <form action="{{ route('facture.updateDes', $shop->id_liaison) }}" method="post">
-              @csrf
-              @method('PUT')
-          @else
-          <form>
-              @endif
-
-              <td style="width: 45%;">
-                      <div class="td">
-                          <img style="height: 70px" src="{{ $shop->image }}" alt="">
-                          <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
-                          @if(!auth()->user()->roles->changer_designation_facture )
-                          <select disabled name="designation"
-                              class="border form-select mt-3 @error('role') is-invalid @enderror" name="status"
-                              id="status" autocomplete="status" autofocus role="listbox">
-                              @foreach($designation as $title)
-                              @if($title == $shop->designation)
-                              <option value="{{ $title }}" role="option" selected>{{ $title }}</option>
-                              @endif
-                              @endforeach
-                          </select>
-                          @else
-                          <select name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror"
-                              name="status" id="status" autocomplete="status" autofocus role="listbox">
-                              <option value="{{ $shop->designation }}" role="option" selected>{{ $shop->designation }}</option>
-                              @foreach($designation as $title)
-                              <option value="{{ $title }}" role="option">{{ $title }}</option>
-                              @endforeach
-                          </select>
-                          @endif
-                      @if (auth()->user()->roles->changer_designation_facture )
-                          <button type="submit" class="btn btn-sm btn-warning mt-3">Changer</button>
+      @foreach ($shop as $shop)
+      <tr class="responsive-table-row">
+          <td style="width: 45%;">
+              <div class="td">
+                  <img style="height: 70px" src="{{ $shop->image }}" alt="">
+                  <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
+                  @if(!auth()->user()->roles->changer_designation_facture)
+                  <select disabled name="designation"
+                      class="border form-select mt-3 designation-select" name="status" id="status"
+                      autocomplete="status" autofocus role="listbox"
+                      data-liaison-id="{{ $shop->id_liaison }}">
+                      @foreach($designation as $title)
+                      @if($title == $shop->designation)
+                      <option value="{{ $title }}" role="option" selected>{{ $title }}@if(!empty($shop->declinaison_libelle))
+                          [{{ $shop->declinaison_libelle }}]
+                      @endif</option>
                       @endif
-                    </div>
-              </td>
-          </form>
-            <td class="d-none d-md-table-cell">{{ $shop->quantity }} </td>
-            <td class="d-none d-md-table-cell">{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
-            <td class="d-none d-md-table-cell">{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
-            <td>
-                <select name="addressee" class="border form-select mt-3 family-select" onchange="confirmChange(this)" data-liaison-id="{{ $shop->id_liaison }}">
-                    <option value="{{ $shop->id_user }}" selected>{{ $shop->addressee }}</option>
-                </select>
-            </td>
-            <td>
-                <button type="button" class="btn btn-sm btn-danger delete-des my-4 cc" data-id="{{ $shop->id_liaison }}">Supprimer</button>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
+                      @endforeach
+                  </select>
+                  @else
+                  <select name="designation" class="border form-select mt-3 designation-select" name="status"
+                      id="status" autocomplete="status" autofocus role="listbox"
+                      data-liaison-id="{{ $shop->id_liaison }}">
+                      @foreach($designation as $article)
+                      <option value="{{ $article->id_shop_article }}" data-declinaison-id="{{ optional($article->declinaisons->first())->id }}" role="option" @if($article->id_shop_article == $shop->id_shop_article) selected @endif>{{ $article->title }}@if(!empty($article->declinaisons->first()->libelle))
+                          [{{ $article->declinaisons->first()->libelle }}]
+                      @endif</option>
+                      @endforeach
+                  </select>
+                  @endif
+                  @if (auth()->user()->roles->changer_designation_facture)
+                  <input type="hidden" id="declinaison_id" name="declinaison_id"
+                      value="{{ optional($article->declinaisons->first())->id }}">
+                  <button type="button" class="btn btn-sm btn-warning mt-3 change-designation-button"
+                      data-liaison-id="{{ $shop->id_liaison }}">Changer</button>
+                  @endif
+              </div>
+          </td>
+          <td class="d-none d-md-table-cell">{{ $shop->quantity }} </td>
+          <td class="d-none d-md-table-cell">{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
+          <td class="d-none d-md-table-cell">{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
+          <td>
+              <select name="addressee" class="border form-select mt-3 family-select"
+                  onchange="confirmChange(this)" data-liaison-id="{{ $shop->id_liaison }}">
+                  <option value="{{ $shop->id_user }}" selected>{{ $shop->addressee }}</option>
+              </select>
+          </td>
+          <td>
+              <button type="button" class="btn btn-sm btn-danger delete-des my-4 cc"
+                  data-id="{{ $shop->id_liaison }}">Supprimer</button>
+          </td>
+      </tr>
+      @endforeach
+  </tbody>
+  
 </table>
 
   
@@ -518,6 +520,31 @@
 <div style="height: 25px"></div>
 </main>
 <script>
+$(document).ready(function() {
+        $('.change-designation-button').click(function() {
+            var liaisonId = $(this).data('liaison-id');
+            var selectedValue = $(this).closest('tr').find('.designation-select').val();
+            var declinaisonId = $(this).closest('tr').find('.designation-select option:selected').data('declinaison-id');
+            var user_id = {{ $bill->user_id }};
+            $.ajax({
+                url: '/admin/paiement/facture/updateDes/' + liaisonId,
+                method: 'PUT',
+                data: {
+                    designation: selectedValue,
+                    declinaison_id: declinaisonId,
+                    user_id: user_id,
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    alert(response.message);
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+
 document.getElementById("payment_method").addEventListener("change", function() {
     updateBillDetails({
         payment_method: this.value,

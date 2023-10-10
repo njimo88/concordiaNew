@@ -470,197 +470,141 @@ function countArticle($user_id, $idArticle)
         return true;
     }
 
- function MiseAjourStock()
-{
-   // Step 1: Retrieve the id_shop_article of the current season that have bills.status > 9
-   $id_shop_articles = DB::table('shop_article')
-   ->join('liaison_shop_articles_bills', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-   ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
-   ->where('shop_article.saison', '=', saison_active())
-   ->where('bills.status', '>', 9)
-   ->distinct('shop_article.id_shop_article')
-   ->pluck('shop_article.id_shop_article');
-
-
-   // Step 2: Count the occurrence of each id_shop_article multiplied by quantity in the liaison_shop_articles_bills table
-   $liaison_counts = DB::table('liaison_shop_articles_bills')
-   ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
-   ->whereIn('liaison_shop_articles_bills.id_shop_article', $id_shop_articles)
-   ->where('bills.status', '>', 9)
-   ->select('liaison_shop_articles_bills.id_shop_article', DB::raw('sum(liaison_shop_articles_bills.quantity) as count'))
-   ->groupBy('liaison_shop_articles_bills.id_shop_article')
-   ->pluck('count', 'liaison_shop_articles_bills.id_shop_article');
-
-
-
-    // Step 3: Update the stock_actuel for each article
-    foreach ($id_shop_articles as $id_shop_article) {
-        $shop_article = Shop_article::find($id_shop_article);
-        /* if($shop_article->type_article == 2) {
-            $article_2 = shop_article_2::find($shop_article->id_shop_article);
+    function MiseAjourStock()
+    {
+        // Step 1: Retrieve the id_shop_article of the current season that have bills.status > 9
+        $id_shop_articles = DB::table('shop_article')
+       ->join('liaison_shop_articles_bills', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+       ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+       ->where('shop_article.saison', '=', saison_active())
+       ->where('bills.status', '>', 9)
+       ->distinct('shop_article.id_shop_article')
+       ->pluck('shop_article.id_shop_article');
     
-        $liaison_count = DB::table('liaison_shop_articles_bills')
-        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
-        ->where('liaison_shop_articles_bills.id_shop_article', $shop_article->id_shop_article)
-        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
-        ->groupBy('liaison_shop_articles_bills.declinaison')
-        ->get();
-
-        $stock_ini = 0;
-        $stock_actuel = 0;
+        // Step 2: Count the occurrence of each id_shop_article multiplied by quantity in the liaison_shop_articles_bills table
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+       ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+       ->whereIn('liaison_shop_articles_bills.id_shop_article', $id_shop_articles)
+       ->where('bills.status', '>', 9)
+       ->select('liaison_shop_articles_bills.id_shop_article', DB::raw('sum(liaison_shop_articles_bills.quantity) as count'))
+       ->groupBy('liaison_shop_articles_bills.id_shop_article')
+       ->pluck('count', 'liaison_shop_articles_bills.id_shop_article');
     
-        $declinaisons = json_decode($article_2->declinaison, true);
-        $new_declinaisons = [];
-        foreach ($declinaisons as $key => $value) {
-            foreach ($liaison_count as $count) {
-                if ($count->declinaison == $key+1) {
-                    $value[$key+1]['stock_actuel_d'] = $count->count;
+        // Step 3: Update the stock_actuel for each article
+        foreach ($id_shop_articles as $id_shop_article) {
+            $shop_article = Shop_article::find($id_shop_article);
+    
+            $stock_ini = $shop_article->stock_ini;
+            $count = $liaison_counts->get($id_shop_article, 0);
+    
+            if ($shop_article->type_article == 2 && $shop_article->declinaisons->isNotEmpty()) {
+                // For type 2 articles with declinaisons, handle their declinaisons
+                $declinaisons = $shop_article->declinaisons; 
+                $totalStock = 0;
+                
+                foreach ($declinaisons as $declinaison) {
+                    $soldCount = LiaisonShopArticlesBill::where('id_shop_article', $shop_article->id_shop_article)
+                                                        ->where('declinaison', $declinaison->id)
+                                                        ->sum('quantity');
+    
+                    $declinaisonStock = $declinaison->stock_ini_d - $soldCount; // Subtract the sold quantity from stock_ini_d to get the current stock for the declinaison
+                    $declinaison->stock_actuel_d = $declinaisonStock;
+                    $declinaison->save();
+                    
+                    $totalStock += $declinaisonStock;
                 }
+                
+                // Update the article's stock_actuel with the sum of all its declinaisons' stock_actuel_d
+                $shop_article->stock_actuel = $totalStock;
+            } else {
+                // For other articles or type 2 articles without declinaisons, just decrease the stock_actuel based on the liaison_counts
+                $shop_article->stock_actuel = $stock_ini - $count;
             }
-            $new_declinaisons[] = $value;
-            $stock_ini += $value[$key+1]['stock_ini_d'];
-            $stock_actuel += $value[$key+1]['stock_actuel_d'];
+    
+            $shop_article->save();
         }
-
-        // Mettre à jour le tableau des déclinaisons dans la base de données
-        $article_2->declinaison = json_encode($new_declinaisons);
-        $article_2->save();
-        
-        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
-        $shop_article->stock_ini = $stock_ini;
-        $shop_article->stock_actuel = $stock_actuel;
-        $shop_article->save();
-        } else {*/
-        $stock_ini = $shop_article->stock_ini;
-        $count = $liaison_counts->get($id_shop_article, 0);
-        
-        $stock_actuel = $stock_ini - $count;
-        $shop_article->stock_actuel = $stock_actuel;
-        $shop_article->save();
-         /*}*/
-
     }
-}
-
-
-
-function MiseAjourArticlePanier($articles){
-
-    $liaison_counts = DB::table('liaison_shop_articles_bills')
-    ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
-    ->whereIn('liaison_shop_articles_bills.id_shop_article', $articles->pluck('ref'))
-    ->where('bills.status', '>', 9)
-    ->select('liaison_shop_articles_bills.id_shop_article', DB::raw('sum(liaison_shop_articles_bills.quantity) as count'))
-    ->groupBy('liaison_shop_articles_bills.id_shop_article')
-    ->pluck('count', 'liaison_shop_articles_bills.id_shop_article');
-
-    foreach ($articles as $article) {
-        $article_db = Shop_article::find($article->ref);
-        /*if($article_db->type_article == 2) {
-            $article_2 = shop_article_2::find($article_db->id_shop_article);
     
-        $liaison_count = DB::table('liaison_shop_articles_bills')
-        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
-        ->where('liaison_shop_articles_bills.id_shop_article', $article_db->id_shop_article)
-        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
-        ->groupBy('liaison_shop_articles_bills.declinaison')
-        ->get();
 
-        $stock_ini = 0;
-        $stock_actuel = 0;
+
+
+    function MiseAjourArticlePanier($articles){
+
+        $liaison_counts = DB::table('liaison_shop_articles_bills')
+        ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+        ->whereIn('liaison_shop_articles_bills.id_shop_article', $articles->pluck('ref'))
+        ->where('bills.status', '>', 9)
+        ->select('liaison_shop_articles_bills.id_shop_article', DB::raw('sum(liaison_shop_articles_bills.quantity) as count'))
+        ->groupBy('liaison_shop_articles_bills.id_shop_article')
+        ->pluck('count', 'liaison_shop_articles_bills.id_shop_article');
     
-        $declinaisons = json_decode($article_2->declinaison, true);
-        
-        $new_declinaisons = [];
-        foreach ($declinaisons as $key => $value) {
-            foreach ($liaison_count as $count) {
-                if ($count->declinaison == $key+1) {
-                    $value[$key+1]['stock_actuel_d'] = $count->count;
+        foreach ($articles as $article) {
+            $article_db = Shop_article::find($article->ref);
+            
+            if ($article_db->type_article == 2 && $article_db->declinaisons->isNotEmpty()) {
+                $totalStock = 0;
+    
+                foreach ($article_db->declinaisons as $declinaison) {
+                    $soldCount = LiaisonShopArticlesBill::where('id_shop_article', $article_db->id_shop_article)
+                                                        ->where('declinaison', $declinaison->id)
+                                                        ->sum('quantity');
+    
+                    $declinaisonStock = $declinaison->stock_ini_d - $soldCount;
+                    $declinaison->stock_actuel_d = $declinaisonStock;
+                    $declinaison->save();
+    
+                    $totalStock += $declinaisonStock;
                 }
+                
+                $article_db->stock_actuel = $totalStock;
+            } else {
+                $stock_ini = $article_db->stock_ini;
+                $count = $liaison_counts->get($article->ref, 0);
+                $stock_actuel = $stock_ini - $count;
+                $article_db->stock_actuel = $stock_actuel;
             }
-            $new_declinaisons[] = $value;
-            $stock_ini += $value[$key+1]['stock_ini_d'];
-            $stock_actuel += $value[$key+1]['stock_actuel_d'];
+            
+            $article_db->save();
         }
-
-        // Mettre à jour le tableau des déclinaisons dans la base de données
-        $article_2->declinaison = json_encode($new_declinaisons);
-        $article_2->save();
-        
-        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
-        $article_db->stock_ini = $stock_ini;
-        $article_db->stock_actuel = $stock_actuel;
-        $article_db->save();
-        }else{*/
-            $stock_ini = $article_db->stock_ini;
-        $count = $liaison_counts->get($article->ref, 0);
-        $stock_actuel = $stock_ini - $count;
-        $article_db->stock_actuel = $stock_actuel;
-        $article_db->save();
-       /* }*/
-        
     }
-}
+    
 
 
 function MiseAjourArticle($article){
-    /*if ($article->type_article == 2) {
-        $article_2 = shop_article_2::find($article->id_shop_article);
     
-        $liaison_count = DB::table('liaison_shop_articles_bills')
-        ->join('shop_article_2', 'liaison_shop_articles_bills.id_shop_article', '=', 'shop_article_2.id_shop_article')
-        ->where('liaison_shop_articles_bills.id_shop_article', $article->id_shop_article)
-        ->select(DB::raw('sum(quantity) as count, liaison_shop_articles_bills.declinaison'))
-        ->groupBy('liaison_shop_articles_bills.declinaison')
-        ->get();
-
-        $stock_ini = 0;
-        $stock_actuel = 0;
-    
-        $declinaisons = json_decode($article_2->declinaison, true);
-        
-        $new_declinaisons = [];
-        foreach ($declinaisons as $key => $value) {
-            foreach ($liaison_count as $count) {
-                if ($count->declinaison == $key+1) {
-                    $value[$key+1]['stock_actuel_d'] = $count->count;
-                }
-            }
-            $new_declinaisons[] = $value;
-            $stock_ini += $value[$key+1]['stock_ini_d'];
-            $stock_actuel += $value[$key+1]['stock_actuel_d'];
-        }
-
-        // Mettre à jour le tableau des déclinaisons dans la base de données
-        $article_2->declinaison = json_encode($new_declinaisons);
-        $article_2->save();
-        
-        // Mettre à jour les propriétés stock_ini et stock_actuel de l'article
-        $article->stock_ini = $stock_ini;
-        $article->stock_actuel = $stock_actuel;
-        $article->save();
-        
-    }
-    
-    
-    else{*/
-        $liaison_counts = DB::table('liaison_shop_articles_bills')
+    $liaison_counts = DB::table('liaison_shop_articles_bills')
     ->join('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
     ->where('liaison_shop_articles_bills.id_shop_article', $article->id_shop_article)
     ->where('bills.status', '>', 9)
     ->select(DB::raw('sum(liaison_shop_articles_bills.quantity) as count'))
     ->value('count');
 
+    if ($article->type_article == 2 && $article->declinaisons->isNotEmpty()) {
+        $totalStock = 0;
 
+        foreach ($article->declinaisons as $declinaison) {
+            $soldCount = LiaisonShopArticlesBill::where('id_shop_article', $article->id_shop_article)
+                                                ->where('declinaison', $declinaison->id)
+                                                ->sum('quantity');
 
+            $declinaisonStock = $declinaison->stock_ini_d - $soldCount;
+            $declinaison->stock_actuel_d = $declinaisonStock;
+            $declinaison->save();
+
+            $totalStock += $declinaisonStock;
+        }
+
+        $article->stock_actuel = $totalStock;
+    } else {
         $stock_ini = $article->stock_ini;
         $count = $liaison_counts ?? 0;
         $stock_actuel = $stock_ini - $count;
         $article->stock_actuel = $stock_actuel;
-        $article->save();
-   /* }*/
-    
+    }
+
+    $article->save();
 }
+
 
 
 function verifierStockUnArticle($article, $quantite){
@@ -2037,3 +1981,5 @@ function fetchjour($date)   {
     );
     return $days[$dayName];
 }
+
+

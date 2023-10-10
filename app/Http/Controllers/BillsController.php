@@ -624,18 +624,21 @@ public function updateStatus(Request $request, $id)
 
 
 public function updateDes(Request $request, $id){
+
     // Récupérer l'ancienne désignation
     $old = LiaisonShopArticlesBill::where('id_liaison', $id)->first();
     $oldDesignation = $old->designation;
 
     // Mettre à jour la nouvelle désignation
-    $article = Shop_article::where('title', $request->designation)->first();
+    $article = Shop_article::where('id_shop_article', $request->designation)->first();
     $old->designation = $article->title;
     $old->href_product = $article->ref;
     $old->ttc = $article->price;
     $old->id_shop_article = $article->id_shop_article;
+    if ($request->has('declinaison_id') && !empty($request->declinaison_id)) {
+        $old->declinaison = $request->declinaison_id;
+    }
     $old->save();
-
 
     // Send an email
     $user = User::find($request->user_id);
@@ -649,7 +652,7 @@ public function updateDes(Request $request, $id){
         $message->to($user->email);
         $message->subject('La désignation a été modifiée');
     });
-    
+
     // Create a message in ShopMessage
     ShopMessage::create([
         'message' => 'La désignation a été modifiée de <b>' . $oldDesignation . '</b> (' . $liaisonAddress. ') à <b>' . $article->title . '</b> (' . $liaisonAddress. ').',
@@ -660,8 +663,10 @@ public function updateDes(Request $request, $id){
         'state' => 'Public', 
     ]);
 
-    return redirect()->back()->with('success', 'La désignation a été modifiée avec succès');
+    // Réponse JSON pour la mise à jour en JavaScript
+    return response()->json(['message' => 'La désignation a été modifiée avec succès']);
 }
+
 
 
 
@@ -768,11 +773,13 @@ public function updateDes(Request $request, $id){
         ->select('id','status')
         ->get();
 
+
         $designation = Shop_article::where('saison', '=', saison_active())
         ->orderBy('title', 'asc')
-        ->distinct()
-        ->pluck('title')
-        ->toArray();
+        ->distinct('title')
+        ->get();
+
+
 
         $messages = DB::table('shop_messages')
         ->join('users', 'shop_messages.id_admin', '=', 'users.user_id')
