@@ -9,12 +9,14 @@ use App\Models\LiaisonShopArticlesBill;
 use App\Models\User;
 use App\Models\Shop_category;
 use App\Models\appels;
+use App\Models\Declinaison;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Laravel\Ui\Presets\Preset;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 require_once(app_path().'/fonction.php');
 
@@ -568,7 +570,180 @@ function display_historique_method($id){
 }
 
  
-
+function StatsExports (){
+    $saison_list = Shop_article::select('saison')->distinct('name')->orderBy('saison', 'DESC')->get();
+    return view('club/stats_export',compact('saison_list'));
+}
  
+public function exportCSV(Request $request)
+{
+    $saison = $request->input('saison');
+    $members = DB::table('liaison_shop_articles_bills')
+        ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+        ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+        ->where('shop_article.type_article', 0)
+        ->where('bills.status', '>', 9)
+        ->where ('shop_article.saison', $saison)
+        ->select(DB::raw('DISTINCT liaison_shop_articles_bills.id_user'))
+        ->get();
 
+        $callback = function() use ($members, $saison) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Id', 'Prenom', 'Nom', 'Sexe', 'Date de Naissance', 'Pays de Naissance', 'Adresse', 'Code Postal', 'Ville', 'Pays', 'Certificat Médical', 'Email', 'Téléphone', 'Groupe']);
+        
+            foreach ($members as $member) {
+                $memberFromDb = DB::table('users')
+                    ->where('users.user_id', $member->id_user)
+                    ->first();
+                if ($memberFromDb) {
+                    $today = now();
+                    $medicalCertificateDate = $today->startOfMonth()->toDateString();
+        
+                    $articles = DB::table('liaison_shop_articles_bills')
+                        ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+                        ->where('shop_article.type_article', 1)
+                        ->where('shop_article.saison', $saison)
+                        ->where('liaison_shop_articles_bills.id_user', $member->id_user)
+                        ->select('shop_article.title')
+                        ->get();
+                        
+                    $group = $articles->isEmpty() ? ['Sans'] : $articles->pluck('title')->toArray();
+        
+                    $row = [
+                        $member->id_user,
+                        $memberFromDb->lastname, 
+                        $memberFromDb->name,
+                        $memberFromDb->gender,
+                        $memberFromDb->birthdate,
+                        $memberFromDb->nationality,
+                        $memberFromDb->address,
+                        $memberFromDb->zip,
+                        $memberFromDb->city,
+                        $memberFromDb->country,
+                        $medicalCertificateDate,
+                        $memberFromDb->email,
+                        $memberFromDb->phone,
+                        implode(",", $group) 
+                    ];
+                    fputcsv($file, $row);
+                }
+            }
+            fclose($file);
+        };
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="export.csv"',
+        ];
+        
+        return new StreamedResponse($callback, 200, $headers);
+        
+
+}
+
+public function exportCSVproduit(Request $request)
+{
+    $saison = $request->input('saison');
+
+    $saison = $request->input('saison');
+
+    $users_saison_active = User::select(
+        'shop_article.title as produit',
+        'users.name',
+        'users.lastname',
+        'users.gender',
+        'users.birthdate',
+        'users.address',
+        'users.zip as postal_code',
+        'users.city',
+        DB::raw('CAST(users.phone AS CHAR) as phone'),  
+        'users.email',
+        'users.family_id'
+    )
+    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+    ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+    ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+    ->where('shop_article.saison', $saison)
+    ->where('bills.status', '>', 9)
+    ->distinct('users.user_id')
+    ->orderBy('shop_article.title', 'ASC')
+    ->orderBy('users.name', 'ASC')
+    ->get();
+    
+
+    $response = new StreamedResponse(function() use ($users_saison_active) {
+        $handle = fopen('php://output', 'w');
+
+        // Add CSV headers
+        fputcsv($handle, [
+            'Produit', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Age', 'Adresse', 
+            'Code postal', 'Ville', 'Téléphone', 'Email', 'ID Family'
+        ]);
+
+        foreach ($users_saison_active as $user) {
+            $birthdate = new \DateTime($user->birthdate);
+            $now = new \DateTime();
+            $age = $now->diff($birthdate)->y;
+
+            fputcsv($handle, [
+                $user->produit,
+                $user->name,
+                $user->lastname,
+                $user->gender == 'male' ? 'Homme' : 'Femme',
+                $birthdate->format('d/m/Y'),
+                $age,
+                $user->address,
+                $user->postal_code,
+                $user->city,
+                $user->phone,
+                $user->email,
+                $user->family_id
+            ]);
+        }
+
+        fclose($handle);
+    });
+
+    $response->headers->set('Content-Type', 'text/csv');
+    $response->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
+
+    return $response;
+}
+
+public function deleteMethod($id)
+    {
+        $declinaison = Declinaison::find($id);
+        $article = Shop_article::find($declinaison->shop_article_id);
+        if ($declinaison) {
+            $declinaison->delete();
+            $article->updateInitialStock();
+            return response()->json([
+                'success' => true,
+            ]);
+        }
+        
+
+        return redirect()->back()->with('error', 'Declinaison non trouvé');
+    }
+
+    public function addMethod(Request $request)
+{
+    $declinaison = new Declinaison();
+    $declinaison->shop_article_id = $request->shop_article_id;
+    $declinaison->libelle = $request->libelle;
+    $declinaison->stock_ini_d = $request->stock_ini_d;
+    $declinaison->stock_actuel_d = $request->stock_ini_d;
+    $declinaison->save();
+
+    $shopArticle = Shop_article::find($request->shop_article_id);
+    $shopArticle->updateInitialStock();
+
+
+    return response()->json([
+        'success' => true,
+        'libelle' => $declinaison->libelle,
+        'Id' => $declinaison->id,
+        'deleteRoute' => route('delete.declinaison', $declinaison->id)
+    ]);
+}
 }

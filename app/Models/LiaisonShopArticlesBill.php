@@ -22,6 +22,7 @@ class LiaisonShopArticlesBill extends Model
         'sub_total',
         'designation',
         'certificate',
+        'declinaison',
         'id_shop_article',
         'id_user',
     ];

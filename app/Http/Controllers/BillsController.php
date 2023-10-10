@@ -755,7 +755,8 @@ public function updateDes(Request $request, $id){
         if ($user->belongsToFamily($bill->family_id) || Route::currentRouteName() === 'facture.showBill') {
         
         $shop = DB::table('liaison_shop_articles_bills')
-        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'liaison_shop_articles_bills.id_liaison')
+        ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') // Left join with the declinaisons table
+        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle')
         ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
         ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
         ->where('bills.id', '=', $id)

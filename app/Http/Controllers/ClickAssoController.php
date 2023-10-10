@@ -99,16 +99,16 @@ private function transformToInterfaceMember($member)
         $today = now();
         $medicalCertificateDate = $today->startOfMonth()->toDateString();
 
+        $saison = saison_active();
         $articles = DB::table('liaison_shop_articles_bills')
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
             ->where('shop_article.type_article', 1)
+            ->where('shop_article.saison', $saison)
             ->where('liaison_shop_articles_bills.id_user', $member->user_id)
             ->select('shop_article.title')
             ->get();
 
-        $group = $articles->isEmpty() ? [0] : $articles->pluck('title')->toArray();
-
-        $groupJson = json_encode($group);
+        $group = $articles->isEmpty() ? ['Sans'] : $articles->pluck('title')->toArray(); 
 
         return [
             'Id' => '', 
@@ -128,10 +128,11 @@ private function transformToInterfaceMember($member)
             'MedicalCertificate' => $medicalCertificateDate,
             'Email' => $member->role > 15 ? 'contact@gym-concordia.com' : $member->email,
             'Phone' => $member->role > 15 ? '0783664250' : $member->phone,
-            'Group' => $groupJson  
+            'Group' => $group  
         ];
     }
 }
+
 
 
 

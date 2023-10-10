@@ -77,44 +77,50 @@ class SyncWithClickAssoJob implements ShouldQueue
     private function transformToInterfaceMember($member)
     {
         $memberFromDb = DB::table('users')
-            ->where('users.user_id', $member->id_user)
-            ->first();
+    ->where('users.user_id', $member->id_user)
+    ->first();
 
-        if ($memberFromDb) {
-            $member = $memberFromDb;
-            $gender = ($member->gender == 'male') ? 0 : 1;
-            $today = now();
-            $medicalCertificateDate = $today->startOfMonth()->toDateString();
-            $articles = DB::table('liaison_shop_articles_bills')
-                ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-                ->where('shop_article.type_article', 1)
-                ->where('liaison_shop_articles_bills.id_user', $member->user_id)
-                ->select('shop_article.title')
-                ->get();
-            $group = $articles->isEmpty() ? [0] : $articles->pluck('title')->toArray();
-            $groupJson = json_encode($group);
+    if ($memberFromDb) {
 
-            return [
-                'Id' => '',
-                'ExternalId' => $member->user_id,
-                'FirstName' => $member->lastname,
-                'LastName' => $member->name,
-                'Gender' => $gender,
-                'BirthDate' => $member->birthdate,
-                'BirthCountry' => $member->nationality,
-                'Role' => 5365,
-                'Address1' => $member->address,
-                'Address2' => null,
-                'Address3' => null,
-                'ZipCode' => $member->zip,
-                'City' => $member->city,
-                'Country' => $member->country,
-                'MedicalCertificate' => $medicalCertificateDate,
-                'Email' => $member->role > 15 ? 'contact@gym-concordia.com' : $member->email,
-                'Phone' => $member->role > 15 ? '0805659999' : $member->phone,
-                'Group' => $groupJson
-            ];
-        }
+        $member = $memberFromDb;
+
+        $gender = ($member->gender == 'male') ? 0 : 1;
+
+        $today = now();
+        $medicalCertificateDate = $today->startOfMonth()->toDateString();
+
+        $saison = saison_active();
+        $articles = DB::table('liaison_shop_articles_bills')
+            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+            ->where('shop_article.type_article', 1)
+            ->where('shop_article.saison', $saison)
+            ->where('liaison_shop_articles_bills.id_user', $member->user_id)
+            ->select('shop_article.title')
+            ->get();
+
+        $group = $articles->isEmpty() ? ['Sans'] : $articles->pluck('title')->toArray(); 
+
+        return [
+            'Id' => '', 
+            'ExternalId' => $member->user_id,
+            'FirstName' => $member->lastname,
+            'LastName' => $member->name,
+            'Gender' => $gender,
+            'BirthDate' => $member->birthdate,
+            'BirthCountry' => $member->nationality,
+            'Role' => 5365, 
+            'Address1' => $member->address,
+            'Address2' => null, 
+            'Address3' => null, 
+            'ZipCode' => $member->zip,
+            'City' => $member->city,
+            'Country' => $member->country,
+            'MedicalCertificate' => $medicalCertificateDate,
+            'Email' => $member->role > 15 ? 'contact@gym-concordia.com' : $member->email,
+            'Phone' => $member->role > 15 ? '0783664250' : $member->phone,
+            'Group' => $group  
+        ];
+    }
     }
 
     private function getMembersForClickAsso()

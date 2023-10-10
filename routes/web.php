@@ -407,7 +407,15 @@ Route::get('/historique_appel/{id}', [Controller_club::class, 'display_historiqu
 Route::get('/historique_appel/generate-pdf/{id}', [Controller_club::class, 'generate_historique_appel']);
 
 
+Route::get('/club/StatsExports', [Controller_club::class, 'StatsExports'])->name('StatsExports');
 
+Route::post('/club/export-csv', [Controller_club::class, 'exportCSV'])->name('export.csv');
+
+Route::post('/club/export-csvProduit', [Controller_club::class, 'exportCSVproduit'])->name('export.csvProduit');
+
+Route::delete('/delete-declinaison/{id}', [Controller_club::class, 'deleteMethod'])->name('delete.declinaison');
+
+Route::post('/club/declinaison/add', [Controller_club::class, 'addMethod'])->name('add.declinaison');
 
 #-------------------------------pdf generate-------------------
 

@@ -235,7 +235,7 @@ Créer un article
      </thead>
 <tbody>
 @foreach($requete_article as $data)
-<tr style="background-color: <?php echo ($data->stock_actuel <= 0) ? '#FB335B' : (($data->stock_actuel < $data->alert_stock) ? 'orange' : ''); ?>">
+<tr style="background-color: <?php echo ($data->stock_actuel <= 0) ? '#FB335B' : (($data->stock_actuel <= $data->alert_stock) ? 'orange' : ''); ?>">
 <td><img src="{{$data->image}}" style="height: 60px; width:60px"></td>
 <td>{{$data->ref}}</td>
 <td>

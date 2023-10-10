@@ -157,6 +157,15 @@ a{
 }
 </style>
 <main style="background-color: #ebf5ff !important; min-height: 90vh; " class="main" id="main ">
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="card my-5">
     <div class="row">
         <div class="col-md-8 cart">

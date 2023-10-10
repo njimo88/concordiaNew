@@ -548,7 +548,7 @@
                   <ul id="club-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if (auth()->user()->roles->estAutoriserDeVoirCours)<li> <a href="{{route('index_cours')}}"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-running fa-fw mr-1"></span><span>Cours</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirAnimations)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-swimming fa-fw mr-1"></span><span>Animations</span> </a></li>@endif 
-                     @if (auth()->user()->roles->estAutoriserDeVoirStatsExports)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-chart-line fa-fw mr-1"></span><span>Stats-Exports</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirStatsExports)<li> <a href="{{ route('StatsExports') }}"><span style="color: #f59f00; margin-right:10px" class="fa fa-chart-line fa-fw mr-1"></span><span>Stats-Exports</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirValiderCertificats)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-stamp fa-fw mr-1"></span><span>Valider Certificats</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirHistroriqueClub)<li> <a href="{{route('history_index')}}"><span style="color: #f59f00; margin-right:10px" class="fa-sharp fa-solid fa-clock-rotate-left"></span><span>Historique</span> </a></li>@endif
                   </ul>

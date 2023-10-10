@@ -106,7 +106,10 @@ public static function getArticlesByCategories($categoryIds, $saison_active)
     return $n_var;
 }
 
-
+public function declinaisons()
+{
+    return $this->hasMany(Declinaison::class, 'shop_article_id');
+}
 
 
 

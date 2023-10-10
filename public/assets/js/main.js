@@ -300,7 +300,7 @@ $('.commanderModal').click(function() {
   // Get the selected user ID from the dropdown
   var selected_user_id = $('#buyers').val();
 
-  var declinaison = $('#declinaison').val();
+  var declinaison = $('#declinaisons').val();
 
   // Get the quantity input value
   var qte = $('#qte').val();
