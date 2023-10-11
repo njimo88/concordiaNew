@@ -162,9 +162,17 @@ EmailQueue::create($recapData);
 
 
 
-public function historique (){
-    return view('Communication/historique');
-}
+public function historique()
+    {
+        //ordred by date asc
+        $mailHistories = MailHistory::all();
+        return view('Communication/historique', compact('mailHistories'));
+    }
+
+    public function show(MailHistory $mailHistory)
+    {
+        return view('mail_history.show', compact('mailHistory'));
+    }
 
 public function getBuyersForShopArticle($id) {
     $buyersIds = retourner_buyers_dun_shop_article($id);

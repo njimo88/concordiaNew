@@ -25,4 +25,15 @@ class MailHistory extends Model
         'id_user_destinataires'
     ];
 
+    public function sender()
+{
+    return $this->belongsTo(User::class, 'id_user_expediteur', 'user_id');
+}
+
+public function getSenderFullNameAttribute()
+{
+    return "{$this->sender->lastname} {$this->sender->name}"; 
+}
+
+
 }

@@ -1362,3 +1362,29 @@ $("#save-button").on("click", function() {
 
 });
 
+$(document).ready(function() {
+  $.fn.dataTable.ext.type.order['date-eu-pre'] = function (dateString) {
+      var euDateParts = dateString.split(' ')[0].split('/');
+      return (euDateParts[2] + euDateParts[1] + euDateParts[0]) * 1;
+  };
+  $('#mailHistoryTable').DataTable({
+      "order": [[2, "desc"]],
+      "columnDefs": [
+          { type: 'date-eu', targets: 2 }
+      ],
+      "lengthChange": false,
+      "info": false,
+      "paging": false
+  });
+  $('#mailHistoryTable tbody tr').on('click', function() {
+      var modalID = '#mailModal' + $(this).data('mail-id');
+      $(modalID).modal('show');
+  });
+  $(document).on('click', function(e) {
+      if ($(e.target).hasClass('modal')) {
+          $('.modal').modal('hide');
+      }
+  });
+});
+
+
