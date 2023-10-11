@@ -60,7 +60,6 @@ class A_Controller_categorie extends Controller
     //boutton Payer
     public function Passer_au_paiement($id, Request $request)
     {
-        
     $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
     //step 1 : Mise à jour de stock de l'article
     MiseAjourArticle($shop);

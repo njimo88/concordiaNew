@@ -17,8 +17,24 @@
 
  <!-- main --> 
 <div class="main-wrapper">
+    
     <div class="container">
 
+        @if (session('error'))
+            <div style="    display: -webkit-inline-box;" class="alert alert-danger mt-3">
+                {{ session('error') }}
+            </div>
+        @endif
+        
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
         <div class="product-div">
             <div class="product-div-left">
                 <div class="left-content"> <!-- New container -->
