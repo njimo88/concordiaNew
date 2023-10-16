@@ -211,8 +211,11 @@ public function deleteAttachment(Request $request) {
 
 public function historique()
     {
-        //ordred by date asc
-        $mailHistories = MailHistory::all();
+        if(auth()->user()->role >= 90) {
+            $mailHistories = MailHistory::all();
+        } else {
+            $mailHistories = MailHistory::where('id_user_expediteur', auth()->user()->user_id)->get();
+        }
         return view('Communication/historique', compact('mailHistories'));
     }
 
