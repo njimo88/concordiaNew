@@ -290,7 +290,7 @@ class n_AdminController extends Controller
 
     public function DeleteUsermodal($id){
         $n_users = User::find($id);
-        return view('admin.modals.deleteUser', compact('n_users'))->with('user', auth()->user());
+        return view('admin.modals.deleteUser', compact('n_users'));
     }
     
 }

@@ -30,15 +30,6 @@
             
     
 
-    <div class="modal fade " id="deleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-notify modal-info" role="document">
-            <!--Content-->
-            <div class="modal-content text-center" id="deleteUserContainer">
-
-            </div>
-            <!--/.Content-->
-          </div>
-    </div>
 
     <div class="modal fade " id="Resetpass" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-notify modal-info" role="document">
@@ -136,6 +127,15 @@
       </div>
     </div>
    
+    <div class="modal fade " id="deleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-notify modal-info" role="document">
+            <!--Content-->
+            <div class="modal-content text-center" id="deleteUserContainer">
+
+            </div>
+            <!--/.Content-->
+          </div>
+    </div>
 
 
     <div class="pagetitle">
