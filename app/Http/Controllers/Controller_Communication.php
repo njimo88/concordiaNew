@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Shop_article;
 
+
 use App\Models\MailHistory;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\User;
@@ -15,6 +16,7 @@ use App\Models\shop_article_1;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Mail\Message;
 use Illuminate\Support\Str;
 use Egulias\EmailValidator\EmailValidator;
@@ -92,6 +94,16 @@ public function sendEmails(Request $request)
     $fromName = config('mail.from.name');
     $senderName = $authUser->lastname . ' ' . $authUser->name;
 
+    $attachmentsPaths = [];
+    if($request->hasFile('attachments')) {
+        foreach($request->file('attachments') as $file) {
+            $filename = $file->getClientOriginalName();
+            $file->move(public_path('uploads/piecejointe'), $filename);
+            $attachmentsPaths[] = 'uploads/piecejointe/' . $filename;
+        }
+    }
+    
+
     if (Str::endsWith($authUser->email, '@gym-concordia.com')) {
         $fromEmail = $authUser->email;
         $fromName = ' Gym Concordia ['.$authUser->lastname . ' ' . $authUser->name.']';
@@ -106,7 +118,8 @@ public function sendEmails(Request $request)
         $fromName = ' Gym Concordia [Trésorier]';
         $senderName = 'Michel Ferandel - Trésorier';
     }
-
+    
+    $emails = json_decode($request->input('emails'), true);
     // Loop over the list of recipient emails
     foreach ($emails as $recipientEmail) {
         // Assuming you have a User model with a 'name' attribute
@@ -123,6 +136,7 @@ public function sendEmails(Request $request)
             'fromName' => $fromName,
             'senderName' => $senderName,
             'status' => 'pending',
+            'attachments' => json_encode($attachmentsPaths),
         ]);
     }
      // Save the record to mail_history
@@ -130,7 +144,7 @@ public function sendEmails(Request $request)
    $mail_history->id_user_expediteur = Auth::id(); 
    $mail_history->title = $subject;
    $mail_history->message = $content;
-   $mail_history->link_pj = null; 
+   $mail_history->link_pj = json_encode($attachmentsPaths);
    $mail_history->date = now();
    $mail_history->id_user_destinataires = json_encode(array_values($emails)); 
    $mail_history->save();
@@ -147,6 +161,7 @@ public function sendEmails(Request $request)
     'sender' => $fromEmail,
     'fromName' => $fromName,
     'senderName' => $senderName,
+    'attachments' => json_encode($attachmentsPaths),
     'status' => 'pending',
 ];
 
@@ -160,6 +175,38 @@ EmailQueue::create($recapData);
     return response()->json(['message' => 'Emails envoyés avec succès.']);
 }
 
+public function uploadAttachment(Request $request) {
+    if ($request->hasFile('attachments')) {
+        $files = $request->file('attachments');
+        
+        $uploadedFiles = [];
+
+        foreach($files as $file) {
+            $filename = $file->getClientOriginalName();
+            $file->move(public_path('uploads/piecejointe'), $filename);
+            $uploadedFiles[] = 'uploads/piecejointe/' . $filename;
+        }
+
+        return response()->json(['success' => true, 'paths' => $uploadedFiles]);
+    }
+
+    return response()->json(['success' => false]);
+}
+
+
+public function deleteAttachment(Request $request) {
+    $filename = $request->input('filename');
+
+    // Chemin complet du fichier
+    $path = public_path('uploads/piecejointe/' . $filename);
+
+    if (File::exists($path)) {
+        File::delete($path);
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false, 'message' => 'Fichier non trouvé.']);
+}
 
 
 public function historique()

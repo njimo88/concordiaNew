@@ -28,13 +28,14 @@ class SendBulkEmailsJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($emails, $subject, $content, $senderName, $validator)
+    public function __construct($emails, $subject, $content, $senderName, $validator , $attachments = [])
     {
         $this->emails = $emails;
         $this->subject = $subject;
         $this->content = $content;
         $this->senderName = $senderName;
         $this->validator = $validator;
+        $this->attachments = $attachments;
     }
 
     /**
@@ -52,7 +53,8 @@ class SendBulkEmailsJob implements ShouldQueue
                 $firstName = $user->name;
                 $lastName = $user->lastname;
 
-                Mail::to($email)->queue(new CommunicationEmail($firstName, $lastName, $this->content, $this->senderName, $this->subject, $email));
+                Mail::to($email)->queue(new CommunicationEmail($firstName, $lastName, $this->content, $this->senderName, $this->subject, $email, $this->attachments));
+
             } else {
                 $invalidEmails[] = $email;
             }

@@ -644,8 +644,7 @@ public function exportCSV(Request $request)
 public function exportCSVproduit(Request $request)
 {
     $saison = $request->input('saison');
-
-    $saison = $request->input('saison');
+    $delimiter = ';';
 
     $users_saison_active = User::select(
         'shop_article.title as produit',
@@ -672,48 +671,24 @@ public function exportCSVproduit(Request $request)
     ->orderBy('users.name', 'ASC')
     ->get();
     
-
-    $response = new StreamedResponse(function() use ($users_saison_active) {
+    $response = new StreamedResponse(function() use ($users_saison_active, $delimiter) {
         $handle = fopen('php://output', 'w');
-
-    $delimiter = ';';
-
-    fputcsv($handle, [
-        'Produit', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Age','Nationalité', 'Adresse', 
-        'Code postal', 'Ville', 'Téléphone', 'Email', 'ID Family', 'Role'
-    ], $delimiter);
+        fputcsv($handle, ['Produit', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Age', 'Nationalité', 'Adresse', 'Code postal', 'Ville', 'Téléphone', 'Email', 'ID Family', 'Role'], $delimiter);
 
         foreach ($users_saison_active as $user) {
             $birthdate = new \DateTime($user->birthdate);
             $now = new \DateTime();
             $age = $now->diff($birthdate)->y;
-
-            fputcsv($handle, [
-                $user->produit,
-                $user->name,
-                $user->lastname,
-                $user->gender == 'male' ? 'Homme' : 'Femme',
-                $birthdate->format('d/m/Y'),
-                $age,
-                $user->nationality,
-                $user->address,
-                $user->postal_code,
-                $user->city,
-                $user->phone,
-                $user->email,
-                $user->family_id,
-                $user->role
-            ]);
+            fputcsv($handle, [$user->produit, $user->name, $user->lastname, $user->gender == 'male' ? 'Homme' : 'Femme', $birthdate->format('d/m/Y'), $age, $user->nationality, $user->address, $user->postal_code, $user->city, $user->phone, $user->email, $user->family_id, $user->role], $delimiter);
         }
-
         fclose($handle);
     });
 
     $response->headers->set('Content-Type', 'text/csv');
     $response->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
-
     return $response;
 }
+
 
 public function deleteMethod($id)
     {

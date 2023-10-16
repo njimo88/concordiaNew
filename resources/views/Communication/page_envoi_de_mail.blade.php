@@ -1,6 +1,17 @@
 @extends('layouts.template')
 @section('content')
 <style>
+  .file-preview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f1f1f1;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+}
+
+
   .list-group {
     border: 1px solid #ddd;
     max-height: 300px;
@@ -120,7 +131,7 @@ if (!empty($successMessage)) {
                   
                   <div class="card-body">
                     
-                    <form class="row">
+                    <form class="row" enctype="multipart/form-data">
                       <div class="card-header d-flex justify-content-between">
                         <h3>Envoyer un e-mail</h3>
                         <button id="send-button" type="submit" class="btn btn-primary">Envoyer<span id="loading-icon" style="display: none;"><i class="fa fa-spinner fa-spin"></i></span></button>
@@ -181,6 +192,14 @@ if (!empty($successMessage)) {
                       <br>
                     <label></label>
                     <textarea name="editor1"  id="ckeditor" class="form-control" required></textarea>
+                    <div class="form-group mt-3">
+                      <label>Pièces jointes :</label>
+                      <button id="add-file-btn" type="button" class="btn btn-primary">Ajouter un fichier</button>
+                      <input type="file" name="attachments[]"  class="form-control" multiple style="display: none;">
+                      <div id="selected-attachments" class="mt-2"></div>
+                  </div>
+                  
+                  
                       </div>
                       
                     </form>
@@ -191,6 +210,96 @@ if (!empty($successMessage)) {
   </div>
 </main>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const addFileBtn = document.getElementById('add-file-btn');
+      const attachmentsInput = document.querySelector('input[name="attachments[]"]');
+      const attachmentsContainer = document.getElementById('selected-attachments');
+  
+      let totalFiles = [];
+  
+      addFileBtn.addEventListener('click', function() {
+          attachmentsInput.click();
+      });
+  
+      attachmentsInput.addEventListener('change', async function() {
+          const formData = new FormData();
+  
+          for (let i = 0; i < this.files.length; i++) {
+              const file = this.files[i];
+              formData.append('attachments[]', file);
+  
+              const fileDiv = document.createElement('div');
+              fileDiv.className = 'file-preview';
+              
+              const fileNameSpan = document.createElement('span');
+              fileNameSpan.textContent = file.name;
+  
+              const removeBtn = document.createElement('button');
+              removeBtn.textContent = 'Supprimer';
+              removeBtn.className = 'btn btn-danger btn-sm';
+              removeBtn.type = 'button';
+              removeBtn.addEventListener('click', async function() {
+                  const index = totalFiles.indexOf(file);
+                  if (index > -1) {
+                      totalFiles.splice(index, 1);
+                  }
+  
+                  const deleteData = new FormData();
+                  deleteData.append('filename', file.name);
+  
+                  try {
+                      const response = await fetch('{{ route("attachment.delete") }}', {
+                          method: 'POST',
+                          headers: {
+                              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                          },
+                          body: deleteData
+                      });
+  
+                      if (!response.ok) {
+                          throw new Error('Network response was not ok');
+                      }
+  
+                      fileDiv.remove();
+                  } catch (error) {
+                      console.error("There was a problem with the fetch operation:", error);
+                  }
+              });
+  
+              fileDiv.appendChild(fileNameSpan);
+              fileDiv.appendChild(removeBtn);
+              attachmentsContainer.appendChild(fileDiv);
+  
+              totalFiles.push(file);
+          }
+  
+          try {
+              const response = await fetch('{{ route("attachment.upload") }}', {
+                  method: 'POST',
+                  headers: {
+                      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                  },
+                  body: formData
+              });
+  
+              if (!response.ok) {
+                  throw new Error('Network response was not ok');
+              }
+  
+  
+          } catch (error) {
+              console.error("There was a problem with the fetch operation:", error);
+          }
+      });
+  
+      document.querySelector('form').addEventListener('submit', function(e) {
+          const newFileList = new DataTransfer();
+          totalFiles.forEach(file => newFileList.items.add(file));
+          attachmentsInput.files = newFileList.files;
+      });
+  });
+  </script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
       const shopArticles = document.getElementById('shop-articles');
@@ -298,43 +407,34 @@ if (!empty($successMessage)) {
         });
     });
 
+    //send email
     const sendButton = document.getElementById('send-button');
-
-    sendButton.addEventListener('click', function (event) {
+sendButton.addEventListener('click', function (event) {
     event.preventDefault();
-
     const loadingIcon = document.getElementById('loading-icon');
-    
-
     const selectedUserIds = Array.from(selectedUsers.querySelectorAll('a.list-group-item')).map(user => user.dataset.id);
-   
     if (selectedUserIds.length === 0) {
         document.getElementById('userModalBody').innerText = "Aucun utilisateur sélectionné";
         $('#userModal').modal('show');
-        return;  
+        return;
     }
-    
-    // Get the email subject and content from the form inputs
     const selectedGroup = document.querySelector('#shop-articles option:checked').textContent;
     const subject = document.querySelector('textarea[name="titre"]').value;
     const content = CKEDITOR.instances.ckeditor.getData();
+    const attachments = document.querySelector('input[name="attachments[]"]').files;
 
-    
     if (subject.trim() === "") {
         document.getElementById('userModalBody').innerText = "Le titre est vide";
         $('#userModal').modal('show');
-        return;  
+        return;
     }
-
     if (content.trim() === "") {
         document.getElementById('userModalBody').innerText = "Le contenu est vide";
         $('#userModal').modal('show');
-        return;  
+        return;
     }
-
     sendButton.disabled = true;
     loadingIcon.style.display = '';
-    
     fetch('/get-emails', {
         method: 'POST',
         headers: {
@@ -347,38 +447,39 @@ if (!empty($successMessage)) {
     })
     .then(response => response.json())
     .then(emails => {
+        const formData = new FormData();
+        for (let i = 0; i < attachments.length; i++) {
+            formData.append('attachments[]', attachments[i]);
+        }
+        formData.append('emails', JSON.stringify(emails));
+        formData.append('subject', subject);
+        formData.append('content', content);
+        formData.append('group', selectedGroup);
         fetch('/send-emails', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             },
-            body: JSON.stringify({
-                emails: emails,
-                subject: subject,
-                content: content,
-                group: selectedGroup
-            })
+            body: formData
         })
         .then(response => response.json())
         .then(data => {
             const responseModal = document.getElementById('responseModal');
             const responseModalBody = document.getElementById('responseModalBody');
-
             responseModalBody.textContent = data.message;
-
             $(responseModal).modal('show');
-
             sendButton.disabled = false;
             loadingIcon.style.display = 'none';
             checkAllSelected.checked = false;
         });
     });
-
 });
 
 
+   
 });
+
+
 </script>
   
 @endsection

@@ -19,6 +19,7 @@ class EmailQueue extends Model
         'fromName',
         'senderName', 
         'status',
+        'attachments',
     ];
     
 }

@@ -362,6 +362,9 @@ Route::post('/get-emails',[Controller_Communication::class, 'getEmails']);
 Route::post('/send-emails', [Controller_Communication::class, 'sendEmails']);
 
 
+Route::post('/path/to/upload/endpoint', [Controller_Communication::class, 'uploadAttachment'])->name('attachment.upload');
+Route::post('/path/to/delete/endpoint', [Controller_Communication::class, 'deleteAttachment'])->name('attachment.delete');
+
 Route::get('/Communication/get_info/{article_id}', [Controller_Communication::class, 'get_info'])->name('get_communication');
 
 Route::post('/Communication/traitement', [Controller_Communication::class, 'traitement'])->name('traitement');
