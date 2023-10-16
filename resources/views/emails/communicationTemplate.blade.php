@@ -18,7 +18,7 @@
         <strong>Pièces jointes:</strong><br>
         @foreach($attachmentLinks as $attachment)
         <a href="{{ asset($attachment) }}" download="{{ basename($attachment) }}">
-            {{ basename($attachment) }}
+            <i class="fas fa-paperclip"></i>{{ basename($attachment) }}
         </a><br>
         @endforeach
     </div>
