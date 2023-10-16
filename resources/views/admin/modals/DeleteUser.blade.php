@@ -15,7 +15,16 @@
     
           </div>
     
-         
+          <!--Footer-->
+          <div class="modal-footer flex-center">
+
+            <form  action="{{ route("admin.DeleteUser", $n_users->user_id) }}" method="delete">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">Oui</button>
+            </form>
+            
+          </div>
         
    
 
