@@ -185,6 +185,33 @@
               </div>
           </div>
       </div>
+
+      <div class="col-lg-3">
+        <div class="card">
+            <div class="stat-widget-one">
+                <div class="stat-icon dib"><i style="color: #2770e6; display:inline-block" class="fa-solid fa-people-roof mr-1"></i>
+
+                    <form  id="form" >
+                    
+                      <input id="checkbox11" type="checkbox" class="checkbox" {{ SystemSetting::getValue(11) == 1 ? 'checked' : '' }}>
+                        <input type="hidden" id="url" name="URL" value="/admin">
+                        <div class="stat-text" style="font-size : 12px !important;">Réduction Famille</div>
+                        <label for="checkbox11" class="switch">
+                            <span class="switch__circle">
+                                <span class="switch__circle-inner"></span>
+                            </span>
+                            <span class="switch__left">Off</span>
+                            <span class="switch__right">On</span>
+                        </label>
+                                                   <input hidden="" name="redirect" value="0">
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
       
       
          </div>
@@ -634,6 +661,9 @@ $('#checkbox1').on('change', function () {
   updateSetting($(this), 2);
 });
 
+$('#checkbox11').on('change', function () {
+  updateSetting($(this), 11);
+});
 
 // Événement change pour checkbox3
 $('#checkbox3').on('change', function () {

@@ -23,6 +23,7 @@ use App\Models\LiaisonShopArticlesShopReductions;
 use App\Models\LiaisonUserShopReduction;
 use App\Models\Basket;
 use App\Http\Controllers\generatePDF;
+use App\Models\SystemSetting;
 
 
 
@@ -1391,15 +1392,18 @@ function getReducedPriceGuest($articleId, $originalPrice) {
     
 }
 
-function applyFamilyDiscount(Shop_article $article, $pour_user_id)
+
+function applyFamilyDiscount(Shop_article $article, $pour_user_id) 
 {
+    $reductionSetting = SystemSetting::where('name', 'reduction_famille')->first();
+    if (!$reductionSetting || $reductionSetting->value != '1') {
+        return;
+    }
+
     $pour_user_id = intval($pour_user_id);
-    // Get the logged-in user
     $user = User::find(auth()->user()->user_id);
-    // Get the family ID
     $family_id = $user->family_id;
 
-    // Check if a family member is a member and if they have an article of type 0 in their basket
     $family_members = User::where('family_id', $family_id)->get();
     $member_found = false;
     foreach ($family_members as $member) {
@@ -1416,56 +1420,52 @@ function applyFamilyDiscount(Shop_article $article, $pour_user_id)
     $userFamilyDiscount = Basket::where('pour_user_id', $pour_user_id)
         ->where('ref', '1')
         ->first();
-    if ($userBasketItem && !$userFamilyDiscount) {
-        // Check if a family member has a type 0 article in their basket and no family discount
-        $basket_mem = false;
-        foreach ($family_members as $member) {
-            if ($member->user_id != $pour_user_id) { 
-                $memberBasketItem = Basket::join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
-                ->where('basket.user_id', auth()->user()->user_id)
-                ->where('basket.pour_user_id', $member->user_id)
-                ->where('shop_article.type_article', 0)
-                ->first();
-            }
-        
-            $memberFamilyDiscount = Basket::where('user_id', auth()->user()->user_id)
-            ->where('pour_user_id', intval($member->user_id))
-            ->where('ref', '1')
+
+    $basket_mem = false;
+    foreach ($family_members as $member) {
+        if ($member->user_id != $pour_user_id) { 
+            $memberBasketItem = Basket::join('shop_article', 'basket.ref', '=', 'shop_article.id_shop_article')
+            ->where('basket.user_id', auth()->user()->user_id)
+            ->where('basket.pour_user_id', $member->user_id)
+            ->where('shop_article.type_article', 0)
             ->first();
-        
-             if (isset($memberBasketItem) && $memberBasketItem && !$memberFamilyDiscount) {
-                $basket_mem = true;
-                break;
-            }
         }
         
+        $memberFamilyDiscount = Basket::where('user_id', auth()->user()->user_id)
+        ->where('pour_user_id', intval($member->user_id))
+        ->where('ref', '1')
+        ->first();
         
-        if ($member_found || $basket_mem) {
-            $saison = saison_active();
-            $reduction_famille = DB::table('parametre')
-                ->select('reduction_famille')
-                ->where('saison', $saison)
-                ->first()
-                ->reduction_famille;
-
-            // Update the totalprice of the corresponding article
-            $shopArticle = Shop_article::find(1);
-            $shopArticle->totalprice = $reduction_famille*(-1);
-            $shopArticle->save();
-
-            // Add the family discount to the basket
-            $basket = new Basket([
-                'user_id' => auth()->user()->user_id,
-                'family_id' => $family_id,
-                'pour_user_id' => $pour_user_id,
-                'ref' => '1',  // converted to string
-                'qte' => 1,
-                'prix' => $reduction_famille*(-1),
-            ]);
-            $basket->save();
+        if(isset($memberBasketItem) && $memberBasketItem && !$memberFamilyDiscount) {
+            $basket_mem = true;
+            break;
         }
     }
+    
+    if ($member_found || $basket_mem) {
+        $saison = saison_active();
+        $reduction_famille = DB::table('parametre')
+            ->select('reduction_famille')
+            ->where('saison', $saison)
+            ->first()
+            ->reduction_famille;
+
+        $shopArticle = Shop_article::find(1);
+        $shopArticle->totalprice = $reduction_famille*(-1);
+        $shopArticle->save();
+
+        $basket = new Basket([
+            'user_id' => auth()->user()->user_id,
+            'family_id' => $family_id,
+            'pour_user_id' => $pour_user_id,
+            'ref' => '1',
+            'qte' => 1,
+            'prix' => $reduction_famille*(-1),
+        ]);
+        $basket->save();
+    }
 }
+
 
 
 
