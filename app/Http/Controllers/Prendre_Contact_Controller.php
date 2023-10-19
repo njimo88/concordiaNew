@@ -30,7 +30,7 @@ class Prendre_Contact_Controller extends Controller
         $recaptchaResponse = json_decode($response->getBody(), true);
 
         if (!$recaptchaResponse['success']) {
-            return redirect()->back()->with('success', 'Veuillez cocher la case reCAPTCHA.')->with('sent', true);
+            return redirect()->back()->with('error', 'Veuillez cocher la case reCAPTCHA.');
         }
         
 
