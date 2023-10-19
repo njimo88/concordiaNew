@@ -30,8 +30,9 @@ class Prendre_Contact_Controller extends Controller
         $recaptchaResponse = json_decode($response->getBody(), true);
 
         if (!$recaptchaResponse['success']) {
-            return redirect()->back()->withErrors(['captcha' => 'reCAPTCHA verification failed.'])->withInput();
+            return redirect()->route('A_blog')->withErrors(['captcha' => 'reCAPTCHA verification failed.'])->withInput();
         }
+        
 
     $this->sendEmail($validatedData);
 

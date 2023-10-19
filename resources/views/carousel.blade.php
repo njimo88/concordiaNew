@@ -145,6 +145,11 @@ img[alt="Logo"] {
         </ul>
     </div>
 @endif
+@if($errors->has('captcha'))
+    <div class="alert alert-danger">
+        {{ $errors->first('captcha') }}
+    </div>
+@endif
 
 <section style="background-image: url('{{ $imageUrls[0] }}');" class="bg-light position-relative bg-cover top-banner">
     <img loading="lazy" src="{{ asset("/assets/images/gymm.jpg") }}" alt="Blog" title="Blog" class="d-none">
