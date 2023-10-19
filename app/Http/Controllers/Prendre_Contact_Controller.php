@@ -30,7 +30,7 @@ class Prendre_Contact_Controller extends Controller
         $recaptchaResponse = json_decode($response->getBody(), true);
 
         if (!$recaptchaResponse['success']) {
-            return redirect()->route('A_blog')->withErrors(['captcha' => 'reCAPTCHA verification failed.'])->withInput();
+            return redirect()->back()->with('success', 'Veuillez cocher la case reCAPTCHA.')->with('sent', true);
         }
         
 
@@ -46,7 +46,7 @@ class Prendre_Contact_Controller extends Controller
       $recipients = [
           1 => 'webmaster@gym-concordia.com',
           2 => 'tresorier@gym-concordia.com',
-          3 => 'djillynjimo@gmail.com',
+          3 => 'president@gym-concordia.com',
       ];
   
       $receiverEmail = $recipients[$data['send_me']];
