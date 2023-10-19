@@ -14,6 +14,7 @@ use App\Models\Shop_article;
 use App\Models\LiaisonShopArticlesBill;
 use App\Models\ShopMessage;
 use App\Models\PaiementImmediat;
+use App\Models\UserReductionUsage;
 use PDF;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Models\ShopReduction;
@@ -394,6 +395,7 @@ class BillsController extends Controller
         'uncheckedArticles' => $uncheckedArticles,
         'checkedUsers' => $checkedUsers,
         'uncheckedUsers' => $uncheckedUsers,
+         'shopArticles' => $shopArticles,
     ]);
 }
 
@@ -513,8 +515,69 @@ class BillsController extends Controller
         return redirect()->back()->with('success', 'Les liaisons ont été mises à jour avec succès.');
     }
     
+    public function getLinkedUsers(Request $request) {
+        $productId = $request->input('product_id');
+        $reductionId = $request->input('reduction_id');
     
-
+        $linkedUsers = DB::table('user_reduction_usage')
+                         ->join('users', 'user_reduction_usage.user_id', '=', 'users.user_id')
+                         ->where('shop_article_id', $productId)
+                         ->where('reduction_id', $reductionId)
+                         ->select('users.name', 'users.lastname', 'users.user_id')
+                         ->get();
+        return response()->json($linkedUsers);
+    }
+    
+    public function searchUsers(Request $request) {
+        $query = $request->input('query');
+    
+        $users = User::where('name', 'LIKE', '%' . $query . '%')
+                     ->orWhere('lastname', 'LIKE', '%' . $query . '%')
+                     ->select('name', 'lastname', 'user_id')
+                     ->get();
+    
+        return response()->json($users);
+    }
+    public function removeUserLink(Request $request) {
+        try {
+            $userId = $request->input('user_id');
+            $productId = $request->input('product_id');
+            $reductionId = $request->input('reduction_id');
+            
+            UserReductionUsage::where('user_id', $userId)
+                              ->where('shop_article_id', $productId)
+                              ->where('reduction_id', $reductionId)
+                              ->delete();
+            return response()->json(['message' => 'Liaison supprimée avec succès!']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur lors de la suppression de la liaison!'], 500);
+        }
+    }
+    
+    public function linkUsersToProduct(Request $request) {
+        try {
+            $userIds = $request->input('user_ids');
+            $productId = $request->input('product_id');
+            $reductionId = $request->input('reduction_id');
+            $UsageMax = $request->input('usage_max');
+    
+            foreach ($userIds as $userId) {
+                if ($userId !== null) {
+                    UserReductionUsage::firstOrCreate([
+                        'user_id' => $userId,
+                        'shop_article_id' => $productId,
+                        'reduction_id' => $reductionId,
+                        'usage_max' => $UsageMax,
+                    ]);
+                }
+            }
+            
+            return response()->json(['message' => 'Utilisateurs liés avec succès!']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur lors de la liaison des utilisateurs!', 'exception' => $e->getMessage()], 500);
+        }
+    }
+    
 
 
     public function paiement_immediat($bill_id)

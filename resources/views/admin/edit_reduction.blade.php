@@ -153,7 +153,7 @@
         
         <form class="mt-5 col-md-4" action="{{ route('update_liaisons') }}" method="POST">
             @csrf
-            <input type="hidden" name="shop_reduction_id" value="{{ $shopReduction->id_shop_reduction }}">
+            <input type="hidden" name="shop_reduction_id" value="{{ $shopReduction->id_shop_reduction }}" >
                 <div class="border card-deck" style="height: 400px; overflow-y: scroll;">
                     <div id="list-example" class="list-group">
                         <h5 class="p-2">Articles liés</h5>
@@ -181,8 +181,63 @@
                 </div>
             <button type="submit" class="btn btn-primary mt-4">Modifier</button>
         </form>
+
+        <div class="mt-4 card">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 style="color: black !important">Gestion des utilisateurs et des produits pour la réduction</h4>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="product-dropdown">Sélectionnez un produit</label>
+                    <select id="product-dropdown" class="form-control" data-reduction-id="{{ $shopReduction->id_shop_reduction }}">
+                        <option value="">Sélectionnez un produit</option>
+                        @foreach ($shopArticles as $shopArticle)
+                            <option value="{{ $shopArticle->id_shop_article }}">{{ $shopArticle->title }}</option>
+                        @endforeach
+                    </select>
+                </div>
+        
+                <div class="mt-4 card">
+                    <div class="card-header">
+                        Utilisateurs liés au produit sélectionné
+                    </div>
+                    <ul class="list-group list-group-flush" id="linked-users-list"></ul>
+                </div>
+        
+                <div class="mt-4 form-group">
+                    <label for="user-search">Rechercher et lier un utilisateur au produit avec cette réduction</label>
+                    <input type="text" id="user-search" class="form-control" placeholder="Rechercher un utilisateur">
+                    <div id="user-search-results" class="border mt-2 p-3" style="max-height: 200px; overflow-y: scroll; display: none;"></div>
+                </div>
+
+                <!-- ajout du champ de saisie du usage_max -->
+                
+                <div class="form-group row">
+                    <label for="usage_max" class="col-md-4 col-form-label text-md-right">{{ __('Nombre d\'utilisations maximum') }}</label>
+                    <div class="col-md-6">
+                        <input id="usage_max" type="number" min="0" class="form-control @error('usage_max') is-invalid @enderror" name="usage_max" d value="1" required>
+
+                        @error('usage_max')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button id="save-changes" class="btn btn-success">Sauvegarder</button>
+                </div>
+        
+            </div>
+        </div>
+
+        
+        
         
         <script>
+            
             let checkedShopArticles = {!! $checkedArticles !!};
             let uncheckedShopArticles = {!! $uncheckedArticles !!};
             let shopArticles = [];
@@ -211,7 +266,10 @@
                     $(this).append('<input type="hidden" name="shop_article[]" value="' + id + '">');
                 });
             });
+
+
         </script>
+        
         
         
     </div>
@@ -223,3 +281,6 @@
 
 
 </main>
+
+@endsection 
+

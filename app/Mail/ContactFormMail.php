@@ -33,9 +33,9 @@ class ContactFormMail extends Mailable
      */
     public function build()
     {
-        return $this->from('president@gym-concordia.com', 'Gym-Concordia.com') 
-                    ->replyTo($this->userEmail, $this->userName)  
-                    ->subject('['.$this->userName.'] Message d\'un utilisateur')
-                    ->view('Communication/form_email');
+        return $this ->from('webmaster@gym-concordia.com')
+        ->replyTo($this->userEmail)
+        ->subject('['.$this->userName.'] Message d\'un utilisateur')
+        ->view('Communication/form_email');
     }
 }

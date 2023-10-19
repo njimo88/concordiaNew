@@ -163,7 +163,11 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::put('/reduction/{id}/update', [BillsController::class, 'updateReduction'])->name('update.reduction');
     Route::post('/reduction/update_liaisons', [BillsController::class, 'updateLiaisons'])->name('update_liaisons');
     Route::get('/get-reduced-price/{userId}/{articleId}', [BillsController::class, 'getReducedPrice']);
-
+    Route::get('/get-linked-users', [BillsController::class, 'getLinkedUsers']);
+    Route::get('/search-users', [BillsController::class, 'searchUsers']);
+    Route::delete('/remove-user-link', [BillsController::class, 'removeUserLink']);
+    Route::post('/link-users-to-product', [BillsController::class, 'linkUsersToProduct']);
+    
 
 
 

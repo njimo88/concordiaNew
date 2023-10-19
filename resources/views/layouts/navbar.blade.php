@@ -170,7 +170,7 @@ use Illuminate\Support\Facades\Route;
                       </div>
                       <div class='form-row mt-3'>
                           <div class='form-group col-md-12' style="text-align:-webkit-center">
-                              <div class='g-recaptcha' name="captchaTest" data-sitekey='6Lft5c8UAAAAAORHh9eDop9d3C8R2IJfrBqc0Sx3'></div>
+                              <div class='g-recaptcha' name="captchaTest" data-sitekey='6Lf8zLIoAAAAAJtjcI7Xi6Lo5v07zwS6bnmCXS1g'></div>
                           </div>
                       </div>
                       <div class="row d-flex justify-content-between m-1 mt-4">

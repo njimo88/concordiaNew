@@ -15,7 +15,7 @@ class UserReductionUsage extends Model
     public $timestamps = false;
 
     // Define the fillable properties
-    protected $fillable = ['user_id', 'reduction_id', 'usage_count'];
+    protected $fillable = ['user_id', 'reduction_id', 'shop_article_id', 'usage_max', 'usage_count'];
 
     public function user()
     {
@@ -25,5 +25,10 @@ class UserReductionUsage extends Model
     public function shopReduction()
     {
         return $this->belongsTo(ShopReduction::class, 'reduction_id');
+    }
+
+    public function shopArticle()
+    {
+        return $this->belongsTo(ShopArticle::class, 'shop_article_id');
     }
 }

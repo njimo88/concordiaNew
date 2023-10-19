@@ -31,6 +31,9 @@
 <div class="container">
 
         <div>
+          <strong>Expéditeur:</strong> {{ $userName }}<br>
+            <strong>Email de l'expéditeur:</strong> {{ $userEmail }}<br>
+            <hr>
           
             <p> {{$content_Email}} </p>
             

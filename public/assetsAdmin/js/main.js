@@ -1388,3 +1388,141 @@ $(document).ready(function() {
 });
 
 
+/* Reduction */
+$(document).ready(function() {
+  $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+  $('#product-dropdown').on('change', function() {
+      let productId = $(this).val();
+      let reductionId = $(this).data('reduction-id');
+      console.log(productId);
+      $.ajax({
+          url: '/get-linked-users',
+          method: 'GET',
+          data: {
+              'product_id': productId,
+              'reduction_id': reductionId
+          },
+          success: function(data) {
+              $('#linked-users-list').empty();
+              if (data.length == 0) {
+                  $('#linked-users-list').append('<li class="list-group-item">Aucun utilisateur lié</li>');
+              } else {
+                  data.forEach(user => {
+                      $('#linked-users-list').append('<li class="list-group-item me-2" data-user-id="' + user.user_id + '">' + user.name + ' ' + user.lastname + ' <button class="btn btn-danger btn-sm float-right remove-user">Supprimer</button></li>');
+                  });
+              }
+          },
+          error: function(error) {
+              console.error("Erreur lors de la récupération des utilisateurs", error);
+          }
+      });
+  });
+  $(document).on('change', '#user-search-results input[type="checkbox"]', function() {
+    let userId = $(this).data('user-id');
+    let userName = $(this).data('user-name');
+    let userLastname = $(this).data('user-lastname');
+    
+    if ($(this).is(':checked')) {
+        $('#linked-users-list').append('<li class="list-group-item me-2" data-user-id="' + userId + '">' + userName + ' ' + userLastname + ' <button class="btn btn-danger btn-sm float-right remove-user">Supprimer</button></li>');
+    } else {
+        $('#linked-users-list li[data-user-id="' + userId + '"]').remove();
+    }
+});
+$(document).on('click', '.remove-user', function() {
+  $(this).closest('li').remove();
+});
+
+  $('#user-search').on('keyup', function() {
+    let query = $(this).val();
+    if(query.length >= 3) { 
+        $.ajax({
+            url: '/search-users',
+            method: 'GET',
+            data: {
+                'query': query
+            },
+            success: function(data) {
+                $('#user-search-results').empty().show();
+                if (data.length == 0) {
+                    $('#user-search-results').append('<div class="p-2">Aucun utilisateur trouvé</div>');
+                } else {
+                  data.forEach(user => {
+                    $('#user-search-results').append('<div ><input style="width: auto !important; margin: 15px 10px !important;" type="checkbox" data-user-id="' + user.user_id + '" data-user-name="' + user.name + '" data-user-lastname="' + user.lastname + '">' + user.name + ' ' + user.lastname + '</div>');
+                });
+                
+                }
+            },
+            error: function(error) {
+                console.error("Erreur lors de la recherche des utilisateurs", error);
+            }
+        });
+    } else {
+        $('#user-search-results').empty().hide();
+    }
+});
+
+// When clicking on the "Remove" button
+$(document).on('click', '.remove-user', function() {
+  let userId = $(this).closest('li').data('user-id');
+  let productId = $('#product-dropdown').val();
+  let reductionId = $('#product-dropdown').data('reduction-id');
+  
+  // Removal on frontend
+  $(this).closest('li').remove();
+  
+  // AJAX request to remove on server side
+  $.ajax({
+      url: '/remove-user-link',
+      method: 'DELETE',
+      data: {
+          'user_id': userId,
+          'product_id': productId,
+          'reduction_id': reductionId
+      },
+      success: function(response) {
+          console.log(response.message);
+          alert('Utilisateur supprimé avec succès!');
+      },
+      error: function(error) {
+          console.error("Erreur lors de la suppression de l'utilisateur lié", error);
+      }
+  });
+});
+
+// Button to save changes
+$('#save-changes').click(function() {
+  let userIds = [];
+  let productId = $('#product-dropdown').val();
+  let UsageMax = $('#usage_max').val();
+  let reductionId = $('#product-dropdown').data('reduction-id');
+  
+  $('#linked-users-list li').each(function() {
+      userIds.push($(this).data('user-id'));
+  });
+  
+  // AJAX request to add links
+  $.ajax({
+      url: '/link-users-to-product',
+      method: 'POST',
+      data: {
+          'user_ids': userIds,
+          'product_id': productId,
+          'reduction_id': reductionId,
+          'usage_max': UsageMax
+      },
+      success: function(response) {
+          console.log(response.message);
+          alert('Utilisateurs liés avec succès!');
+      },
+      error: function(error) {
+          console.error("Erreur lors de l'ajout des liaisons", error);
+      }
+  });
+});
+
+});
