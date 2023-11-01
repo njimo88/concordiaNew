@@ -18,6 +18,7 @@ use App\Models\bills;
 use App\Models\liaison_shop_articles_bills;
 use App\Models\PaiementImmediat;
 use App\Models\Declinaison;
+use App\Models\AdditionalCharge;
 use PDF;
 
 
@@ -46,6 +47,20 @@ class TraitementSupp extends Controller
         }
         dd ('ok');
     }
+
+    public function storeAdditionalCharge(Request $request) {
+        $data = $request->validate([
+            'bill_id' => 'required|integer',
+            'amount' => 'required|numeric',
+        ]);
+
+        $data['family_id'] = auth()->user()->family_id;
+    
+        AdditionalCharge::create($data);
+    
+        return redirect()->back()->with('success', 'Additional charge added successfully!');
+    }
+    
 
     public function jsoncorrection()
     {
@@ -318,20 +333,26 @@ public function basket()
     if (Auth::check()) {
         $paniers = DB::table('basket')
             ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-            ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+            ->leftJoin('shop_article', function($join) {
+                $join->on('shop_article.id_shop_article', '=', 'basket.ref')
+                     ->where('shop_article.id_shop_article', '<>', -1); // Exclude invalid IDs
+            })
             ->leftJoin('declinaisons', 'declinaisons.id', '=', 'basket.declinaison') 
             ->where('basket.user_id', '=', auth()->user()->user_id)
-            ->groupBy('basket.pour_user_id', 'basket.declinaison', 'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction', 'declinaisons.libelle') // Group by declinaisons.libelle
+            ->groupBy('basket.pour_user_id', 'basket.declinaison', 'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction', 'declinaisons.libelle')
             ->orderBy('basket.pour_user_id')
             ->orderBy('basket.ref')
-            ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'), 'declinaisons.libelle as declinaison_libelle', 'basket.reduction') // Fetch declinaisons.libelle
+            ->select('basket.user_id', 'basket.declinaison', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'), 'declinaisons.libelle as declinaison_libelle', 'basket.reduction')
             ->get();
+
 
         $total = 0;
         foreach ($paniers as $panier) {
             $total += $panier->total_qte * $panier->prix;
         }
-        return view('basket', compact('paniers', 'total'))->with('user', auth()->user());
+
+        
+        return  view ('basket', compact('paniers', 'total'))->with('user', auth()->user());
     } else {
         return redirect()->route('login');
     }
@@ -357,19 +378,20 @@ public function paiement(){
     ->select('basket.qte', 'basket.ref', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname')
     ->get();
 
-
     MiseAjourArticlePanier($paniers);
 
     $paniers = DB::table('basket')
     ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+    ->leftJoin('shop_article', function($join) {
+        $join->on('shop_article.id_shop_article', '=', 'basket.ref')
+             ->where('shop_article.id_shop_article', '<>', -1); // Exclude invalid IDs
+    })
     ->where('basket.user_id', '=', auth()->user()->user_id)
     ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
     ->orderBy('basket.pour_user_id')
     ->orderBy('basket.ref')
     ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
     ->get();
-
 
 $total = 0;
 
@@ -382,11 +404,13 @@ foreach ($paniers as $panier) {
     $unavailable_articles = [];
 
     foreach ($paniers as $panier) {
-        $shop = Shop_article::find($panier->ref); 
-        $quantite = $panier->total_qte;
+        if ($panier->ref != -1) {
+            $shop = Shop_article::find($panier->ref); 
+            $quantite = $panier->total_qte;
         if (!verifierStockUnArticlePanier($shop, $quantite)) {
             $can_purchase = false;
             $unavailable_articles[] = $shop->title;
+        }
         }
     }
     $Espece = DB::table('bills_payment_method')->where('payment_method', 'Espèces')->first();
@@ -436,7 +460,10 @@ foreach ($paniers as $panier) {
     }else{
         $paniers = DB::table('basket')
     ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+    ->leftJoin('shop_article', function($join) {
+        $join->on('shop_article.id_shop_article', '=', 'basket.ref')
+             ->where('shop_article.id_shop_article', '<>', -1); 
+    })
     ->where('basket.user_id', '=', auth()->user()->user_id)
     ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
     ->orderBy('basket.pour_user_id')
@@ -532,15 +559,22 @@ foreach ($paniers as $panier) {
         $liaison->ttc = round($panier->totalprice, 2);
         $liaison->addressee = $pou_user->lastname . ' ' . $pou_user->name;
         $liaison->sub_total = round($panier->qte * $panier->totalprice, 2);
-        $liaison->designation = $panier->title;
+        if ($panier->ref == -1) {
+            $liaison->designation = "Réduction";
+
+        } else {
+            $liaison->designation = $panier->title;
+        }
         $liaison->id_shop_article = $panier->ref;
         $liaison->declinaison = $panier->declinaison;
         $liaison->id_user = $pou_user->user_id;
         $liaison->save();
     }
-
+    incrementReductionUsageCount($paniers);
     DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
     MiseAjourStock();
+
+
     return view('postAchat', compact('paniers','total','payment','nb_paiment','bill','text'))->with('user', auth()->user());
     }
 
@@ -600,10 +634,13 @@ $bill = DB::table('bills')
         if ($user->belongsToFamily($bill->family_id) || Route::currentRouteName() === 'facture.showBill') {
         
         $shop = DB::table('liaison_shop_articles_bills')
-        ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') // Left join with the declinaisons table
-        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle') 
+        ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') 
+        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle','liaison_shop_articles_bills.id_shop_article as article_id')
         ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-        ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+        ->leftJoin('shop_article', function($join) {
+            $join->on('shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+                 ->where('shop_article.id_shop_article', '<>', -1); 
+        })
         ->where('bills.id', '=', $id)
         ->orderBy('designation', 'asc')
         ->get()
@@ -632,8 +669,11 @@ $bill = DB::table('bills')
 
 
         $nb_paiment = calculerPaiements($bill->payment_method,$bill->payment_total_amount,$bill->number);
+        $additionalCharge = \App\Models\AdditionalCharge::where('family_id', $user->family_id)->first();
 
-            return view('mafacture', compact('bill','shop_articles','nb_paiment','shop', 'messages'))->with('user', auth()->user());
+        
+        return view('mafacture', compact('bill','shop_articles','nb_paiment','shop', 'messages', 'additionalCharge'))->with('user', auth()->user());
+
         }
 
         abort(403, 'Vous n\'êtes pas autorisé à accéder à cette facture.');

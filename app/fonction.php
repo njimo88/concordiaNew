@@ -24,7 +24,7 @@ use App\Models\LiaisonUserShopReduction;
 use App\Models\Basket;
 use App\Http\Controllers\generatePDF;
 use App\Models\SystemSetting;
-
+use App\Models\Parametre;
 
 
 //fonction pour afficher la famille en fonction de l'id de la famille
@@ -1147,67 +1147,22 @@ Cette fonction vérifie si l'utilisateur est connecté elle filtre les réductio
 Si l'utilisateur n'est pas connecté, la fonction filtre  les réductions pour ne garder que celles qui ne sont liées à aucun utilisateur.
 */
 function getReducedPrice($articleId, $originalPrice, $user_id) {
-    $shopReductions = LiaisonShopArticlesShopReductions::where('id_shop_article', $articleId)->get();
     $reducedPrice = $originalPrice;
-
-    if (Auth::check()) {
-
-        $userId = $user_id;
-        $shopReductions = $shopReductions->filter(function ($shopReduction) use ($userId) {
-            $liaison = LiaisonUserShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
-                ->where(function ($query) use ($userId) {
-                    $query->where('user_id', $userId)
-                        ->orWhereNull('user_id');
-                })
-                ->first();
-            $noUserLiaison = LiaisonUserShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)->first() === null;
-            return $liaison !== null || $noUserLiaison;
-        });
-    } else {
-        $shopReductions = $shopReductions->filter(function ($shopReduction) {
-            $liaison = LiaisonUserShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)->first();
-            return !$liaison;
-        });
-    }
-
     $valueReductions = [];
     $percentageReductions = [];
 
-    foreach ($shopReductions as $shopReduction) {
-        $reduction = ShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
-            ->whereNull('destroy')
-            ->where('state', 1)
-            ->whereDate('startvalidity', '<=', now())
-            ->whereDate('endvalidity', '>=', now())
-            ->first();
+    if (Auth::check() && $user_id) {
+        $userId = $user_id;
 
-        if ($reduction) {
-            if ($reduction->usable != 0) {
-                $userReductionUsage = UserReductionUsage::where('user_id', $userId)
-                    ->where('reduction_id', $reduction->id_shop_reduction)
-                    ->first();
+        // Fetch all user-specific reductions
+        $userReductions = UserReductionUsage::where('user_id', $userId)
+            ->where('shop_article_id', $articleId)
+            ->whereColumn('usage_count', '<', 'usage_max')
+            ->get();
 
-                $usageCount = $userReductionUsage ? $userReductionUsage->usage_count : 0;
-
-                if ($usageCount < $reduction->usable) {
-                    if ($reduction->value != 0) {
-                        $valueReductions[] = $reduction->value;
-                    } elseif ($reduction->percentage != 0) {
-                        $percentageReductions[] = $reduction->percentage;
-                    }
-
-                    if ($userReductionUsage) {
-                        $userReductionUsage->usage_count++;
-                        $userReductionUsage->save();
-                    } else {
-                        UserReductionUsage::create([
-                            'user_id' => $userId,
-                            'reduction_id' => $reduction->id_shop_reduction ,
-                            'usage_count' => 1
-                        ]);
-                    }
-                }
-            } else {
+        foreach ($userReductions as $userReduction) {
+            $reduction = ShopReduction::find($userReduction->reduction_id);
+            if ($reduction && $reduction->state === 1 && now()->between($reduction->startvalidity, $reduction->endvalidity)) {
                 if ($reduction->value != 0) {
                     $valueReductions[] = $reduction->value;
                 } elseif ($reduction->percentage != 0) {
@@ -1217,43 +1172,52 @@ function getReducedPrice($articleId, $originalPrice, $user_id) {
         }
     }
 
-    if (Auth::check()) {
-        $userSpecificReductions = UserReductionUsage::where('user_id', $userId)
-            ->where('shop_article_id', $articleId)
-            ->with(['shopReduction'])
-            ->get();
+    if (empty($valueReductions) && empty($percentageReductions)) {
+        // If no user-specific reductions are found, get general reductions for the article
+        $shopReductions = LiaisonShopArticlesShopReductions::where('id_shop_article', $articleId)->get();
+        foreach ($shopReductions as $shopReduction) {
+            $reduction = ShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
+                ->whereNull('destroy')
+                ->where('state', 1)
+                ->whereDate('startvalidity', '<=', now())
+                ->whereDate('endvalidity', '>=', now())
+                ->first();
 
-        foreach ($userSpecificReductions as $userReduction) {
-            $reduction = $userReduction->shopReduction;
-
-            if ($reduction &&
-                $reduction->startvalidity <= now() &&
-                $reduction->endvalidity >= now() &&
-                $reduction->state == 1 &&
-                !$reduction->destroy
-            ) {
-                if ($userReduction->usage_count < $userReduction->usage_max || $userReduction->usage_max === null) {
-                    if ($reduction->value != 0) {
-                        $valueReductions[] = $reduction->value;
-                    } elseif ($reduction->percentage != 0) {
-                        $percentageReductions[] = $reduction->percentage;
-                    }
-
-                    $userReduction->increment('usage_count');
+            if ($reduction) {
+                if ($reduction->value != 0) {
+                    $valueReductions[] = $reduction->value;
+                } elseif ($reduction->percentage != 0) {
+                    $percentageReductions[] = $reduction->percentage;
                 }
             }
         }
     }
+    
+    // Calculate total value reduction
+    $totalValueReduction = array_sum($valueReductions);
+    
+    // Calculate total percentage reduction
+    $maxPercentageReduction = !empty($percentageReductions) ? max($percentageReductions) : 0;
+    $totalPercentageReduction = $originalPrice * ($maxPercentageReduction / 100);
+    
+    // Use the greater reduction
+    $totalReduction = $totalValueReduction > $totalPercentageReduction ? $totalValueReduction : $totalPercentageReduction;
+    
+    return $totalReduction;
+}
 
-    foreach ($valueReductions as $valueReduction) {
-        $reducedPrice -= $valueReduction;
-    }
+function incrementReductionUsageCount($paniers) {
+    foreach ($paniers as $panier) {
+        // Check if the article is associated with a user reduction
+        $userReductionUsage = UserReductionUsage::where('shop_article_id', $panier->ref)
+                                                ->where('user_id', auth()->user()->user_id)
+                                                ->first();
 
-    if (!empty($percentageReductions)) {
-        $maxPercentageReduction = max($percentageReductions);
-        $reducedPrice *= (1 - ($maxPercentageReduction / 100));
+        if ($userReductionUsage) {
+            // Increment the usage_count by 1
+            $userReductionUsage->increment('usage_count');
+        }
     }
-    return $reducedPrice;
 }
 
 
@@ -1304,47 +1268,43 @@ function getFirstReductionDescription($articleId, $user_id) {
 
 function getFirstReductionDescriptionGuest($articleId) {
     $shopReductions = LiaisonShopArticlesShopReductions::where('id_shop_article', $articleId)->get();
-    $reductionDescription = '';
+    $reductions = collect();
 
-    // Check if user is authenticated
     if (Auth::check()) {
-        $userId = auth()->user()->user_id;
-        $shopReductions = $shopReductions->filter(function ($shopReduction) use ($userId) {
-            // Keep reductions linked to authenticated user or not linked to any user
-            $liaison = LiaisonUserShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
-                ->where(function ($query) use ($userId) {
-                    $query->where('user_id', $userId)
-                        ->orWhereNull('user_id');
-                })
-                ->first();
-            // Keep reductions not linked to any user
-            $noUserLiaison = LiaisonUserShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)->first() === null;
-            return $liaison !== null || $noUserLiaison;
-        });
-    } else {
-        // Filter out reductions linked to any user
-        $shopReductions = $shopReductions->filter(function ($shopReduction) {
-            $liaison = LiaisonUserShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)->first();
-            return !$liaison;
-        });
-    }
-    // Get description of first reduction
-    foreach ($shopReductions as $shopReduction) {
-        $reduction = ShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
-            ->whereNull('destroy')
-            ->where('state', 1)
-            ->whereDate('startvalidity', '<=', now())
-            ->whereDate('endvalidity', '>=', now())
-            ->first();
+        $userId = Auth::user()->user_id;
 
-        if ($reduction) {
-            $reductionDescription = $reduction->description;
-            break;
+        // Récupérez d'abord toutes les réductions spécifiques à l'utilisateur
+        $userReductions = UserReductionUsage::where('user_id', $userId)
+            ->where('shop_article_id', $articleId)
+            ->whereColumn('usage_count', '<', 'usage_max')
+            ->get();
+        
+        foreach ($userReductions as $userReduction) {
+            $reduction = ShopReduction::find($userReduction->reduction_id);
+            if ($reduction && $reduction->state === 1 && now()->between($reduction->startvalidity, $reduction->endvalidity)) {
+                $reductions->push($reduction);
+            }
         }
     }
-    
-    return $reductionDescription;
+
+    if ($reductions->isEmpty()) {
+        foreach ($shopReductions as $shopReduction) {
+            $reduction = ShopReduction::where('id_shop_reduction', $shopReduction->id_shop_reduction)
+                ->whereNull('destroy')
+                ->where('state', 1)
+                ->whereDate('startvalidity', '<=', now())
+                ->whereDate('endvalidity', '>=', now())
+                ->first();
+
+            if ($reduction) {
+                $reductions->push($reduction);
+            }
+        }
+    }
+
+    return $reductions->first()->description ?? '';
 }
+
 
 function getReducedPriceGuest($articleId, $originalPrice) {
     $reducedPrice = $originalPrice;
@@ -1568,60 +1528,31 @@ class BillInfoMail extends \Illuminate\Mail\Mailable
 }
 
 /*----------------------------Index Admin chiffre d'affaire, Reste, nbres Inscrits,--------------------------------*/
-   function count_CA()
-    {
-      //   $this->db->query("SELECT * FROM `parametre` WHERE activate = 1"); 
-        $saison = saison_active() ;
-        $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->pluck('date_de_rentree');
-        $days = 0 ;
-       
-       // $row = $saison->row();
+function count_CA()
+{
+    $dateRentrée = Parametre::where('saison', saison_active())->first()->date_de_rentree;
 
-       // $lastyear  = mktime(date("h"), date("m"), date("s"), date("m"),   date("d"),   date("Y") - 2);
-        
-      //  $result =  DB::table('bills')->where('type','facture')->where('status',100)->sum('payment_total_amount');
-     
+    $factures = bills::where('status', '>', 9)
+                    ->where('date_bill', '>=', $dateRentrée)
+                    ->get();
 
+    $montantTotalNonPayé = $factures->sum('payment_total_amount');
 
-     $result =  DB::table('bills') ->select(DB::raw('ROUND(SUM(payment_total_amount),2) as total'))->where('type','facture')->where('status',100)->whereRaw('DATEDIFF(date_bill, ?) >= ?', [$date_de_rentree, $days])
-     ->first()
-     ->total;
-     
-     
-     //  $result = $this->db->query("SELECT ROUND(SUM(total),2) as cc FROM `bills` WHERE type = 'facture' AND state = 'Paiement accepté' AND DATEDIFF(date_add, '2022-06-26 00:00:00') >= 0");
-
-      //  $row = $result->row();
+    return $montantTotalNonPayé;
+}
 
 
-        return  $result;
+function count_reste_CA()
+{
+    $dateRentrée = Parametre::where('saison', saison_active())->first()->date_de_rentree;
+    $factures = bills::where('status', '>', 9)
+                    ->where('status', '<', 41)
+                    ->where('date_bill', '>=', $dateRentrée)
+                    ->get();
 
-    }
-
-
-   function count_reste_CA()
-    {
-
-        $saison = saison_active() ;
-        $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->pluck('date_de_rentree');
-        $days = 0 ;
-
-        //$saison = $this->db->query("SELECT * FROM `parametre` WHERE activate = 1");
-        $result =  DB::table('bills')->select(DB::raw('ROUND(SUM(payment_total_amount),2) as total'))->where('type','facture')->whereNotIn('status', [100, 90, 6, 70])->whereRaw('DATEDIFF(date_bill, ?) >= ?', [$date_de_rentree, $days])
-        ->first()
-        ->total;
-
-        //$lastyear  = mktime(date("h"), date("m"), date("s"), date("m"),   date("d"),   date("Y") - 2);
-
-      //  $result = $this->db->query("SELECT ROUND(SUM(total),2) as cc FROM `bills` WHERE type = 'facture' AND state != 'Paiement accepté' AND state != 'Commande suspendue' AND state !='Caution acceptée' AND state !='Paiement partiel' AND DATEDIFF(date_add, '2022-06-26 00:00:00') >= 0");
-
-      //  $row = $result->row();
-       // 
-
-       return  $result;
-
-
-
-    }
+    $montantTotalNonPayé = $factures->sum('payment_total_amount');
+    return $montantTotalNonPayé;
+}
 
 
     function inscrits()

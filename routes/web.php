@@ -75,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/factures-devis', [TraitementSupp::class, 'mesfactures'])->name('users.FactureUser');
     Route::get('/users/factures-devis/{id}', [App\Http\Controllers\UsersController::class, 'deleteFacture'])->name('users.deleteFacture');
     Route::get('/users/factures-devis/showBill/{id}', [TraitementSupp::class, 'mafacture'])->name('user.showBill');
+    Route::post('/additional-charge/store', [TraitementSupp::class, 'storeAdditionalCharge'])->name('additional-charge.store');
     Route::get('/search', [BillsController::class, 'search']);
     Route::get('/family-members/{family_id}', [BillsController::class, 'familySearch']);
     Route::post('/create-bill', [BillsController::class, 'createBill'])->name('create-bill');
@@ -99,6 +100,8 @@ Route::post('/generatePDFreduction_Fiscale/{id}', [generatePDF::class, 'generate
     Route::get('/Vider_panier/{id}', [App\Http\Controllers\UsersController::class, 'Vider_panier'])->name('Vider_panier');
     Route::get('/payment_form/{nombre_virment}/{total}', [App\Http\Controllers\UsersController::class, 'showForm'])->name('payment_form');
 
+    Route::get('/payment_formFrais/{nombre_virment}/{total}/{bill_id}', [App\Http\Controllers\UsersController::class, 'showFormFrais'])->name('payment_formFrais');
+    Route::get('/payment-success', [App\Http\Controllers\UsersController::class, 'frais_paye'])->name('frais_paye');
 
     
     /*-----------Paiement----------*/
@@ -513,13 +516,13 @@ Route::get('/shop_categories', [TraitementSupp::class, 'shop_categories'])->name
 Route::get('/sub_shop_categories/{id}', [TraitementSupp::class, 'sub_shop_categories'])->name('sub_shop_categories');
 Route::get('/boutique/{id}', [TraitementSupp::class, 'boutique'])->name('boutique');
 Route::get('/singleProduct/{id}', [TraitementSupp::class, 'singleProduct'])->name('singleProduct');
-Route::get('/basket', [TraitementSupp::class, 'basket'])->name('basket');
-Route::get('/paiement', [TraitementSupp::class, 'paiement'])->name('paiement');
-Route::get('/fichepaiement/{id}/{nombre_cheques}', [TraitementSupp::class, 'fichepaiement'])->name('fichepaiement');
 Route::get('/mesfactures', [TraitementSupp::class, 'mesfactures'])->name('mesfactures');
 Route::get('/mafacture/{id}', [TraitementSupp::class, 'mafacture'])->name('mafacture');
 Route::get('/mafamille', [TraitementSupp::class, 'mafamille'])->name('mafamille');
 Route::get('/generatePDFboutique/{id}', [TraitementSupp::class, 'generatePDF'])->name('generatePDFboutique');
-
-
 Route::post('/prendre_contact',[Prendre_Contact_Controller::class, 'traitement_prendre_contact'])->name('traitement_prendre_contact');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/basket', [TraitementSupp::class, 'basket'])->name('basket');
+    Route::get('/paiement', [TraitementSupp::class, 'paiement'])->name('paiement');
+    Route::get('/fichepaiement/{id}/{nombre_cheques}', [TraitementSupp::class, 'fichepaiement'])->name('fichepaiement');
+} );

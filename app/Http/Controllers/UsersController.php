@@ -17,6 +17,8 @@ use App\Models\Shop_article_2;
 use App\Models\PaiementImmediat;
 use App\Models\Role;
 use App\Models\SystemSetting;
+use App\Models\AdditionalCharge;
+use App\Models\ShopMessage;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use GuzzleHttp\Client;
@@ -94,7 +96,85 @@ class UsersController extends Controller
 }
 
 
+public function showFormFrais($nombre_virment, $total,$bill_id)
+{
+    $userId = Auth::user()->user_id;
+    $user = User::find($userId);
+    $bill_id = $bill_id;
 
+    $bill = bills::latest('id')->first();
+    $year = date('Y');
+    $billIdWithOffset = $bill->id + 10001;
+    $userId = $user->user_id;
+    $orderId = "{$year}-{$billIdWithOffset}-{$userId}";
+   
+    $paiements = calculerPaiements(1, $total, $nombre_virment);
+
+    $utcDate = gmdate('YmdHis');
+    $vads_trans_id = substr(uniqid(), -6);
+    $key = "mfBCrQHiXRZHmkUQ";
+
+    // Change payment configuration depending on the number of payments
+    $payment_config = $nombre_virment > 1
+        ? 'MULTI:first=' . $paiements[0]*100 . ';count=' . $nombre_virment . ';period=30'
+        : 'SINGLE';
+    
+        $data = [
+            "vads_cust_id" => $user->user_id,
+            "vads_cust_email" => $user->email,
+            "vads_cust_first_name" => remove_accents($user->name),
+            "vads_cust_last_name" => remove_accents($user->lastname),
+            "vads_cust_phone" => $user->phone,
+            "vads_cust_address" => remove_accents($user->address),
+            "vads_cust_zip" => remove_accents($user->zip),
+            "vads_cust_city" => remove_accents($user->city),
+            "vads_cust_country" => remove_accents($user->country),
+            "vads_action_mode" => "INTERACTIVE",
+            "vads_amount" => $total*100,
+            "vads_currency" => "978",
+            "vads_ctx_mode" => "PRODUCTION",
+            "vads_order_id" => $orderId,
+            "vads_page_action" => "PAYMENT",
+            "vads_payment_cards" => "VISA;MASTERCARD",
+            "vads_payment_config" => $payment_config,
+            "vads_site_id" => "31118669",
+            "vads_trans_date" => $utcDate,
+            "vads_trans_id" => $vads_trans_id,
+            "vads_version" => "V2",
+            "vads_url_success" => route('frais_paye'),
+            "vads_url_cancel" => route('mesfactures', ['message' => 'Transaction annulée']),
+            "vads_url_error" => route('mesfactures', ['message' => 'Erreur lors de la transaction']),
+            "vads_url_refused" => route('mesfactures', ['message' => 'Transaction refusée']),
+            // New keys for automatic redirection
+            "vads_redirect_success_timeout" => "0",
+            "vads_redirect_error_timeout" => "0",
+            "vads_return_mode" => "GET",
+        ];
+        
+    $signature = generateSignature($data, $key, "HMAC-SHA-256");
+    return view('admin.payment_formFrais')->with(compact( 'nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements' , 'vads_trans_id', 'total', 'user','payment_config','bill_id'));
+
+}
+
+
+public function frais_paye(Request $request)
+{
+    $paymentDetails = "Votre paiement de " . ($request->vads_amount / 100) . " € a été effectué avec succès.";
+    $userFamilyId = auth()->user()->family_id;
+    $billId = AdditionalCharge::where('family_id', $userFamilyId )->where('amount', $request->vads_amount / 100)->first()->bill_id;
+    ShopMessage::create([
+        'message' => $paymentDetails,
+        'date' => now(),
+        'id_bill' => $billId,
+        'id_customer' => auth()->user()->user_id,
+        'id_admin' => 140,
+        'state' => 'Public',
+        'somme_payé' => ($request->vads_amount / 100)*(-1),  
+    ]);
+    AdditionalCharge::where('family_id', $userFamilyId )->where('bill_id', $billId)->delete();
+
+    return redirect()->route('mafacture', ['id' => $billId])->with('success', 'Votre paiement a été effectué avec succès.');
+}
 
    
     

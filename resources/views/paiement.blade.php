@@ -150,6 +150,16 @@ body, html {
             <h4 class="p-3">Adresse de facturation : </h4>
             <span class="d-flex p-3 pt-0">{{ $adresse->address }} <br> {{ $adresse->zip }} {{ $adresse->city }} <br>{{ $adresse->country }}</span>
             @foreach ($paniers as $article)
+            @if ($article->ref == -1)
+            <div class="item">
+                <span style="font-weight:bold" class="text-dark">{{ $article->lastname }} {{ $article->name }}</span>
+                <span>Réduction(s)</span>
+                @if ($article->reduction != null)
+                <span class="text-danger">({{ $article->reduction }})</span>
+                @endif
+                <span class="price">{{ number_format($article->totalprice, 2, ',', ' ') }} €</span>
+            </div>
+            @else
             <div class="item">
                 <span style="font-weight:bold" class="text-dark">{{ $article->lastname }} {{ $article->name }}</span>
                 <span>{{ $article->title }}</span>
@@ -158,6 +168,7 @@ body, html {
                 @endif
                 <span class="price">{{ $article->qte }} * {{ number_format($article->totalprice, 2, ',', ' ') }} €</span>
             </div>
+            @endif
             @endforeach
             <div class="total mt-5">
                 <strong>Total :</strong>

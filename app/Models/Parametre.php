@@ -21,6 +21,8 @@ class Parametre extends Model
      */
     protected $fillable = [
         'saison_index',
+        'saison',
+        'date_de_rentree',
         'fichier_inscription1',
         'fichier_inscription2',
         'fichier_inscription3',

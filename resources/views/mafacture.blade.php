@@ -221,6 +221,9 @@ fieldset {
         @if (auth()->user()->roles->paiement_immediat && Route::currentRouteName() === 'facture.showBill')
           <a href="{{ route("paiement_immediat",$bill->id ) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Immédiat <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
         @endif
+        @if($additionalCharge)
+            <a href="{{ route('payment_formFrais', ['nombre_virment' => 1, 'total' => $additionalCharge->amount, 'bill_id' => $bill->id]) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Frais ({{ number_format($additionalCharge->amount, 2, ',', ' ') }} €) <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
+        @endif
       </div>
     </div>
     </div>
@@ -258,42 +261,43 @@ fieldset {
                             </thead>
                             <tbody>
                                 @foreach ($shop as $shop)
-                                <tr>
-                                    
-                                    <form>
-                                        <td style="width: 600px;">
-                                            <div class="row">
-                                                <div class="col-md-2 col-12">
-                                                    <img style="height: 70px" src="{{ $shop->image }}" alt="">
-                                                </div>
-                                                    <div class="col-md-6 col-12">
-                                                        <a href="{{ route('singleProduct', ['id' => $shop->id_shop_article]) }}" style="text-decoration: none;" target="_blank">
-                                                            <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
-                                                            <select name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
-                                                                <option value="{{ $shop->designation }}" role="option" selected>
-                                                                    {{ $shop->designation }} 
-                                                                    @if(!empty($shop->declinaison_libelle))
-                                                                        [{{ $shop->declinaison_libelle }}]
-                                                                    @endif
-                                                                </option>
-                                                            </select>
-                                                        </a>
-                                                        
-                                                        
+    <tr>
+        @if ($shop->article_id == -1)
+            <td colspan="2" style="text-align:center;">Réduction</td>
+            <td></td>
+            <td>{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
+            <td></td>
+        @else
+            <form>
+                <td style="width: 600px;">
+                    <div class="row">
+                        <div class="col-md-2 col-12">
+                            <img style="height: 70px" src="{{ $shop->image }}" alt="">
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <a href="{{ route('singleProduct', ['id' => $shop->id_shop_article]) }}" style="text-decoration: none;" target="_blank">
+                                <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
+                                <select name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
+                                    <option value="{{ $shop->designation }}" role="option" selected>
+                                        {{ $shop->designation }} 
+                                        @if(!empty($shop->declinaison_libelle))
+                                            [{{ $shop->declinaison_libelle }}]
+                                        @endif
+                                    </option>
+                                </select>
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </form>
+            <td>{{ $shop->quantity }} </td>
+            <td>{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
+            <td>{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
+            <td>{{ $shop->addressee }}</td>
+        @endif
+    </tr>
+@endforeach
 
-                                                    </div>
-                                                
-                                            </div>
-                                        </td>
-                        
-                                    </form>
-                        
-                                    <td>{{ $shop->quantity }} </td>
-                                    <td>{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
-                                    <td>{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
-                                    <td>{{ $shop->addressee }}</td>
-                                </tr>
-                                @endforeach
                             </tbody>
                         </table>
                         

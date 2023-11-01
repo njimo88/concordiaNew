@@ -109,11 +109,8 @@
                                 </select>
 
                                 
-                                <select class="select-form" name="qte" id="qte">
-                                    @for ($i = 1; $i <= 10; $i++) 
-                                        <option value="{{ $i }}">{{ $i }}</option>
-                                    @endfor
-                                </select>
+                                <input type="number" class="select-form" name="qte" id="qte" min="1"  value="1">
+
 
                                 <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
                             @else

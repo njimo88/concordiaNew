@@ -182,37 +182,69 @@ a{
                     </div>
                 @else
                     @foreach ($paniers as $key => $panier)
-                    @if ($key == 0 || ($panier->name != $paniers[$key-1]->name || $panier->lastname != $paniers[$key-1]->lastname))
-                    <div class="row border-top border-bottom table-secondary">
-                        <h6 class="col-12"><b>{{ $panier->lastname }} {{ $panier->name }}</b></h6>
-                    </div>
-                    @endif
+                        @if($panier->ref != -1)
+                            @if ($key == 0 || ($panier->name != $paniers[$key-1]->name || $panier->lastname != $paniers[$key-1]->lastname))
+                            <div class="row border-top border-bottom table-secondary">
+                                <h6 class="col-12"><b>{{ $panier->lastname }} {{ $panier->name }}</b></h6>
+                            </div>
+                            @endif
 
-                    <div class="row border-top border-bottom">
-                        <div class="row main align-items-center">
-                            <div class="col-2">
-                                <img width="70px" class="img-fluid" src="{{ $panier->image }}">
-                            </div>
-                            <div class="col">
-                                <div class="row text-dark">
-                                    {{ $panier->title }}
-                                    @if ($panier->declinaison_libelle != null)
-                                        [{{ $panier->declinaison_libelle }}]
-                                    @endif
-                                    @if ($panier->reduction != null)
-                                        <span class="text-danger">({{ $panier->reduction }})</span>
-                                    @endif
+                            <div class="row border-top border-bottom">
+                                <div class="row main align-items-center">
+                                    <div class="col-2">
+                                        <img width="70px" class="img-fluid" src="{{ $panier->image }}">
+                                    </div>
+                                    <div class="col">
+                                        <div class="row text-dark">
+                                            {{ $panier->title }}
+                                            @if ($panier->declinaison_libelle != null)
+                                                [{{ $panier->declinaison_libelle }}]
+                                            @endif
+                                            @if ($panier->reduction != null)
+                                                <span class="text-danger">({{ $panier->reduction }})</span>
+                                            @endif
+                                        </div>
+                                        <div class="row text-muted">{{ $panier->reff }}</div>
+                                    </div>
+                                    <div class="col">
+                                        <p class="text-muted small">{{ $panier->total_qte }} x {{ number_format($panier->prix, 2, ',', ' ') }}&nbsp;€</p>
+                                    </div>
+                                    <div class="col">
+                                        {{ number_format($panier->prix*$panier->total_qte, 2, ',', ' ') }}&nbsp;€ 
+                                    </div>
                                 </div>
-                                <div class="row text-muted">{{ $panier->reff }}</div>
                             </div>
-                            <div class="col">
-                                <p class="text-muted small">{{ $panier->total_qte }} x {{ number_format($panier->prix, 2, ',', ' ') }}&nbsp;€</p>
+                        @endif
+                    @endforeach
+
+                    <!-- Display Total Reduction -->
+                    @foreach ($paniers as $key => $panier)
+                        @if($panier->ref == -1)
+                            <div class="row border-top border-bottom table-secondary">
+                                <h6 class="col-12"><b>Total Réduction</b></h6>
                             </div>
-                            <div class="col">
-                                {{ number_format($panier->prix*$panier->total_qte, 2, ',', ' ') }}&nbsp;€ 
+                            <div class="row border-top border-bottom">
+                                <div class="row main align-items-center">
+                                    <div class="col">
+                                        <div class="row text-dark">
+                                            Réduction(s)
+                                            @if ($panier->declinaison_libelle != null)
+                                                [{{ $panier->declinaison_libelle }}]
+                                            @endif
+                                            @if ($panier->reduction != null)
+                                                <span class="text-danger">({{ $panier->reduction }})</span>
+                                            @endif
+                                        </div>
+                                        <div class="row text-muted">{{ $panier->reff }}</div>
+                                    </div>
+                                    <div class="col">
+                                    </div>
+                                    <div class="col">
+                                        {{ number_format($panier->prix*$panier->total_qte, 2, ',', ' ') }}&nbsp;€ 
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        @endif
                     @endforeach
                 @endif
             </div>
@@ -227,10 +259,11 @@ a{
                 <div class="col text-right">{{ number_format($total, 2, ',', ' ') }}&nbsp;€</div>
             </div>
             <a href="{{ route('paiement') }}" class="btn btn-success">VALIDER</a>
-            <a href="{{ route('Vider_panier', auth()->user()->user_id) }}" class="btn btn-danger my-2 ">Vider le panier</a>
+            <a href="{{ route('Vider_panier', auth()->user()->user_id) }}" class="btn btn-danger my-2">Vider le panier</a>
         </div>
     </div>
 </div>
+
 </main>
 
 

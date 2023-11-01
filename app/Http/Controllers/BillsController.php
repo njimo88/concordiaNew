@@ -823,14 +823,19 @@ public function updateDes(Request $request, $id){
         if ($user->belongsToFamily($bill->family_id) || Route::currentRouteName() === 'facture.showBill') {
         
         $shop = DB::table('liaison_shop_articles_bills')
-        ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') // Left join with the declinaisons table
-        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle')
+        ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') 
+        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle','liaison_shop_articles_bills.id_shop_article as article_id')
         ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-        ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+        ->leftJoin('shop_article', function($join) {
+            $join->on('shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+                 ->where('shop_article.id_shop_article', '<>', -1); 
+        })
         ->where('bills.id', '=', $id)
         ->orderBy('designation', 'asc')
         ->get()
         ;
+
+        
 
         $status = DB::table('bills_status')
         ->select('id','status')

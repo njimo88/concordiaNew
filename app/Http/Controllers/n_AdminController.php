@@ -36,7 +36,6 @@ class n_AdminController extends Controller
                     // recupere l'annee du debut des activites de l'association (au depart 2015)
                     $date_de_rentree = DB::table('system')->where('name','date_de_rentree')->first('value');
                     $annee_creation = $date_de_rentree->value;
-
                     // la difference entre l'annee de la saison actuelle et celle de la saison encore
                     $diff_year = $annee_actu - $annee_creation ;
 
