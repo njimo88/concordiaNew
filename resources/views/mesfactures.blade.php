@@ -161,7 +161,7 @@ a {
         <div class="d-flex align-items-center">
     
             <div>
-                Factures totales : <span>{{ count($bill) }}</span>
+                Factures totales : <span>{{ count($bills) }}</span>
             </div>
 
             <div class="toggle-container mx-3 d-flex align-items-center">
@@ -176,9 +176,13 @@ a {
                 <label for="devisCheckbox" class="button me-2"></label>
                 <span class="toggle-label me-2">Devis</span>
             </div>
-    
-            <!-- Total bills -->
-            
+
+            @if ($additionalChargesCount > 0)
+                <div class="alert alert-warning" role="alert">
+                    Votre famille a {{ $additionalChargesCount }} charge(s) supplémentaire(s) en attente.
+                </div>
+            @endif
+
         </div>
     </div>
     
@@ -197,29 +201,36 @@ a {
             </thead>
             <tbody>
                 
-                @foreach ($bill as $bills)
-                <tr data-bill-type="{{ $bills->type }}" >
-                    <td>
-                        <a href="{{ route('user.showBill', ['id' => $bills->id]) }}" target="_blank" data-bs-toggle="tooltip" title="Afficher Facture">
-                            {{ intval($bills->id) }}
-                        </a>
-                    </td>
-                    <td style="font-weight:bold;">{{ $user->lastname}} {{ $user->name}}</td>
-                    <td>
-                        <img style="height: 30px" src="{{ $bills->image }}" alt="">
-                        <span class="d-none">{{ $bills->payment_method }}</span>
-                    </td>
-                    <td>{{ date("d/m/Y à H:i", strtotime($bills->date_bill)) }}</td>
-                    <td class="amount" style="font-weight:bold;">
-                        {{ number_format($bills->payment_total_amount, 2, ',', ' ') }}€
-                    </td>
-                    <td>
-                        <img src="{{ $bills->image_status }}" alt="Caution acceptée">
-                        <span class="d-none">{{ $bills->status }}</span>
-                    </td>
-                </tr>
-                @endforeach  
-                
+                @foreach ($bills as $bill)
+               
+                    <tr data-bill-type="{{ $bill->type }}">
+                        <td style="white-space: nowrap;">
+                            <div class="d-flex align-items-center">
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <a href="{{ route('user.showBill', ['id' => $bill->id]) }}" target="_blank" data-bs-toggle="tooltip" title="Afficher Facture" class="me-2">
+                                    {{ intval($bill->id) }}
+                                </a>
+                                @if($bill->additionalCharges->isNotEmpty())
+                                    <span class="badge bg-warning text-dark">Notice</span>
+                                @endif
+                            </div>
+                        </td>
+                        
+                        <td style="font-weight:bold;">{{ $bill->user->lastname ?? '' }} {{ $bill->user->name ?? '' }}</td>
+                        <td>
+                            <img style="height: 30px" src="{{ $bill->image }}" alt="">
+                            <span class="d-none">{{ $bill->paymentMethod->payment_method ?? '' }}</span>
+                        </td>
+                        <td>{{ date("d/m/Y à H:i", strtotime($bill->date_bill)) }}</td>
+                        <td class="amount" style="font-weight:bold;">
+                            {{ number_format($bill->payment_total_amount, 2, ',', ' ') }}€
+                        </td>
+                        <td>
+                            <img src="{{ $bill->image_status }}" alt="Status Image">
+                            <span class="d-none">{{ $bill->status->status ?? '' }}</span>
+                        </td>
+                    </tr>
+                @endforeach
                     <tr>
                         <td colspan="6" style="text-align:center;">Aucune facture à afficher.</td>
                     </tr>

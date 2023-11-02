@@ -308,7 +308,10 @@ public function detail_paiement($id,$nombre_cheques)
     }else{
         $paniers = DB::table('basket')
     ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+    ->leftJoin('shop_article', function($join) {
+        $join->on('shop_article.id_shop_article', '=', 'basket.ref')
+             ->where('shop_article.id_shop_article', '<>', -1); 
+    })
     ->where('basket.user_id', '=', auth()->user()->user_id)
     ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
     ->orderBy('basket.pour_user_id')
@@ -394,8 +397,8 @@ public function detail_paiement($id,$nombre_cheques)
 
 
 
-    // Ajouter des lignes dans la table de liaison
-    foreach ($paniers as $panier) {
+     // Ajouter des lignes dans la table de liaison
+     foreach ($paniers as $panier) {
         $pou_user = User::where('user_id', $panier->pour_user_id)->first();
         $liaison = new liaison_shop_articles_bills;
         $liaison->bill_id = $bill->id;
@@ -404,13 +407,18 @@ public function detail_paiement($id,$nombre_cheques)
         $liaison->ttc = round($panier->totalprice, 2);
         $liaison->addressee = $pou_user->lastname . ' ' . $pou_user->name;
         $liaison->sub_total = round($panier->qte * $panier->totalprice, 2);
-        $liaison->designation = $panier->title;
+        if ($panier->ref == -1) {
+            $liaison->designation = "Réduction";
+
+        } else {
+            $liaison->designation = $panier->title;
+        }
         $liaison->id_shop_article = $panier->ref;
         $liaison->declinaison = $panier->declinaison;
         $liaison->id_user = $pou_user->user_id;
         $liaison->save();
     }
-
+    incrementReductionUsageCount($paniers);
     DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
     MiseAjourStock();
     return view('users.detail_paiement', compact('paniers','total','payment','nb_paiment','bill','text'))->with('user', auth()->user());

@@ -15,6 +15,9 @@ use App\Models\Room;
 use App\Models\User;
 use App\Models\SystemSetting;
 use App\Models\bills;
+use App\Models\old_bills;
+use App\Models\BillStatus;
+use App\Models\BillPaymentMethod;
 use App\Models\liaison_shop_articles_bills;
 use App\Models\PaiementImmediat;
 use App\Models\Declinaison;
@@ -54,7 +57,7 @@ class TraitementSupp extends Controller
             'amount' => 'required|numeric',
         ]);
 
-        $data['family_id'] = auth()->user()->family_id;
+        $data['family_id'] = bills::find($data['bill_id'])->family_id;
     
         AdditionalCharge::create($data);
     
@@ -584,29 +587,27 @@ foreach ($paniers as $panier) {
     public function mesfactures()
     {
         $user = Auth::user();
+    $familyId = $user->family_id; // Get the family ID
 
-$bill = DB::table('bills')
-    ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-    ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-    ->where('bills.user_id', $user->user_id)
-    ->select('bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.image as image')
-    ->union(
-        DB::table('old_bills')
-        ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
-        ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
-        ->where('old_bills.user_id', $user->user_id)
-        ->select('old_bills.*', 'bills_status.image_status as image_status', 'bills_status.row_color as row_color', 'bills_payment_method.icon as image')
-    )->orderBy('date_bill', 'desc')
+    $currentBills = bills::with(['Billstat', 'paymentMethod', 'user', 'additionalCharges'])
+    ->where('family_id', $familyId)
     ->get();
-    
-    $family_id = auth()->user()->family_id;
 
+$oldBills = old_bills::with(['Billstat', 'paymentMethod', 'user', 'additionalCharges'])
+    ->where('family_id', $familyId)
+    ->get();
+
+
+    // we need to manually merge the collections if that's what you need.
+    $bills = $currentBills->merge($oldBills)->sortByDesc('date_bill');
+    $family_id = auth()->user()->family_id;
+    $additionalChargesCount = AdditionalCharge::where('family_id', $family_id)->count();
     if(PaiementImmediat::where('family_id', $family_id)->exists()) {
         // Afficher le bouton de paiement
-        return view('mesfactures', compact('bill'))->with('user', auth()->user())->with('showPaymentButton', true);
+        return view('mesfactures', compact('bills', 'additionalChargesCount'))->with('user', auth()->user())->with('showPaymentButton', true);
     } else {
         // Masquer le bouton de paiement
-        return view('mesfactures', compact('bill'))->with('user', auth()->user())->with('showPaymentButton', false);
+        return view('mesfactures', compact('bills', 'additionalChargesCount'))->with('user', auth()->user())->with('showPaymentButton', false);
     }
 
     }
