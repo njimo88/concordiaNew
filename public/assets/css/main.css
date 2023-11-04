@@ -3232,7 +3232,7 @@ button:hover {
 .news-card {
   overflow: hidden;
   margin-bottom: 30px;
-  min-height: 480px;
+  min-height: 525px;
 }
 
 .news-card .news-img {

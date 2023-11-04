@@ -8,27 +8,24 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="additionalChargeModalLabel">Add Additional Charge</h5>
+        <h5 class="modal-title" id="additionalChargeModalLabel">Ajout de frais supplémentaires</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form action="{{ route('additional-charge.store') }}" method="POST">
           @csrf
           <div class="form-group">
-            <label for="bill_id">Bill ID:</label>
+            <label for="bill_id">ID Facture:</label>
             <input type="text" name="bill_id" id="bill_id" required class="form-control" value="{{ $bill->id }}" readonly>
           </div>
 
           <div class="form-group">
-            <label for="amount">Amount:</label>
+            <label for="amount">Montant:</label>
             <input type="text" name="amount" id="amount" required class="form-control">
           </div>
 
-          <button type="submit" class="btn btn-primary">Add Charge</button>
+          <button type="submit" class="btn btn-primary">Ajouter</button>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -257,8 +254,8 @@
           <a href="{{ route("paiement_immediat",$bill->id ) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Immédiat <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
         @endif
         <!-- Button trigger modal -->
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#additionalChargeModal">
-        Ajouter des frais
+      <button type="button" class="btn-danger" data-bs-toggle="modal" data-bs-target="#additionalChargeModal">
+        paiement CB <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt="">
       </button>
       </div>
       

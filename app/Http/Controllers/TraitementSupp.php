@@ -127,6 +127,7 @@ class TraitementSupp extends Controller
     {
         $posts = A_Blog_Post::latest()
         ->where('status', '=', 'Publié')
+        ->where('date_post', '<=', now()) 
         ->paginate(5);
 
         $categorie = Category::all();
@@ -161,9 +162,11 @@ class TraitementSupp extends Controller
     public function tousLesArticles()
 {
     $posts = A_Blog_Post::where('status', '=', 'Publié')
+        ->where('date_post', '<=', now()) 
         ->orderBy('date_post', 'desc')
         ->paginate(9);
 
+       
 
     $categorie = Category::all();
 
@@ -354,6 +357,9 @@ public function basket()
             $total += $panier->total_qte * $panier->prix;
         }
 
+        if ($total < 0) {
+            $total = 0;
+        }
         
         return  view ('basket', compact('paniers', 'total'))->with('user', auth()->user());
     } else {
@@ -401,7 +407,9 @@ $total = 0;
 foreach ($paniers as $panier) {
     $total += $panier->qte * $panier->totalprice;
 }
-
+if ($total < 0) {
+    $total = 0;
+}
 
     $can_purchase = true;
     $unavailable_articles = [];
@@ -480,7 +488,9 @@ foreach ($paniers as $panier) {
     foreach ($paniers as $panier) {
         $total += $panier->qte * $panier->totalprice;
     }
-    
+    if ($total < 0) {
+        $total = 0;
+    }
 
     if($paniers->count() == 0){
         return redirect()->route('basket');}

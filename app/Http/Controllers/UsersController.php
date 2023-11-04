@@ -104,7 +104,7 @@ public function showFormFrais($nombre_virment, $total,$bill_id)
 
     $bill = bills::latest('id')->first();
     $year = date('Y');
-    $billIdWithOffset = $bill->id + 10001;
+    $billIdWithOffset = $bill_id + 10000;
     $userId = $user->user_id;
     $orderId = "{$year}-{$billIdWithOffset}-{$userId}";
    
@@ -162,6 +162,7 @@ public function frais_paye(Request $request)
     $paymentDetails = "Votre paiement de " . ($request->vads_amount / 100) . " € a été effectué avec succès.";
     $userFamilyId = auth()->user()->family_id;
     $billId = AdditionalCharge::where('family_id', $userFamilyId )->where('amount', $request->vads_amount / 100)->first()->bill_id;
+    
     ShopMessage::create([
         'message' => $paymentDetails,
         'date' => now(),
@@ -171,10 +172,18 @@ public function frais_paye(Request $request)
         'state' => 'Public',
         'somme_payé' => ($request->vads_amount / 100)*(-1),  
     ]);
+    
     AdditionalCharge::where('family_id', $userFamilyId )->where('bill_id', $billId)->delete();
+    
+    $bill = bills::where('id', $billId)->first();
+    if ($bill) {
+        $bill->status = 100; 
+        $bill->save(); 
+    }
 
     return redirect()->route('mafacture', ['id' => $billId])->with('success', 'Votre paiement a été effectué avec succès.');
 }
+
 
    
     
@@ -325,8 +334,9 @@ public function detail_paiement($id,$nombre_cheques)
     foreach ($paniers as $panier) {
         $total += $panier->qte * $panier->totalprice;
     }
-    
-
+    if ($total < 0) {
+        $total = 0;
+    }
     if($paniers->count() == 0){
         return redirect()->route('panier');}
         else{
@@ -472,7 +482,9 @@ foreach ($paniers as $panier) {
     $total += $panier->qte * $panier->totalprice;
 }
 
-
+if ($total < 0) {
+    $total = 0;
+}
     $can_purchase = true;
     $unavailable_articles = [];
 

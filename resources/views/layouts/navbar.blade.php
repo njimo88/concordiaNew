@@ -366,6 +366,32 @@ use Illuminate\Support\Facades\Route;
         <nav id="navbar" class="navbar">
           <ul>
             <li><a href="{{ route('A_blog') }}"><span>&nbsp;Accueil</span></a></li>
+            <li class="dropdown">
+              <a href="#">
+                  @if(auth()->user()->image) {{-- Check for user image --}}
+                      <img src="{{ auth()->user()->image }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
+                  @elseif(auth()->user()->gender == 'male') {{-- Check for male gender --}}
+                      <img src="{{ asset('assets/images/user.jpg') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
+                  @else {{-- Assuming female for any other case --}}
+                      <img src="{{ asset('assets/images/femaleuser.png') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
+                  @endif
+                  <span>{{ auth()->user()->lastname }} {{ auth()->user()->name }}</span>
+                  <i class="bi bi-chevron-down dropdown-indicator"></i>
+              </a>
+            
+              <ul class="user-options">
+                  @if (auth()->user()->role >= 20)
+                      <li><a href="{{ route('admin.index') }}"><span>&nbsp;Administration</span></a></li>
+                  @endif
+            
+                  <li><a href="{{ route('users.family') }}"><span>&nbsp;Ma Famille</span></a></li>
+                  <li><a href="{{ route('users.FactureUser') }}"><span>&nbsp;Mes Factures/Devis</span></a></li>
+                  <li><a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><span>&nbsp;Déconnecter</span></a></li>
+                  <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                      @csrf
+                  </form>
+              </ul>
+            </li>
             <li class="dropdown"><a href="#"><span>&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
               <ul>
                 <li class="">
@@ -522,32 +548,7 @@ use Illuminate\Support\Facades\Route;
                   }
             </style>
             <!-- HTML -->
-<li class="dropdown">
-  <a href="#">
-      @if(auth()->user()->image) {{-- Check for user image --}}
-          <img src="{{ auth()->user()->image }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
-      @elseif(auth()->user()->gender == 'male') {{-- Check for male gender --}}
-          <img src="{{ asset('assets/images/user.jpg') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
-      @else {{-- Assuming female for any other case --}}
-          <img src="{{ asset('assets/images/femaleuser.png') }}" class="rounded-circle" alt="{{ auth()->user()->name }}">
-      @endif
-      <span>{{ auth()->user()->lastname }} {{ auth()->user()->name }}</span>
-      <i class="bi bi-chevron-down dropdown-indicator"></i>
-  </a>
 
-  <ul class="user-options">
-      @if (auth()->user()->role >= 20)
-          <li><a href="{{ route('admin.index') }}"><span>&nbsp;Administration</span></a></li>
-      @endif
-
-      <li><a href="{{ route('users.family') }}"><span>&nbsp;Ma Famille</span></a></li>
-      <li><a href="{{ route('users.FactureUser') }}"><span>&nbsp;Mes Factures/Devis</span></a></li>
-      <li><a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();"><span>&nbsp;Déconnecter</span></a></li>
-      <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-          @csrf
-      </form>
-  </ul>
-</li>
             @php
                 $paniers = DB::table('basket')
                             ->select('basket.id')
@@ -676,7 +677,21 @@ use Illuminate\Support\Facades\Route;
     }
  
     
-    
+    @media (max-width: 768px) {
+  /* Add this CSS for responsive ordering */
+  .navbar ul {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .navbar li.dropdown {
+    order: -1; /* This will move the specified <li> to the top */
+  }
+
+  .navbar li:not(.dropdown) {
+    order: 1; /* Reset the order for other <li> elements */
+  }
+}
     
         @media screen and (min-width: 1250px) {
           

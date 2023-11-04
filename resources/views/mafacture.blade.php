@@ -222,7 +222,7 @@ fieldset {
           <a href="{{ route("paiement_immediat",$bill->id ) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Immédiat <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
         @endif
         @if($additionalCharge)
-            <a href="{{ route('payment_formFrais', ['nombre_virment' => 1, 'total' => $additionalCharge->amount, 'bill_id' => $bill->id]) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement Frais ({{ number_format($additionalCharge->amount, 2, ',', ' ') }} €) <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
+            <a href="{{ route('payment_formFrais', ['nombre_virment' => 1, 'total' => $additionalCharge->amount, 'bill_id' => $bill->id]) }}" class="my-custom-btn btn btn-primary my-4 p-2">Paiement partiel ({{ number_format($additionalCharge->amount, 2, ',', ' ') }} €) <img  style="width: 30px" src="{{ asset('assets/images/fds.png') }}" alt=""></a>
         @endif
       </div>
     </div>
