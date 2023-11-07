@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(new ClickAsso)->dailyAt('00:00');
         $schedule->command('bills:transfer')->dailyAt('00:00');
         $schedule->job(new \App\Jobs\SyncWithClickAssoJob)->dailyAt('00:00');
+        $schedule->command('baskets:delete-daily')->dailyAt('00:00');
     }
     
 

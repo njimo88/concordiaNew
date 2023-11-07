@@ -69,8 +69,13 @@ class User extends Authenticatable implements CanResetPassword
 }
 
 public function bills()
+    {
+        return $this->hasMany(bills::class, 'user_id');
+    }
+
+public function old_bills()
 {
-    return $this->hasMany(bills::class, 'user_id');
+    return $this->hasMany(old_bills::class, 'user_id');
 }
 
 public function liaisonShopArticlesBill()

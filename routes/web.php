@@ -105,7 +105,7 @@ Route::post('/generatePDFreduction_Fiscale/{id}', [generatePDF::class, 'generate
 
     
     /*-----------Paiement----------*/
-    Route::get('/detail_paiement/{id}/{nombre_cheques}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
+    Route::get('/detail_paiement/{id}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
 
 });
 

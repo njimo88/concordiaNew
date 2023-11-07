@@ -37,12 +37,135 @@ class UsersController extends Controller
     
     public function showForm($nombre_virment, $total)
 {
+
+    $paniers = DB::table('basket')
+    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+    ->where('basket.user_id', '=',auth()->user()->user_id)
+    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref', 'users.name', 'users.lastname')
+    ->orderBy('basket.pour_user_id')
+    ->orderBy('basket.ref')
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->get();
+
+    
+
+    MiseAjourArticlePanier($paniers);
+    $can_purchase = true;
+    $unavailable_articles = [];
+
+    foreach ($paniers as $panier) {
+        $shop = Shop_article::find($panier->ref); 
+        $quantite = $panier->total_qte;
+        if (!verifierStockUnArticlePanier($shop, $quantite)) {
+            $can_purchase = false;
+            $unavailable_articles[] = $shop->title;
+        }
+    }
+
+    if (!$can_purchase ) {
+        $error_msg = "Les articles suivants ne peuvent pas être achetés: " . implode(', ', $unavailable_articles);
+        return redirect()->back()->withErrors([$error_msg]);
+    }else{
+        $paniers = DB::table('basket')
+    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+    ->leftJoin('shop_article', function($join) {
+        $join->on('shop_article.id_shop_article', '=', 'basket.ref')
+             ->where('shop_article.id_shop_article', '<>', -1); 
+    })
+    ->where('basket.user_id', '=', auth()->user()->user_id)
+    ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
+    ->orderBy('basket.pour_user_id')
+    ->orderBy('basket.ref')
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'basket.pour_user_id', 'shop_article.title', 'basket.declinaison', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->get();
+
+        $payment = DB::table('bills_payment_method')->where('id', '=', 1)->first()->payment_method;
+
+    $total = 0;
+    foreach ($paniers as $panier) {
+        $total += $panier->qte * $panier->totalprice;
+    }
+    if ($total < 0) {
+        $total = 0;
+    }
+    if($paniers->count() == 0){
+        return redirect()->route('panier');}
+        else{
+    $bill = new bills;
+    $bill->user_id = auth()->user()->user_id;
+    $bill->date_bill = date('Y-m-d H:i:s');
+    $bill->type = "facture";
+    $bill->number = $nombre_virment;
+    $bill->payment_method = 1;
+    $bill->status = 31; 
+    $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
+
+    $nb_paiment = calculerPaiements(1,$total,$nombre_virment);
+
+    $bill->payment_total_amount = $total;
+    $bill->family_id = auth()->user()->family_id;
+    $bill->ref = "0";
+    $bill->save();
+
+    $year = date('Y');
+    $billIdWithOffset = $bill->id + 10000;
+    $bill->ref = "{$year}-{$billIdWithOffset}";
+    
+    $bill->save();
+
+    // envoi du mail à la propriétaire de la facture
+    $user = auth()->user();
+    $receiverEmail = $user->email;
+    $userName = 'Gym Concordia [Bureau]';
+    $message = "Votre facture n°{$bill->id} a été créée avec succès.";
+    $userEmail = "webmaster@gym-concordia.com";
+    envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill, $text);
+
+    // envoi du mail Paiement Accepté
+    if ($bill->status == 100) {
+        $generatePDFController = new generatePDF();  
+        $pdfPath = $generatePDFController->generatePDFreduction_FiscaleOutput($bill->id);
+        Mail::send('emails.order_accepted', ['user' => $user, 'bill' => $bill], function ($message) use ($receiverEmail, $pdfPath,$bill) {
+            $message->from(config('mail.from.address'), config('mail.from.name'));
+            $message->to($receiverEmail);
+            $message->subject("Paiement accepté - Commande : " . $bill->ref);
+        });
+    }
+
+
+
+     // Ajouter des lignes dans la table de liaison
+     foreach ($paniers as $panier) {
+        $pou_user = User::where('user_id', $panier->pour_user_id)->first();
+        $liaison = new liaison_shop_articles_bills;
+        $liaison->bill_id = $bill->id;
+        $liaison->href_product = $panier->reff;
+        $liaison->quantity = $panier->qte;
+        $liaison->ttc = round($panier->totalprice, 2);
+        $liaison->addressee = $pou_user->lastname . ' ' . $pou_user->name;
+        $liaison->sub_total = round($panier->qte * $panier->totalprice, 2);
+        if ($panier->ref == -1) {
+            $liaison->designation = "Réduction";
+
+        } else {
+            $liaison->designation = $panier->title;
+        }
+        $liaison->id_shop_article = $panier->ref;
+        $liaison->declinaison = $panier->declinaison;
+        $liaison->id_user = $pou_user->user_id;
+        $liaison->save();
+    }
+    incrementReductionUsageCount($paniers);
+    DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
+    MiseAjourStock();
+
     $userId = Auth::user()->user_id;
     $user = User::find($userId);
 
-    $bill = bills::latest('id')->first();
+    
     $year = date('Y');
-    $billIdWithOffset = $bill->id + 10001;
+    $billIdWithOffset = $bill->id + 10000;
     $userId = $user->user_id;
     $orderId = "{$year}-{$billIdWithOffset}-{$userId}";
    
@@ -79,7 +202,7 @@ class UsersController extends Controller
             "vads_trans_date" => $utcDate,
             "vads_trans_id" => $vads_trans_id,
             "vads_version" => "V2",
-            "vads_url_success" => route('detail_paiement', ['id' => 1, 'nombre_cheques' => $nombre_virment]),
+            "vads_url_success" => route('detail_paiement', ['id' => $bill->id]),
             "vads_url_cancel" => route('panier', ['message' => 'Transaction annulée']),
             "vads_url_error" => route('panier', ['message' => 'Erreur lors de la transaction']),
             "vads_url_refused" => route('panier', ['message' => 'Transaction refusée']),
@@ -91,8 +214,8 @@ class UsersController extends Controller
         
     $signature = generateSignature($data, $key, "HMAC-SHA-256");
 
-    return view('admin.payment_form')->with(compact( 'nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements' , 'vads_trans_id', 'total', 'user','payment_config'));
-
+    return view('admin.payment_form')->with(compact( 'nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements' , 'vads_trans_id', 'total', 'user','payment_config','bill'));
+        }}
 }
 
 
@@ -284,159 +407,28 @@ public function uploadProfileImage(Request $request)
     }
 }
 
-public function detail_paiement($id,$nombre_cheques)
+public function detail_paiement($id)
 {
-    $paniers = DB::table('basket')
-    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
-    ->where('basket.user_id', '=',auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref', 'users.name', 'users.lastname')
-    ->orderBy('basket.pour_user_id')
-    ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
-    ->get();
-
-    
-
-    MiseAjourArticlePanier($paniers);
-    $can_purchase = true;
-    $unavailable_articles = [];
-
-    foreach ($paniers as $panier) {
-        $shop = Shop_article::find($panier->ref); 
-        $quantite = $panier->total_qte;
-        if (!verifierStockUnArticlePanier($shop, $quantite)) {
-            $can_purchase = false;
-            $unavailable_articles[] = $shop->title;
-        }
-    }
-
-    if (!$can_purchase ) {
-        $error_msg = "Les articles suivants ne peuvent pas être achetés: " . implode(', ', $unavailable_articles);
-        return redirect()->back()->withErrors([$error_msg]);
-    }else{
-        $paniers = DB::table('basket')
-    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-    ->leftJoin('shop_article', function($join) {
-        $join->on('shop_article.id_shop_article', '=', 'basket.ref')
-             ->where('shop_article.id_shop_article', '<>', -1); 
-    })
-    ->where('basket.user_id', '=', auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
-    ->orderBy('basket.pour_user_id')
-    ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'basket.pour_user_id', 'shop_article.title', 'basket.declinaison', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
-    ->get();
-
-        $payment = DB::table('bills_payment_method')->where('id', '=', $id)->first()->payment_method;
-
-    $total = 0;
-    foreach ($paniers as $panier) {
-        $total += $panier->qte * $panier->totalprice;
-    }
-    if ($total < 0) {
-        $total = 0;
-    }
-    if($paniers->count() == 0){
-        return redirect()->route('panier');}
-        else{
-    $bill = new bills;
-    $bill->user_id = auth()->user()->user_id;
-    $bill->date_bill = date('Y-m-d H:i:s');
-    $bill->type = "facture";
-    $bill->number = $nombre_cheques;
-    $bill->payment_method = $id;
-    
-
-    if ($id == 3){
-        $bill->status = 32;
-    $text = DB::table('bills_payment_method')->where('payment_method', 'Espèces')->first();
-
-    }elseif ($id == 2){
-        $bill->status = 38;
-        $text = DB::table('bills_payment_method')->where('payment_method', 'Mixte')->first();
-    }elseif($id == 4){
-    $text = DB::table('bills_payment_method')->where('payment_method', 'Chèques')->first();
-    $total += $nombre_cheques;
-        $bill->status = 30;
-    }elseif ($id == 5){
-        $bill->status = 34;
-    $text = DB::table('bills_payment_method')->where('payment_method', 'Bons')->first();
-    $total += 5;
-
-    }elseif ($id == 6){
-        $bill->status = 36;
-    $text = DB::table('bills_payment_method')->where('payment_method', 'Virement')->first();
-
-    }elseif ($id == 1){
+    $bill = bills::where('id', $id)->first();
+    if ($bill) {
         $bill->status = 100; 
-        $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
+        $bill->save(); 
     }
+    $payment = DB::table('bills_payment_method')->where('id', '=', 1)->first()->payment_method;
 
-    $nb_paiment = calculerPaiements($id,$total,$nombre_cheques);
+    $total = $bill->payment_total_amount;
 
-    $bill->payment_total_amount = $total;
-    $bill->family_id = auth()->user()->family_id;
-    $bill->ref = "0";
-    $bill->save();
+    $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
 
-    $year = date('Y');
-    $billIdWithOffset = $bill->id + 10000;
-    $bill->ref = "{$year}-{$billIdWithOffset}";
-    
-    $bill->save();
+    $nombre_cheques = $bill->number;
 
-    // envoi du mail à la propriétaire de la facture
-    $user = auth()->user();
-    $receiverEmail = $user->email;
-    $userName = 'Gym Concordia [Bureau]';
-    $message = "Votre facture n°{$bill->id} a été créée avec succès.";
-    $userEmail = "webmaster@gym-concordia.com";
-    envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill, $text);
+    $nb_paiment = calculerPaiements(1,$total,$nombre_cheques);
 
-    // envoi du mail Paiement Accepté
-    if ($bill->status == 100) {
-        $generatePDFController = new generatePDF();  
-        $pdfPath = $generatePDFController->generatePDFreduction_FiscaleOutput($bill->id);
-        Mail::send('emails.order_accepted', ['user' => $user, 'bill' => $bill], function ($message) use ($receiverEmail, $pdfPath,$bill) {
-            $message->from(config('mail.from.address'), config('mail.from.name'));
-            $message->to($receiverEmail);
-            $message->subject("Paiement accepté - Commande : " . $bill->ref);
-        });
-    }
+   
+    return view('users.detail_paiement', compact('total','payment','nb_paiment','bill','text'))->with('user', auth()->user());
 
-
-
-     // Ajouter des lignes dans la table de liaison
-     foreach ($paniers as $panier) {
-        $pou_user = User::where('user_id', $panier->pour_user_id)->first();
-        $liaison = new liaison_shop_articles_bills;
-        $liaison->bill_id = $bill->id;
-        $liaison->href_product = $panier->reff;
-        $liaison->quantity = $panier->qte;
-        $liaison->ttc = round($panier->totalprice, 2);
-        $liaison->addressee = $pou_user->lastname . ' ' . $pou_user->name;
-        $liaison->sub_total = round($panier->qte * $panier->totalprice, 2);
-        if ($panier->ref == -1) {
-            $liaison->designation = "Réduction";
-
-        } else {
-            $liaison->designation = $panier->title;
-        }
-        $liaison->id_shop_article = $panier->ref;
-        $liaison->declinaison = $panier->declinaison;
-        $liaison->id_user = $pou_user->user_id;
-        $liaison->save();
-    }
-    incrementReductionUsageCount($paniers);
-    DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
-    MiseAjourStock();
-    return view('users.detail_paiement', compact('paniers','total','payment','nb_paiment','bill','text'))->with('user', auth()->user());
 }
-
-    }
     
-}
 
     public function Vider_panier(){
         DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
