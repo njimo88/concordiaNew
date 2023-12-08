@@ -209,7 +209,7 @@ $TotalMaladiepris = 0 ;
 										</thead>
 										<tbody>
                                             @php
-                                                $daysInMonth = date('t', mktime(0, 0, 0, $mois+1, 1, $annee));
+                                                $daysInMonth = date('t', mktime(0, 0, 0, $mois, 1, $annee));
                                             @endphp
                                             @for ($day = 1; $day <= $daysInMonth; $day++)
                                                 @php

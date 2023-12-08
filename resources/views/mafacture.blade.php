@@ -161,7 +161,7 @@ fieldset {
           $formattedDate = strtr(\Carbon\Carbon::parse($bill->date_bill)->isoFormat('dddd D MMMM YYYY à HH:mm:ss'), $englishToFrench);
           
           // Output the formatted date
-          echo '<span style="font-weight:bold">Date</span> '.$formattedDate;
+          echo '<span style="font-weight:bold">Date : </span> '.$formattedDate;
           ?>
         <br>
         <span style="font-weight:bold">Référence commande </span>: {{ $bill->ref }} <br>
@@ -195,7 +195,8 @@ fieldset {
               'December' => 'décembre',
           ];
 
-          $datetime = new DateTime(now()->format('Y-m-d'));
+          $billDate = \Carbon\Carbon::parse($bill->date_bill);
+          $datetime = new DateTime($billDate->format('Y-m-d'));
           $formattedMonthYear = $datetime->format('F Y');
           $i = 1;
 

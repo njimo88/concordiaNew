@@ -503,7 +503,6 @@ public function valideHeure()
        ->join('users', 'users.user_id', '=', 'declarations.user_id')
        ->select('users.name', 'users.lastname','declarations.*')
        ->get();
-
          return view('admin.professionnels.valider_heures',compact('declaration'));
         
     }

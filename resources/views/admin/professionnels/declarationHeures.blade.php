@@ -1079,21 +1079,23 @@ $TotalMaladiepris = 0 ;
 										</thead>
 										<tbody>
 											@php
-											
-											  $daysInMonth = date('t', mktime(0, 0, 0, $mois+1, 1, $annee));
+												// Calcule le nombre de jours dans le mois actuel
+												$daysInMonth = date('t', mktime(0, 0, 0, $mois, 1, $annee));
 											@endphp
+
 											@if(isset($declaration))
-											@for ($day = 1; $day <= $daysInMonth; $day++)
-											@php
-												$date = mktime(0, 0, 0, $mois, $day, $annee);
-												
-													$weekday = date('l', $date);
-													$formattedDate = $dayNames[$weekday] . ' ' . $day . ' ' . $monthNames[$mois] . ' ' . $annee;
-													$color = ColorFont($date);
-													$weekdayValue = $dayNames[$weekday];
-													$weekdayValue = $pro->$weekdayValue;
-											  $details = isset($declaration) ? $declaration->details[$day - 1] : null;
-											@endphp
+												@for ($day = 1; $day <= $daysInMonth; $day++)
+													@php
+														$date = mktime(0, 0, 0, $mois, $day, $annee);
+														
+														$weekday = date('l', $date);
+														$formattedDate = $dayNames[$weekday] . ' ' . $day . ' ' . $monthNames[$mois] . ' ' . $annee;
+														$color = ColorFont($date);
+														$weekdayValue = $dayNames[$weekday];
+														$weekdayValue = $pro->$weekdayValue;
+														$details = isset($declaration) ? $declaration->details[$day - 1] : null;
+													@endphp
+
 											<tr style="background-color: {{ $color }};">
 											  <td class="col-2 align-middle text-center">{{ $formattedDate }}</td>
 											  <td style="text-align: center !important" class="col-1 align-middle text-center">{{ $weekdayValue }}</td>
@@ -1166,7 +1168,7 @@ $TotalMaladiepris = 0 ;
 				const mois = @json($mois);
 			
 			  const details = [];
-			  const daysInMonth = new Date(annee, mois+1, 0).getDate();
+			  const daysInMonth = new Date(annee, mois, 0).getDate();
 			  const totalHeures = document.getElementById('HeuresTotal').value;
 			  const totalConges = document.getElementById('JoursCongesPris').value;
 			  const totalMaladie = document.getElementById('JoursMaladiePris').value;
@@ -1216,7 +1218,7 @@ $TotalMaladiepris = 0 ;
 				const mois = @json($mois);
 			
 			  const details = [];
-			  const daysInMonth = new Date(annee, mois+1, 0).getDate();
+			  const daysInMonth = new Date(annee, mois, 0).getDate();
 			  const totalHeures = document.getElementById('HeuresTotal').value;
 			  const totalConges = document.getElementById('JoursCongesPris').value;
 			  const totalMaladie = document.getElementById('JoursMaladiePris').value;
