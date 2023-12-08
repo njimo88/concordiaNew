@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\A_ControllerBlog;
 use App\Http\Controllers\Controller_club;
 use App\Http\Controllers\A_Controller_categorie;
@@ -22,7 +23,6 @@ use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ParametreController;
 use App\Http\Controllers\QuestionnaireController;
 use App\Http\Controllers\ClickAssoController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\n_AdminController;
 use App\Http\Controllers\UsersController;
@@ -163,7 +163,7 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/search-users', [BillsController::class, 'searchUsers']);
     Route::delete('/remove-user-link', [BillsController::class, 'removeUserLink']);
     Route::post('/link-users-to-product', [BillsController::class, 'linkUsersToProduct']);
-    
+    Route::post('/admin/paiement/AddReductions', [BillsController::class,'addReduction'])->name('reductionsadd');
 
 
 

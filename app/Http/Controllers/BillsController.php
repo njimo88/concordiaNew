@@ -59,6 +59,29 @@ class BillsController extends Controller
     return response()->json(['message' => 'La désignation a été mise à jour avec succès.']);
 }
 
+public function addReduction(Request $request)
+{
+    $validatedData = $request->validate([
+        'code' => 'required|unique:shop_reductions,code',
+        'percentage' => 'required|numeric',
+        'value' => 'required|numeric',
+        'description' => 'required',
+        'usable' => 'required|numeric',
+        'state' => 'sometimes|boolean',
+        'startvalidity' => 'required|date',
+        'endvalidity' => 'required|date',
+        'automatic' => 'sometimes|boolean',
+    ]);
+
+    if ($request->hasFile('image')) {
+        $validatedData['image'] = $request->file('image')->store('images', 'public');
+    }
+
+    $reduction = ShopReduction::create($validatedData);
+
+    return redirect()->back()->with('success', 'Réduction créée avec succès.');
+}
+
 
 
 
