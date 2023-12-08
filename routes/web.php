@@ -45,7 +45,7 @@ use Illuminate\Support\Facades\Mail;
 */
 
 
-/*---------------------------------Njimo------------------------------------------*/
+/*--------------------------------------Njimo------------------------------------------*/
 Route::get('/test', function () {
     return view('DEV2023')->with('user', Auth::user());
 
@@ -83,30 +83,23 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/save-selection', [BillsController::class, 'saveSelection']);
 
 
-
-/*-----------PDF--------------------------*/
-
+/*--------------------------PDF--------------------------*/
 Route::post('/generatePDFfacture/{id}', [generatePDF::class, 'generatePDFfacture'])->name('generatePDFfacture');
 Route::post('/generatePDFreduction_Fiscale/{id}', [generatePDF::class, 'generatePDFreduction_Fiscale'])->name('generatePDFreduction_Fiscale');
 
 
 });
-
-
     /*-----------Panier----------*/
     Route::middleware(['auth'])->group(function () {
     Route::get('/panier', [TraitementSupp::class, 'basket'])->name('panier');
     Route::get('/payer_article', [App\Http\Controllers\UsersController::class, 'payer_article'])->name('payer_article');
     Route::get('/Vider_panier/{id}', [App\Http\Controllers\UsersController::class, 'Vider_panier'])->name('Vider_panier');
     Route::get('/payment_form/{nombre_virment}/{total}', [App\Http\Controllers\UsersController::class, 'showForm'])->name('payment_form');
-
     Route::get('/payment_formFrais/{nombre_virment}/{total}/{bill_id}', [App\Http\Controllers\UsersController::class, 'showFormFrais'])->name('payment_formFrais');
     Route::get('/payment-success', [App\Http\Controllers\UsersController::class, 'frais_paye'])->name('frais_paye');
 
-    
     /*-----------Paiement----------*/
     Route::get('/detail_paiement/{id}', [App\Http\Controllers\UsersController::class, 'detail_paiement'])->name('detail_paiement');
-
 });
 
 
@@ -525,4 +518,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/basket', [TraitementSupp::class, 'basket'])->name('basket');
     Route::get('/paiement', [TraitementSupp::class, 'paiement'])->name('paiement');
     Route::get('/fichepaiement/{id}/{nombre_cheques}', [TraitementSupp::class, 'fichepaiement'])->name('fichepaiement');
+    Route::post('/choisir_place/{id}', [TraitementSupp::class, 'choisir_place'])->name('choisir_place');
 } );

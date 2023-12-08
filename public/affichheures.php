@@ -1,4 +1,4 @@
-<style >
+<style type="text/css">
 table.border_1_solid_black td { border : 1px solid black; }
 
 .col_1{

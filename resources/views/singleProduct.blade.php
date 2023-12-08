@@ -108,11 +108,19 @@
                                     @endforeach
                                 </select>
 
-                                
-                                <input type="number" class="select-form" name="qte" id="qte" min="1"  value="1">
+                                @if ($articl->type_article == 2)
+                                     <input type="number" class="select-form" name="qte" id="qte" min="1"  value="1">
+                                @endif
 
 
-                                <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
+                                @if ($articl->type_article == 3)
+                                    <form action='{{ route("choisir_place", ["id" => $articl->id_shop_article]) }}' method="POST">
+                                        @csrf    
+                                        <button type="submit" class="btn">Choisir une place</button> 
+                                    </form>             
+                                @else
+                                    <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
+                                @endif
                             @else
                                 <p class="info-message">Votre famille ne correspond pas à cet article.</p>
                             @endif
