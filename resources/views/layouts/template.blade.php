@@ -560,6 +560,21 @@
                   </ul>
                </li>
             @endif
+            @if (auth()->user()->roles->estAutoriserDeVoirPreparationLogistique || auth()->user()->roles->estAutoriserDeVoirDistributionLogistique)
+                <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#logistics-nav" data-bs-toggle="collapse" href="#">
+                        <i style="color: #4CAF50;" class="bi bi-truck"></i><span>Logistique</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="logistics-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                        @if (auth()->user()->roles->estAutoriserDeVoirPreparationLogistique)
+                            <li> <a href="{{ route('logistique.preparation') }}"><span style="color: #4CAF50; margin-right:8px" class="fa fa-box-open fa-fw mr-1"></span><span>Préparation</span> </a></li>
+                        @endif
+                        @if (auth()->user()->roles->estAutoriserDeVoirDistributionLogistique)
+                            <li> <a href="{{ route('logistique.distribution') }}"><span style="color: #4CAF50; margin-right:8px" class="fa fa-route fa-fw mr-1"></span><span>Distribution</span> </a></li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
             @if ( auth()->user()->roles->estAutoriserDeVoirMessages || auth()->user()->roles->estAutoriserDeVoirHistorique)
                <li class="nav-item">
                   <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#"> <i style="color: #f80000;" class="fa-regular fa-message"></i><span>Communication</span><i class="bi bi-chevron-down ms-auto"></i> </a>

@@ -24,6 +24,7 @@ class liaison_shop_articles_bills extends Model
         'certificate',
         'id_shop_article',
         'declinaison',
-        'id_user'
+        'id_user',
+        'is_prepared'
     ];
 }

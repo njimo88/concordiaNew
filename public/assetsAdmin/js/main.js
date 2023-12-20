@@ -1526,3 +1526,73 @@ $('#save-changes').click(function() {
 });
 
 });
+
+
+$(document).ready(function() {
+  // Configuration initiale pour les requêtes AJAX avec le token CSRF
+  $.ajaxSetup({
+      headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+  });
+
+  // Gestionnaire d'événements pour le bouton "Préparé"
+  $('.btn-prepared').on('click', function() {
+      $('#modalArticleTitle').text($(this).data('article-title'));
+      $('#modalArticleQuantity').text($(this).data('article-quantity'));
+      $('#confirmPreparation').data('liaison-id', $(this).data('liaison-id'));
+      $('#confirmationModal').modal('show');
+  });
+
+  // Gestionnaire d'événements pour le bouton "Confirmer" dans le modal
+  $('#confirmPreparation').on('click', function() {
+      var liaisonId = $(this).data('liaison-id');
+      $.ajax({
+          url: '/confirm-preparation',
+          type: 'POST',
+          data: {
+              liaisonId: liaisonId
+          },
+          success: function(response) {
+              $('#confirmationModal').modal('hide');
+              // Supprimer la carte de liaison correspondante de l'interface utilisateur
+              $('.btn-prepared[data-liaison-id="' + liaisonId + '"]').closest('.col-12.col-md-6.col-lg-4.mb-3').remove();
+          },
+          error: function(response) {
+              alert('Une erreur est survenue lors de la confirmation.');
+          }
+      });
+  });
+
+
+  $('#nonConcerne').on('click', function() {
+    var liaisonId = $(this).data('liaison-id');
+    
+    // Afficher la boîte de dialogue de confirmation
+    var isConfirmed = confirm('Êtes-vous sûr que le produit n\'est pas concerné ?');
+    
+    // Si l'utilisateur confirme
+    if(isConfirmed) {
+        $.ajax({
+            url: '/non-concerne',
+            type: 'POST',
+            data: {
+                liaisonId: liaisonId
+            },
+            success: function(response) {
+                $('.btn-prepared[data-liaison-id="' + liaisonId + '"]').closest('.col-12.col-md-6.col-lg-4.mb-3').remove();
+            },
+            error: function(response) {
+                alert('Une erreur est survenue lors de la confirmation.');
+            }
+        });
+    }
+});
+
+
+  // Nettoyage après la fermeture du modal
+  $('#confirmationModal').on('hidden.bs.modal', function() {
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').remove();
+  });
+});

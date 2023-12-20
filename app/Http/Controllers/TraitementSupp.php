@@ -476,10 +476,10 @@ if ($total < 0) {
              ->where('shop_article.id_shop_article', '<>', -1); 
     })
     ->where('basket.user_id', '=', auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction')
+    ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction','shop_article.type_article')
     ->orderBy('basket.pour_user_id')
     ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'basket.pour_user_id', 'shop_article.title', 'basket.declinaison', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'basket.pour_user_id', 'shop_article.title','shop_article.type_article', 'basket.declinaison', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
     ->get();
 
         $payment = DB::table('bills_payment_method')->where('id', '=', $id)->first()->payment_method;
@@ -581,6 +581,11 @@ if ($total < 0) {
         $liaison->id_shop_article = $panier->ref;
         $liaison->declinaison = $panier->declinaison;
         $liaison->id_user = $pou_user->user_id;
+        if ($panier->type_article == 2) {
+            $liaison->is_prepared = 0;
+        } else {
+            $liaison->is_prepared = 1;
+        }
         $liaison->save();
     }
     incrementReductionUsageCount($paniers);

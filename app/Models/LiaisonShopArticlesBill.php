@@ -25,6 +25,7 @@ class LiaisonShopArticlesBill extends Model
         'declinaison',
         'id_shop_article',
         'id_user',
+        'is_prepared'
     ];
 
 
@@ -33,7 +34,10 @@ class LiaisonShopArticlesBill extends Model
     return $this->belongsTo(Shop_article::class, 'id_shop_article');
 }
 
-
+public function bill()
+    {
+        return $this->belongsTo(bills::class, 'bill_id');
+    }
 
 
 }

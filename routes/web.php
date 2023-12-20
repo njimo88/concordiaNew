@@ -28,6 +28,7 @@ use App\Http\Controllers\n_AdminController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\BillsController;
 use App\Http\Controllers\TraitementSupp;
+use App\Http\Controllers\LogistiqueController;
 use App\Models\old_bills;
 use App\Http\Controllers\ProfessionnelsController;
 use App\Mail\UserEmail;
@@ -58,6 +59,12 @@ Auth::routes();
 
 /*Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');*/
 Route::middleware(['auth'])->group(function () {
+        /* Logistique */
+    Route::get('/logistique/preparation', [LogistiqueController::class, 'preparation'])->name('logistique.preparation');
+    Route::get('/logistique/distribution', [LogistiqueController::class, 'distribution'])->name('logistique.distribution');
+    Route::post('/confirm-preparation',[LogistiqueController::class, 'confirmPreparation']);
+    Route::post('/non-concerne',[LogistiqueController::class, 'nonConcerne']);
+    
     Route::get('/users/family', [TraitementSupp::class, 'mafamille'])->name('users.family');
     Route::post('/users/family/addMember', [App\Http\Controllers\UsersController::class, 'addMember'])->name('users.addMember');
     Route::post('/users/family/addEnfant', [App\Http\Controllers\UsersController::class, 'addEnfant'])->name('users.addEnfant');
@@ -520,3 +527,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/fichepaiement/{id}/{nombre_cheques}', [TraitementSupp::class, 'fichepaiement'])->name('fichepaiement');
     Route::post('/choisir_place/{id}', [TraitementSupp::class, 'choisir_place'])->name('choisir_place');
 } );
+
+
+
