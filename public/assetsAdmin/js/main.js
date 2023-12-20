@@ -1544,25 +1544,27 @@ $(document).ready(function() {
       $('#confirmationModal').modal('show');
   });
 
-  // Gestionnaire d'événements pour le bouton "Confirmer" dans le modal
   $('#confirmPreparation').on('click', function() {
-      var liaisonId = $(this).data('liaison-id');
-      $.ajax({
-          url: '/confirm-preparation',
-          type: 'POST',
-          data: {
-              liaisonId: liaisonId
-          },
-          success: function(response) {
-              $('#confirmationModal').modal('hide');
-              // Supprimer la carte de liaison correspondante de l'interface utilisateur
-              $('.btn-prepared[data-liaison-id="' + liaisonId + '"]').closest('.col-12.col-md-6.col-lg-4.mb-3').remove();
-          },
-          error: function(response) {
-              alert('Une erreur est survenue lors de la confirmation.');
-          }
-      });
-  });
+    var liaisonId = $(this).data('liaison-id');
+    $.ajax({
+        url: '/confirm-preparation',
+        type: 'POST',
+        data: {
+            liaisonId: liaisonId
+        },
+        success: function(response) {
+            $('#confirmationModal').modal('hide');
+            
+            $('.btn-prepared[data-liaison-id="' + liaisonId + '"]').closest('.col-12.col-md-6.col-lg-4.mb-3').fadeOut(500, function() {
+                $(this).remove(); 
+            });
+        },
+        error: function(response) {
+            alert('Une erreur est survenue lors de la confirmation.');
+        }
+    });
+});
+
 
 
   $('#nonConcerne').on('click', function() {
@@ -1580,7 +1582,9 @@ $(document).ready(function() {
                 liaisonId: liaisonId
             },
             success: function(response) {
-                $('.btn-prepared[data-liaison-id="' + liaisonId + '"]').closest('.col-12.col-md-6.col-lg-4.mb-3').remove();
+              $('.btn-prepared[data-liaison-id="' + liaisonId + '"]').closest('.col-12.col-md-6.col-lg-4.mb-3').fadeOut(500, function() {
+                $(this).remove(); 
+            });
             },
             error: function(response) {
                 alert('Une erreur est survenue lors de la confirmation.');
