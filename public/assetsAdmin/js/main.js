@@ -1600,3 +1600,65 @@ $(document).ready(function() {
       $('.modal-backdrop').remove();
   });
 });
+
+
+function changeTab(tabId) {
+  // Remove active class from all tabs and content
+  document.querySelectorAll('.tab').forEach(function(tab) {
+      tab.classList.remove('active');
+  });
+  document.querySelectorAll('.content').forEach(function(content) {
+      content.classList.remove('active');
+  });
+
+  // Add active class to the clicked tab and the corresponding content
+  document.getElementById(tabId).classList.add('active');
+  document.querySelector('.tab[onclick="changeTab(\'' + tabId + '\')"]').classList.add('active');
+}
+
+$(document).ready(function() {
+  // Initial configuration for AJAX requests with CSRF token
+  $.ajaxSetup({
+      headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+  });
+
+  // Event handler for the "Distribute" button
+  $('.btn-distribute').on('click', function() {
+      var title = $(this).data('article-title');
+      var quantity = $(this).data('article-quantity');
+      $('#modalArticleTitle').text(title);
+      $('#modalArticleQuantity').text(quantity);
+      $('#confirmDistribution').data('liaison-id', $(this).data('liaison-id'));
+      $('#distributionModal').modal('show');
+  });
+
+  // Handler for confirming distribution
+  $('#confirmDistribution').on('click', function() {
+      var liaisonId = $(this).data('liaison-id');
+      $.ajax({
+          url: '/confirm-distribution',
+          type: 'POST',
+          data: {
+              liaisonId: liaisonId
+          },
+          success: function(response) {
+              $('#distributionModal').modal('hide');
+
+              // Fade out and remove the card element associated with the distributed item
+              $('.btn-distribute[data-liaison-id="' + liaisonId + '"]').closest('.col-12.col-md-6.col-lg-4.mb-3').fadeOut(500, function() {
+                  $(this).remove();
+              });
+          },
+          error: function(response) {
+              alert('Une erreur est survenue lors de la distribution.');
+          }
+      });
+  });
+});
+// Nettoyage après la fermeture du modal
+$('#distributionModal').on('hidden.bs.modal', function() {
+  $('body').removeClass('modal-open');
+  $('.modal-backdrop').remove();
+});

@@ -583,8 +583,10 @@ if ($total < 0) {
         $liaison->id_user = $pou_user->user_id;
         if ($panier->type_article == 2) {
             $liaison->is_prepared = 0;
+            $liaison->is_distributed = 0;
         } else {
             $liaison->is_prepared = 1;
+            $liaison->is_distributed = 1;
         }
         $liaison->save();
     }

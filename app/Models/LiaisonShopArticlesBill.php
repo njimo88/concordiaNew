@@ -25,7 +25,8 @@ class LiaisonShopArticlesBill extends Model
         'declinaison',
         'id_shop_article',
         'id_user',
-        'is_prepared'
+        'is_prepared',
+        'is_distributed'
     ];
 
 
@@ -39,5 +40,14 @@ public function bill()
         return $this->belongsTo(bills::class, 'bill_id');
     }
 
+    public function preparationConfirmation()
+    {
+        return $this->hasOne(ArticlePreparationConfirmation::class, 'liaison_shop_article_bill_id', 'id_liaison');
+    }
 
+    public function distributionDetail()
+    {
+        return $this->hasOne(DistributionDetail::class, 'liaison_shop_article_bill_id', 'id_liaison');
+    }
+    
 }
