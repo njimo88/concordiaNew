@@ -76,8 +76,12 @@ public function distribution()
     ])
     ->where('is_prepared', true)
     ->where('is_distributed', true)
-    ->whereHas('distributionDetail') // Assurez-vous qu'il y a un enregistrement dans DistributionDetail
-    ->whereHas('preparationConfirmation') // Assurez-vous qu'il y a un enregistrement dans ArticlePreparationConfirmation
+    ->whereHas('distributionDetail')
+    ->whereHas('preparationConfirmation')
+    ->join('distribution_details', 'distribution_details.liaison_shop_article_bill_id', '=', 'liaison_shop_articles_bills.id_liaison')
+    ->orderBy('distribution_details.distributed_at', 'desc')
+    ->take(50)
+    ->select('liaison_shop_articles_bills.*') 
     ->get()
     ->map(function ($item) {
         if ($item->shopArticle && $item->shopArticle->declinaisons->isNotEmpty()) {
@@ -85,6 +89,7 @@ public function distribution()
         }
         return $item;
     });
+
 
     return view('admin.logistique.distribution', compact('articlesForDistribution', 'articlesDistributed'));
 }
