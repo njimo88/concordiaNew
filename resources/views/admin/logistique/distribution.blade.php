@@ -154,11 +154,11 @@
 
 <main class="main" id="main">
     <div class="tabs-container">
-        <div class="tab active" onclick="changeTab('distribue')">Distribué</div>
-        <div class="tab" onclick="changeTab('nonDistribue')">Non Distribué</div>
+        <div class="tab active" onclick="changeTab('nonDistribue')">Non Distribué</div>
+        <div class="tab" onclick="changeTab('distribue')">Distribué</div>
     </div>
 
-    <div id="distribue" class="content active">
+    <div id="distribue" class="content">
         <h3>Produits Distribués</h3>
         @if($articlesDistributed->isEmpty())
             <div class="alert alert-info">Aucun produit distribués pour le moment.</div>
@@ -191,7 +191,7 @@
     </div>
     
 
-    <div id="nonDistribue" class="content">
+    <div id="nonDistribue" class="content active">
         <h3>Produits Non Distribués</h3>
         @if($articlesForDistribution->isEmpty())
             <div class="alert alert-info">Aucun produit à distribuer pour le moment.</div>
