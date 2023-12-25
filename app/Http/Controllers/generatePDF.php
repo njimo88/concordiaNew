@@ -243,7 +243,6 @@ $versement = floor($versement);
         });
 
         $versementEnLettres = chiffreEnLettre($versement);
-        dd ($versementEnLettres , $versement);
         $image2->text($versementEnLettres, 191, 271, function($font) {
             $font->file(public_path('fonts/arial.ttf'));
             $font->size(10);

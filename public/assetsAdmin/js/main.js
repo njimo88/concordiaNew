@@ -1567,8 +1567,8 @@ $(document).ready(function() {
 
 
 
-  $('#nonConcerne').on('click', function() {
-    var liaisonId = $(this).data('liaison-id');
+$('.nonConcerne').on('click', function() {
+  var liaisonId = $(this).data('liaison-id');
     
     // Afficher la boîte de dialogue de confirmation
     var isConfirmed = confirm('Êtes-vous sûr que le produit n\'est pas concerné ?');

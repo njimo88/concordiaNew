@@ -24,7 +24,7 @@
                                             <p class="user-status"><span class="status-dot active"></span> En préparation</p>
                                         </div>
                                         <div class="user-action m-3">
-                                            <button type="button" id="nonConcerne" class="btn btn-danger mx-2" data-liaison-id="{{ $liaison->id_liaison }}" >Non concerné</button>
+                                            <button type="button" class="btn btn-danger mx-2 nonConcerne" data-liaison-id="{{ $liaison->id_liaison }}" >Non concerné</button>
                                             <button type="button" class="btn btn-primary btn-prepared" data-toggle="modal" data-target="#confirmationModal" data-article-title="{{ $product->title }} {{ optional($product->declinaisons->first())->libelle }}" data-article-quantity="{{ $liaison->quantity }}" data-article-designation="{{ optional($product->declinaisons->first())->libelle }}" data-liaison-id="{{ $liaison->id_liaison }}">Préparé</button>
                                         </div>
                                     </div>
