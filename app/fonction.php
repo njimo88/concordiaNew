@@ -1830,45 +1830,37 @@ function remove_accents($str) {
 
 
 function chiffreEnLettre($nombre) {
-    $unite = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf'];
-    $dizaine = ['', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
-    $dizaine2 = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante', 'quatre-vingt', 'quatre-vingt'];
-    $centaine = ' cent';
+    $unites = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
+    $dizaines = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante-dix', 'quatre-vingt', 'quatre-vingt-dix'];
 
-    $nombreEnLettre = '';
-
-    $chiffres = str_split($nombre);
-    $longueur = count($chiffres);
-
-    for ($i = 0; $i < $longueur; $i++) {
-        $position = $longueur - $i;
-        $chiffre = $chiffres[$i];
-
-        switch ($position) {
-            case 3:
-                $nombreEnLettre .= $unite[$chiffre] . $centaine . ' ';
-                break;
-            case 2:
-                if ($chiffre == 1 && $chiffres[$i + 1] != 0) {
-                    $nombreEnLettre .= $dizaine[$chiffres[$i + 1]] . ' ';
-                    $i++; 
-                } else {
-                    $nombreEnLettre .= $dizaine2[$chiffre] . ' ';
-                }
-                break;
-            case 1:
-                $nombreEnLettre .= $unite[$chiffre];
-                break;
+    if ($nombre < 20) {
+        return $unites[$nombre];
+    } elseif ($nombre < 100) {
+        if ($nombre % 10 == 0) {
+            return $dizaines[$nombre / 10];
+        } else if ($nombre < 70) {
+            return $dizaines[$nombre / 10] . '-' . $unites[$nombre % 10];
+        } else if ($nombre < 80) {
+            return 'soixante-' . chiffreEnLettre($nombre % 20);
+        } else {
+            return 'quatre-vingt-' . chiffreEnLettre($nombre % 20);
         }
+    } elseif ($nombre < 1000) {
+        if ($nombre == 100) {
+            return 'cent';
+        } else {
+            return ($nombre < 200 ? 'cent' : chiffreEnLettre((int)($nombre / 100)) . ' cent') . ($nombre % 100 > 0 ? ' ' . chiffreEnLettre($nombre % 100) : '');
+        }
+    } elseif ($nombre < 1000000) {
+        if ($nombre == 1000) {
+            return 'mille';
+        } else {
+            return ($nombre < 2000 ? 'mille' : chiffreEnLettre((int)($nombre / 1000)) . ' mille') . ($nombre % 1000 > 0 ? ' ' . chiffreEnLettre($nombre % 1000) : '');
+        }
+    } else {
+        return 'Nombre trop grand';
     }
-
-    $nombreEnLettre .= ' euros';
-
-    return $nombreEnLettre;
 }
-
-
-
 
 function fetchMonth($date) {
 
