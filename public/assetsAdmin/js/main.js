@@ -1662,3 +1662,19 @@ $('#distributionModal').on('hidden.bs.modal', function() {
   $('body').removeClass('modal-open');
   $('.modal-backdrop').remove();
 });
+
+
+$('.view-liaisons').on('click', function() {
+  var userId = $(this).data('user-id');
+  $.ajax({
+      url: '/get-user-liaisons',
+      type: 'GET',
+      data: { userId: userId },
+      success: function(response) {
+          $('#liaisonsModal .modal-body').html(response);
+      },
+      error: function() {
+          alert('Erreur lors de la récupération des détails des liaisons.');
+      }
+  });
+});

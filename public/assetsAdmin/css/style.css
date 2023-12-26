@@ -1649,7 +1649,89 @@ text-align: left !important;
       float: right;
   }
 }
-<<<<<<< HEAD
  
-=======
->>>>>>> origin/abbe_test
+/* Styles pour le modal */
+#liaisonsModal .modal-content {
+  background-color: #2b0f5b; /* Couleur de fond */
+  color: white; /* Couleur du texte */
+  border-radius: 8px; /* Coins arrondis */
+}
+
+#liaisonsModal .modal-header {
+  border-bottom: 1px solid #482683; /* Ligne de séparation */
+}
+
+#liaisonsModal .modal-title {
+  color: #fff; /* Couleur du titre */
+}
+
+#liaisonsModal .close {
+  color: #fff; /* Couleur du bouton fermer */
+  opacity: 0.8;
+}
+
+#liaisonsModal .close:hover {
+  opacity: 1; /* Pleine opacité au survol */
+}
+
+#liaisonsModal .modal-body {
+  padding: 20px; /* Espace intérieur */
+}
+
+#liaisonsModal ul {
+  list-style-type: none; /* Pas de puces */
+  padding: 0; /* Pas de padding */
+  margin: 0; /* Pas de marges */
+}
+
+#liaisonsModal ul li {
+  background-color: rgba(255, 255, 255, 0.1); /* Fond légèrement transparent */
+  margin-bottom: 10px; /* Espace entre les éléments */
+  padding: 10px; /* Espace intérieur */
+  border-radius: 4px; /* Coins arrondis */
+  transition: transform 0.2s ease-in-out; /* Transition pour l'effet au survol */
+}
+
+#liaisonsModal ul li:hover {
+  transform: scale(1.02); /* Agrandir légèrement l'élément au survol */
+  background-color: rgba(255, 255, 255, 0.2); /* Fond plus clair au survol */
+}
+
+.btn-view-liaisons {
+  background-color: transparent; /* Rend le fond transparent */
+  border: none; /* Supprime la bordure */
+  border-radius: 50%; /* Rend le bouton circulaire */
+  padding: 0; /* Supprime le padding */
+  overflow: hidden; /* Empêche le débordement du contenu */
+  position: relative; /* Position relative pour permettre le positionnement absolu de l'icône */
+}
+
+.btn-view-liaisons::before {
+  content: ''; /* Crée un pseudo-élément pour l'arrière-plan */
+  position: absolute; /* Positionne absolument par rapport au bouton */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1); /* Centre le pseudo-élément */
+  width: 100%; /* Largeur complète du bouton */
+  height: 100%; /* Hauteur complète du bouton */
+  border-radius: 50%; /* Rond */
+  background: #7890c9; /* Couleur de fond */
+  z-index: 0; /* Place l'arrière-plan derrière l'icône */
+  transition: transform 0.3s ease; /* Animation pour l'effet au survol */
+}
+
+.btn-view-liaisons:hover::before {
+  transform: translate(-50%, -50%) scale(1.1); /* Agrandit l'arrière-plan au survol */
+}
+
+.btn-view-liaisons i {
+  color: white; /* Couleur de l'icône */
+  position: relative; /* Positionne par rapport au bouton */
+  z-index: 1; /* Assure que l'icône reste au-dessus de l'arrière-plan */
+}
+
+/* Taille du bouton */
+.btn-view-liaisons {
+  width: 25px; /* Largeur du bouton */
+  height: 25px; /* Hauteur du bouton */
+}

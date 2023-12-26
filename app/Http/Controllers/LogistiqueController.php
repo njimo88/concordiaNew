@@ -147,5 +147,24 @@ public function confirmDistribution(Request $request)
     return response()->json(['error' => 'Action non autorisée.'], 403);
 }
 
+public function getUserLiaisons(Request $request)
+{
+    $userId = $request->userId;
+    $currentSeason = saison_active();
+    $liaisons = LiaisonShopArticlesBill::with('shopArticle')
+                ->whereHas('shopArticle', function($query) use ($currentSeason) {
+                    $query->where('saison', $currentSeason)
+                          ->where('type_article', 1);
+                })
+                ->whereHas('bill', function($query) {
+                    $query->where('status', '>', 9);
+                })
+                ->where('id_user', $userId)
+                ->get();
+
+    return view('admin.logistique.preparationModal', compact('liaisons'));
+}
+
+
 
 }
