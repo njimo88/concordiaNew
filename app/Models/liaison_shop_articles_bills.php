@@ -26,7 +26,8 @@ class liaison_shop_articles_bills extends Model
         'declinaison',
         'id_user',
         'is_prepared',
-        'is_distributed'
+        'is_distributed',
+        'is_returned'
     ];
 
     public function preparationConfirmation()
@@ -41,5 +42,10 @@ public function shopArticle()
 public function bill()
     {
         return $this->belongsTo(bills::class, 'bill_id');
+    }
+
+    public function productReturn()
+    {
+        return $this->hasOne(ProductReturn::class, 'liaison_shop_article_bill_id', 'id_liaison');
     }
 }

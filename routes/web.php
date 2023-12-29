@@ -66,6 +66,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/non-concerne',[LogistiqueController::class, 'nonConcerne']);
     Route::post('/confirm-distribution',[LogistiqueController::class, 'confirmDistribution']);
     Route::get('/get-user-liaisons',[LogistiqueController::class, 'getUserLiaisons']);
+    Route::post('/return-product',[LogistiqueController::class, 'returnProduct']);
 
     Route::get('/users/family', [TraitementSupp::class, 'mafamille'])->name('users.family');
     Route::post('/users/family/addMember', [App\Http\Controllers\UsersController::class, 'addMember'])->name('users.addMember');

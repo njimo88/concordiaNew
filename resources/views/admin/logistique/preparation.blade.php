@@ -13,6 +13,10 @@
                         @if ($liaison->bill  && !$liaison->is_prepared)
                             <div class="col-12 col-md-6 col-lg-4 mb-3">
                                 <div class="card user-card">
+                                    @if($liaison->productReturn) 
+                                        <div class="card-header bg-warning">Retourné <a href="#" class="info" data-toggle="modal" data-target="#returnInfoModal" data-reason="{{ $liaison->productReturn->reason }}" data-returned-by="{{ optional($liaison->productReturn->user)->lastname . ' ' . optional($liaison->productReturn->user)->name }}" data-returned-at="{{ $liaison->productReturn->returned_at->format('d/m/Y H:i:s') }}">Info</a>
+                                        </div>
+                                    @endif
                                     <div class="card-body">
                                         <div class="user-avatar m-2">
                                             <img src="{{ $product->image }}" alt="Product" class="rounded-circle">
@@ -80,6 +84,24 @@
   </div>
 
 
+<!-- Return Info Modal -->
+<div class="modal fade" id="returnInfoModal" tabindex="-1" role="dialog" aria-labelledby="returnInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnInfoModalLabel">Informations sur le retour</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Raison du retour :</strong> <span id="returnReason"></span></p>
+                <p><strong>Retourné par :</strong> <span id="returnedBy"></span></p>
+                <p><strong>Date du retour :</strong> <span id="returnedAt"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -100,6 +122,7 @@
     display: flex;
     padding: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
 }
 
 .user-action .btn:hover {
@@ -192,7 +215,74 @@
         margin-top: 10px;
     }
 }
+.card-header.bg-warning {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ffc107; /* Adjust color as needed */
+    color:  #290d58;
+    padding: 5px 15px; /* Smaller padding */
+    font-size: 0.8em; /* Smaller font size */
+    font-weight: bold;
+    border-radius: 5px; /* Rounded corners for a modern look */
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+    transform: rotate(0deg); /* Adjust or remove the rotation as needed */
+    z-index: 2; /* Ensure it's above other content */
+}
 
+/* Remove the pseudo-element as it's no longer needed for a top corner tag */
+.card-header.bg-warning:before {
+    display: none;
+}
+
+a.info {
+  vertical-align: bottom;
+  position:relative; /* Anything but static */
+  width: 1.5em;
+  height: 1.5em;
+  text-indent: -9999em;
+  display: inline-block;
+  color: white;
+  font-weight:bold;
+  font-size:1em;
+  line-height:1em;
+  background-color: #91b2d2;
+  margin-left: .25em;
+  -webkit-border-radius:.75em;
+  -moz-border-radius:.75em;
+  border-radius:.75em;
+}
+a.info:hover {
+  background-color:#628cb6;
+  cursor: hand; 
+  cursor: pointer;
+}
+a.info:before {
+  content:"?";
+  position: absolute;
+  top: .25em;
+  left:0;
+  text-indent: 0;
+  display:block;
+  width:1.5em;
+  text-align:center;
+}
+
+.popover-title {
+  font-weight:bold;
+}
+
+
+label a.info, 
+label div.popover.fade.in { 
+  opacity: 0;
+  -webkit-transition: opacity 0.2s ease;
+  -moz-transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease;
+}
+label:hover a.info, 
+label:hover div.popover.fade.in { 
+  opacity: 1; }
 </style>
 
 @endsection

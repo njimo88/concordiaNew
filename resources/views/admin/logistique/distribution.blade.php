@@ -154,42 +154,9 @@
 
 <main class="main" id="main">
     <div class="tabs-container">
-        <div class="tab active" onclick="changeTab('nonDistribue')">Non Distribué</div>
-        <div class="tab" onclick="changeTab('distribue')">Distribué</div>
+        <div class="tab active" onclick="changeTab('nonDistribue')">Non Distribués</div>
+        <div class="tab" onclick="changeTab('distribue')">Distribués</div>
     </div>
-
-    <div id="distribue" class="content">
-        <h3>Produits Distribués</h3>
-        @if($articlesDistributed->isEmpty())
-            <div class="alert alert-info">Aucun produit distribués pour le moment.</div>
-        @else
-        <div class="container">
-            <div class="row">
-                @foreach ($articlesDistributed as $liaison)
-                    <div class="col-12 col-md-6 col-lg-4 mb-3">
-                        <div class="card user-card">
-                            <div class="card-body">
-                                <div class="user-avatar m-2">
-                                    <img src="{{ $liaison->shopArticle->image }}" alt="{{ $liaison->shopArticle->title }}" class="rounded-circle">
-                                </div>
-                                <div class="user-info">
-                                    <h5 class="user-name">{{ $liaison->shopArticle->title }} @if (isset($liaison->declinaisonName)) [{{ $liaison->declinaisonName }}] @endif</h5>
-                                    <p class="user-location">Destinataire : {{ $liaison->addressee }}</p>
-                                    <p class="user-status">Préparé par : {{ optional($liaison->preparationConfirmation->user)->lastname . ' ' . optional($liaison->preparationConfirmation->user)->name }} le {{ optional($liaison->preparationConfirmation)->confirmed_at->format('d/m/Y à H:i') }}</p>
-                                    <p class="user-status">Distribué par : {{ optional($liaison->distributionDetail->user)->lastname . ' ' . optional($liaison->distributionDetail->user)->name }} le {{ optional($liaison->distributionDetail)->distributed_at->format('d/m/Y à H:i') }}</p>
-                                </div>
-                                <div class="user-action m-3">
-                                    <button type="button" class="btn btn-primary ">Retourner le Produit</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-        @endif
-    </div>
-    
 
     <div id="nonDistribue" class="content active">
         <h3>Produits Non Distribués</h3>
@@ -222,7 +189,40 @@
         </div>
         @endif
     </div>
+
+    <div id="distribue" class="content">
+        <h3>Produits Distribués</h3>
+        @if($articlesDistributed->isEmpty())
+            <div class="alert alert-info">Aucun produit distribué pour le moment.</div>
+        @else
+        <div class="container">
+            <div class="row">
+                @foreach ($articlesDistributed as $liaison)
+                    <div class="col-12 col-md-6 col-lg-4 mb-3">
+                        <div class="card user-card">
+                            <div class="card-body">
+                                <div class="user-avatar m-2">
+                                    <img src="{{ $liaison->shopArticle->image }}" alt="{{ $liaison->shopArticle->title }}" class="rounded-circle">
+                                </div>
+                                <div class="user-info">
+                                    <h5 class="user-name">{{ $liaison->shopArticle->title }} @if (isset($liaison->declinaisonName)) [{{ $liaison->declinaisonName }}] @endif</h5>
+                                    <p class="user-location">Destinataire : {{ $liaison->addressee }}</p>
+                                    <p class="user-status">Préparé par : {{ optional($liaison->preparationConfirmation->user)->lastname . ' ' . optional($liaison->preparationConfirmation->user)->name }} le {{ optional($liaison->preparationConfirmation)->confirmed_at->format('d/m/Y à H:i') }}</p>
+                                    <p class="user-status">Distribué par : {{ optional($liaison->distributionDetail->user)->lastname . ' ' . optional($liaison->distributionDetail->user)->name }} le {{ optional($liaison->distributionDetail)->distributed_at->format('d/m/Y à H:i') }}</p>
+                                </div>
+                                <div class="user-action m-3">
+                                    <button type="button" class="btn btn-warning btn-return" data-liaison-id="{{ $liaison->id_liaison }}" data-toggle="modal" data-target="#returnModal">Retourner le Produit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+    </div>
 </main>
+
 
 <div class="modal fade" id="distributionModal" tabindex="-1" role="dialog" aria-labelledby="distributionModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -246,9 +246,32 @@
     </div>
 </div>
 
-<script>
-    // Script to handle the distribution modal
-   
-</script>
+<!-- Modal Structure -->
+<div class="modal fade" id="returnModal" tabindex="-1" role="dialog" aria-labelledby="returnModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnModalLabel">Retourner le Produit</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="returnForm">
+                    <div class="form-group">
+                        <label for="returnReason">Raison du Retour</label>
+                        <textarea class="form-control" id="returnReason" name="reason" rows="3" required></textarea>
+                    </div>
+                    <input type="hidden" id="liaisonId" name="liaisonId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                <button type="button" class="btn btn-primary" id="submitReturn">Confirmer le Retour</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @endsection

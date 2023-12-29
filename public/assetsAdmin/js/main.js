@@ -1536,6 +1536,21 @@ $(document).ready(function() {
       }
   });
 
+  $('.info').click(function(){
+        // Get data attributes from the clicked button
+        var reason = $(this).data('reason');
+        var returnedBy = $(this).data('returned-by');
+        var returnedAt = $(this).data('returned-at');
+
+        // Set the information in the modal
+        $('#returnInfoModal #returnReason').text(reason);
+        $('#returnInfoModal #returnedBy').text(returnedBy);
+        $('#returnInfoModal #returnedAt').text(returnedAt);
+
+        // Show the modal
+        $('#returnInfoModal').modal('show');
+    });
+
   // Gestionnaire d'événements pour le bouton "Préparé"
   $('.btn-prepared').on('click', function() {
       $('#modalArticleTitle').text($(this).data('article-title'));
@@ -1565,7 +1580,16 @@ $(document).ready(function() {
     });
 });
 
+$('.close').on('click', function() {
+        var modalId = $(this).closest('.modal').attr('id');
+        $('#' + modalId).modal('hide');
+    });
 
+    // Ensure modal is fully hidden
+    $('.modal').on('hidden.bs.modal', function() {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
 
 $('.nonConcerne').on('click', function() {
   var liaisonId = $(this).data('liaison-id');
@@ -1678,3 +1702,47 @@ $('.view-liaisons').on('click', function() {
       }
   });
 });
+
+
+
+
+
+  $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+  $('.btn-return').on('click', function() {
+      var liaisonId = $(this).data('liaison-id');
+      $('#liaisonId').val(liaisonId);
+  });
+
+  $('#submitReturn').on('click', function() {
+      var liaisonId = $('#liaisonId').val();
+      var reason = $('#returnReason').val();
+
+      $.ajax({
+          url: '/return-product', 
+          type: 'POST',
+          data: {
+              liaisonId: liaisonId,
+              reason: reason
+          },
+          success: function(response) {
+
+              $('#returnModal').modal('hide');
+              alert("Produit retourné avec succès!");
+              $('.btn-return[data-liaison-id="' + liaisonId + '"]').closest('.col-12.col-md-6.col-lg-4.mb-3').fadeOut(500, function() {
+                  $(this).remove();
+              });
+              
+          },
+          error: function() {
+              alert('Une erreur est survenue lors du retour du produit.');
+          }
+      });
+  });
+
+
+ 

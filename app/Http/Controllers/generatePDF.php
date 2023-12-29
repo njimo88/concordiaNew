@@ -242,7 +242,7 @@ $versement = floor($versement);
             $font->color('#000000'); 
         });
 
-        $versementEnLettres = chiffreEnLettre($versement);
+        $versementEnLettres = chiffreEnLettre($versement) . ' euros';
         $image2->text($versementEnLettres, 191, 271, function($font) {
             $font->file(public_path('fonts/arial.ttf'));
             $font->size(10);

@@ -26,7 +26,8 @@ class LiaisonShopArticlesBill extends Model
         'id_shop_article',
         'id_user',
         'is_prepared',
-        'is_distributed'
+        'is_distributed',
+        'is_returned'
     ];
 
 
@@ -49,5 +50,8 @@ public function bill()
     {
         return $this->hasOne(DistributionDetail::class, 'liaison_shop_article_bill_id', 'id_liaison');
     }
-    
+    public function productReturn()
+    {
+        return $this->hasOne(ProductReturn::class, 'liaison_shop_article_bill_id', 'id_liaison');
+    }
 }
