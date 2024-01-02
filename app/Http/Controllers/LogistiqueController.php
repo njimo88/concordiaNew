@@ -70,7 +70,6 @@ public function distribution()
     });
 
     $currentSeason = saison_active();
-
     // Articles distribués
     $articlesDistributed = LiaisonShopArticlesBill::with([
         'shopArticle' => function ($query) use ($currentSeason) {
@@ -92,7 +91,6 @@ public function distribution()
     ->orderBy('distribution_details.distributed_at', 'desc')
     ->take(50)
     ->select('liaison_shop_articles_bills.*') 
-    ->distinct('liaison_shop_articles_bills.id_liaison')
     ->get()
     ->map(function ($item) {
         if ($item->shopArticle && $item->shopArticle->declinaisons->isNotEmpty()) {
@@ -100,7 +98,6 @@ public function distribution()
         }
         return $item;
     });
-
     return view('admin.logistique.distribution', compact('articlesForDistribution', 'articlesDistributed'));
 }
 
@@ -231,7 +228,8 @@ public function returnProduct(Request $request)
             'reason' => $reason,
             'returned_at' => now()
         ]);
-
+        $liaison->is_distributed = false;
+        $liaison->is_prepared = false;
         $liaison->is_returned = true;
         $liaison->save();
 
