@@ -144,18 +144,25 @@ class TraitementSupp extends Controller
 
  
 
-        // Récupérer les images du répertoire Slider
+        
         $images = File::files(public_path('uploads/Slider'));
         $imageUrls = [];
 
         foreach ($images as $image) {
-            if (in_array($image->getExtension(), ['jpg', 'jpeg', 'png', 'gif'])) { // Vous pouvez ajouter d'autres extensions si nécessaire.
+            if (in_array($image->getExtension(), ['jpg', 'jpeg', 'png', 'gif'])) { 
                 $imageUrls[] = asset('uploads/Slider/' . $image->getFilename());
             }
         }
-        
 
-        return view('carousel', compact('posts', 'categorie', 'shop_articles', 'imageUrls'));
+        $directory = public_path('uploads/Partenaires'); 
+        $files = File::files($directory);
+
+        // Filter only images 
+        $imageFiles = array_filter($files, function($file) {
+            return in_array(strtolower($file->getExtension()), ['png', 'jpg', 'jpeg', 'gif']);
+        });
+
+        return view('carousel', compact('posts', 'categorie', 'shop_articles', 'imageUrls' , 'imageFiles'));
     }
 
 

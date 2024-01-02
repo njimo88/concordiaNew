@@ -206,14 +206,11 @@ img[alt="Logo"] {
 <div class="container">
     <h2 class="h2 fw-black h1 text-gym mt-5">Nos Partenaires</h2>
     <section class="custom-slider">
-        <div class="custom-slide"><img src="{{ asset('/assets/images/adidas.png') }}" alt="logo"></div>
-        <div class="custom-slide"><img src="{{ asset('/assets/images/facebook.png') }}" alt="logo"></div>
-        <div class="custom-slide"><img src="{{ asset('/assets/images/google.png') }}" alt="logo"></div>
-        <div class="custom-slide"><img src="{{ asset('/assets/images/instagram.png') }}" alt="logo"></div>
-        <div class="custom-slide"><img src="{{ asset('/assets/images/nike.png') }}" alt="logo"></div>
-        <div class="custom-slide"><img src="{{ asset('/assets/images/twitter.png') }}" alt="logo"></div>
-        <div class="custom-slide"><img src="{{ asset('/assets/images/uber.png') }}" alt="logo"></div>
-        <div class="custom-slide"><img src="{{ asset('/assets/images/youtube.png') }}" alt="logo"></div>
+        @foreach ($imageFiles as $image)
+            <div class="custom-slide">
+                <img src="{{ asset('uploads/Partenaires/' . $image->getFilename()) }}" alt="logo">
+            </div>
+        @endforeach
     </section>
 </div>
 
@@ -241,6 +238,5 @@ img[alt="Logo"] {
         });
     });
 </script>
-
 
 @endsection
