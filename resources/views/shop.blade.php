@@ -87,15 +87,15 @@
 
 </style>
 
-<section class="position-relative d-block container-fluid bg-white text-white py-5 slice-news-testimony">
+<section class="position-relative d-block container-fluid bg-primary text-gym py-5 slice-news-testimony">
     <div class="container-xxl">
         <div class="row d-flex justify-content-center reveal reveal-visible">
             <div class="col-xl-11 p-0 col-heading">
                 <div class="d-flex align-items-center justify-content-between px-md-5 mb-2">
-                    <h1 class="fw-black h1 text-gym">Boutique</h1>
-                    <a href="/shop_categories" class="fw-bold ms-1 text-end d-flex align-items-center text-gym">
+                    <h1 class="fw-black h1 text-white">Boutique</h1>
+                    <a href="/shop_categories" class="fw-bold ms-1 text-end d-flex align-items-center text-white">
                         <span class="span">Voir tous les Articles</span>
-                        <i class="fa-solid fa-circle-plus text-gym"></i>
+                        <i class="fa-solid fa-circle-plus text-white"></i>
                     </a>
                 </div>
                 <div id="articleCarousel" class="slick-shop">

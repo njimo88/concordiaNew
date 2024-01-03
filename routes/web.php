@@ -398,6 +398,7 @@ Route::middleware(['auth'])->group(function () {
 /*----------------------- Club - cours ------------------------------ */
 Route::get('/club/cours_index', [Controller_club::class, 'index_cours'])->name('index_cours');
 Route::get('/generate-pdf/{id}', [Controller_club::class, 'generatePdf'])->name('generate.pdf');
+Route::get('/generate-combined-pdf', [Controller_club::class, 'generateCombinedPdf'])->name('generate.combined.pdf');
 
 Route::post('/get_data_table/{article_id}', [Controller_club::class, 'get_data_table'])->name('get_data_table');
 

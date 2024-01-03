@@ -215,6 +215,8 @@
       
       
          </div>
+        <button onclick="window.location.href='{{ route('generate.combined.pdf') }}'">Télécharger le PDF combiné</button>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
           </div>

@@ -4,7 +4,6 @@
 
 <style>
 
-
     .slick-next::before, .slick-prev::before {
         color: #482683  !important;
     }
@@ -69,13 +68,9 @@
         .h2{
         margin-left: 5rem ;
     }
- 
       
-    /* Styles existants que vous avez fournis pour .top-banner */
 @media (max-width: 993px)  {
-    .top-banner {
-        height: 100vh;
-    }
+    
     .h2{
         margin-left: 5px !important;
     }
@@ -134,7 +129,8 @@ img[alt="Logo"] {
     }
 }
 
-    </style>
+</style>
+
 @if(count($imageUrls) == 1)
 @if ($errors->any())
     <div class="alert alert-danger">
@@ -196,12 +192,14 @@ img[alt="Logo"] {
 </div>
 @endif
 
-
-@include('shop')
 @include('carouselArticles')
+@include('modernSection')
+@include('shop')
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
 
 <div class="container">
     <h2 class="h2 fw-black h1 text-gym mt-5">Nos Partenaires</h2>
@@ -217,26 +215,30 @@ img[alt="Logo"] {
 <script>
     $(document).ready(function() {
         $('.custom-slider').slick({
-            slidesToShow: 6,
+            slidesToShow: 6, 
             slidesToScroll: 1,
             autoplay: true,
             autoplaySpeed: 1500,
             arrows: false,
             dots: false,
             pauseOnHover: false,
-            responsive: [{
-                breakpoint: 768,
-                settings: {
-                    slidesToShow: 4
+            responsive: [
+                {
+                    breakpoint: 768, 
+                    settings: {
+                        slidesToShow: 1 
+                    }
+                },
+                {
+                    breakpoint: 520, 
+                    settings: {
+                        slidesToShow: 1 
+                    }
                 }
-            }, {
-                breakpoint: 520,
-                settings: {
-                    slidesToShow: 3
-                }
-            }]
+            ]
         });
     });
 </script>
+
 
 @endsection

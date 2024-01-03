@@ -205,10 +205,9 @@ use Illuminate\Support\Facades\Route;
       <nav id="navbar" class="navbar">
         <ul style="order: 2">
           @if (Route::has('login'))
-            <li><a href="{{ route('login') }}" class="btn btn-danger text-white mx-2 btn-arrow btn-hover-negatif">
-              Connexion <i style="color: white; font-size:19px !important;" class='bx bxs-user'></i>
-          </a>
-          </li>
+              <li style="order: -1;"><a href="{{ route('login') }}" class="btn btn-danger text-white mx-2 btn-arrow btn-hover-negatif">
+                  Connexion <i style="color: white; font-size:19px !important;" class='bx bxs-user'></i>
+              </a></li>
           @endif
           <li><a href="{{ route('A_blog') }}"><span>&nbsp;Accueil</span></a></li>
           <li class="dropdown"><a href="#"><span>&nbsp;Le Club</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
@@ -714,6 +713,20 @@ use Illuminate\Support\Facades\Route;
             transition: all .1s ease-out;
         }
     
+
+        @media (max-width: 768px) {
+  .navbar { 
+    display: flex;
+    flex-direction: row;
+  }
+  .navbar li { 
+    order: 1; 
+  }
+  .navbar .login-first {
+    order: -1; 
+  }
+}
+
     </style>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
