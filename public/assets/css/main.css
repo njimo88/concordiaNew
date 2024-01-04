@@ -3233,8 +3233,10 @@ button:hover {
   overflow: hidden;
   margin-bottom: 30px;
   min-height: 525px;
-  min-width: 355px;
+  min-width: 385px;
 }
+
+
 
 .news-card .news-img {
   height: 200px;
