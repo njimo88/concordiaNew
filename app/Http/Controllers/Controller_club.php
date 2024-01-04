@@ -80,7 +80,7 @@ class Controller_club extends Controller
     }
 
     public function generateCombinedPdf() {
-        ini_set('memory_limit', '1024M'); 
+        ini_set('memory_limit', '2048M');
         set_time_limit(0);
         
         $saison_actu = saison_active();
@@ -91,6 +91,7 @@ class Controller_club extends Controller
         $filePaths = []; 
     
         foreach ($shop_articles as $article) {
+            
             $pdfContent = $this->generatePdfContentForArticle($article->id_shop_article);
             $pdf = PDF::loadHTML($pdfContent);
             $pdf->setPaper('a4', 'landscape'); 
@@ -103,16 +104,29 @@ class Controller_club extends Controller
     
     // Initialiser FPDI
     $pdfMerger = new Fpdi();
+
     foreach($filePaths as $file) {
         $pageCount = $pdfMerger->setSourceFile($file);  
         for ($pageNo=1; $pageNo<=$pageCount; $pageNo++) {
-            $pdfMerger->addPage();
-            $pdfMerger->useTemplate($pdfMerger->importPage($pageNo));
+            $templateId = $pdfMerger->importPage($pageNo);
+
+            // Récupérer la taille de la page importée
+            $size = $pdfMerger->getTemplateSize($templateId);
+
+            if ($size['width'] > $size['height']) {
+                // Si la largeur est plus grande que la hauteur, c'est du paysage
+                $pdfMerger->addPage('L', [$size['width'], $size['height']]);
+            } else {
+                // Sinon, c'est du portrait, alors convertissez en paysage
+                $pdfMerger->addPage('L', [$size['height'], $size['width']]);
+            }
+            
+            $pdfMerger->useTemplate($templateId);
         }
     }
     
     // Définir le chemin du PDF fusionné
-    $mergedPath = public_path('PDFTemporaire/mergedFile.pdf');
+    $mergedPath = public_path('PDFTemporaire/combined.pdf');
     $pdfMerger->Output($mergedPath, 'F');
     
     // Nettoyer: Supprimer les fichiers PDF temporaires
@@ -156,7 +170,7 @@ class Controller_club extends Controller
             ->distinct('users.user_id')
             ->orderBy('users.name', 'ASC')
             ->get(); 
-    
+            
             $pdfContent = "
             
 
@@ -189,7 +203,7 @@ class Controller_club extends Controller
                 }
         
                 .header-text {
-                    font-size: 16px;
+                    font-size: 14px;
                     width: 80%;
                     float: left;
                 }
@@ -202,7 +216,7 @@ class Controller_club extends Controller
                         </div>
                     </div>
                     <br>
-                    <div style='text-decoration: underline;font-size: 16px;'>{$courseName}</div>
+                    <div style='text-decoration: underline;font-size: 12px;'>{$courseName}</div>
                     <br>
                     <table border='1'>
                     <thead>
@@ -218,8 +232,16 @@ class Controller_club extends Controller
         $pdfContent .= "</tr>
             </thead>
                     <tbody>";
+                    
             
                 $counter = 0;
+                if ($personnes->isEmpty()):
+                    $pdfContent .= "
+                    <tr>
+                        <td colspan='33'>Aucun élève inscrit</td>
+                    </tr>";
+                endif;
+
                 foreach ($personnes as $person) {
                     if ($person->status != 1) {
                         $counter++;
