@@ -1,6 +1,6 @@
 <style>
     .modern-section {
-        background-color: #ffffff; /* White background */
+        background-color: #ffffff;
         padding: 50px 0;
         text-align: center;
     }
@@ -12,81 +12,112 @@
     }
     
     .button-container {
-        display: flex;
         flex-wrap: wrap;
         justify-content: center;
         gap: 20px;
     }
     
     .modern-button {
-        background-color: #482683; /* Bootstrap primary blue */
-        color: #ffffff; /* White text */
-        border: 2px solid transparent;
+        color: #ffffff;
+        border: none;
         padding: 15px 30px;
         font-size: 18px;
         font-weight: bold;
         border-radius: 50px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 10px;
     }
     
-    /* Hover effect for modern buttons */
     .modern-button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        border-color: #482683; /* Darker blue */
-        color: #482683; /* Darker blue */
+        animation: pulse 1s infinite;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        color: #ffffff !important;
     }
     
-    /* Adding icons to the buttons */
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    .modern-button:nth-child(1) {
+        background-color: #20B2AA; /* Turquoise */
+    }
+    .modern-button:nth-child(1):hover {
+        background-color: #1C948A; /* Darker Turquoise */
+    }
+    
+    .modern-button:nth-child(2) {
+        background-color: #00bfff; /* Deep Sky Blue */
+    }
+    .modern-button:nth-child(2):hover {
+        background-color: #009fdd; /* Darker Deep Sky Blue */
+    }
+    
+    .modern-button:nth-child(3) {
+        background-color: #c8a2c8; /* Soft Lilac */
+    }
+    .modern-button:nth-child(3):hover {
+        background-color: #b091b0; /* Darker Soft Lilac */
+    }
+    
+    .modern-button:nth-child(4) {
+        background-color: #708090; /* Slate Gray */
+    }
+    .modern-button:nth-child(4):hover {
+        background-color: #5a6a72; /* Darker Slate Gray */
+    }
+    
     .modern-button i {
         font-size: 24px;
     }
     
-    /* Responsive Design */
+    
     @media (max-width: 768px) {
-        .button-container {
-            flex-direction: column;
-        }
-    
-        .modern-button {
-            width: 80%;
-            margin: 0 auto;
-            margin-bottom: 15px;
-        }
+    .modern-button {
+        width: 80%; 
+        margin-bottom: 15px;
     }
-    
-    /* Title style */
+}
+ 
     .modern-title {
-        color: #482683; /* Darker text for better contrast on white */
+        color: #482683;
         margin-bottom: 40px;
     }
     </style>
     
     <div class="modern-section">
         <div class="container">
-            <h1 class="modern-title fw-black">Nos Services</h1> 
-            <div class="button-container">
-                <button class="modern-button" onclick="location.href='#'">
-                    <i class="fas fa-map-marker-alt"></i> 
+            <div class="d-flex align-items-center justify-content-between px-md-5 mb-5">
+                <h1 class="fw-black h1 text-gym">Nos Services</h1>
+            </div> 
+            <div class="button-container d-flex  justify-content-center">
+                <a class="modern-button" href="{{ route('masection') }}">
+                    <i class="fas fa-bullseye"></i> 
                     Determine Section
-                </button>
-                <button class="modern-button" onclick="location.href='#'">
-                    <i class="fas fa-question-circle"></i> 
-                    Questions
-                </button>
-                <button class="modern-button" onclick="location.href='#'">
-                    <i class="fas fa-gavel"></i> 
-                    Mentions Légales
-                </button>
-                <button class="modern-button" onclick="location.href='#'">
-                    <i class="fas fa-ellipsis-h"></i> 
-                    Autre
-                </button>
+                </a>
+                <a class="modern-button" >
+                    <i class="fas fa-question"></i> 
+                    Questions Frequentes
+                </a>
+                <a class="modern-button" href="{{ route('index_mentions_legales') }}">
+                    <i class="fas fa-balance-scale"></i> 
+                    Mention Legale
+                </a>
+                <a class="modern-button">
+                    <i class="fas fa-star"></i> 
+                    Animation Ete
+                </a>
             </div>
         </div>
     </div>
