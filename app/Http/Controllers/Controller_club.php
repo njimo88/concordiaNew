@@ -886,15 +886,33 @@ public function exportCSVproduit(Request $request)
     
     $response = new StreamedResponse(function() use ($users_saison_active, $delimiter) {
         $handle = fopen('php://output', 'w');
+        fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
         fputcsv($handle, ['Produit', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Age', 'Nationalité', 'Adresse', 'Code postal', 'Ville', 'Téléphone', 'Email', 'ID Family', 'Role'], $delimiter);
 
         foreach ($users_saison_active as $user) {
             $birthdate = new \DateTime($user->birthdate);
             $now = new \DateTime();
             $age = $now->diff($birthdate)->y;
-            fputcsv($handle, [$user->produit, $user->name, $user->lastname, $user->gender == 'male' ? 'Homme' : 'Femme', $birthdate->format('d/m/Y'), $age, $user->nationality, $user->address, $user->postal_code, $user->city, $user->phone, $user->email, $user->family_id, $user->role], $delimiter);
+            $data = [
+                utf8_encode($user->produit),
+                utf8_encode($user->name),
+                utf8_encode($user->lastname),
+                $user->gender == 'male' ? 'Homme' : 'Femme',
+                $birthdate->format('d/m/Y'),
+                $age,
+                utf8_encode($user->nationality),
+                utf8_encode($user->address),
+                utf8_encode($user->postal_code),
+                utf8_encode($user->city),
+                $user->phone,
+                utf8_encode($user->email),
+                $user->family_id,
+                $user->role
+            ];
+            fputcsv($handle, $data, $delimiter);
         }
         fclose($handle);
+        
     });
 
     $response->headers->set('Content-Type', 'text/csv');

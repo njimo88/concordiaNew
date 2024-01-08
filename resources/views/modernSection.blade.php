@@ -106,7 +106,7 @@
                     <i class="fas fa-bullseye"></i> 
                     Determine Section
                 </a>
-                <a class="modern-button" >
+                <a class="modern-button" href="{{ route('Simple_Post',13019) }}">
                     <i class="fas fa-question"></i> 
                     Questions Frequentes
                 </a>
