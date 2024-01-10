@@ -104,7 +104,7 @@
             <div class="button-container d-flex  justify-content-center">
                 <a class="modern-button" href="{{ route('masection') }}">
                     <i class="fas fa-bullseye"></i> 
-                    Determine Section
+                    Je trouve ma section
                 </a>
                 <a class="modern-button" href="{{ route('Simple_Post',13019) }}">
                     <i class="fas fa-question"></i> 
@@ -112,11 +112,12 @@
                 </a>
                 <a class="modern-button" href="{{ route('index_mentions_legales') }}">
                     <i class="fas fa-balance-scale"></i> 
-                    Mention Legale
+                    Mentions Légales
+
                 </a>
                 <a class="modern-button">
                     <i class="fas fa-star"></i> 
-                    Animation Ete
+                    Animations Vacances
                 </a>
             </div>
         </div>

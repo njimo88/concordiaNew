@@ -246,6 +246,9 @@ section {
   [data-aos-delay] {
     transition-delay: 0 !important;
   }
+  .h1 {
+    font-size: 7vw !important;
+  }
 }
 
 /*--------------------------------------------------------------
@@ -3294,7 +3297,7 @@ button:hover {
 }
 
 .h1{
-    font-size: 4vw !important;
+    font-size: 4vw ;
 }
 
 .top-banner-page{

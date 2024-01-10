@@ -35,7 +35,7 @@
             position: relative;
             display: block;
             overflow: hidden;
-            margin: 0;
+            margin: 5px;
             padding: 0;
         }
     
@@ -70,7 +70,9 @@
     }
       
 @media (max-width: 993px)  {
-    
+    span {
+        font-size: 0.8rem !important;
+    }
     .h2{
         margin-left: 5px !important;
     }
@@ -128,6 +130,13 @@ img[alt="Logo"] {
         width: 500px;
     }
 }
+@media (max-width: 768px) {
+    .news-card {
+        margin-left: auto   !important; /* ou une valeur spécifique si nécessaire */
+        margin-right: auto  !important; /* ou une valeur spécifique si nécessaire */
+    }
+}
+
 
 </style>
 

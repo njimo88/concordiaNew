@@ -227,7 +227,8 @@
               'December' => 'décembre',
           ];
 
-          $datetime = new DateTime(now()->format('Y-m-d'));
+          $billDate = \Carbon\Carbon::parse($bill->date_bill);
+          $datetime = new DateTime($billDate->format('Y-m-d'));
           $formattedMonthYear = $datetime->format('F Y');
           $i = 1;
 
