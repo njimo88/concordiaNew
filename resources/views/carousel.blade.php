@@ -18,7 +18,7 @@
         top: 40% !important;
     }
     .custom-slider .custom-slide {
-            margin: 0 20px;
+            margin: 5px 20px;
         }
     
         .custom-slider .custom-slide img {
@@ -35,8 +35,8 @@
             position: relative;
             display: block;
             overflow: hidden;
-            margin: 5px;
-            padding: 0;
+            margin: 5px !important;
+            padding: 5px !important;
         }
     
         .custom-slider .custom-track {
@@ -99,6 +99,7 @@
 img[alt="Logo"] {
     width: auto;
     max-width: 100%;
+    margin: 5px;
 }
 
 @media (max-width: 576px) {
