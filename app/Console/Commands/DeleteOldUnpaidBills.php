@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Bill;
+use App\Models\bills;
 use Carbon\Carbon;
 
 class DeleteOldUnpaidBills extends Command
@@ -15,8 +15,8 @@ class DeleteOldUnpaidBills extends Command
     public function handle()
     {
         $cutOffTime = Carbon::now()->subMinutes(10);
-        Bill::where('status', 31)
-            ->where('date_bill', '<', $cutOffTime)
+        bills::where('status', 31)
+            ->where('created_at', '<', $cutOffTime)
             ->update(['status' => 1]);
 
         $this->info('Suppression des factures en attente de paiement CB depuis plus de 10 minutes');
