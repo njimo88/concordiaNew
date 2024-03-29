@@ -10,7 +10,7 @@
             <div class="row">
                 @foreach ($products as $product)
                     @foreach ($product->liaisonShopArticlesBill as $liaison)
-                        @if ($liaison->bill  && !$liaison->is_prepared)
+                        @if ($liaison->bill  && !$liaison->is_prepared && $liaison->bill->status == 100)
                             <div class="col-12 col-md-6 col-lg-4 mb-3">
                                 <div class="card user-card">
                                     @if($liaison->productReturn) 
@@ -24,6 +24,7 @@
                                         <div class="user-info">
                                             <h5 class="user-name">{{ $product->title }} {{ optional($product->declinaisons->first())->libelle }}</h5>
                                             <p class="user-quantity">Quantité : {{ $liaison->quantity }}</p>
+                                            <p>ID de la facture : {{ $liaison->bill->id }}</p>
                                             <p class="user-location">Destinataire : {{ $liaison->addressee }} <button type="button" class="btn btn-view-liaisons view-liaisons mx-2" data-user-id="{{ $liaison->id_user }}" data-toggle="modal" data-target="#liaisonsModal">
                                                 <i class="fa-solid fa-info"></i>
                                             </button>

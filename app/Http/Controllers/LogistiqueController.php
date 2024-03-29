@@ -36,6 +36,7 @@ class LogistiqueController extends Controller
                     ->where('type_article', 2)
                     ->where('saison', $saison_active)
                     ->get();
+
     return view('admin.logistique.preparation', compact('products'));
 }
 

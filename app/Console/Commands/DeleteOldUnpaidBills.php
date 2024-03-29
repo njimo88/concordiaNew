@@ -17,7 +17,7 @@ class DeleteOldUnpaidBills extends Command
         $cutOffTime = Carbon::now()->subMinutes(10);
         bills::where('status', 31)
             ->where('created_at', '<', $cutOffTime)
-            ->update(['status' => 1]);
+            ->delete();
 
         $this->info('Suppression des factures en attente de paiement CB depuis plus de 10 minutes');
     }
