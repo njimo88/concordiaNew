@@ -558,7 +558,6 @@ class Article_Controller extends Controller
 
             // insertion des elements dans la BD table shop_article
             $article  = new Shop_article;
-            $article->id_shop_article =  $requete_article["id_shop_article"] + 1 ;
             $article->saison = $request->input('saison');
             $article->title  = $request->input('title');
             $article->image  = $request->input('image');

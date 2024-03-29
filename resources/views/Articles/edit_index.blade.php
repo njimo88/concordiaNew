@@ -635,11 +635,11 @@ foreach($Shop_article as $value1){
                                             <input type="hidden" id="shop_article_id" value="{{ $data->id_shop_article }}">
                                             <div class="form-group">
                                                 <label for="libelle" class="text-secondary">Libelle de la déclinaison :</label>
-                                                <input type="text" class="form-control" id="libelle" name="libelle" placeholder="Entrez le libelle de la déclinaison" required>
+                                                <input type="text" class="form-control" id="libelle" name="libelle" placeholder="Entrez le libelle de la déclinaison" >
                                             </div>
                                             <div class="form-group">
                                                 <label for="stock_ini_d" class="text-secondary">Stock Initial :</label>
-                                                <input type="number" class="form-control" id="stock_ini_d" name="stock_ini_d" placeholder="Entrez le stock initial" required>
+                                                <input type="number" class="form-control" id="stock_ini_d" name="stock_ini_d" placeholder="Entrez le stock initial" >
                                             </div>
                                             <button type="button" id="add-declinaison-btn" class="btn" style="background-color: #482683; color: #fff;">Ajouter déclinaison</button>
                                         </div>
