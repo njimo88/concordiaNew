@@ -37,14 +37,14 @@ Example:
 
 ## Allowed SVG tags
 
-  * LINE
-  * RECT
-  * CIRCLE
-  * ELLIPSE
-  * PATH
-  * POLYGON
-  * POLYLINE
-  * G
+-   LINE
+-   RECT
+-   CIRCLE
+-   ELLIPSE
+-   PATH
+-   POLYGON
+-   POLYLINE
+-   G
 
 ## SVG Documentation
 

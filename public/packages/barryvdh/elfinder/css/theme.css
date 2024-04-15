@@ -13,13 +13,13 @@
 
 .elfinder:not(.elfinder-mobile) *::-webkit-scrollbar-track {
     border-radius: 10px;
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, .1);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
 }
 
 .elfinder:not(.elfinder-mobile) *::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 50, 0.08);
     border-radius: 10px;
-    box-shadow:0 0 0 1px rgba(255, 255, 255, .3);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 
 .elfinder:not(.elfinder-mobile) *::-webkit-scrollbar-thumb:hover {
@@ -49,19 +49,23 @@
     border: 5px solid rgba(0, 0, 50, 0.5);
 }
 
-.elfinder:not(.elfinder-mobile) *::-webkit-scrollbar-button:single-button:vertical:decrement {
+.elfinder:not(.elfinder-mobile)
+    *::-webkit-scrollbar-button:single-button:vertical:decrement {
     border-bottom: 8px solid rgba(0, 0, 50, 0.3);
 }
 
-.elfinder:not(.elfinder-mobile) *::-webkit-scrollbar-button:single-button:vertical:increment {
+.elfinder:not(.elfinder-mobile)
+    *::-webkit-scrollbar-button:single-button:vertical:increment {
     border-top: 8px solid rgba(0, 0, 50, 0.3);
 }
 
-.elfinder:not(.elfinder-mobile) *::-webkit-scrollbar-button:single-button:horizontal:decrement {
+.elfinder:not(.elfinder-mobile)
+    *::-webkit-scrollbar-button:single-button:horizontal:decrement {
     border-right: 8px solid rgba(0, 0, 50, 0.3);
 }
 
-.elfinder:not(.elfinder-mobile) *::-webkit-scrollbar-button:single-button:horizontal:increment {
+.elfinder:not(.elfinder-mobile)
+    *::-webkit-scrollbar-button:single-button:horizontal:increment {
     border-left: 8px solid rgba(0, 0, 50, 0.3);
 }
 
@@ -69,12 +73,13 @@
 .elfinder input,
 .elfinder textarea {
     color: #000;
-    background-color: #FFF;
+    background-color: #fff;
     border-color: #ccc;
 }
 
 /* dialogs */
-.std42-dialog, .std42-dialog .ui-widget-content {
+.std42-dialog,
+.std42-dialog .ui-widget-content {
     background-color: #ededed;
     background-image: none;
     background-clip: content-box;
@@ -108,30 +113,46 @@
 }
 
 .std42-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close:hover .ui-icon,
-.elfinder-mobile .std42-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon,
+.elfinder-mobile
+    .std42-dialog
+    .ui-dialog-titlebar
+    .ui-dialog-titlebar-close
+    .ui-icon,
 .elfinder-quicklook-titlebar-icon .ui-icon.elfinder-icon-close:hover,
-.elfinder-mobile .elfinder-quicklook-titlebar-icon .ui-icon.elfinder-icon-close {
+.elfinder-mobile
+    .elfinder-quicklook-titlebar-icon
+    .ui-icon.elfinder-icon-close {
     background-color: #ff6252;
     border-color: #e5695d;
-    background-image: url("../img/ui-icons_ffffff_256x240.png");
+    background-image: url('../img/ui-icons_ffffff_256x240.png');
 }
 
 .std42-dialog .ui-dialog-titlebar .elfinder-titlebar-minimize:hover .ui-icon,
-.elfinder-mobile .std42-dialog .ui-dialog-titlebar .elfinder-titlebar-minimize .ui-icon,
+.elfinder-mobile
+    .std42-dialog
+    .ui-dialog-titlebar
+    .elfinder-titlebar-minimize
+    .ui-icon,
 .elfinder-quicklook-titlebar-icon .ui-icon.elfinder-icon-minimize:hover,
-.elfinder-mobile .elfinder-quicklook-titlebar-icon .ui-icon.elfinder-icon-minimize {
+.elfinder-mobile
+    .elfinder-quicklook-titlebar-icon
+    .ui-icon.elfinder-icon-minimize {
     background-color: #ffbc00;
     border-color: #e3a40b;
-    background-image: url("../img/ui-icons_ffffff_256x240.png");
+    background-image: url('../img/ui-icons_ffffff_256x240.png');
 }
 
 .std42-dialog .ui-dialog-titlebar .elfinder-titlebar-full:hover .ui-icon,
-.elfinder-mobile .std42-dialog .ui-dialog-titlebar .elfinder-titlebar-full .ui-icon,
+.elfinder-mobile
+    .std42-dialog
+    .ui-dialog-titlebar
+    .elfinder-titlebar-full
+    .ui-icon,
 .elfinder-quicklook-titlebar-icon .ui-icon.elfinder-icon-full:hover,
 .elfinder-mobile .elfinder-quicklook-titlebar-icon .ui-icon.elfinder-icon-full {
     background-color: #26c82f;
     border-color: #13ae10;
-    background-image: url("../img/ui-icons_ffffff_256x240.png");
+    background-image: url('../img/ui-icons_ffffff_256x240.png');
 }
 
 .std42-dialog .elfinder-help,
@@ -161,7 +182,7 @@
 }
 
 .elfinder-navbar .elfinder-droppable-active {
-    background: #A7C6E5;
+    background: #a7c6e5;
 }
 
 /* disabled elfinder */
@@ -197,47 +218,47 @@
 
 /* type */
 .elfinder-cwd-icon-text:before {
-    background-color: #6f99e6
+    background-color: #6f99e6;
 }
 
 .elfinder-cwd-icon-image:before {
-    background-color: #2ea26c
+    background-color: #2ea26c;
 }
 
 .elfinder-cwd-icon-audio:before {
-    background-color: #7bad2a
+    background-color: #7bad2a;
 }
 
 .elfinder-cwd-icon-video:before {
-    background-color: #322aad
+    background-color: #322aad;
 }
 
 /* subtype */
 .elfinder-cwd-icon-x-empty:before,
 .elfinder-cwd-icon-plain:before {
-    background-color: #719be6
+    background-color: #719be6;
 }
 
 .elfinder-cwd-icon-rtf:before,
 .elfinder-cwd-icon-rtfd:before {
-    background-color: #83aae7
+    background-color: #83aae7;
 }
 
 .elfinder-cwd-icon-pdf:before {
-    background-color: #db7424
+    background-color: #db7424;
 }
 
 .elfinder-cwd-icon-html:before {
-    background-color: #82bc12
+    background-color: #82bc12;
 }
 
 .elfinder-cwd-icon-xml:before,
 .elfinder-cwd-icon-css:before {
-    background-color: #7c7c7c
+    background-color: #7c7c7c;
 }
 
 .elfinder-cwd-icon-x-shockwave-flash:before {
-    background-color: #f43a36
+    background-color: #f43a36;
 }
 
 .elfinder-cwd-icon-zip:before,
@@ -250,7 +271,7 @@
 .elfinder-cwd-icon-x-bzip2:before,
 .elfinder-cwd-icon-x-rar:before,
 .elfinder-cwd-icon-x-rar-compressed:before {
-    background-color: #97638e
+    background-color: #97638e;
 }
 
 .elfinder-cwd-icon-javascript:before,
@@ -269,7 +290,7 @@
 .elfinder-cwd-icon-x-java:before,
 .elfinder-cwd-icon-x-java-source:before,
 .elfinder-cwd-icon-x-php:before {
-    background-color: #7c607c
+    background-color: #7c607c;
 }
 
 .elfinder-cwd-icon-msword:before,
@@ -279,7 +300,7 @@
 .elfinder-cwd-icon-vnd-ms-word-template-macroEnabled-12:before,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-wordprocessingml-document:before,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-wordprocessingml-template:before {
-    background-color: #2b569a
+    background-color: #2b569a;
 }
 
 .elfinder-cwd-icon-ms-excel:before,
@@ -290,7 +311,7 @@
 .elfinder-cwd-icon-vnd-ms-excel-template-macroEnabled-12:before,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-spreadsheetml-sheet:before,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-spreadsheetml-template:before {
-    background-color: #107b10
+    background-color: #107b10;
 }
 
 .elfinder-cwd-icon-vnd-ms-powerpoint:before,
@@ -303,7 +324,7 @@
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-presentationml-slide:before,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-presentationml-slideshow:before,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-presentationml-template:before {
-    background-color: #d24625
+    background-color: #d24625;
 }
 
 .elfinder-cwd-icon-vnd-oasis-opendocument-chart:before,
@@ -321,11 +342,11 @@
 .elfinder-cwd-icon-vnd-oasis-opendocument-text-template:before,
 .elfinder-cwd-icon-vnd-oasis-opendocument-text-web:before,
 .elfinder-cwd-icon-vnd-openofficeorg-extension:before {
-    background-color: #00a500
+    background-color: #00a500;
 }
 
 .elfinder-cwd-icon-postscript:before {
-    background-color: #ff5722
+    background-color: #ff5722;
 }
 
 /* list view*/
@@ -343,7 +364,7 @@
 }
 
 .elfinder-cwd .elfinder-droppable-active td {
-    background: #A7C6E5;
+    background: #a7c6e5;
 }
 
 .elfinder-cwd.elfinder-table-header-sticky table {
@@ -351,11 +372,13 @@
 }
 
 .elfinder-droppable-active .elfinder-cwd.elfinder-table-header-sticky table {
-    border-top-color: #A7C6E5;
+    border-top-color: #a7c6e5;
 }
 
 /* common selected background/color */
-.elfinder-cwd-view-icons .elfinder-cwd-file .elfinder-cwd-filename.ui-state-hover,
+.elfinder-cwd-view-icons
+    .elfinder-cwd-file
+    .elfinder-cwd-filename.ui-state-hover,
 .elfinder-cwd table td.ui-state-hover,
 .elfinder-button-menu .ui-state-hover {
     background: #3875d7;
@@ -363,7 +386,10 @@
 }
 
 /* disabled elfinder */
-.elfinder-disabled .elfinder-cwd-view-icons .elfinder-cwd-file .elfinder-cwd-filename.ui-state-hover,
+.elfinder-disabled
+    .elfinder-cwd-view-icons
+    .elfinder-cwd-file
+    .elfinder-cwd-filename.ui-state-hover,
 .elfinder-disabled .elfinder-cwd table td.ui-state-hover {
     background: #dadada;
 }
@@ -402,7 +428,7 @@
 
 .elfinder-notify-cancel .elfinder-notify-button {
     background-color: #707070;
-    background-image: url("../img/ui-icons_ffffff_256x240.png");
+    background-image: url('../img/ui-icons_ffffff_256x240.png');
 }
 
 .elfinder-notify-cancel .elfinder-notify-button.ui-state-hover {

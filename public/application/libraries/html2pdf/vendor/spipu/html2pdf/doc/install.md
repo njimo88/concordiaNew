@@ -48,16 +48,16 @@ Then, you have just to use the main class `Spipu\Html2Pdf\Html2Pdf`, with the 2 
 
 ### And on production ?
 
-You have **not** to install composer on your production server. 
+You have **not** to install composer on your production server.
 
 You have to install composer **only** on your dev environement. Composer is a dev tool.
- 
+
 To deliver you app on a server, you have to (on you dev environement) :
 
-  * Git clone the tag/branch that you want to deliver
-  * Launch the command `composer install --no-dev`
-  * Remove the useless files (like the `.git` folder)
-  * Zip all
+-   Git clone the tag/branch that you want to deliver
+-   Launch the command `composer install --no-dev`
+-   Remove the useless files (like the `.git` folder)
+-   Zip all
 
 That's all, you have a beautifull package that can be deliver on a server !
 

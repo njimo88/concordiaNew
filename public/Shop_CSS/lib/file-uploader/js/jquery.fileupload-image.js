@@ -12,8 +12,8 @@
 /* jshint nomen:false */
 /* global define, window, Blob */
 
-(function (factory) {
-    'use strict';
+;(function (factory) {
+    'use strict'
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
         define([
@@ -23,17 +23,14 @@
             'load-image-exif',
             'load-image-ios',
             'canvas-to-blob',
-            './jquery.fileupload-process'
-        ], factory);
+            './jquery.fileupload-process',
+        ], factory)
     } else {
         // Browser globals:
-        factory(
-            window.jQuery,
-            window.loadImage
-        );
+        factory(window.jQuery, window.loadImage)
     }
-}(function ($, loadImage) {
-    'use strict';
+})(function ($, loadImage) {
+    'use strict'
 
     // Prepend to the default processQueue:
     $.blueimp.fileupload.prototype.options.processQueue.unshift(
@@ -44,7 +41,7 @@
             disableExifThumbnail: '@',
             disableExifSub: '@',
             disableExifGps: '@',
-            disabled: '@disableImageMetaDataLoad'
+            disabled: '@disableImageMetaDataLoad',
         },
         {
             action: 'loadImage',
@@ -53,7 +50,7 @@
             fileTypes: '@',
             maxFileSize: '@',
             noRevoke: '@',
-            disabled: '@disableImageLoad'
+            disabled: '@disableImageLoad',
         },
         {
             action: 'resizeImage',
@@ -66,17 +63,17 @@
             crop: '@',
             orientation: '@',
             forceResize: '@',
-            disabled: '@disableImageResize'
+            disabled: '@disableImageResize',
         },
         {
             action: 'saveImage',
             quality: '@imageQuality',
             type: '@imageType',
-            disabled: '@disableImageResize'
+            disabled: '@disableImageResize',
         },
         {
             action: 'saveImageMetaData',
-            disabled: '@disableImageMetaDataSave'
+            disabled: '@disableImageMetaDataSave',
         },
         {
             action: 'resizeImage',
@@ -90,23 +87,22 @@
             orientation: '@',
             thumbnail: '@',
             canvas: '@',
-            disabled: '@disableImagePreview'
+            disabled: '@disableImagePreview',
         },
         {
             action: 'setImage',
             name: '@imagePreviewName',
-            disabled: '@disableImagePreview'
+            disabled: '@disableImagePreview',
         },
         {
             action: 'deleteImageReferences',
-            disabled: '@disableImageReferencesDeletion'
-        }
-    );
+            disabled: '@disableImageReferencesDeletion',
+        },
+    )
 
     // The File Upload Resize plugin extends the fileupload widget
     // with image resize functionality:
     $.widget('blueimp.fileupload', $.blueimp.fileupload, {
-
         options: {
             // The regular expression for the types of images to load:
             // matched against the file type:
@@ -136,39 +132,39 @@
             // Define if preview images should be cropped or only scaled:
             previewCrop: false,
             // Define if preview images should be resized as canvas elements:
-            previewCanvas: true
+            previewCanvas: true,
         },
 
         processActions: {
-
             // Loads the image given via data.files and data.index
             // as img element, if the browser supports the File API.
             // Accepts the options fileTypes (regular expression)
             // and maxFileSize (integer) to limit the files to load:
             loadImage: function (data, options) {
                 if (options.disabled) {
-                    return data;
+                    return data
                 }
                 var that = this,
                     file = data.files[data.index],
-                    dfd = $.Deferred();
-                if (($.type(options.maxFileSize) === 'number' &&
-                            file.size > options.maxFileSize) ||
-                        (options.fileTypes &&
-                            !options.fileTypes.test(file.type)) ||
-                        !loadImage(
-                            file,
-                            function (img) {
-                                if (img.src) {
-                                    data.img = img;
-                                }
-                                dfd.resolveWith(that, [data]);
-                            },
-                            options
-                        )) {
-                    return data;
+                    dfd = $.Deferred()
+                if (
+                    ($.type(options.maxFileSize) === 'number' &&
+                        file.size > options.maxFileSize) ||
+                    (options.fileTypes && !options.fileTypes.test(file.type)) ||
+                    !loadImage(
+                        file,
+                        function (img) {
+                            if (img.src) {
+                                data.img = img
+                            }
+                            dfd.resolveWith(that, [data])
+                        },
+                        options,
+                    )
+                ) {
+                    return data
                 }
-                return dfd.promise();
+                return dfd.promise()
             },
 
             // Resizes the image given as data.canvas or data.img
@@ -178,132 +174,146 @@
             // minHeight, canvas and crop:
             resizeImage: function (data, options) {
                 if (options.disabled || !(data.canvas || data.img)) {
-                    return data;
+                    return data
                 }
-                options = $.extend({canvas: true}, options);
+                options = $.extend({ canvas: true }, options)
                 var that = this,
                     dfd = $.Deferred(),
                     img = (options.canvas && data.canvas) || data.img,
                     resolve = function (newImg) {
-                        if (newImg && (newImg.width !== img.width ||
+                        if (
+                            newImg &&
+                            (newImg.width !== img.width ||
                                 newImg.height !== img.height ||
-                                options.forceResize)) {
-                            data[newImg.getContext ? 'canvas' : 'img'] = newImg;
+                                options.forceResize)
+                        ) {
+                            data[newImg.getContext ? 'canvas' : 'img'] = newImg
                         }
-                        data.preview = newImg;
-                        dfd.resolveWith(that, [data]);
+                        data.preview = newImg
+                        dfd.resolveWith(that, [data])
                     },
-                    thumbnail;
+                    thumbnail
                 if (data.exif) {
                     if (options.orientation === true) {
-                        options.orientation = data.exif.get('Orientation');
+                        options.orientation = data.exif.get('Orientation')
                     }
                     if (options.thumbnail) {
-                        thumbnail = data.exif.get('Thumbnail');
+                        thumbnail = data.exif.get('Thumbnail')
                         if (thumbnail) {
-                            loadImage(thumbnail, resolve, options);
-                            return dfd.promise();
+                            loadImage(thumbnail, resolve, options)
+                            return dfd.promise()
                         }
                     }
                 }
                 if (img) {
-                    resolve(loadImage.scale(img, options));
-                    return dfd.promise();
+                    resolve(loadImage.scale(img, options))
+                    return dfd.promise()
                 }
-                return data;
+                return data
             },
 
             // Saves the processed image given as data.canvas
             // inplace at data.index of data.files:
             saveImage: function (data, options) {
                 if (!data.canvas || options.disabled) {
-                    return data;
+                    return data
                 }
                 var that = this,
                     file = data.files[data.index],
-                    dfd = $.Deferred();
+                    dfd = $.Deferred()
                 if (data.canvas.toBlob) {
                     data.canvas.toBlob(
                         function (blob) {
                             if (!blob.name) {
                                 if (file.type === blob.type) {
-                                    blob.name = file.name;
+                                    blob.name = file.name
                                 } else if (file.name) {
                                     blob.name = file.name.replace(
                                         /\..+$/,
-                                        '.' + blob.type.substr(6)
-                                    );
+                                        '.' + blob.type.substr(6),
+                                    )
                                 }
                             }
                             // Don't restore invalid meta data:
                             if (file.type !== blob.type) {
-                                delete data.imageHead;
+                                delete data.imageHead
                             }
                             // Store the created blob at the position
                             // of the original file in the files list:
-                            data.files[data.index] = blob;
-                            dfd.resolveWith(that, [data]);
+                            data.files[data.index] = blob
+                            dfd.resolveWith(that, [data])
                         },
                         options.type || file.type,
-                        options.quality
-                    );
+                        options.quality,
+                    )
                 } else {
-                    return data;
+                    return data
                 }
-                return dfd.promise();
+                return dfd.promise()
             },
 
             loadImageMetaData: function (data, options) {
                 if (options.disabled) {
-                    return data;
+                    return data
                 }
                 var that = this,
-                    dfd = $.Deferred();
-                loadImage.parseMetaData(data.files[data.index], function (result) {
-                    $.extend(data, result);
-                    dfd.resolveWith(that, [data]);
-                }, options);
-                return dfd.promise();
+                    dfd = $.Deferred()
+                loadImage.parseMetaData(
+                    data.files[data.index],
+                    function (result) {
+                        $.extend(data, result)
+                        dfd.resolveWith(that, [data])
+                    },
+                    options,
+                )
+                return dfd.promise()
             },
 
             saveImageMetaData: function (data, options) {
-                if (!(data.imageHead && data.canvas &&
-                        data.canvas.toBlob && !options.disabled)) {
-                    return data;
+                if (
+                    !(
+                        data.imageHead &&
+                        data.canvas &&
+                        data.canvas.toBlob &&
+                        !options.disabled
+                    )
+                ) {
+                    return data
                 }
                 var file = data.files[data.index],
-                    blob = new Blob([
-                        data.imageHead,
-                        // Resized images always have a head size of 20 bytes,
-                        // including the JPEG marker and a minimal JFIF header:
-                        this._blobSlice.call(file, 20)
-                    ], {type: file.type});
-                blob.name = file.name;
-                data.files[data.index] = blob;
-                return data;
+                    blob = new Blob(
+                        [
+                            data.imageHead,
+                            // Resized images always have a head size of 20 bytes,
+                            // including the JPEG marker and a minimal JFIF header:
+                            this._blobSlice.call(file, 20),
+                        ],
+                        { type: file.type },
+                    )
+                blob.name = file.name
+                data.files[data.index] = blob
+                return data
             },
 
             // Sets the resized version of the image as a property of the
             // file object, must be called after "saveImage":
             setImage: function (data, options) {
                 if (data.preview && !options.disabled) {
-                    data.files[data.index][options.name || 'preview'] = data.preview;
+                    data.files[data.index][options.name || 'preview'] =
+                        data.preview
                 }
-                return data;
+                return data
             },
 
             deleteImageReferences: function (data, options) {
                 if (!options.disabled) {
-                    delete data.img;
-                    delete data.canvas;
-                    delete data.preview;
-                    delete data.imageHead;
+                    delete data.img
+                    delete data.canvas
+                    delete data.preview
+                    delete data.imageHead
                 }
-                return data;
-            }
-
-        }
-
-    });
-
-}));
+                return data
+            },
+        },
+    })
+})

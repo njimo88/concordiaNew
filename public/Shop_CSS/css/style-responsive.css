@@ -3,11 +3,9 @@
     .custom-bar-chart {
         margin-bottom: 40px;
     }
-
 }
 
 @media (min-width: 768px) and (max-width: 979px) {
-
     .mail-box .sm-side {
         width: 30%;
     }
@@ -25,7 +23,10 @@
     .chat-room aside {
         display: block;
     }
-    .chat-room .left-side, .chat-room .mid-side, .chat-room .right-side, .chat-room .left-side footer {
+    .chat-room .left-side,
+    .chat-room .mid-side,
+    .chat-room .right-side,
+    .chat-room .left-side footer {
         width: 100%;
     }
 
@@ -37,12 +38,14 @@
         margin-bottom: 20px;
     }
 
-    .chat-room .left-side , .chat-room .mid-side{
+    .chat-room .left-side,
+    .chat-room .mid-side {
         margin-bottom: 10px;
-
     }
 
-    .chat-room .left-side .user-head , .chat-room-head, .chat-room .right-side .user-head{
+    .chat-room .left-side .user-head,
+    .chat-room-head,
+    .chat-room .right-side .user-head {
         border-radius: 4px 4px 0 0;
         -webit-border-radius: 4px 4px 0 0;
     }
@@ -73,14 +76,11 @@
     }
 
     .chat-room .mid-side {
-        margin-bottom: 0!important;
+        margin-bottom: 0 !important;
     }
-
-
 }
 
 @media (max-width: 768px) {
-
     .header {
         position: absolute;
     }
@@ -95,10 +95,9 @@
         z-index: 1001;
     }
 
-
     /* body container */
     #main-content {
-        margin: 0px!important;
+        margin: 0px !important;
         position: none !important;
     }
 
@@ -110,38 +109,43 @@
         margin: 0 10px 5px 10px;
     }
     #sidebar > ul > li > a {
-        height:35px;
-        line-height:35px;
+        height: 35px;
+        line-height: 35px;
         padding: 0 10px;
         text-align: left;
     }
-    #sidebar > ul > li > a i{
+    #sidebar > ul > li > a i {
         /*display: none !important;*/
     }
 
-    .mail-info, .mail-info:hover {
+    .mail-info,
+    .mail-info:hover {
         display: none !important;
     }
-    #sidebar ul > li > a .arrow, #sidebar > ul > li > a .arrow.open {
+    #sidebar ul > li > a .arrow,
+    #sidebar > ul > li > a .arrow.open {
         margin-right: 10px;
         margin-top: 15px;
     }
 
-    #sidebar ul > li.active > a .arrow, #sidebar ul > li > a:hover .arrow, #sidebar ul > li > a:focus .arrow,
-    #sidebar > ul > li.active > a .arrow.open, #sidebar > ul > li > a:hover .arrow.open, #sidebar > ul > li > a:focus .arrow.open{
+    #sidebar ul > li.active > a .arrow,
+    #sidebar ul > li > a:hover .arrow,
+    #sidebar ul > li > a:focus .arrow,
+    #sidebar > ul > li.active > a .arrow.open,
+    #sidebar > ul > li > a:hover .arrow.open,
+    #sidebar > ul > li > a:focus .arrow.open {
         margin-top: 15px;
     }
 
-    #sidebar > ul > li > a, #sidebar > ul > li > ul.sub > li {
+    #sidebar > ul > li > a,
+    #sidebar > ul > li > ul.sub > li {
         width: 100%;
     }
     #sidebar > ul > li > ul.sub > li > a {
         background: transparent !important ;
     }
     #sidebar > ul > li > ul.sub > li > a:hover {
-        
     }
-
 
     /* sidebar */
     #sidebar {
@@ -158,12 +162,11 @@
         right: 35px;
         width: 0;
         height: 0;
-        top:48px;
+        top: 48px;
         border-bottom: 15px solid #282e36;
         border-left: 15px solid transparent;
         border-right: 15px solid transparent;
     }
-
 
     /*---------*/
 
@@ -175,20 +178,18 @@
         margin-bottom: 5px;
     }
 
-
-
-
     .mail-box aside {
         display: block;
     }
 
-    .mail-box .sm-side , .mail-box .lg-side{
-        width: 100% ;
+    .mail-box .sm-side,
+    .mail-box .lg-side {
+        width: 100%;
     }
 
     /* full calendar fix */
     .fc-header-right {
-        left:25px;
+        left: 25px;
         position: absolute;
     }
 
@@ -202,12 +203,16 @@
         top: -50px !important;
     }
 
-    .fc-state-active, .fc-state-active .fc-button-inner, .fc-state-hover, .fc-state-hover .fc-button-inner {
+    .fc-state-active,
+    .fc-state-active .fc-button-inner,
+    .fc-state-hover,
+    .fc-state-hover .fc-button-inner {
         background: none !important;
-        color: #FFFFFF !important;
+        color: #ffffff !important;
     }
 
-    .fc-state-default, .fc-state-default .fc-button-inner {
+    .fc-state-default,
+    .fc-state-default .fc-button-inner {
         background: none !important;
     }
 
@@ -226,21 +231,39 @@
         border: none !important;
         margin-right: 2px !important;
         background-color: #fafafa !important;
-        background-image: -moz-linear-gradient(top, #fafafa, #efefef) !important;
-        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#efefef)) !important;
-        background-image: -webkit-linear-gradient(top, #fafafa, #efefef) !important;
+        background-image: -moz-linear-gradient(
+            top,
+            #fafafa,
+            #efefef
+        ) !important;
+        background-image: -webkit-gradient(
+            linear,
+            0 0,
+            0 100%,
+            from(#fafafa),
+            to(#efefef)
+        ) !important;
+        background-image: -webkit-linear-gradient(
+            top,
+            #fafafa,
+            #efefef
+        ) !important;
         background-image: -o-linear-gradient(top, #fafafa, #efefef) !important;
-        background-image: linear-gradient(to bottom, #fafafa, #efefef) !important;
+        background-image: linear-gradient(
+            to bottom,
+            #fafafa,
+            #efefef
+        ) !important;
         filter: progid:dximagetransform.microsoft.gradient(startColorstr='#fafafa', endColorstr='#efefef', GradientType=0) !important;
-        -webkit-box-shadow: 0 1px 0px rgba(255, 255, 255, .8) !important;
-        -moz-box-shadow: 0 1px 0px rgba(255, 255, 255, .8) !important;
-        box-shadow: 0 1px 0px rgba(255, 255, 255, .8) !important;
+        -webkit-box-shadow: 0 1px 0px rgba(255, 255, 255, 0.8) !important;
+        -moz-box-shadow: 0 1px 0px rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0 1px 0px rgba(255, 255, 255, 0.8) !important;
         -webkit-border-radius: 3px !important;
         -moz-border-radius: 3px !important;
         border-radius: 3px !important;
         color: #646464 !important;
         border: 1px solid #ddd !important;
-        text-shadow: 0 1px 0px rgba(255, 255, 255, .6) !important;
+        text-shadow: 0 1px 0px rgba(255, 255, 255, 0.6) !important;
         text-align: center;
     }
 
@@ -250,11 +273,29 @@
 
     .fc-button.fc-state-active .fc-button-inner {
         background-color: #e5e4e4 !important;
-        background-image: -moz-linear-gradient(top, #e5e4e4, #dddcdc) !important;
-        background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e5e4e4), to(#dddcdc)) !important;
-        background-image: -webkit-linear-gradient(top, #e5e4e4, #dddcdc) !important;
+        background-image: -moz-linear-gradient(
+            top,
+            #e5e4e4,
+            #dddcdc
+        ) !important;
+        background-image: -webkit-gradient(
+            linear,
+            0 0,
+            0 100%,
+            from(#e5e4e4),
+            to(#dddcdc)
+        ) !important;
+        background-image: -webkit-linear-gradient(
+            top,
+            #e5e4e4,
+            #dddcdc
+        ) !important;
         background-image: -o-linear-gradient(top, #e5e4e4, #dddcdc) !important;
-        background-image: linear-gradient(to bottom, #e5e4e4, #dddcdc) !important;
+        background-image: linear-gradient(
+            to bottom,
+            #e5e4e4,
+            #dddcdc
+        ) !important;
         filter: progid:dximagetransform.microsoft.gradient(startColorstr='#e5e4e4', endColorstr='#dddcdc', GradientType=0) !important;
     }
 
@@ -268,13 +309,13 @@
     }
 
     .fc-header {
-        margin-bottom:0px !important;
+        margin-bottom: 0px !important;
     }
 
     /*--*/
 
     /*.chart-position {*/
-        /*margin-top: 0px;*/
+    /*margin-top: 0px;*/
     /*}*/
 
     .timeline-desk .album a {
@@ -308,14 +349,14 @@
     .img-responsive {
         width: 100%;
     }
-
 }
 
-
-
 @media (max-width: 480px) {
-
-    .notify-row, .search, .dont-show , .inbox-head .sr-input, .inbox-head .sr-btn{
+    .notify-row,
+    .search,
+    .dont-show,
+    .inbox-head .sr-input,
+    .inbox-head .sr-btn {
         display: none;
     }
 
@@ -323,11 +364,13 @@
         display: block;
     }
 
-    .mail-box .sm-side , .mail-box .lg-side{
-        width: 100% ;
+    .mail-box .sm-side,
+    .mail-box .lg-side {
+        width: 100%;
     }
 
-    #top_menu .nav > li, ul.top-menu > li {
+    #top_menu .nav > li,
+    ul.top-menu > li {
         float: right;
     }
     .hidden-phone {
@@ -352,12 +395,13 @@
     }
 
     .chart-position {
-       margin-top: 0px;
-     }
+        margin-top: 0px;
+    }
 
-    .navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+    .navbar-inverse .navbar-toggle:hover,
+    .navbar-inverse .navbar-toggle:focus {
         background-color: #ccc;
-        border-color:#ccc ;
+        border-color: #ccc;
     }
 
     /*chat room*/
@@ -365,7 +409,10 @@
     .chat-room aside {
         display: block;
     }
-    .chat-room .left-side, .chat-room .mid-side, .chat-room .right-side, .chat-room .left-side footer {
+    .chat-room .left-side,
+    .chat-room .mid-side,
+    .chat-room .right-side,
+    .chat-room .left-side footer {
         width: 100%;
     }
 
@@ -377,12 +424,14 @@
         margin-bottom: 20px;
     }
 
-    .chat-room .left-side , .chat-room .mid-side{
+    .chat-room .left-side,
+    .chat-room .mid-side {
         margin-bottom: 10px;
-
     }
 
-    .chat-room .left-side .user-head , .chat-room-head, .chat-room .right-side .user-head{
+    .chat-room .left-side .user-head,
+    .chat-room-head,
+    .chat-room .right-side .user-head {
         border-radius: 4px 4px 0 0;
         -webit-border-radius: 4px 4px 0 0;
     }
@@ -414,28 +463,34 @@
     }
 
     .chat-room .mid-side {
-        margin-bottom: 0!important;
+        margin-bottom: 0 !important;
     }
 }
 
-@media (max-width:320px) {
+@media (max-width: 320px) {
     .login-social-link a {
         padding: 15px 17px !important;
     }
 
-    .notify-row, .search, .dont-show, .inbox-head .sr-input, .inbox-head .sr-btn {
+    .notify-row,
+    .search,
+    .dont-show,
+    .inbox-head .sr-input,
+    .inbox-head .sr-btn {
         display: none;
     }
 
     .mail-box aside {
-        display: block ;
+        display: block;
     }
 
-    .mail-box .sm-side , .mail-box .lg-side{
-        width: 100% ;
+    .mail-box .sm-side,
+    .mail-box .lg-side {
+        width: 100%;
     }
 
-    #top_menu .nav > li, ul.top-menu > li {
+    #top_menu .nav > li,
+    ul.top-menu > li {
         float: right;
     }
 
@@ -481,7 +536,3 @@
         display: none;
     }
 }
-
-
-
-

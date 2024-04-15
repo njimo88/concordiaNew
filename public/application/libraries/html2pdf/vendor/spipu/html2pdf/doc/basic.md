@@ -8,15 +8,15 @@ The main class of this library is `\Spipu\Html2Pdf\Html2Pdf`.
 
 The PHP constructor takes the following parameters:
 
-Variable | Default value |Description
----------|---------------|--------------
-$orientation | P | The default page orientation, can be P (portrait) or L (landscape)
-$format | A4 | The default page format used for pages. The list of the available value are [here](https://github.com/tecnickcom/TCPDF/blob/master/include/tcpdf_static.php#L2097). You can also give a array with 2 values the width and the height in mm.
-$lang | fr | Language to use, for some minor translations. The list of the available languages are [here](https://github.com/spipu/html2pdf/tree/master/src/locale)
-$unicode | true | means that the input HTML string is unicode
-$encoding |UTF-8 | charset encoding of the input HTML string
-$margins | array(5, 5, 5, 8) | Main margins of the page (left, top, right, bottom) in mm
-$pdfa | false | If TRUE set the document to PDF/A mode
+| Variable     | Default value     | Description                                                                                                                                                                                                                                 |
+| ------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| $orientation | P                 | The default page orientation, can be P (portrait) or L (landscape)                                                                                                                                                                          |
+| $format      | A4                | The default page format used for pages. The list of the available value are [here](https://github.com/tecnickcom/TCPDF/blob/master/include/tcpdf_static.php#L2097). You can also give a array with 2 values the width and the height in mm. |
+| $lang        | fr                | Language to use, for some minor translations. The list of the available languages are [here](https://github.com/spipu/html2pdf/tree/master/src/locale)                                                                                      |
+| $unicode     | true              | means that the input HTML string is unicode                                                                                                                                                                                                 |
+| $encoding    | UTF-8             | charset encoding of the input HTML string                                                                                                                                                                                                   |
+| $margins     | array(5, 5, 5, 8) | Main margins of the page (left, top, right, bottom) in mm                                                                                                                                                                                   |
+| $pdfa        | false             | If TRUE set the document to PDF/A mode                                                                                                                                                                                                      |
 
 In most of the case, you will just use the 3 first parameters :
 
@@ -26,7 +26,7 @@ $html2pdf = new \Spipu\Html2Pdf\Html2Pdf('P', 'A4', 'en');
 
 ## Convert the HTML
 
-The main method to use is `writeHTML`. 
+The main method to use is `writeHTML`.
 
 It takes one parameter : the HTML in string format that you want to convert into PDF.
 
@@ -53,7 +53,7 @@ You can find more information about this specific tag on the [page](page.md) doc
 ## Get the PDF
 
 The main method to use is `output`.
- 
+
 It takes two not required parameters. You can find more information on the [output](output.md) documentation.
 
 If you do not give any parameters, it will send the PDF file to the browser, to display it.

@@ -151,10 +151,6 @@ class Article_Controller extends Controller
             'prix_adhesion'  =>    'required|numeric|gt:0',
             'prix_assurance'  =>   'required|numeric|gt:0',
             'prix_licence_fede' =>  'required|numeric|gt:0',
-
-         
-           
-    
         ], $messages = [
             'title.required' => "Le champ titre est requis.",
             'title.max' => "Le titre ne doit pas dépasser 255 caractères.",
@@ -164,11 +160,8 @@ class Article_Controller extends Controller
             'ref.alpha' => "ref doit être une chaîne de caractères.",
             'agemin.required' => 'age minimum est requis.',
             'agemax.required' => 'age maximum est requis.',
-
         ]);
-    
-    
-   
+
         $article  = new Shop_article;
  
         $article->saison = $request->input('saison');
@@ -283,23 +276,6 @@ class Article_Controller extends Controller
 
         ]);
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
         $article  = new Shop_article;
  
         $article->saison = $request->input('saison');
@@ -517,21 +493,23 @@ class Article_Controller extends Controller
             $requete_prof = User::select("*")->where('role','>', 29)->get();
 
 
-            $Shop_article  = Shop_article::where('id_shop_article', $id)->get();
+$Shop_article = Shop_article::where('id_shop_article', $id)->get();
 
             $shop_article_0 = shop_article_0::where('id_shop_article', $id)->get();
-            $Shop_article   = Shop_article::where('id_shop_article', $id)->get();
+            $shop_article  = Shop_article::where('id_shop_article', $id)->first();
+
             $shop_article_1 = shop_article_1::where('id_shop_article', $id)->get();
             $shop_article_2 = shop_article_2::where('id_shop_article', $id)->get();
 
-           if ($shop_article_0 ->count() == 1 ){
+           if ($shop_article->type_article == 0 ){
                 return view('Articles/article_0',compact('Shop_article','saison_list','shop_article_0','requete_cate','requete_prof','id_article'))->with('user', auth()->user()) ;
-           }elseif($shop_article_1->count() == 1 ){
+           }elseif($shop_article->type_article == 1 ){
+            
                 return view('Articles/article_1',compact('Shop_article','saison_list','shop_article_1','requete_cate','requete_prof','id_article','rooms'))->with('user', auth()->user()) ;
            }
-           elseif($shop_article_2->count() == 1 ){
-            
-            return view('Articles/article_2',compact('Shop_article', 'shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','id_article','Id','id_article'))->with('user', auth()->user()) ;
+           elseif($shop_article->type_article == 2 ){
+            $declinaisons = Declinaison::where('shop_article_id', $id)->get();
+            return view('Articles/article_2',compact('Shop_article', 'shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','id_article','Id','id_article','declinaisons'))->with('user', auth()->user()) ;
         }
            }
 
@@ -550,6 +528,7 @@ class Article_Controller extends Controller
             $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
 
             $Shop_article  = Shop_article::where('id_shop_article', $id)->get();
+            $shop_article  = Shop_article::where('id_shop_article', $id)->first();
 
             $shop_article_0 = shop_article_0::where('id_shop_article', $id)->get();
            
@@ -561,13 +540,11 @@ class Article_Controller extends Controller
             $article->saison = $request->input('saison');
             $article->title  = $request->input('title');
             $article->image  = $request->input('image');
-            $article->ref    = $request->input('ref');
-            
+            $article->ref    = $request->input('ref');         
             $article->nouveaute = $request->input('nouveaute');
             $article->startvalidity = $request->input('startvalidity');
             $article->endvalidity = $request->input('endvalidity');
-            $article->need_member = $request->input('need_member'); 
-            
+            $article->need_member = $request->input('need_member');  
             $article->agemin           = $request->input('agemin');
             $article->agemax           = $request->input('agemax');
             $article->price            = $request->input('price');
@@ -578,9 +555,8 @@ class Article_Controller extends Controller
             $article->alert_stock       = $request->input('alert_stock');
             $article->type_article      = $request->input('type_article');
             $article->max_per_user      = $request->input ('max_per_user');
-            $article->short_description = $request->input('short_description');
-            $article->description       = $request->input('editor1') ;
-    
+            $article->short_description = $request->input('short_description') || '';
+            $article->description       = $request->input('editor1') || '';
             $article->afiscale = $request->input('afiscale');
             $article->sex_limit = $request->input('sex_limit');
             $article->selected_limit = $request->input('strict' );
@@ -588,7 +564,7 @@ class Article_Controller extends Controller
     
            $article->save();
 
-           if ($shop_article_0 ->count() == 1 ){
+           if ($shop_article->type_article == 0  ){
                         //----------------------------------------- inserer les infos dans la table member  --------------------------- //
                             
                             
@@ -612,7 +588,7 @@ class Article_Controller extends Controller
                             
                                         
 
-           }elseif($shop_article_1->count() == 1 ){
+           }elseif($shop_article->type_article == 1  ){
 
                           // recupere l'id de l'article qu'on a juste cree
                           $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
@@ -676,7 +652,7 @@ class Article_Controller extends Controller
                 
                             
            }
-           elseif($shop_article_2->count() == 1) {
+           elseif($shop_article->type_article == 2 ) {
     // The new article ID will be $article->id after saving.
     $newArticleId = $article->id_shop_article;
     // on appelle le modele shop_article_2 = produit
@@ -688,7 +664,7 @@ class Article_Controller extends Controller
     }
 
     $requete_produit->id_shop_article = $newArticleId; 
-    $requete_produit->declinaison = $request->input('thejson');  // It seems you still have a JSON field here, if not required remove this.
+    $requete_produit->declinaison = '';
     $requete_produit->save();
     
     // Fetch the declinations for the original article.

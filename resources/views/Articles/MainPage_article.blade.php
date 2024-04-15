@@ -2,37 +2,111 @@
 
 @section('content')
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
- 
- .btn {
-   font-family: 'Poppins', sans-serif;
-   font-weight: 500;
-   font-size: 1rem;
-   letter-spacing: 1px;
-   display: inline-block;
-   padding: 10px 30px;
-   color: #fff;
-   
-   border: none;
-   position: relative;
-   cursor: pointer;
-   overflow: hidden;
-   transition: .3s ease background-color;
- }
- 
- .btn:hover {
-   background-color: #ba0712;
-   color: white;
- }
- 
- .btn i {
-   transition: .3s ease all;
- }
- 
- .btn:hover i {
-   transform: rotate(360deg);
- }
- 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #4051b5;
+  --secondary-color: #e9e9e9;
+  --hover-color: #303f9f;
+  --text-color: #ffffff;
+  --text-color-dark: #333;
+  --border-radius: 4px;
+  --button-padding: 10px 20px;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.content-header {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn {
+  font-size: 1rem;
+  letter-spacing: 1px;
+  padding: var(--button-padding);
+  color: var(--text-color-dark);
+  background-color: var(--secondary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color .3s, color .3s;
+}
+
+.btn:hover {
+  background-color: var(--hover-color);
+  color: var(--text-color);
+}
+
+.btn.btn-default {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn.btn-default:hover {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.btn.btn-action {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+
+.btn.btn-action:hover {
+  background-color: var(--hover-color);
+  color: var(--text-color);
+}
+
+/* styles.css additions */
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-control {
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  border: 1px solid #ccc;
+  transition: border-color .3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.btn-submit {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  padding: var(--button-padding);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color .3s;
+}
+
+.btn-submit:hover {
+  background-color: var(--hover-color);
+}
+
+
+/* Add responsive design adjustments if needed */
+@media (max-width: 768px) {
+  .button-group {
+    flex-direction: column;
+  }
+}
+
  </style>
 @php
 
@@ -41,49 +115,37 @@ $saison_active = saison_active() ;
 
 @endphp
 <main id="main" class="main">
+  <section class="content-header">
+      <h4>Mes articles</h4>
+      <div class="button-group">
+          <button type="button" class="btn btn-default">Article</button>
+          <button type="button" class="btn btn-default">Anciens articles</button>
+          @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
+            <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#exampleModal">Créer un article</button>
+            <button id="updateStock" class="btn btn-action">
+                <i class="fas fa-sync"></i> Mettre à jour le stock
+            </button>
+          @endif
+      </div>
+  </section>
 
+<div class="col-md-4">
+  <label for="saison">Saison</label>
+  <form action="{{ route('include-tab_articles') }}" method="POST" class="season-form">
+    @csrf
+    <div class="form-group">
+      <select class="form-control" name="saison" id="saison">
+        @foreach($saison_list as $data)
+          <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }}>
+            {{$data->saison}} - {{$data->saison + 1 }}
+          </option>
+        @endforeach
+      </select>
+    </div>
+    <button type="submit" id="hide-row-btn" class="btn btn-submit">Valider</button>
+  </form>
+</div>
 
-<section>
-	<div class="row d-flex justify-content-between">
-		
-        
-        <div class="col-md-8">
-        <h4>Mes articles</h4>
-        <button style="background-color: #182983 !important;" type="button" class="btn btn-primary">Article</button>
-        <button style="background-color: #182983 !important;" type="button" class="btn btn-primary">Anciens articles</button>
-
-        @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
-        <!-- Button trigger modal pour choisir le type d'article-->
-<button style="background-color: #182983 !important;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-Créer un article
-</button>
-  <button style="background-color: #182983 !important;" id="updateStock"  class="btn">
-      <i class="fas fa-sync"></i> Mettre à jour le stock
-  </button>
-<br>
-       @endif
-      
-        </div>
-      
-        <div class="col-md-4">  
-       
-       <label> Saison </label>
-       <form action="{{ route('include-tab_articles') }}" method="POST">
-           @csrf
-         <select class="form-control" name="saison" id="saison">
-                  
-                  @foreach($saison_list as $data)
-
-                                  <option value="{{$data->saison}}" {{ $data->saison == $saison_active ? 'selected' : '' }} >{{$data->saison}} - {{$data->saison + 1 }}</option>
-                  
-                  
-                                  @endforeach
-
-         </select>
-         <button type="submit" id="hide-row-btn" >Valider</button>
-       
-       </form>
-   </div>
       
       
 
@@ -198,7 +260,7 @@ Créer un article
 @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
 <td><p data-placement="top" data-toggle="tooltip" title="Editer"><a target="_blank" href="{{route('edit_article', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><i class="bi bi-pencil-fill"></i></button></a></p></td>
 <td><p data-placement="top" data-toggle="tooltip" title="Effacer"><a href="{{route('delete_article',[ 'id' => $data->id_shop_article])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');" ><i class="bi bi-trash"></i></button></a></p></td>
-<td><p data-placement="top" data-toggle="tooltip" title="Dupliquer"><a href="{{route('duplicate_article_index', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal"><i class="fa fa-clone " ></i> </button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Dupliquer">fdsfsf<a href="{{route('duplicate_article_index', [ 'id' => $data->id_shop_article])}}"><button class="btn btn-success btn-xs" data-title="Edit" data-toggle="modal"><i class="fa fa-clone " >fdsfs</i> </button></a></p></td>
 @endif
 </tr>
 @endforeach

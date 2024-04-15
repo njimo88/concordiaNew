@@ -8,7 +8,7 @@ You have to write a code of HTML for Html2Pdf, and not try to convert directly a
 
 Specific tags have been implemented, to adapt the html standard to a PDF usage.
 
-You must use Composer to install this library. 
+You must use Composer to install this library.
 
 It uses TCPDF for the PDF part.
 
@@ -18,8 +18,8 @@ Html2Pdf works with PHP >5.4 and Composer.
 
 You will also need at least the following php extensions:
 
-* gd
-* mbstring
+-   gd
+-   mbstring
 
 ## Documentation
 

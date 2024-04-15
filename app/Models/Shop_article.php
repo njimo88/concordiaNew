@@ -13,7 +13,7 @@ class Shop_article extends Model
 
     protected $table = 'shop_article';
     protected $primaryKey = 'id_shop_article';
-    public $incrementing = false;
+    public $incrementing = true;
     
 
     protected $fillable = [

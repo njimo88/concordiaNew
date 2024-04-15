@@ -1129,17 +1129,20 @@ foreach($Shop_article as $value1){
                                         $json_teacher = json_decode($val->teacher);  
                                     }
                                 @endphp
-                                @foreach($requete_prof as $data)
-                                    <tr class="table-row">
-                                        <td>{{$data->name}}  {{$data->lastname }}</td>
-                                        <td>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" id="prof{{$data->user_id}}" name="prof[]" value="{{$data->user_id}}" {{ in_array($data->user_id, $json_teacher) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="prof{{$data->user_id}}"></label>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                @if(!empty($requete_prof) && is_array($json_teacher))
+                                    @foreach($requete_prof as $data)
+                                        <tr class="table-row">
+                                            <td>{{ $data->name }}  {{ $data->lastname }}</td>
+                                            <td>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="prof{{$data->user_id}}" name="prof[]" value="{{$data->user_id}}" {{ in_array($data->user_id, $json_teacher) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="prof{{$data->user_id}}"></label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+
                             </tbody>
                         </table>
                     </div>
