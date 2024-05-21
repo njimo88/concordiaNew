@@ -18,17 +18,16 @@ require_once(app_path().'/fonction.php');
 class Article_Controller extends Controller
 
 {
-    // Page d'affichages de la data table d'articles
+
     public function index(Request $request){
         $S_active = saison_active();
-        $saison = $request->input('saison');
-       
-         $saison_list = Shop_article::select('saison')->distinct('name')->get();
-         $requete_article = Shop_article::where('saison',$S_active)->get() ;
-         $requete_article_pick = Shop_article::where('saison',  $saison)->get() ;
-
-        
-        return view('Articles/MainPage_article',compact('requete_article','saison_list','saison','requete_article_pick'))->with('user', auth()->user()) ;
+        $saison = $request->input('saison');    
+        $saison_list = Shop_article::select('saison')->distinct('name')->get();
+        $requete_article = Shop_article::where('saison',$S_active)->get() ;
+        $requete_article_pick = Shop_article::where('saison',  $saison)->get() ;
+        return view('Articles/MainPage_article',
+        compact('requete_article','saison_list','saison','requete_article_pick'))
+        ->with('user', auth()->user()) ;
     }
 
     function index_include(Request $request){
@@ -366,50 +365,6 @@ class Article_Controller extends Controller
 
     public function inserer_article_produit(Request $request){
 
-        $validatedData = $request->validate( [
-            'saison' => 'required|numeric',
-            'title'  =>  ['required', 'alpha', 'max:255'],
-            'image'  =>  ['required', 'alpha', 'max:255'],
-             'ref'  =>  ['required', 'alpha', 'max:255'],
-            'startvalidity' => 'required|date',
-            'endvalidity'   => 'required|date',
-            'agemin' => 'required|numeric|gt:0',
-            'agemax' => 'required|numeric|gt:0',
-            'price' => 'required|numeric',
-            'price_indicative' => 'required|numeric',
-            'totalprice' => 'required|numeric',
-            'stock_ini'  =>    'required|numeric',
-            'stock_actuel' => 'required|numeric',
-            'alert_stock'  => 'required|numeric',
-
-            'max_per_user'      =>  'required|numeric|gt:0',
-            'short_description'  => ['required', 'alpha', 'max:255'],
-            'editor1'       =>  ['required', 'alpha', 'max:255'],
-
-           
-         
-           
-    
-        ], $messages = [
-            'title.required' => "Le champ titre est requis.",
-            'title.max' => "Le titre ne doit pas dépasser 255 caractères.",
-            'image.required' => "Le champ image est requis.",
-            'image.alpha' => "l'image doit être une chaîne de caractères.",
-            'ref.required' => "Le champ ref est requis.",
-            'ref.alpha' => "ref doit être une chaîne de caractères.",
-            'agemin.required' => 'age minimum est requis.',
-            'agemax.required' => 'age maximum est requis.',
-
-        ]);
-    
-
-
-
-
-
-
-
-      
         $article  = new Shop_article;
  
         $article->saison = $request->input('saison');
@@ -433,8 +388,8 @@ class Article_Controller extends Controller
         $article->alert_stock       = $request->input('alert_stock');
         $article->type_article      = $request->input('type_article');
         $article->max_per_user      = $request->input ('max_per_user');
-        $article->short_description = $request->input('short_description');
-        $article->description       = $request->input('editor1') ;
+        $article->short_description = $request->input('short_description') || '';
+        $article->description       = $request->input('editor1') || '';
 
        
         if($request->has('nouveaute')){
@@ -471,7 +426,7 @@ class Article_Controller extends Controller
         $requete_produit = new shop_article_2;
         $requete_produit->id_shop_article  =  $requete_article["id_shop_article"];
  
-        $requete_produit->declinaison = $request->input('Json_declinaison');
+        $requete_produit->declinaison = $request->input('Json_declinaison') || '[]'; 
        
 
         $requete_produit->save();
@@ -549,7 +504,7 @@ $Shop_article = Shop_article::where('id_shop_article', $id)->get();
             $article->agemax           = $request->input('agemax');
             $article->price            = $request->input('price');
             $article->price_indicative = $request->input('price_indicative');
-            $article->totalprice       = 10;
+            $article->totalprice       = $request->input('price');
             $article->stock_ini         = $request->input('stock_ini');
             $article->stock_actuel      = $request->input('stock_actuel');
             $article->alert_stock       = $request->input('alert_stock');
@@ -590,62 +545,59 @@ $Shop_article = Shop_article::where('id_shop_article', $id)->get();
 
            }elseif($shop_article->type_article == 1  ){
 
-                          // recupere l'id de l'article qu'on a juste cree
-                          $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
-                          //----------------------------------------- inserer les infos dans la table lesson  --------------------------- //
-                          
+                $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();                
+        
+                $requete_lesson =  new shop_article_1 ;
+
+                if(isset($request->room) and isset($request->enddate) and  isset($request->startdate)){
+                    $lesson_tab  = json_encode( array( 
                     
-                            $requete_lesson =  new shop_article_1 ;
-
-                            if(isset($request->room) and isset($request->enddate) and  isset($request->startdate)){
-                                $lesson_tab  = json_encode( array( 
-                                
-                                    "room" => $request->input('room'), 
-                                    "start_date" =>  $request->input('startdate'), 
-                                    "end_date" =>   $request->input('enddate')
-                                
-                                ),JSON_NUMERIC_CHECK);
-
-                                $requete_lesson->save();
-
-                            }
-                        
-    
-
-                            $stock_ini_tab = json_encode( array("stock_ini" => (array)(int)$request->input('stock_ini')) );
-                            $stock_actuel_tab = json_encode( array("stock_actuel" => (array)(int)$request->input('stock_actuel')) );
-                            $lesson_tab  = json_encode( array( 
-                            
-                                "room" => $request->input('room'), 
-                                "start_date" =>  $request->input('startdate'), 
-                                "end_date" =>   $request->input('enddate')
-                            
-                            ),JSON_NUMERIC_CHECK);
+                        "room" => $request->input('room'), 
+                        "start_date" =>  $request->input('startdate'), 
+                        "end_date" =>   $request->input('enddate')
                     
-                           
+                    ),JSON_NUMERIC_CHECK);
+
+                    $requete_lesson->save();
+
+                }
+            
 
 
-                            $teacher_tab =  json_encode( $request->input('prof'),JSON_NUMERIC_CHECK );
-                         
-                     
+                $stock_ini_tab = json_encode( array("stock_ini" => (array)(int)$request->input('stock_ini')) );
+                $stock_actuel_tab = json_encode( array("stock_actuel" => (array)(int)$request->input('stock_actuel')) );
+                $lesson_tab  = json_encode( array( 
+                
+                    "room" => $request->input('room'), 
+                    "start_date" =>  $request->input('startdate'), 
+                    "end_date" =>   $request->input('enddate')
+                
+                ),JSON_NUMERIC_CHECK);
+        
+                
+
+
+                $teacher_tab =  json_encode( $request->input('prof'),JSON_NUMERIC_CHECK );
+                
+            
 
 
 
-                            $requete_lesson->id_shop_article  =  $requete_article["id_shop_article"];
+                $requete_lesson->id_shop_article  =  $requete_article["id_shop_article"];
 
 
-                            $requete_lesson->stock_ini           =   $stock_ini_tab ;
-                            $requete_lesson->stock_actuel        =    $stock_actuel_tab;
-                            $requete_lesson->teacher             =    $teacher_tab ;
-                            $requete_lesson->lesson              =  $request->input('json') ;
+                $requete_lesson->stock_ini           =   $stock_ini_tab ;
+                $requete_lesson->stock_actuel        =    $stock_actuel_tab;
+                $requete_lesson->teacher             =    $teacher_tab ;
+                $requete_lesson->lesson              =  $request->input('json') ;
 
-                            $requete_lesson->save();
-
-
+                $requete_lesson->save();
 
 
-                        
-             return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+
+
+            
+    return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
 
                            
                               
@@ -664,7 +616,9 @@ $Shop_article = Shop_article::where('id_shop_article', $id)->get();
     }
 
     $requete_produit->id_shop_article = $newArticleId; 
-    $requete_produit->declinaison = '';
+    $requete_produit->declinaison = $request->input('declinaison') ? $request->input('declinaison') : '[]'; // '[]' est une chaîne vide JSON valide
+
+
     $requete_produit->save();
     
     // Fetch the declinations for the original article.

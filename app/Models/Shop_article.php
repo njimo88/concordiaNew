@@ -69,7 +69,6 @@ public function liaisonShopArticlesBill()
 public static function getArticlesByCategories($categoryIds, $saison_active)
 {
     $categoryIds = (int) $categoryIds;
-    // Commencez par votre requête DB::table
     $n_var = DB::table('shop_article')
         ->leftJoin('shop_article_1', function($join)
         {

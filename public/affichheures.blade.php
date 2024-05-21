@@ -156,12 +156,7 @@ function ColorFont ( $datedujour )
 	if (JourFerie($datedujour)) $colordufont = "#FF4500";
 
 	return $colordufont ;
-} ;
-
-
-//Affichage du Mois
-zzzz
-
+} 
 
 function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
 {

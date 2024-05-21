@@ -1,9 +1,6 @@
 @extends('layouts.template')
 
 @section('content')
-@php
-    require_once(app_path().'/helpers.php');
-@endphp
 <main id="main" class="main">
 @if(session()->has('success'))
                 <div class="alert alert-success">

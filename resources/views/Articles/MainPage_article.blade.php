@@ -158,23 +158,15 @@ $saison_active = saison_active() ;
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-
       <div class="row">
-        
       <div class="col-md-4">
-        
-      <a href="{{ route('index_create_article_member') }}"><button type="button" class="btn btn-primary">Un article de type membre</button></a>
-      
+      <a href="{{ route('index_create_article_member') }}"><button type="button" class="btn btn-primary" disabled>Un article de type membre</button></a>
       </div>
       <div class="col-md-4">
-        
       <a href="{{ route('index_create_article_produit') }}"><button type="button" class="btn btn-primary">Un article de type produit</button></a>
-      
       </div>
       <div class="col-md-4">
-        
-      <a href="{{ route('index_create_article_lesson') }}"><button type="button" class="btn btn-primary">Un article de type cours  </button></a>
-      
+      <a href="{{ route('index_create_article_lesson') }}"><button type="button" class="btn btn-primary" disabled>Un article de type cours  </button></a>      
       </div>
 
 

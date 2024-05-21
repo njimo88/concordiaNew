@@ -287,7 +287,7 @@
                                                 <div class="col-md-12">
                                                     <div class="card text-center bg-light shadow">
                                                         <div class="card-body">
-                                                            <h5 class="card-title text-secondary">{{ $declinaison->libelle }}</h5>
+                                                            <h5 class="card-title text-secondary">{{ $declinaison->libelle }} ({{ $declinaison->stock_actuel }} / {{ $declinaison->stock_ini }})</h5>
                                                             <button type="button" class="btn mt-2 delete-declinaison-btn" style="background-color: #63c3d1; color: #fff;" data-id="{{ $declinaison->id }}">Supprimer</button>
                                                         </div>
                                                     </div>

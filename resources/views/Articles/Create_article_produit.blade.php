@@ -8,15 +8,25 @@
 <div class="container">
 
 @if(session()->has('success'))
-                <div class="alert alert-success">
-                    {{ session()->get('success') }}
-                </div>
-            @endif
-            <div class="row py-4 justify-content-end">
-                <div class="col-md-12">
-                        <a href="{{route('index_article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
-                </div>
-        </div>
+    <div class="alert alert-success">
+        {{ session()->get('success') }}
+    </div>
+@endif
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+<div class="row py-4 justify-content-end">
+    <div class="col-md-12">
+        <a href="{{route('index_article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
+    </div>
+</div>
           
 <form  method="POST" action="{{route('create_article_produit')}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
 @csrf
@@ -130,7 +140,7 @@
 
 <div class="col-md-2 col-6">
 <label> type article  :</label>
-    <input step="1" class="form-control" name="type_article" for="" type="number" value='0' required readonly>
+    <input step="1" class="form-control" name="type_article" for="" type="number" value='2' required readonly>
 
 </div>
 

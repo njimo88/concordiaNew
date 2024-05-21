@@ -8,7 +8,6 @@
 <title>Concordia Omnisport</title>
 
 <!-- Scripts -->
-@vite(['resources/sass/app.scss', 'resources/js/app.js'])
 
 
 <!-- Google Fonts -->

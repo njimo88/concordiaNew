@@ -33,6 +33,7 @@ use App\Models\old_bills;
 use App\Http\Controllers\ProfessionnelsController;
 use App\Mail\UserEmail;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\ArticlePostController;
 use Illuminate\Support\Facades\Mail;
 /*
 |--------------------------------------------------------------------------
@@ -317,8 +318,12 @@ Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name
 
 
 }); 
+/*------------------------------ Article v2 Back office ----------------------------------------- */
+Route::middleware(['auth'])->group(function () {
+    Route::get('/article', [ArticlePostController::class, 'index'])->name('article');
+    Route::get('/articles/fetch', [ArticlePostController::class, 'fetchArticles']);
 
-
+});
 /*------------------------------ BLOG BACK OFFICE ----------------------------------------- */
 
 Route::middleware(['auth'])->group(function () {

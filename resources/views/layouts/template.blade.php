@@ -557,6 +557,7 @@
                   <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#"> <i style="color: #f7bac5"  class="bi bi-gem"></i><span>Boutique</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if( auth()->user()->roles->estAutoriserDeVoirArticleBoutique )<li> <a href="{{ route('index_article') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-basket-shopping fa-fw mr-1"></span><span>Article</span> </a></li>@endif
+                     @if( auth()->user()->roles->estAutoriserDeVoirArticleBoutique )<li> <a href="{{ route('article') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-basket-shopping fa-fw mr-1"></span><span>Article2</span> </a></li>@endif
                      @if( auth()->user()->roles->estAutoriserDeVoirCategorieBoutique )<li> <a href="{{ route('A_Categorie') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-coins fa-fw mr-1"></span><span>Catégories</span> </a></li>@endif
                      <li> <a href="{{ route('mode_strict') }}"><span style="color: #f7bac5; margin-right:8px" class="fa-solid fa-user-ninja mr-1"></span><span>Mode Strict</span> </a></li>
                   </ul>
