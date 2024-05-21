@@ -3,6 +3,9 @@
 @section('content')
 
 <div class="container">
+    @if($message_general)
+        {!! $message_general !!}
+    @endif
 
     <h1 class="heading">Magasinez par Catégories</h1>
 

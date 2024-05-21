@@ -25,10 +25,11 @@
             @endif
        </div>
     </div>
-    
-    
-    
 
+    @if($message_general)
+        {!! $message_general !!}
+    @endif
+    
     <h2 class="heading  mt-3">{{ $info2->name }}</h2>
     <div style="display: block">
         <p class="sub-heading mb-5"> {!! $info2->description !!} </p>

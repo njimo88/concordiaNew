@@ -13,6 +13,9 @@
             </a>
         @endforeach
     </div>
+    @if($message_general)
+        {!! $message_general !!}
+    @endif
 
     <h1 class="heading">{{ $info2->name }}</h1>
     

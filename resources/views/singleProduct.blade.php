@@ -7,19 +7,19 @@
 <!-- Modal -->
 <div class="modal fade " id="commanderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-notify modal-info" role="document">
-        <!--Content-->
         <div class="modal-content text-center" id="commanderModalContainer">
             
         </div>
-        <!--/.Content-->
-      </div>
-  </div>
+    </div>
+</div>
 
  <!-- main --> 
 <div class="main-wrapper">
     
-    <div class="container">
-
+    <div class="container pt-3">
+@if($message_general)
+        {!! $message_general !!}
+    @endif
         @if (session('error'))
             <div style="    display: -webkit-inline-box;" class="alert alert-danger mt-3">
                 {{ session('error') }}
@@ -91,43 +91,51 @@
                                 <p class="info-message">Se connecter pour commander</p>
                                 <a href="{{ route('login') }}" class="btn">Se connecter</a>
                             @else
-                            @if ($articl->stock_actuel > 0) 
-                            <h4 class="card-title">{{ $articl->type_article == 2 ? 'Commander' : 'Inscrire' }}</h4>
-                            @if (count($selectedUsers) > 0)
-                                @if(count($declinaisons) > 0)
-                                    <select class="select-form" name="declinaisons" id="declinaisons">
-                                        @foreach ($declinaisons as $declinaison)
-                                            <option value="{{ $declinaison->id }}">{{ $declinaison->libelle }}</option>
-                                        @endforeach
-                                    </select>
-                                @endif
-                                                
-                                <select onchange="updatePriceToDisplay()" class="select-form" name="buyers" id="buyers">
-                                    @foreach ($selectedUsers as $user)
-                                        <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
-                                    @endforeach
-                                </select>
+                                @if ($articl->stock_actuel > 0) 
+                                    <h4 class="card-title">
+                                        @if($articl->type_article == 2)
+                                            Commander
+                                        @elseif($articl->type_article == 1 && $coursVente == 0)
+                                            Cours pas encore en vente
+                                        @else
+                                            Inscrire
+                                        @endif
+                                    </h4>
+                                    @if (count($selectedUsers) > 0)
+                                        @if(count($declinaisons) > 0)
+                                            <select class="select-form" name="declinaisons" id="declinaisons">
+                                                @foreach ($declinaisons as $declinaison)
+                                                    <option value="{{ $declinaison->id }}">{{ $declinaison->libelle }}</option>
+                                                @endforeach
+                                            </select>
+                                        @endif
 
-                                @if ($articl->type_article == 2)
-                                     <input type="number" class="select-form" name="qte" id="qte" min="1"  value="1">
-                                @endif
+                                        @if (!($articl->type_article == 1 && $coursVente == 0))
+                                            <select onchange="updatePriceToDisplay()" class="select-form" name="buyers" id="buyers">
+                                                @foreach ($selectedUsers as $user)
+                                                    <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        @endif
 
+                                        @if ($articl->type_article == 2)
+                                            <input type="number" class="select-form" name="qte" id="qte" min="1" value="1">
+                                        @endif
 
-                                @if ($articl->type_article == 3)
-                                    <form action='{{ route("choisir_place", ["id" => $articl->id_shop_article]) }}' method="POST">
-                                        @csrf    
-                                        <button type="submit" class="btn">Choisir une place</button> 
-                                    </form>             
+                                        @if ($articl->type_article == 3)
+                                            <form action='{{ route("choisir_place", ["id" => $articl->id_shop_article]) }}' method="POST">
+                                                @csrf    
+                                                <button type="submit" class="btn">Choisir une place</button> 
+                                            </form>             
+                                        @elseif(!($articl->type_article == 1 && $coursVente == 0))
+                                            <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
+                                        @endif
+                                    @else
+                                        <p class="info-message">Votre famille ne correspond pas à cet article.</p>
+                                    @endif
                                 @else
-                                    <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
+                                    <p class="info-message">Désolé, cet article est actuellement en rupture de stock.</p>
                                 @endif
-                            @else
-                                <p class="info-message">Votre famille ne correspond pas à cet article.</p>
-                            @endif
-                        @else
-                            <p class="info-message">Désolé, cet article est actuellement en rupture de stock.</p>
-                        @endif
-                        
                             @endguest
                         </div>
                     </div>

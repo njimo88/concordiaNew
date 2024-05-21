@@ -201,12 +201,17 @@ public function shop ()
     return view('shop', ['shop_articles' => $shop_articles]);
 }
 
-public function shop_categories ()
+public function shop_categories()
 {
     $shop_categories = Shop_category::where('id_shop_category', '<=', '9')->orderBy('order_category', 'ASC')->get();
-    return view('shop_categories', ['shop_categories' => $shop_categories]);
+    $message_general = SystemSetting::where('name', 'Message general')->where('value', 1)->value('Message');
 
+    return view('shop_categories', [
+        'shop_categories' => $shop_categories,
+        'message_general' => $message_general
+    ]);
 }
+
 
 
 public function sub_shop_categories($id)
@@ -221,12 +226,14 @@ public function sub_shop_categories($id)
     $isLastSubCategory = !$info->where('id_shop_category_parent', $indice)->count();
     $display_product = $isLastSubCategory;
 
+    $message_general = SystemSetting::where('name', 'Message general')->where('value', 1)->value('Message');
+
     // Redirection si c'est la dernière sous-catégorie
     if($display_product) {
         return redirect()->route('boutique', ['id' => $indice]);
     }
 
-    return view('sub_shop_categories', compact('info', 'breadcrumb', 'indice', 'info2' ));
+    return view('sub_shop_categories', compact('info', 'breadcrumb', 'indice', 'info2','message_general' ));
 }
 
 
@@ -262,8 +269,10 @@ public function boutique($id)
     $saison_active = saison_active();
     
     $articles = Shop_article::getArticlesByCategories($id, $saison_active);
+
+    $message_general = SystemSetting::where('name', 'Message general')->where('value', 1)->value('Message');
  
-    return view('boutique', compact('articles' ,'breadcrumb' ,'info2' ));
+    return view('boutique', compact('articles' ,'breadcrumb' ,'info2','message_general' ));
 }
 
 public function singleProduct($id) {
@@ -326,17 +335,18 @@ public function singleProduct($id) {
 
 
     $selectedUsers = array();
-    $coursVente = SystemSetting::find(5);
+    $coursVente = SystemSetting::where('name', 'Cours en vente')->value('value');
     if (Auth::check()) {
         $selectedUsers = getArticleUsers($articl);
     }
     $declinaisons = Declinaison::where('shop_article_id', $articl->id_shop_article)->get();
+    $message_general = SystemSetting::where('name', 'Message general')->where('value', 1)->value('Message');
 
     if ($articl->type_article == 1) {
-        return view('singleProduct', compact('articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate', 'declinaisons'));
+        return view('singleProduct', compact('message_general','articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate', 'declinaisons'));
 
     } else {
-        return view('singleProduct', compact('articl', 'selectedUsers', 'coursVente', 'declinaisons'));
+        return view('singleProduct', compact('message_general','articl', 'selectedUsers', 'coursVente', 'declinaisons'));
     }
 }
 
