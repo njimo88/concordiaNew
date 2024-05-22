@@ -96,7 +96,9 @@
                                         @if($articl->type_article == 2)
                                             Commander
                                         @elseif($articl->type_article == 1 && $coursVente == 0)
-                                            Cours pas encore en vente
+                                            <div class="desc-reduc-ribbon fa-check-cross">
+                                                <i class="fa-solid fa-hourglass"></i> En vente prochainement
+                                            </div>
                                         @else
                                             Inscrire
                                         @endif
@@ -130,7 +132,7 @@
                                         @elseif(!($articl->type_article == 1 && $coursVente == 0))
                                             <button data-shop-id="{{ $articl->id_shop_article }}" class="btn commanderModal">Commander</button>
                                         @endif
-                                    @else
+                                    @elseif ($coursVente != 0)
                                         <p class="info-message">Votre famille ne correspond pas à cet article.</p>
                                     @endif
                                 @else
@@ -205,6 +207,15 @@
 </div>
 
 <style>
+.desc-reduc-ribbon.fa-check-cross {
+    background-color: orange; 
+    color: white; 
+    padding: 10px; 
+    border-radius: 5px; 
+}
+.desc-reduc-ribbon.fa-check-cross i {
+    color: white;
+}
 
 .text-xs {
     font-size: 0.75rem; 
