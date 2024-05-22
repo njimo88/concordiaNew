@@ -316,7 +316,6 @@ Route::get('/Article/create/lesson', [Article_Controller::class, 'index_create_l
 Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name('test_create_article');
 
 
-
 }); 
 /*------------------------------ Article v2 Back office ----------------------------------------- */
 Route::middleware(['auth'])->group(function () {

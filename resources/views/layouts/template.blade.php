@@ -85,6 +85,8 @@
                 </div>
     
             </div>
+
+            <!-- 
             <div class="col-lg-3">
                 <div class="card">
                     <div class="stat-widget-one">
@@ -109,10 +111,11 @@
                 </div>
     
             </div>
+            -->
             <div class="col-lg-3">
                 <div class="card">
                     <form  id="form" >
-                    <input id="checkbox3"  type="checkbox" class="checkbox">
+                    <input id="checkbox3"  type="checkbox" class="checkbox" {{ SystemSetting::getValue(3) == 1 ? 'checked' : '' }}>
                         <input type="hidden" id="Etat_Switch" name="Etat_Switch" value="0">
                         <div class="stat-text" style="font-size : 12px !important;">Message Général Shop
                         </div>
@@ -124,13 +127,13 @@
                         </label>                    <input hidden="" name="redirect" value="0">
     
                     </form>
-            </div>
-            <br>
+                </div>
+                <br>
           </div>
           <div class="col-lg-3">
                 <div class="card">
                     <form  id="form" >
-                    <input id="checkbox5"  type="checkbox" class="checkbox" checked="">
+                    <input id="checkbox5"  type="checkbox" class="checkbox" checked="" {{ SystemSetting::getValue(5) == 1 ? 'checked' : '' }}>
                         <input type="hidden" id="Etat_Vente" name="Etat_Vente" value="1">
                         <div class="stat-text" style="font-size : 12px !important;">Cours en Vente
                         </div>
@@ -152,7 +155,7 @@
 
                         <form class="pt-0" id="form" >
                         
-                            <input id="checkbox7"  type="checkbox" class="checkbox">
+                            <input id="checkbox7"  type="checkbox" class="checkbox" {{ SystemSetting::getValue(7) == 1 ? 'checked' : '' }}>
                             <input type="hidden" id="url" name="URL" value="/admin">
                             <div class="stat-text" style="font-size : 12px !important;">Maintenance</div>
                             <label for="checkbox7" class="switch">
@@ -673,50 +676,45 @@
     
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  $(document).ready(function () {
-// Événement change pour checkbox1
-$('#checkbox1').on('change', function () {
-  updateSetting($(this), 2);
-});
+$(document).ready(function () {
+    function updateSetting(checkbox, settingId) {
+        let settingValue = checkbox.is(':checked') ? 1 : 0;
+        $.ajax({
+            url: '{{ route("update_system_setting") }}',
+            type: 'POST',
+            data: {
+                '_token': '{{ csrf_token() }}',
+                'setting_id': settingId,
+                'setting_value': settingValue
+            },
+            success: function (data) {
+                console.log('Success:', data.message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('Error:', textStatus, errorThrown);
+            }
+        });
+    }
 
-$('#checkbox11').on('change', function () {
-  updateSetting($(this), 11);
-});
+    $('#checkbox1').on('change', function () {
+        updateSetting($(this), 2);
+    });
 
-// Événement change pour checkbox3
-$('#checkbox3').on('change', function () {
-  updateSetting($(this), 3);
-});
+    $('#checkbox11').on('change', function () {
+        updateSetting($(this), 11);
+    });
 
-// Événement change pour checkbox5
-$('#checkbox5').on('change', function () {
-  updateSetting($(this), 5);
-});
+    $('#checkbox3').on('change', function () {
+        updateSetting($(this), 3);
+    });
 
-// Événement change pour checkbox5
-$('#checkbox7').on('change', function () {
-  updateSetting($(this), 7);
-});
+    $('#checkbox5').on('change', function () {
+        updateSetting($(this), 5);
+    });
 
-function updateSetting(checkbox, settingId) {
-  let settingValue = checkbox.is(':checked') ? 1 : 0;
-
-  $.ajax({
-      url: '{{ route("update_system_setting") }}',
-      type: 'POST',
-      data: {
-          '_token': '{{ csrf_token() }}',
-          'setting_id': settingId,
-          'setting_value': settingValue
-      },
-      success: function (data) {
-          console.log(data.message);
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-          console.log(textStatus, errorThrown);
-      }
-  });
-}
+    $('#checkbox7').on('change', function () {
+        updateSetting($(this), 7);
+    });
 });
 </script>
 <script src="{{asset('assetsAdmin/js/tinymce.min.js')}}"></script>
