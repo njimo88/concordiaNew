@@ -208,7 +208,7 @@
 
 <style>
 .desc-reduc-ribbon.fa-check-cross {
-    background-color: orange; 
+    background-color: #d02700; 
     color: white; 
     padding: 10px; 
     border-radius: 5px; 
