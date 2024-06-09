@@ -160,40 +160,40 @@
                 </div>
 
                 <div class="col-lg-6">
-                    <div class="card border-0 shadow-lg rounded-lg card-custom">
-                        <div class="card-body bg-light">
-                            <h5 class="card-title text-primary">Upgrade Articles</h5>
-                            <form action="{{ route("upgradeArticles") }}" method="POST">
-                                @csrf
-                                <div class="form-group">
-                                    <label for="source_season">Source Season</label>
-                                    <select class="form-control" id="source_season" name="source_season">
-                                        @foreach($seasons as $season)
-                                            <option value="{{ $season->saison }}">{{ $season->saison }}-{{ $season->saison + 1 }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="target_season">Target Season</label>
-                                    <select class="form-control" id="target_season" name="target_season">
-                                        @foreach($seasons as $season)
-                                            <option value="{{ $season->saison }}">{{ $season->saison }}-{{ $season->saison + 1 }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="start_validity">Start Validity</label>
-                                    <input type="date" class="form-control" id="start_validity" name="start_validity" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="end_validity">End Validity</label>
-                                    <input type="date" class="form-control" id="end_validity" name="end_validity" required>
-                                </div>
-                                <button type="submit" class="btn btn-custom m-3 mx-0">Upgrade Articles</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                  <div class="card border-0 shadow-lg rounded-lg card-custom">
+                      <div class="card-body bg-light">
+                          <h5 class="card-title text-primary">Mise à jour des articles</h5>
+                          <form action="{{ route("upgradeArticles") }}" method="POST">
+                              @csrf
+                              <div class="form-group">
+                                  <label for="source_season">Saison Source</label>
+                                  <select class="form-control" id="source_season" name="source_season">
+                                      @foreach($seasons as $season)
+                                          <option value="{{ $season->saison }}">{{ $season->saison }}-{{ $season->saison + 1 }}</option>
+                                      @endforeach
+                                  </select>
+                              </div>
+                              <div class="form-group">
+                                  <label for="target_season">Saison Cible</label>
+                                  <select class="form-control" id="target_season" name="target_season">
+                                      @foreach($seasons as $season)
+                                          <option value="{{ $season->saison }}">{{ $season->saison }}-{{ $season->saison + 1 }}</option>
+                                      @endforeach
+                                  </select>
+                              </div>
+                              <div class="form-group">
+                                  <label for="start_validity">Date de début de validité</label>
+                                  <input type="date" class="form-control" id="start_validity" name="start_validity" required>
+                              </div>
+                              <div class="form-group">
+                                  <label for="end_validity">Date de fin de validité</label>
+                                  <input type="date" class="form-control" id="end_validity" name="end_validity" required>
+                              </div>
+                              <button type="submit" class="btn btn-custom m-3 mx-0">Mettre à jour les articles</button>
+                          </form>
+                      </div>
+                  </div>
+              </div>
             </div>
         </div>
     

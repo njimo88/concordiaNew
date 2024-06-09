@@ -151,6 +151,7 @@ public function upgradeArticles(Request $request)
         $newArticle->saison = $targetSeason;
         $newArticle->startvalidity = $startValidity;
         $newArticle->endvalidity = $endValidity;
+        $newArticle->stock_actuel = $newArticle->stock_ini;
 
         $newArticle->save();
 
@@ -184,8 +185,5 @@ private function isLeapYear($year)
 {
     return ($year % 4 == 0) && (($year % 100 != 0) || ($year % 400 == 0));
 }
-
-
-
 
 }
