@@ -49,46 +49,44 @@
                 <th>Saison</th>
                 <th>Fichier d'inscription 1</th>
                 <th>Fichier d'inscription 2</th>
-                <!-- Ajoutez d'autres colonnes selon vos besoins -->
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               @foreach($seasons as $season)
-                <!-- Modal de duplication -->
-<div class="modal fade" id="duplicateModal-{{ $season->saison }}" tabindex="-1" role="dialog" aria-labelledby="duplicateModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="duplicateModalLabel">Dupliquer les produits de la saison</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form action="{{ route('seasons.duplicate', $season->saison) }}" method="POST">
-          @csrf
-          <div class="form-group mb-3">
-            <label for="target_season-{{ $season->saison }}">Saison cible</label>
-            <select class="form-control" id="target_season-{{ $season->saison }}" name="target_season">
-              @foreach($seasons as $targetSeason)
-                @if($targetSeason->saison != $season->saison)
-                  <option  value="{{ $targetSeason->saison }}">{{ $targetSeason->saison }}-{{ $targetSeason->saison + 1 }}</option>
-                @endif
-              @endforeach
-            </select>
-          </div>
-          <div class="form-group mb-3">
-            <label for="start_validity-{{ $season->saison }}">Début de validité</label>
-            <input type="date" class="form-control" id="start_validity-{{ $season->saison }}" name="start_validity">
-        </div>
-        
-          <button type="submit" class="btn btn-custom">Dupliquer les produits</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+                <div class="modal fade" id="duplicateModal-{{ $season->saison }}" tabindex="-1" role="dialog" aria-labelledby="duplicateModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="duplicateModalLabel">Dupliquer les produits de la saison</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form action="{{ route('seasons.duplicate', $season->saison) }}" method="POST">
+                          @csrf
+                          <div class="form-group mb-3">
+                            <label for="target_season-{{ $season->saison }}">Saison cible</label>
+                            <select class="form-control" id="target_season-{{ $season->saison }}" name="target_season">
+                              @foreach($seasons as $targetSeason)
+                                @if($targetSeason->saison != $season->saison)
+                                  <option  value="{{ $targetSeason->saison }}">{{ $targetSeason->saison }}-{{ $targetSeason->saison + 1 }}</option>
+                                @endif
+                              @endforeach
+                            </select>
+                          </div>
+                          <div class="form-group mb-3">
+                            <label for="start_validity-{{ $season->saison }}">Début de validité</label>
+                            <input type="date" class="form-control" id="start_validity-{{ $season->saison }}" name="start_validity">
+                        </div>
+                        
+                          <button type="submit" class="btn btn-custom">Dupliquer les produits</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <tr>
                   <td>{{ $season->saison }}-{{ $season->saison+1 }}</td>
                   <td>{{ $season->fichier_inscription1 }}</td>
@@ -135,33 +133,69 @@
         </div>
     </div>
         
-    <div class="container ">
-        <div class="row">
-            <div class="col-lg-6 mx-auto">
-                <div class="card border-0 shadow-lg rounded-lg card-custom">
-                    <div class="card-body bg-light">
-                        <h5 class="card-title text-primary">Sélection de la saison</h5>
-                        <p class="card-text">Sélectionnez la saison active à partir de cette liste déroulante.</p>
-                        <form action="{{ route("setActiveSeason") }}" method="POST" id="activeSeasonForm">
-                            @csrf
-                            <div class="form-group">
-                                <select class="form-control" id="activeSeason" name="activeSeason">
-                                    @foreach($seasons as $season)
-                                        <option value="{{ $season->saison }}" {{ ($season->activate == 1) ? 'selected' : '' }}>{{ $season->saison }}-{{ $season->saison+ 1 }}  
-                                            @if($season->activate == 1)
-                                                <span class="active-season">(Activée)</span>
-                                            @endif
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-custom m-3 mx-0" id="submitBtn">Définir comme saison active</button>
-                        </form>
+    <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-lg rounded-lg card-custom">
+                        <div class="card-body bg-light">
+                            <h5 class="card-title text-primary">Sélection de la saison</h5>
+                            <p class="card-text">Sélectionnez la saison active à partir de cette liste déroulante.</p>
+                            <form action="{{ route("setActiveSeason") }}" method="POST" id="activeSeasonForm">
+                                @csrf
+                                <div class="form-group">
+                                    <select class="form-control" id="activeSeason" name="activeSeason">
+                                        @foreach($seasons as $season)
+                                            <option value="{{ $season->saison }}" {{ ($season->activate == 1) ? 'selected' : '' }}>{{ $season->saison }}-{{ $season->saison+ 1 }}  
+                                                @if($season->activate == 1)
+                                                    <span class="active-season">(Activée)</span>
+                                                @endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-custom m-3 mx-0" id="submitBtn">Définir comme saison active</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-lg rounded-lg card-custom">
+                        <div class="card-body bg-light">
+                            <h5 class="card-title text-primary">Upgrade Articles</h5>
+                            <form action="{{ route("upgradeArticles") }}" method="POST">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="source_season">Source Season</label>
+                                    <select class="form-control" id="source_season" name="source_season">
+                                        @foreach($seasons as $season)
+                                            <option value="{{ $season->saison }}">{{ $season->saison }}-{{ $season->saison + 1 }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="target_season">Target Season</label>
+                                    <select class="form-control" id="target_season" name="target_season">
+                                        @foreach($seasons as $season)
+                                            <option value="{{ $season->saison }}">{{ $season->saison }}-{{ $season->saison + 1 }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="start_validity">Start Validity</label>
+                                    <input type="date" class="form-control" id="start_validity" name="start_validity" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="end_validity">End Validity</label>
+                                    <input type="date" class="form-control" id="end_validity" name="end_validity" required>
+                                </div>
+                                <button type="submit" class="btn btn-custom m-3 mx-0">Upgrade Articles</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     
     </main> 
     

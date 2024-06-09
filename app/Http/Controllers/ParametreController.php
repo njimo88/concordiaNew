@@ -117,7 +117,6 @@ public function duplicateProducts(Request $request, $season)
         
     }
     
-    // afficher les articles qui n'ont pas pu être dupliqués
     foreach ($notDuplicated as $article) {
         echo "Article ID: " . $article->id_shop_article . " n'a pas pu être dupliqué.\n";
     }
@@ -125,6 +124,66 @@ public function duplicateProducts(Request $request, $season)
     return redirect()->back()->with('success', 'Les produits ont été dupliqués avec succès');
 }
 
+public function upgradeArticles(Request $request)
+{
+    $sourceSeason = $request->input('source_season');
+    $targetSeason = $request->input('target_season');
+    $startValidity = $request->input('start_validity');
+    $endValidity = $request->input('end_validity');
+
+    $yearDifference = $targetSeason - $sourceSeason;
+
+    // Calcul du nombre total de semaines à ajouter en tenant compte des années bissextiles
+    $weeksToAdd = $yearDifference * 52;
+
+    for ($year = $sourceSeason; $year < $targetSeason; $year++) {
+        if ($this->isLeapYear($year)) {
+            $weeksToAdd += 1;
+        }
+    }
+
+    $sourceArticles = Shop_article::where('saison', $sourceSeason)->where('type_article', 1)->get();
+
+    foreach ($sourceArticles as $article) {
+        $newArticle = $article->replicate();
+        $newArticle->title = "0_" . $newArticle->title;
+        $newArticle->ref = "0_" . substr($newArticle->ref, 0, -5) . substr($targetSeason, -2) . "-" . ((int)substr($targetSeason, -2) + 1);
+        $newArticle->saison = $targetSeason;
+        $newArticle->startvalidity = $startValidity;
+        $newArticle->endvalidity = $endValidity;
+
+        $newArticle->save();
+
+        $newId = $newArticle->id_shop_article;
+        $sourceArticle1 = shop_article_1::where('id_shop_article', $article->id_shop_article)->first();
+
+        if ($sourceArticle1) {
+            $newArticle1Data = $sourceArticle1->attributesToArray();
+            $newArticle1Data['id_shop_article'] = $newId;
+            $newArticle1Data['stock_actuel'] = $newArticle1Data['stock_ini'];
+
+            $lessonData = json_decode($newArticle1Data['lesson'], true);
+            foreach ($lessonData['start_date'] as &$date) {
+                $date = date('Y-m-d H:i', strtotime($date . " + $weeksToAdd weeks"));
+            }
+            foreach ($lessonData['end_date'] as &$date) {
+                $date = date('Y-m-d H:i', strtotime($date . " + $weeksToAdd weeks"));
+            }
+            $newArticle1Data['lesson'] = json_encode($lessonData);
+            $newArticle1Data['updated_at'] = Carbon::now();
+            $newArticle1Data['created_at'] = Carbon::now();
+            DB::table('shop_article_1')->insert($newArticle1Data);
+        }
+    }
+
+    return redirect()->back()->with('success', 'Les articles ont été mis à jour avec succès');
+}
+
+// Méthode pour vérifier si une année est bissextile
+private function isLeapYear($year)
+{
+    return ($year % 4 == 0) && (($year % 100 != 0) || ($year % 400 == 0));
+}
 
 
 

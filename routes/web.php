@@ -500,6 +500,7 @@ Route::post('/setActiveSeason', [ParametreController::class, 'setActiveSeason'])
 Route::get('/create-new-season', [ParametreController::class, 'createNewSeason'])->name('createNewSeason');
 Route::put('/saison/edit/{id}', [ParametreController::class, 'update'])->name('editSeason');
 Route::post('/saison/{season}/duplicate',[ParametreController::class, 'duplicateProducts'])->name('seasons.duplicate');
+Route::post('/upgradeArticles', [ParametreController::class, 'upgradeArticles'])->name('upgradeArticles');
 
 
 });

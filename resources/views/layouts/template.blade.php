@@ -133,7 +133,7 @@
           <div class="col-lg-3">
                 <div class="card">
                     <form  id="form" >
-                    <input id="checkbox5"  type="checkbox" class="checkbox" checked="" {{ SystemSetting::getValue(5) == 1 ? 'checked' : '' }}>
+                    <input id="checkbox5"  type="checkbox" class="checkbox" {{ SystemSetting::getValue(5) == 1 ? 'checked' : '' }}>
                         <input type="hidden" id="Etat_Vente" name="Etat_Vente" value="1">
                         <div class="stat-text" style="font-size : 12px !important;">Cours en Vente
                         </div>
@@ -661,7 +661,7 @@
         
             @if ( auth()->user()->roles->estAutoriserDeVoirGestionDesDroits || auth()->user()->roles->estAutoriserDeVoirParametresGeneraux || auth()->user()->roles->estAutoriserDeVoirSalles || auth()->user()->roles->estAutoriserDeVoirMessageGeneral )
                <li class="nav-item">
-                  <a class="nav-link collapsed" data-bs-target="#para-nav" data-bs-toggle="collapse" href="#"><span style="color: #f5f503; margin-right:10px" class="fa fa-screwdriver-wrench fa-fw mr-2 gc-yellow"></span><span>Paramètres</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <a class="nav-link collapsed" data-bs-target="#para-nav" data-bs-toggle="collapse" href="#"><span style="color: #f5f503; margin-right:10px" class="fa fa-screwdriver-wrench fa-fw mr-2 gc-yellow"></span><span>Système</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="para-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if (auth()->user()->roles->estAutoriserDeVoirGestionDesDroits)<li> <a href="{{  route('index_roles') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-user-check fa-fw mr-1"></span><span>Gestion des droits</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirParametresGeneraux)<li> <a href="{{ route('parametres') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Paramètres</span> </a></li>@endif
