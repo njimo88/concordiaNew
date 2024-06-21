@@ -19,6 +19,7 @@ use App\Models\old_bills;
 use App\Models\BillStatus;
 use App\Models\BillPaymentMethod;
 use App\Models\liaison_shop_articles_bills;
+use App\Models\LiaisonShopArticlesBill;
 use App\Models\PaiementImmediat;
 use App\Models\Declinaison;
 use App\Models\AdditionalCharge;
@@ -278,45 +279,61 @@ public function boutique($id)
 public function singleProduct($id) {
     MiseAjourStock();
 
-    // Obtenez l'article initial avec son ID
     $articl = Shop_article::where('id_shop_article', $id)->firstOrFail();
 
-    // Effectuez une jointure en fonction du type d'article
+    $saisonActive = saison_active();
+    $saisonPrecedente = $saisonActive - 1;
+
+    $userAchetéType0 = false;
+    if (Auth::check()) {
+        $userId = Auth::id();
+        $user = Auth::user();
+        $familyId = $user->family_id;
+
+        $userAchetéType0 = LiaisonShopArticlesBill::whereHas('shopArticle', function($query) use ($saisonPrecedente) {
+                $query->where('type_article', 0)
+                      ->where('saison', $saisonPrecedente);
+            })
+            ->whereHas('user', function($query) use ($familyId) {
+                $query->where('family_id', $familyId);
+            })
+            ->exists();
+    }
+
     if ($articl->type_article == 1) {
         $articl = Shop_article::where('shop_article.id_shop_article', $id)
             ->join('shop_article_1', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')
             ->select('shop_article.*', 'shop_article_1.*' , 'shop_article.stock_actuel as stock_actuel')
             ->firstOrFail();
 
-
         $teacherIds = json_decode($articl->teacher, true);
         $teachers = User::whereIn('user_id', $teacherIds)->get();
 
-        $schedules = []; 
+        $schedules = [];
         if(isset($articl->lesson)) {
-            $Data_lesson = json_decode($articl->lesson,true);
+            $Data_lesson = json_decode($articl->lesson, true);
             $formattedDates = [];
             foreach($Data_lesson['start_date'] as $index => $startDate) {
-                setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8'); 
-        
+                setlocale(LC_TIME, 'fr_FR.UTF8', 'fr.UTF8', 'fr_FR.UTF-8', 'fr.UTF-8');
+
                 $startHour = (new DateTime($startDate))->format('H:i');
                 $endHour = (new DateTime($Data_lesson['end_date'][$index]))->format('H:i');
                 $dayWithHours = strftime('%A', strtotime($startDate)) . " de $startHour à $endHour";
                 $schedules[] = $dayWithHours;
-        
+
                 $dayWithoutHours = strftime('%A %d %B %Y', strtotime($startDate));
                 $formattedDates[] = $dayWithoutHours;
             }
-        
+
             usort($formattedDates, function($a, $b) {
                 return strtotime($a) <=> strtotime($b);
             });
-        
+
             $repriseDate = $formattedDates[0] ?? 'Pas d\'horaire disponible';
         }
 
         $rooms = Room::whereIn('id_room', $Data_lesson['room'])->get();
-        $locations = [];  
+        $locations = [];
         foreach($Data_lesson['room'] as $roomId) {
             $room = $rooms->where('id_room', $roomId)->first();
             if($room) {
@@ -324,7 +341,7 @@ public function singleProduct($id) {
                     'name' => $room->name,
                     'address' => $room->address,
                     'map' => $room->map
-                ];  
+                ];
             }
         }
     } elseif ($articl->type_article == 2) {
@@ -333,9 +350,9 @@ public function singleProduct($id) {
             ->firstOrFail();
     }
 
-
     $selectedUsers = array();
     $coursVente = SystemSetting::where('name', 'Cours en vente')->value('value');
+    $coursVenteMember = SystemSetting::where('name', 'cours membres n-1')->value('value');
     if (Auth::check()) {
         $selectedUsers = getArticleUsers($articl);
     }
@@ -343,12 +360,12 @@ public function singleProduct($id) {
     $message_general = SystemSetting::where('name', 'Message general')->where('value', 1)->value('Message');
 
     if ($articl->type_article == 1) {
-        return view('singleProduct', compact('message_general','articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate', 'declinaisons'));
-
+        return view('singleProduct', compact('coursVenteMember', 'message_general', 'articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate', 'declinaisons', 'userAchetéType0'));
     } else {
-        return view('singleProduct', compact('message_general','articl', 'selectedUsers', 'coursVente', 'declinaisons'));
+        return view('singleProduct', compact('coursVenteMember', 'message_general', 'articl', 'selectedUsers', 'coursVente', 'declinaisons', 'userAchetéType0'));
     }
 }
+
 
 
 public function basket()

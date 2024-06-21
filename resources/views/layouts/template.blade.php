@@ -148,6 +148,23 @@
             </div>
           </div>
           <div class="col-lg-3">
+                <div class="card">
+                    <form  id="form" >
+                    <input id="checkbox12"  type="checkbox" class="checkbox" {{ SystemSetting::getValue(12) == 1 ? 'checked' : '' }}>
+                        <input type="hidden" id="Etat_Vente" name="Etat_Vente" value="1">
+                        <div class="stat-text" style="font-size : 12px !important;">Cours en Vente pour membres
+                        </div>
+                        <label for="checkbox12" class="switch">
+                            <span class="switch__circle">
+                            <span class="switch__circle-inner"></span></span>
+                            <span class="switch__left">Off</span>
+                            <span class="switch__right">On</span>
+                        </label>                    <input hidden="" name="redirect" value="0">
+    
+                    </form>
+            </div>
+          </div>
+          <div class="col-lg-3">
             <div class="card">
                 <div class="stat-widget-one">
 
@@ -706,6 +723,10 @@ $(document).ready(function () {
 
     $('#checkbox3').on('change', function () {
         updateSetting($(this), 3);
+    });
+
+    $('#checkbox12').on('change', function () {
+        updateSetting($(this), 12);
     });
 
     $('#checkbox5').on('change', function () {

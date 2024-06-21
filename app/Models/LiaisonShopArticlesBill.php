@@ -40,6 +40,10 @@ public function bill()
     {
         return $this->belongsTo(bills::class, 'bill_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
 
     public function preparationConfirmation()
     {
