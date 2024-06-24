@@ -18,7 +18,7 @@
     }
     
     .modern-button {
-        color: #ffffff;
+        color: #000000;
         border: none;
         padding: 15px 30px;
         font-size: 18px;
@@ -51,24 +51,24 @@
     }
     
     .modern-button:nth-child(1) {
-        background-color: #20B2AA; /* Turquoise */
+        background-color: #F91D1D;; /* Rouge */
     }
     .modern-button:nth-child(1):hover {
-        background-color: #1C948A; /* Darker Turquoise */
+        background-color: #DB2424; /* Darker Rouge */
     }
     
     .modern-button:nth-child(2) {
-        background-color: #00bfff; /* Deep Sky Blue */
+        background-color: #ffd700; /* Jaune */
     }
     .modern-button:nth-child(2):hover {
-        background-color: #009fdd; /* Darker Deep Sky Blue */
+        background-color: #e1bc4b; /* Darker Jaune */
     }
     
     .modern-button:nth-child(3) {
-        background-color: #c8a2c8; /* Soft Lilac */
+        background-color: #00bfff; /* Deep Sky Blue */
     }
     .modern-button:nth-child(3):hover {
-        background-color: #b091b0; /* Darker Soft Lilac */
+        background-color: #009fdd; /* Darker Deep Sky Blue */
     }
     
     .modern-button:nth-child(4) {
@@ -79,14 +79,17 @@
     }
     
     .modern-button i {
-        font-size: 24px;
+        font-size: 40px;
+        height: 60px;
+        text-align: center;
     }
     
     
-    @media (max-width: 768px) {
+    @media (max-width: 577px) {
     .modern-button {
         width: 80%; 
         margin-bottom: 15px;
+        text-align: center;
     }
 }
  
@@ -115,10 +118,10 @@
                     Mentions Légales
 
                 </a>
-                <a class="modern-button">
+                <!-- <a class="modern-button">
                     <i class="fas fa-star"></i> 
                     Animations Vacances
-                </a>
+                </a> -->
             </div>
         </div>
     </div>

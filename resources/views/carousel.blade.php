@@ -8,7 +8,7 @@
         color: #482683  !important;
     }
     .top-banner {
-        height: 660px;
+        height: 350px;
     }
     .btn-rouge:hover {
         background-color: #d40214 !important;
@@ -18,11 +18,13 @@
         top: 40% !important;
     }
     .custom-slider .custom-slide {
-            margin: 5px 20px;
+            margin: 5px 10px;
         }
     
         .custom-slider .custom-slide img {
-            width: 100%;
+            /* width: 100%; */
+            height: 150px;
+            align: center;
         }
     
         .custom-slider {
@@ -70,6 +72,9 @@
     }
       
 @media (max-width: 993px)  {
+    .top-banner {
+        height: 300px;
+    }
     span {
         font-size: 0.8rem !important;
     }
@@ -86,13 +91,13 @@
 
 @media (min-width: 1201px) and (max-width: 1700px) {
     .top-banner {
-        height: 400px; 
+        height: 325px; 
     }
 }
 
 @media (min-width: 1701px) {
     .top-banner {
-        height: 550px;
+        height: 350px;
     }
 }
 
@@ -103,32 +108,47 @@ img[alt="Logo"] {
 }
 
 @media (max-width: 576px) {
+    .custom-slider .custom-slide img {
+            height: 300px;
+        }
     img[alt="Logo"] {
-        width: 500px;
+        width: 300px;
     }
 }
 
 @media (min-width: 577px) and (max-width: 768px) {
+    .custom-slider .custom-slide img {
+            height: 300px;
+        }
     img[alt="Logo"] {
-        width: 250px;
+        width: 220px;
     }
 }
 
 @media (min-width: 769px) and (max-width: 992px) {
+    .custom-slider .custom-slide img {
+            height: 100px;
+        }
     img[alt="Logo"] {
-        width: 350px;
+        width: 260px;
     }
 }
 
 @media (min-width: 993px) and (max-width: 1200px) {
+    .custom-slider .custom-slide img {
+            height: 120px;
+        }
     img[alt="Logo"] {
-        width: 400px;
+        width: 300px;
     }
 }
 
 @media (min-width: 1201px) {
+    .custom-slider .custom-slide img {
+            height: 150px;
+        }
     img[alt="Logo"] {
-        width: 500px;
+        width: 400px;
     }
 }
 @media (max-width: 768px) {

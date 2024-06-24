@@ -823,71 +823,68 @@ public function updateDes(Request $request, $id){
         return view('admin.modals.factureFamille', compact('bill'))->with('user', auth()->user());
     }
 
-    public function showBill($id)
-    {
-        $user = auth()->user();
-        updateTotalCharges($id);
+  public function showBill($id)
+{
+    $user = auth()->user();
+    updateTotalCharges($id);
 
-        $billsQuery = DB::table('bills')
-            ->join('users', 'bills.user_id', '=', 'users.user_id')
-            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-            ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
-            ->where('bills.id', $id)
-            ->select('bills.*', 'bills_status.row_color', 'bills_status.status as bill_status', 'users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country', 'users.birthdate', 'bills_payment_method.payment_method as method');
+    $billsQuery = DB::table('bills')
+        ->join('users', 'bills.user_id', '=', 'users.user_id')
+        ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+        ->join('bills_payment_method', 'bills.payment_method', '=', 'bills_payment_method.id')
+        ->where('bills.id', $id)
+        ->select('bills.*', 'bills_status.row_color', 'bills_status.status as bill_status', 'users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country', 'users.birthdate', 'bills_payment_method.payment_method as method');
 
-        $oldBillsQuery = DB::table('old_bills')
-            ->join('users', 'old_bills.user_id', '=', 'users.user_id')
-            ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
-            ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
-            ->where('old_bills.id', $id)
-            ->select('old_bills.*', 'bills_status.row_color', 'bills_status.status as bill_status', 'users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country', 'users.birthdate', 'bills_payment_method.payment_method as method');
+    $oldBillsQuery = DB::table('old_bills')
+        ->join('users', 'old_bills.user_id', '=', 'users.user_id')
+        ->join('bills_status', 'old_bills.status', '=', 'bills_status.id')
+        ->join('bills_payment_method', 'old_bills.payment_method', '=', 'bills_payment_method.id')
+        ->where('old_bills.id', $id)
+        ->select('old_bills.*', 'bills_status.row_color', 'bills_status.status as bill_status', 'users.name', 'users.lastname', 'users.email', 'users.phone', 'users.address', 'users.city', 'users.zip', 'users.country', 'users.birthdate', 'bills_payment_method.payment_method as method');
 
-        $bill = $billsQuery->union($oldBillsQuery)->first();
-        if ($user->belongsToFamily($bill->family_id) || Route::currentRouteName() === 'facture.showBill') {
-        
+    $bill = $billsQuery->union($oldBillsQuery)->first();
+
+    if ($user->belongsToFamily($bill->family_id) || Route::currentRouteName() === 'facture.showBill') {
+
         $shop = DB::table('liaison_shop_articles_bills')
-        ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') 
-        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle','liaison_shop_articles_bills.id_shop_article as article_id')
-        ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-        ->leftJoin('shop_article', function($join) {
-            $join->on('shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-                 ->where('shop_article.id_shop_article', '<>', -1); 
-        })
-        ->where('bills.id', '=', $id)
-        ->orderBy('designation', 'asc')
-        ->get()
-        ;
-
-        
+            ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison')
+            ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle','liaison_shop_articles_bills.id_shop_article as article_id', 'shop_article.saison')
+            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+            ->leftJoin('shop_article', function($join) {
+                $join->on('shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+                     ->where('shop_article.id_shop_article', '<>', -1);
+            })
+            ->where('bills.id', '=', $id)
+            ->orderBy('designation', 'asc')
+            ->get();
 
         $status = DB::table('bills_status')
-        ->select('id','status')
-        ->get();
+            ->select('id','status')
+            ->get();
 
+        $saisonActive = saison_active();
 
-        $designation = Shop_article::where('saison', '=', saison_active())
-        ->orderBy('title', 'asc')
-        ->distinct('title')
-        ->get();
-
-
+        $designation = Shop_article::where('saison', '=', $saisonActive) 
+            ->orderBy('title', 'asc')
+            ->distinct('title')
+            ->get();
 
         $messages = DB::table('shop_messages')
-        ->join('users', 'shop_messages.id_admin', '=', 'users.user_id')
-        ->where('shop_messages.id_bill', $id)
-        ->select('shop_messages.message', 'shop_messages.id_shop_message', 'shop_messages.date', 'shop_messages.somme_payé', 'users.name', 'users.lastname','shop_messages.id_customer','shop_messages.id_admin','shop_messages.state')
-        ->orderBy('shop_messages.date', 'asc')
-        ->get();
+            ->join('users', 'shop_messages.id_admin', '=', 'users.user_id')
+            ->where('shop_messages.id_bill', $id)
+            ->select('shop_messages.message', 'shop_messages.id_shop_message', 'shop_messages.date', 'shop_messages.somme_payé', 'users.name', 'users.lastname','shop_messages.id_customer','shop_messages.id_admin','shop_messages.state')
+            ->orderBy('shop_messages.date', 'asc')
+            ->get();
         $nb_paiment = calculerPaiements($bill->payment_method,$bill->payment_total_amount,$bill->number);
 
         $paymentMethods = DB::table('bills_payment_method')->get();
 
-            return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages','paymentMethods'));
-        }
-
-        abort(403, 'Vous n\'êtes pas autorisé à accéder à cette facture.');
-     
+        return view('admin.showBill', compact('bill', 'nb_paiment','shop', 'status', 'designation','messages','paymentMethods', 'saisonActive'));
     }
+
+    abort(403, 'Vous n\'êtes pas autorisé à accéder à cette facture.');
+}
+
 
     public function search(Request $request)
 {

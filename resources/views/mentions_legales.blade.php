@@ -79,25 +79,47 @@ h6.font-weight-bold {
         <div class="row">
             <div class="card shadow my-4 custom-card p-0">
                 <div class="card-header d-flex justify-content-center custom-card-header">
-                      <h6 class="font-weight-bold ">Mentions légales</h6>
+                      <h6 class="font-weight-bold ">Mentions légales - Omnisport - Concordia OmniSport (FFCO)</h6>
                 </div>
                 <div class="row p-3">
                     @foreach($parametre as $pt)
-                        <div class="col-md-3 col-sm-6 my-2">
+                        <div class="col-md-4 col-sm-6 my-2">
                             <a href="{{ $pt->fichier_inscription3 }}" target="_blank" class="btn custom-btn btn-block">Statut de l'association</a>
                             <a href="{{ $pt->fichier_inscription2 }}" target="_blank" class="btn custom-btn btn-block">Règlement Intérieur</a>
                             <a href="{{ $pt->fichier_inscription1 }}" target="_blank" class="btn custom-btn btn-block">Notice d'assurance</a>
                         </div>
                     @endforeach
-                    <div class="col-md-3 col-sm-6 my-2">
-                        <a href="{{ asset('uploads/Fichiers/FFGym-Quest-Mineurs-2022-2023.pdf') }}" target="_blank" class="btn custom-btn btn-block">Questionnaire pour les Mineurs</a>
-                        <a href="{{ asset('uploads/Fichiers/FFGym-Quest-Majeurs-2022-2023.pdf') }}" target="_blank" class="btn custom-btn btn-block">Questionnaire pour les Majeurs</a>
+                    <div class="col-md-4 col-sm-6 my-2">
+                        <a href="{{ asset('uploads/Fichiers/QS-Mineur.pdf') }}" target="_blank" class="btn custom-btn btn-block">Questionnaire pour les Mineurs</a>
+                        <a href="{{ asset('uploads/Fichiers/QS-Majeur.pdf') }}" target="_blank" class="btn custom-btn btn-block">Questionnaire pour les Majeurs</a>
                     </div>
-                    <div class="col-md-3 col-sm-6 my-2">
+                    <div class="col-md-4 col-sm-6 my-2">
                         <a href="{{route('index_politique')}}" target="_blank" class="btn custom-btn btn-block">Politique de Confidentialité</a>
-                        <a href="#" target="_blank" class="btn custom-btn btn-block">Conditions d'Utilisation</a>
+                        <a href="#" class="btn custom-btn btn-block">Conditions d'Utilisation</a>
                     </div>
-                    <div class="col-md-3 col-sm-6 my-2">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="card shadow my-4 custom-card p-0">
+                <div class="card-header d-flex justify-content-center custom-card-header">
+                      <h6 class="font-weight-bold ">Mentions légales - Section - Gym Concordia (FFGym)</h6>
+                </div>
+                <div class="row p-3">
+                    @foreach($parametre as $pt)
+                        <div class="col-md-4 col-sm-6 my-2">
+                            <a href="{{ asset('uploads/Fichiers/Statuts_MAJ_2015.pdf') }}" target="_blank" class="btn custom-btn btn-block">Statut de l'association</a>
+                            <a href="{{ asset('uploads/Fichiers/RI_Gym-Concordia_2024-2025.pdf') }}" target="_blank" class="btn custom-btn btn-block">Règlement Intérieur</a>
+                            <a href="{{ asset('uploads/Fichiers/Assurance-FFGym-2024-2025.pdf') }}" target="_blank" class="btn custom-btn btn-block">Notice d'assurance</a>
+                        </div>
+                    @endforeach
+                    <div class="col-md-4 col-sm-6 my-2">
+                        <a href="{{ asset('uploads/Fichiers/QS-FFGym-Mineur.pdf') }}" target="_blank" class="btn custom-btn btn-block">Questionnaire pour les Mineurs</a>
+                        <a href="{{ asset('uploads/Fichiers/QS-FFGym-Majeur.pdf') }}" target="_blank" class="btn custom-btn btn-block">Questionnaire pour les Majeurs</a>
+                    </div>
+                    <div class="col-md-4 col-sm-6 my-2">
                         <a href="{{ asset('uploads/Fichiers/Valeurs%20et%20Chartes%20-%20FFGym.pdf') }}" target="_blank" class="btn custom-btn btn-block">Valeurs et Chartes de la FFGym</a>
                         <a href="{{ asset('uploads/Fichiers/Eco%20Gym.pdf') }}" target="_blank" class="btn custom-btn btn-block">Charte EcoGym FFGym</a>
                         <a href="{{ asset('uploads/Fichiers/Charte%20Ethique%20et%20D%C3%A9ontologie%20ffgym.pdf') }}" target="_blank" class="btn custom-btn btn-block">Charte de l'Ethique et&nbsp;la D&eacute;ontologie FFGym</a>

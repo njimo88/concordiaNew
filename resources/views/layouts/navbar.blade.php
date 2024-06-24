@@ -229,6 +229,9 @@ use Illuminate\Support\Facades\Route;
                 
               </li>
               <li class="">
+                <a href="{{ route('Simple_Post',13019) }}"><span>&nbsp;Questions Fréquentes</span></a>
+              </li>
+              <li class="">
                 <a href="{{route('index_mentions_legales')}}"><span>&nbsp;Mentions Légales</span></a>
               </li>
               <li class="dropdown">
@@ -408,6 +411,9 @@ use Illuminate\Support\Facades\Route;
                   <li><a target="_blank" href="https://www.tiktok.com/discover/gym-concordia-schiltigheim?lang=fr"><span><i class="bi bi-tiktok"></i>&nbsp;&nbsp;TikTok</span></a></li>
                   </ul>
                   
+                </li>
+                <li class="">
+                  <a href="{{ route('Simple_Post',13019) }}"><span>&nbsp;Questions Fréquentes</span></a>
                 </li>
                 <li class="">
                   <a href="{{route('index_mentions_legales')}}"><span>&nbsp;Mentions Légales</span></a>

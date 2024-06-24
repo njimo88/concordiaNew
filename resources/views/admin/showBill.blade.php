@@ -351,30 +351,41 @@
     @else
         <tr class="responsive-table-row">
             <td style="width: 45%;">
-                <div class="td">
-                    <img style="height: 70px" src="{{ $shop->image }}" alt="">
-                    <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
-                    @if(!auth()->user()->roles->changer_designation_facture)
-                        <select disabled name="designation" class="border form-select mt-3 designation-select" id="status" autocomplete="status" autofocus role="listbox" data-liaison-id="{{ $shop->id_liaison }}">
-                            @foreach($designation as $title)
-                                @if($title == $shop->designation)
-                                    <option value="{{ $title }}" role="option" selected>{{ $title }}@if(!empty($shop->declinaison_libelle)) [{{ $shop->declinaison_libelle }}] @endif</option>
-                                @endif
-                            @endforeach
-                        </select>
-                    @else
-                        <select name="designation" class="border form-select mt-3 designation-select" id="status" autocomplete="status" autofocus role="listbox" data-liaison-id="{{ $shop->id_liaison }}">
-                            @foreach($designation as $article)
-                                <option value="{{ $article->id_shop_article }}" data-declinaison-id="{{ optional($article->declinaisons->first())->id }}" role="option" @if($article->id_shop_article == $shop->id_shop_article) selected @endif>{{ $article->title }}@if(!empty($article->declinaisons->first()->libelle)) [{{ $article->declinaisons->first()->libelle }}] @endif</option>
-                            @endforeach
-                        </select>
-                    @endif
-                    @if (auth()->user()->roles->changer_designation_facture)
-                        <input type="hidden" id="declinaison_id" name="declinaison_id" value="{{ optional($article->declinaisons->first())->id }}">
-                        <button type="button" class="btn btn-sm btn-warning mt-3 change-designation-button" data-liaison-id="{{ $shop->id_liaison }}">Changer</button>
-                    @endif
-                </div>
-            </td>
+              <div class="td">
+                  <img style="height: 70px" src="{{ $shop->image }}" alt="">
+                  <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
+                  
+                  @php
+                      $isCurrentSeason = $shop->saison == $saisonActive;
+                  @endphp
+
+                  @if(!$isCurrentSeason)
+                      <input type="text" class="form-control mt-3" value="{{ $shop->designation }}" disabled>
+                  @else
+                      @if(!auth()->user()->roles->changer_designation_facture)
+                          <select disabled name="designation" class="border form-select mt-3 designation-select" id="status" autocomplete="status" autofocus role="listbox" data-liaison-id="{{ $shop->id_liaison }}">
+                              @foreach($designation as $title)
+                                  @if($title == $shop->designation)
+                                      <option value="{{ $title }}" role="option" selected>{{ $title }}@if(!empty($shop->declinaison_libelle)) [{{ $shop->declinaison_libelle }}] @endif</option>
+                                  @endif
+                              @endforeach
+                          </select>
+                      @else
+                          <select name="designation" class="border form-select mt-3 designation-select" id="status" autocomplete="status" autofocus role="listbox" data-liaison-id="{{ $shop->id_liaison }}">
+                              @foreach($designation as $article)
+                                  <option value="{{ $article->id_shop_article }}" data-declinaison-id="{{ optional($article->declinaisons->first())->id }}" role="option" @if($article->id_shop_article == $shop->id_shop_article) selected @endif>{{ $article->title }}@if(!empty($article->declinaisons->first()->libelle)) [{{ $article->declinaisons->first()->libelle }}] @endif</option>
+                              @endforeach
+                          </select>
+                      @endif
+
+                      @if(auth()->user()->roles->changer_designation_facture)
+                          <input type="hidden" id="declinaison_id" name="declinaison_id" value="{{ optional($article->declinaisons->first())->id }}">
+                          <button type="button" class="btn btn-sm btn-warning mt-3 change-designation-button" data-liaison-id="{{ $shop->id_liaison }}">Changer</button>
+                      @endif
+                  @endif
+              </div>
+          </td>
+
             <td class="d-none d-md-table-cell">{{ $shop->quantity }}</td>
             <td class="d-none d-md-table-cell">{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
             <td class="d-none d-md-table-cell">{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>

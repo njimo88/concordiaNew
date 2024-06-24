@@ -360,9 +360,9 @@ public function singleProduct($id) {
     $message_general = SystemSetting::where('name', 'Message general')->where('value', 1)->value('Message');
 
     if ($articl->type_article == 1) {
-        return view('singleProduct', compact('coursVenteMember', 'message_general', 'articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate', 'declinaisons', 'userAchetéType0'));
+        return view('singleProduct', compact('saisonActive','coursVenteMember', 'message_general', 'articl', 'teachers', 'schedules', 'locations', 'selectedUsers', 'coursVente', 'repriseDate', 'declinaisons', 'userAchetéType0'));
     } else {
-        return view('singleProduct', compact('coursVenteMember', 'message_general', 'articl', 'selectedUsers', 'coursVente', 'declinaisons', 'userAchetéType0'));
+        return view('singleProduct', compact('saisonActive','coursVenteMember', 'message_general', 'articl', 'selectedUsers', 'coursVente', 'declinaisons', 'userAchetéType0'));
     }
 }
 
@@ -635,33 +635,42 @@ if ($total < 0) {
 
     }}
 
-    public function mesfactures()
-    {
-        $user = Auth::user();
-    $familyId = $user->family_id; // Get the family ID
+   public function mesfactures()
+{
+    $user = Auth::user();
+    $familyId = $user->family_id; 
 
-    $currentBills = bills::with(['Billstat', 'paymentMethod', 'user', 'additionalCharges'])
-    ->where('family_id', $familyId)
-    ->get();
+    $userRole = $user->role;
 
-$oldBills = old_bills::with(['Billstat', 'paymentMethod', 'user', 'additionalCharges'])
-    ->where('family_id', $familyId)
-    ->get();
+    $currentBillsQuery = bills::with(['Billstat', 'paymentMethod', 'user', 'additionalCharges'])
+        ->where('family_id', $familyId);
 
+    $oldBillsQuery = old_bills::with(['Billstat', 'paymentMethod', 'user', 'additionalCharges'])
+        ->where('family_id', $familyId);
 
-    // we need to manually merge the collections if that's what you need.
+    if ($userRole == 5) {
+        $currentBillsQuery->where('status', '!=', 31);
+        $oldBillsQuery->where('status', '!=', 31);
+    }
+
+    $currentBills = $currentBillsQuery->get();
+    $oldBills = $oldBillsQuery->get();
+
     $bills = $currentBills->merge($oldBills)->sortByDesc('date_bill');
-    $family_id = auth()->user()->family_id;
-    $additionalChargesCount = AdditionalCharge::where('family_id', $family_id)->count();
-    if(PaiementImmediat::where('family_id', $family_id)->exists()) {
-        // Afficher le bouton de paiement
-        return view('mesfactures', compact('bills', 'additionalChargesCount'))->with('user', auth()->user())->with('showPaymentButton', true);
-    } else {
-        // Masquer le bouton de paiement
-        return view('mesfactures', compact('bills', 'additionalChargesCount'))->with('user', auth()->user())->with('showPaymentButton', false);
-    }
 
+    $additionalChargesCount = AdditionalCharge::where('family_id', $familyId)->count();
+    
+    if (PaiementImmediat::where('family_id', $familyId)->exists()) {
+        return view('mesfactures', compact('bills', 'additionalChargesCount'))
+            ->with('user', $user)
+            ->with('showPaymentButton', true);
+    } else {
+        return view('mesfactures', compact('bills', 'additionalChargesCount'))
+            ->with('user', $user)
+            ->with('showPaymentButton', false);
     }
+}
+
 
     public function mafacture($id)
     {

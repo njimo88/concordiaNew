@@ -93,7 +93,11 @@
                         @else
                             @if ($articl->stock_actuel > 0)
                                 <h4 class="card-title">
-                                    @if($articl->type_article == 2)
+                                    @if($articl->saison != $saisonActive)
+                                        <div class="desc-reduc-ribbon fa-check-cross">
+                                            <i class="fa-solid fa-times"></i> Indisponible
+                                        </div>
+                                    @elseif($articl->type_article == 2)
                                         Commander
                                     @elseif($articl->type_article == 1 && $coursVente == 0  && $coursVenteMember == 0)
                                         <div class="desc-reduc-ribbon fa-check-cross">

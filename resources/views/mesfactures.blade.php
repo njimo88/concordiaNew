@@ -202,7 +202,6 @@ a {
             <tbody>
                 
                 @foreach ($bills as $bill)
-               
                     <tr data-bill-type="{{ $bill->type }}">
                         <td style="white-space: nowrap;">
                             <div class="d-flex align-items-center">
@@ -229,7 +228,7 @@ a {
                             <img src="{{ $bill->image_status }}" alt="Status Image">
                             <span class="d-none">{{ $bill->status->status ?? '' }}</span>
                         </td>
-                    </tr>
+                    </tr> 
                 @endforeach
                     <tr>
                         <td colspan="6" style="text-align:center;">Aucune facture à afficher.</td>

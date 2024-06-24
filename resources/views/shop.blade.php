@@ -6,9 +6,12 @@
     }
     .carousel-img {
     height: 300px;       
-    width: 100%;  
+    width: 80%;  
     object-fit: cover;  
-    display: block;     
+    display: block; 
+    margin-top: 15%;
+    margin-left: 10%;  
+    margin-right: 10%;  
 }
 
 
@@ -73,7 +76,7 @@
     }
 
     .carousel-img {
-        height: 300px; 
+        height: 400px; 
     }
 
     .card-title {
