@@ -23,8 +23,15 @@ class TransferOldBills extends Command
 
         // Loop through each bill and transfer
         foreach ($oldBills as $bill) {
-            old_bills::create($bill->toArray());
-            $bill->delete(); // delete from the original bills table
+            // Include the 'id' in the data to be transferred
+            $data = $bill->toArray();
+            $data['id'] = $bill->id;
+
+            // Insert into old_bills
+            old_bills::create($data);
+
+            // Delete from the original bills table
+            $bill->delete();
         }
 
         $this->info("Bills transferred successfully!");

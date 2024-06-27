@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +8,12 @@ class old_bills extends Model
 {
     use HasFactory;
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
+        'id', // Ensure 'id' is fillable
         'date_bill',
         'type',
         'status',
@@ -22,9 +26,11 @@ class old_bills extends Model
         'amount_paid',
         'number',
     ];
+
+    // Relationships
     public function getImageAttribute()
     {
-        return  $this->paymentMethod->icon; 
+        return $this->paymentMethod->icon; 
     }
 
     public function getImageStatusAttribute()
@@ -47,7 +53,6 @@ class old_bills extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // If you have a relationship with additional charges, define it here
     public function additionalCharges()
     {
         return $this->hasMany(AdditionalCharge::class, 'bill_id');
