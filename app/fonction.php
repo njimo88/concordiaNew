@@ -43,23 +43,20 @@ function saison_active()
 }
 
 
-
 function hasExistingReduction($userId, $pourUserId, $shopArticleId) {
 
-    
-    // Obtenir toutes les réductions liées à l'article du magasin
-    $reductions = LiaisonShopArticlesShopReductions::where('id_shop_article', $shopArticleId)
-        ->pluck('id_shop_reduction');
+    // ID de la réduction spécifique à vérifier
+    $specificReductionId = 7;
 
-    // Vérifier si un article dans le panier de l'utilisateur est lié à l'une de ces réductions
-        $baskets = Basket::where('user_id', $userId)
+    // Vérifier si un article dans le panier de l'utilisateur est lié à la réduction spécifique
+
+    $baskets = Basket::where('user_id', $userId)
         ->where('pour_user_id', $pourUserId)
-        ->where('ref', '!=', $shopArticleId) 
+        ->where('ref', '!=', $shopArticleId)
         ->get();
-
     foreach ($baskets as $basket) {
         $hasReduction = LiaisonShopArticlesShopReductions::where('id_shop_article', $basket->ref)
-            ->whereIn('id_shop_reduction', $reductions)
+            ->where('id_shop_reduction', $specificReductionId)
             ->exists();
 
         if ($hasReduction) {
@@ -69,6 +66,7 @@ function hasExistingReduction($userId, $pourUserId, $shopArticleId) {
 
     return false;
 }
+
 
 //filtrer les articles en fonction de leur date de validité
 function filterArticlesByValidityDate($articles) {
@@ -1198,6 +1196,7 @@ function getReducedPrice($articleId, $originalPrice, $user_id) {
             }
         }
     }
+
 
     if (empty($valueReductions) && empty($percentageReductions)) {
         // If no user-specific reductions are found, get general reductions for the article

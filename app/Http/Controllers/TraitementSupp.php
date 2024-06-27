@@ -409,7 +409,6 @@ public function paiement(){
     $Mpaiement = $Mpaiement->sortBy(function($item) use ($order) {
         return array_search($item->id, $order);
     });
-    
     $user_id = auth()->user()->user_id;
     $adresse = DB::table('users')
             ->select('address', 'zip', 'city', 'country')

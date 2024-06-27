@@ -83,15 +83,6 @@ border: 2px solid #272E5C;
 }
 </style>
 
-@if ($errors->any())
-<div class="alert alert-danger">
-    <ul>
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
 @if(session()->has('success'))
 <div class="alert alert-success mt-3">
     {{ session()->get('success') }}
