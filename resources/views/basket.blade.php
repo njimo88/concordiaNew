@@ -232,7 +232,7 @@ a{
                                                 [{{ $panier->declinaison_libelle }}]
                                             @endif
                                             @if ($panier->reduction != null)
-                                                <span class="text-danger">({{ $panier->reduction }})</span>
+                                                <span class="text-danger">({{ $panier->reduction }})fff</span>
                                             @endif
                                         </div>
                                         <div class="row text-muted">{{ $panier->reff }}</div>

@@ -26,7 +26,6 @@ use App\Http\Controllers\generatePDF;
 use App\Models\SystemSetting;
 use App\Models\Parametre;
 
-
 //fonction pour afficher la famille en fonction de l'id de la famille
 function getUsersByFamilyId($family_id)
 {
@@ -41,6 +40,34 @@ function saison_active()
     ->where('activate', '=', 1)
     ->value('saison');
     return $saison;
+}
+
+
+
+function hasExistingReduction($userId, $pourUserId, $shopArticleId) {
+
+    
+    // Obtenir toutes les réductions liées à l'article du magasin
+    $reductions = LiaisonShopArticlesShopReductions::where('id_shop_article', $shopArticleId)
+        ->pluck('id_shop_reduction');
+
+    // Vérifier si un article dans le panier de l'utilisateur est lié à l'une de ces réductions
+        $baskets = Basket::where('user_id', $userId)
+        ->where('pour_user_id', $pourUserId)
+        ->where('ref', '!=', $shopArticleId) 
+        ->get();
+
+    foreach ($baskets as $basket) {
+        $hasReduction = LiaisonShopArticlesShopReductions::where('id_shop_article', $basket->ref)
+            ->whereIn('id_shop_reduction', $reductions)
+            ->exists();
+
+        if ($hasReduction) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //filtrer les articles en fonction de leur date de validité

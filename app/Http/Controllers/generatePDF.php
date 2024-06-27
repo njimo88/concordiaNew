@@ -556,10 +556,27 @@ class generatePDF extends Controller
         ->where('bills.id', '=', $id)
         ->get();
 
-        if ($shop->count() <= 7) {
+        // Date fixe
+        $dateFixe = "2024-06-25"; // Format Y-m-d
 
+        // Convertir les dates en timestamps Unix
+        $timestampDateFixe = strtotime($dateFixe);
+        $timestampDateATester = strtotime($bill->date_bill);
+
+        // Comparer les dates pour nouvelle attestation ou ancienne attestation
+        if ($timestampDateATester > $timestampDateFixe) 
+        { 
+            $OLDImg = "";
+        } 
+        else
+        { 
+            $OLDImg = " - OLD";
+        } 
+
+        if ($shop->count() <= 7) {   
+            
     // Chargement de l'image de fond
-    $image = Image::make(public_path('assets/images/Facture_page.png'));
+    $image = Image::make(public_path('assets/images/Facture_page'.$OLDImg.'.png'));
     $image->resize(700, 1000); // Replace 800 and 1200 with the desired width and height
 
     $now = now();
@@ -740,9 +757,9 @@ foreach ($addresseeLinesArray as $i => $addresseeLine) {
         $shop = $shop->toArray();
         $firstGroup = array_slice($shop, 0, 11);
         $secondGroup = array_slice($shop, 11);
-        $image = Image::make(public_path('assets/images/FactureMulti_Page1.png'));
+        $image = Image::make(public_path('assets/images/FactureMulti_Page1'.$OLDImg.'.png'));
         $image->resize(700, 1000);
-        $image2 = Image::make(public_path('assets/images/FactureMulti_Page3.png'));
+        $image2 = Image::make(public_path('assets/images/FactureMulti_Page3'.$OLDImg.'.png'));
         $image2->resize(700, 1000);
 
         
@@ -1041,11 +1058,11 @@ $pdf->Output('Facture-'.$bill->id.'.pdf', 'D');
     $firstGroup = array_slice($shop, 0, 11);
     $thirdGroup = array_slice($shop, 11, 15);
     $secondGroup = array_slice($shop, 26);
-    $image = Image::make(public_path('assets/images/FactureMulti_Page1.png'));
+    $image = Image::make(public_path('assets/images/FactureMulti_Page1'.$OLDImg.'.png'));
     $image->resize(700, 1000);
-    $image2 = Image::make(public_path('assets/images/FactureMulti_Page3.png'));
+    $image2 = Image::make(public_path('assets/images/FactureMulti_Page3'.$OLDImg.'.png'));
     $image2->resize(700, 1000);
-    $image3 = Image::make(public_path('assets/images/FactureMulti_Page2.png'));
+    $image3 = Image::make(public_path('assets/images/FactureMulti_Page2'.$OLDImg.'.png'));
     $image3->resize(700, 1000);
 
     
@@ -1462,12 +1479,30 @@ public function generatePDFfactureOutput($id)
         ->where('bills.id', '=', $id)
         ->get();
 
+        // Date fixe
+        $dateFixe = "2024-06-25"; // Format Y-m-d
+
+        // Convertir les dates en timestamps Unix
+        $timestampDateFixe = strtotime($dateFixe);
+        $timestampDateATester = strtotime($bill->date_bill);
+
+        // Comparer les dates pour nouvelle attestation ou ancienne attestation
+        if ($timestampDateATester > $timestampDateFixe) 
+        { 
+            $OLDImg = "";
+        } 
+        else
+        { 
+            $OLDImg = " - OLD";
+        } 
+
+
         if ($shop->count() <= 7) {
 
     
-    // Chargement de l'image de fond
-    $image = Image::make(public_path('assets/images/Facture_page.png'));
+    $image = Image::make(public_path('assets/images/Facture_page'.$OLDImg.'.png'));
     $image->resize(700, 1000); // Replace 800 and 1200 with the desired width and height
+ 
 
     $now = now();
     $image->text(\Carbon\Carbon::parse($bill->date_bill)->format('d-m-Y'), 449, 234, function($font)  {
@@ -1639,9 +1674,9 @@ foreach ($titleLinesArray as $i => $titleLine) {
         $shop = $shop->toArray();
         $firstGroup = array_slice($shop, 0, 11);
         $secondGroup = array_slice($shop, 11);
-        $image = Image::make(public_path('assets/images/FactureMulti_Page1.png'));
+        $image = Image::make(public_path('assets/images/FactureMulti_Page1'.$OLDImg.'.png'));
         $image->resize(700, 1000);
-        $image2 = Image::make(public_path('assets/images/FactureMulti_Page3.png'));
+        $image2 = Image::make(public_path('assets/images/FactureMulti_Page3'.$OLDImg.'.png'));
         $image2->resize(700, 1000);
 
         
@@ -1933,11 +1968,11 @@ $pdf->Output('Facture-'.$bill->id.'.pdf', 'D');
     $thirdGroup = array_slice($shop, 11, 15);
     $secondGroup = array_slice($shop, 26);
 
-    $image = Image::make(public_path('assets/images/FactureMulti_Page1.png'));
+    $image = Image::make(public_path('assets/images/FactureMulti_Page1'.$OLDImg.'.png'));
     $image->resize(700, 1000);
-    $image2 = Image::make(public_path('assets/images/FactureMulti_Page3.png'));
+    $image2 = Image::make(public_path('assets/images/FactureMulti_Page3'.$OLDImg.'.png'));
     $image2->resize(700, 1000);
-    $image3 = Image::make(public_path('assets/images/FactureMulti_Page2.png'));
+    $image3 = Image::make(public_path('assets/images/FactureMulti_Page2'.$OLDImg.'.png'));
     $image3->resize(700, 1000);
 
     

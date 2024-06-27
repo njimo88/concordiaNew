@@ -102,11 +102,10 @@ class A_Controller_categorie extends Controller
             $addcommand->declinaison = $declinaison;
             $addcommand->save();
         }
-
+if (!hasExistingReduction(auth()->user()->user_id, $selected_user_id, $shop->id_shop_article)) {
         $totalReductionValue = getReducedPrice($shop->id_shop_article, $shop->price, $selected_user_id)* (-1) ;
         $reductionLine = Basket::where([
             ['user_id', auth()->user()->user_id],
-            ['pour_user_id', $selected_user_id],
             ['ref', -1], // Using -1 as a special reference for total reduction
         ])->first();
 
@@ -123,7 +122,7 @@ class A_Controller_categorie extends Controller
             $reductionItem->prix = $totalReductionValue;
             $reductionItem->save();
         }
-
+    }
     if ($need_member != 0) { 
             $result = MiseAuPanier($selected_user_id, $id_article);
             if ($result == 0) {
@@ -169,29 +168,28 @@ class A_Controller_categorie extends Controller
                         $addcommand->reduction = $description;
                     }
                     $addcommand->save();
-                   
-            $totalReductionValue = getReducedPrice($shop1->id_shop_article, $shop1->price, $selected_user_id)* (-1);
+                   if (!hasExistingReduction(auth()->user()->user_id, $selected_user_id, $shop1->id_shop_article)) {
+                        $totalReductionValue = getReducedPrice($shop1->id_shop_article, $shop1->price, $selected_user_id)* (-1);
 
-            $reductionLine = Basket::where([
-                ['user_id', auth()->user()->user_id],
-                ['pour_user_id', $request->selected_user_id],
-                ['ref', -1], // Using -1 as a special reference for total reduction
-            ])->first();
+                        $reductionLine = Basket::where([
+                            ['user_id', auth()->user()->user_id],
+                            ['ref', -1], // Using -1 as a special reference for total reduction
+                        ])->first();
 
-            if ($reductionLine) {
-                $reductionLine->prix += $totalReductionValue; // Add the reduction
-                $reductionLine->save();
-            } else {
-                $reductionItem = new Basket();
-                $reductionItem->user_id = auth()->user()->user_id;
-                $reductionItem->family_id = auth()->user()->family_id;
-                $reductionItem->pour_user_id = $request->selected_user_id;
-                $reductionItem->ref = -1; // Special reference for total reduction
-                $reductionItem->qte = 1; 
-                $reductionItem->prix = $totalReductionValue;
-                $reductionItem->save();
-            }
-
+                        if ($reductionLine) {
+                            $reductionLine->prix += $totalReductionValue; // Add the reduction
+                            $reductionLine->save();
+                        } else {
+                            $reductionItem = new Basket();
+                            $reductionItem->user_id = auth()->user()->user_id;
+                            $reductionItem->family_id = auth()->user()->family_id;
+                            $reductionItem->pour_user_id = $request->selected_user_id;
+                            $reductionItem->ref = -1; // Special reference for total reduction
+                            $reductionItem->qte = 1; 
+                            $reductionItem->prix = $totalReductionValue;
+                            $reductionItem->save();
+                        }
+                    }
             applyFamilyDiscount($shop1, $selected_user_id);
                     return redirect()->route('basket');
                 }elseif (is_numeric($result)) { // Si le résultat est diff_price
@@ -240,27 +238,26 @@ class A_Controller_categorie extends Controller
                     $addcommand->save();
                    
             $totalReductionValue = getReducedPrice($shop1->id_shop_article, $shop1->price, $selected_user_id)* (-1);
+            if (!hasExistingReduction(auth()->user()->user_id, $selected_user_id, $shop1->id_shop_article)) {
+                $reductionLine = Basket::where([
+                    ['user_id', auth()->user()->user_id],
+                    ['ref', -1], // Using -1 as a special reference for total reduction
+                ])->first();
 
-            $reductionLine = Basket::where([
-                ['user_id', auth()->user()->user_id],
-                ['pour_user_id', $request->selected_user_id],
-                ['ref', -1], // Using -1 as a special reference for total reduction
-            ])->first();
-
-            if ($reductionLine) {
-                $reductionLine->prix += $totalReductionValue; // Add the reduction
-                $reductionLine->save();
-            } else {
-                $reductionItem = new Basket();
-                $reductionItem->user_id = auth()->user()->user_id;
-                $reductionItem->family_id = auth()->user()->family_id;
-                $reductionItem->pour_user_id = $request->selected_user_id;
-                $reductionItem->ref = -1; // Special reference for total reduction
-                $reductionItem->qte = 1; 
-                $reductionItem->prix = $totalReductionValue;
-                $reductionItem->save();
+                if ($reductionLine) {
+                    $reductionLine->prix += $totalReductionValue; // Add the reduction
+                    $reductionLine->save();
+                } else {
+                    $reductionItem = new Basket();
+                    $reductionItem->user_id = auth()->user()->user_id;
+                    $reductionItem->family_id = auth()->user()->family_id;
+                    $reductionItem->pour_user_id = $request->selected_user_id;
+                    $reductionItem->ref = -1; // Special reference for total reduction
+                    $reductionItem->qte = 1; 
+                    $reductionItem->prix = $totalReductionValue;
+                    $reductionItem->save();
+                }
             }
-
             applyFamilyDiscount($shop1, $selected_user_id);
                     return redirect()->route('basket');
                 }
@@ -323,28 +320,27 @@ public function commander_article($id, Request $request)
             $addcommand->declinaison = $declinaison;
             $addcommand->save();
         }
+        if (!hasExistingReduction(auth()->user()->user_id, $selected_user_id, $shop->id_shop_article)) {
+            $totalReductionValue = getReducedPrice($shop->id_shop_article, $shop->price, $selected_user_id)* (-1) ;
+            $reductionLine = Basket::where([
+                ['user_id', auth()->user()->user_id],
+                ['ref', -1], // Using -1 as a special reference for total reduction
+            ])->first();
 
-        $totalReductionValue = getReducedPrice($shop->id_shop_article, $shop->price, $selected_user_id)* (-1) ;
-        $reductionLine = Basket::where([
-            ['user_id', auth()->user()->user_id],
-            ['pour_user_id', $selected_user_id],
-            ['ref', -1], // Using -1 as a special reference for total reduction
-        ])->first();
-
-        if ($reductionLine) {
-            $reductionLine->prix += $totalReductionValue; // Add the reduction
-            $reductionLine->save();
-        } else {
-            $reductionItem = new Basket();
-            $reductionItem->user_id = auth()->user()->user_id;
-            $reductionItem->family_id = auth()->user()->family_id;
-            $reductionItem->pour_user_id = $request->selected_user_id;
-            $reductionItem->ref = -1; // Special reference for total reduction
-            $reductionItem->qte = 1; 
-            $reductionItem->prix = $totalReductionValue;
-            $reductionItem->save();
+            if ($reductionLine) {
+                $reductionLine->prix += $totalReductionValue; // Add the reduction
+                $reductionLine->save();
+            } else {
+                $reductionItem = new Basket();
+                $reductionItem->user_id = auth()->user()->user_id;
+                $reductionItem->family_id = auth()->user()->family_id;
+                $reductionItem->pour_user_id = $request->selected_user_id;
+                $reductionItem->ref = -1; // Special reference for total reduction
+                $reductionItem->qte = 1; 
+                $reductionItem->prix = $totalReductionValue;
+                $reductionItem->save();
+            }
         }
-        
 
     if ($need_member != 0) { 
         
@@ -388,29 +384,28 @@ public function commander_article($id, Request $request)
                         $addcommand->reduction = $description;
                     }
                     $addcommand->save();
-                   
-            $totalReductionValue = getReducedPrice($shop1->id_shop_article, $shop1->price, $selected_user_id)* (-1);
+                   if (!hasExistingReduction(auth()->user()->user_id, $selected_user_id, $shop->id_shop_article)) {
+                        $totalReductionValue = getReducedPrice($shop1->id_shop_article, $shop1->price, $selected_user_id)* (-1);
 
-            $reductionLine = Basket::where([
-                ['user_id', auth()->user()->user_id],
-                ['pour_user_id', $request->selected_user_id],
-                ['ref', -1], // Using -1 as a special reference for total reduction
-            ])->first();
+                        $reductionLine = Basket::where([
+                            ['user_id', auth()->user()->user_id],
+                            ['ref', -1], // Using -1 as a special reference for total reduction
+                        ])->first();
 
-            if ($reductionLine) {
-                $reductionLine->prix += $totalReductionValue; // Add the reduction
-                $reductionLine->save();
-            } else {
-                $reductionItem = new Basket();
-                $reductionItem->user_id = auth()->user()->user_id;
-                $reductionItem->family_id = auth()->user()->family_id;
-                $reductionItem->pour_user_id = $request->selected_user_id;
-                $reductionItem->ref = -1; // Special reference for total reduction
-                $reductionItem->qte = 1; 
-                $reductionItem->prix = $totalReductionValue;
-                $reductionItem->save();
-            }
-
+                        if ($reductionLine) {
+                            $reductionLine->prix += $totalReductionValue; // Add the reduction
+                            $reductionLine->save();
+                        } else {
+                            $reductionItem = new Basket();
+                            $reductionItem->user_id = auth()->user()->user_id;
+                            $reductionItem->family_id = auth()->user()->family_id;
+                            $reductionItem->pour_user_id = $request->selected_user_id;
+                            $reductionItem->ref = -1; // Special reference for total reduction
+                            $reductionItem->qte = 1; 
+                            $reductionItem->prix = $totalReductionValue;
+                            $reductionItem->save();
+                        }
+                    }
             applyFamilyDiscount($shop1, $selected_user_id);
             return redirect()->back()->with('success', 'Article ajouté au panier');
         }

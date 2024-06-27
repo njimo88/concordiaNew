@@ -16,13 +16,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
         $schedule->command('process:email-queue')->everyMinute();
         $schedule->job(new ClickAsso)->dailyAt('00:00');
         $schedule->command('bills:transfer')->dailyAt('00:00');
         $schedule->job(new \App\Jobs\SyncWithClickAssoJob)->dailyAt('00:00');
         $schedule->command('baskets:delete-daily')->dailyAt('00:00');
-        $schedule->command('bills:delete-old-unpaid')->everyTenMinutes();
+        $schedule->command('bills:delete-old-unpaid')->everyFiveMinutes();
     }
     
 
