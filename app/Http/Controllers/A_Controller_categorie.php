@@ -327,11 +327,11 @@ public function commander_article($id, Request $request)
             $addcommand->declinaison = $declinaison;
             $addcommand->save();
         }
+        if (!hasExistingReduction(auth()->user()->user_id, $selected_user_id, $shop->id_shop_article)) {
 
         $totalReductionValue = getReducedPrice($shop->id_shop_article, $shop->price, $selected_user_id)* (-1) ;
         $reductionLine = Basket::where([
             ['user_id', auth()->user()->user_id],
-            ['pour_user_id', $selected_user_id],
             ['ref', -1], // Using -1 as a special reference for total reduction
         ])->first();
 
@@ -348,6 +348,7 @@ public function commander_article($id, Request $request)
             $reductionItem->prix = $totalReductionValue;
             $reductionItem->save();
         }
+    }
         
 
     if ($need_member != 0) { 
@@ -397,7 +398,6 @@ public function commander_article($id, Request $request)
 
             $reductionLine = Basket::where([
                 ['user_id', auth()->user()->user_id],
-                ['pour_user_id', $request->selected_user_id],
                 ['ref', -1], // Using -1 as a special reference for total reduction
             ])->first();
 
