@@ -114,14 +114,6 @@ class UsersController extends Controller
     
     $bill->save();
 
-    // envoi du mail à la propriétaire de la facture
-    $user = auth()->user();
-    $receiverEmail = $user->email;
-    $userName = 'Gym Concordia [Bureau]';
-    $message = "Votre facture n°{$bill->id} a été créée avec succès.";
-    $userEmail = "webmaster@gym-concordia.com";
-    envoiBillInfoMail($userEmail, $message, $receiverEmail, $userName, $paniers, $total, $nb_paiment, $payment, $bill, $text);
-
     // envoi du mail Paiement Accepté
     if ($bill->status == 100) {
         $generatePDFController = new generatePDF();  
@@ -213,7 +205,6 @@ class UsersController extends Controller
             "vads_url_cancel" => route('panier', ['message' => 'Transaction annulée']),
             "vads_url_error" => route('panier', ['message' => 'Erreur lors de la transaction']),
             "vads_url_refused" => route('panier', ['message' => 'Transaction refusée']),
-            // New keys for automatic redirection
             "vads_redirect_success_timeout" => "0",
             "vads_redirect_error_timeout" => "0",
             "vads_return_mode" => "GET",
