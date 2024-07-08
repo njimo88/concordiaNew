@@ -471,7 +471,6 @@ $Shop_article = Shop_article::where('id_shop_article', $id)->get();
  // methode du POST pour effectuer la duplication          
 
            public function duplicate($id,Request $request){
-
             $requete_cate = Shop_category::get() ;
             $saison_list = Shop_article::select('saison')->distinct('name')->get();
             $requete_prof = User::select("*")->where('role','>', 29)->get();
@@ -510,7 +509,7 @@ $Shop_article = Shop_article::where('id_shop_article', $id)->get();
             $article->alert_stock       = $request->input('alert_stock');
             $article->type_article      = $request->input('type_article');
             $article->max_per_user      = $request->input ('max_per_user');
-            $article->short_description = $request->input('short_description') || '';
+            $article->short_description = $request->short_description;
             $article->description       = $request->input('editor1') || '';
             $article->afiscale = $request->input('afiscale');
             $article->sex_limit = $request->input('sex_limit');
@@ -635,6 +634,7 @@ $Shop_article = Shop_article::where('id_shop_article', $id)->get();
     }
 
     $article->updateInitialStock();
+
 
     return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
 }

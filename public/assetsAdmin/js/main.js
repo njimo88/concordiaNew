@@ -999,18 +999,22 @@ $(document).ready(function () {
 $('#myTableMembers').on('click', '.deleteUser', function () {
     $('#deleteUser').modal('show')
 
-    // Get the bill ID from the clicked element
     var user_id = $(this).data('user-id')
 
-    // Make an AJAX request to retrieve the old bills
+    console.log('Deleting user with ID:', user_id)
+
     $.ajax({
         url: '/admin/members/deletemodal/' + user_id,
         success: function (data) {
-            // Insert the old bills data into the modal body
+            console.log('Modal data:', data) 
             $('#deleteUserContainer').html(data)
+        },
+        error: function (xhr, status, error) {
+            console.error('Error:', error) 
         },
     })
 })
+
 
 /*---------------------------------modal myTableMembers familybill---------------------------------------*/
 
