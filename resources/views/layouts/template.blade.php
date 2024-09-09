@@ -580,6 +580,8 @@
                      @if( auth()->user()->roles->estAutoriserDeVoirArticleBoutique )<li> <a href="{{ route('article') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-basket-shopping fa-fw mr-1"></span><span>Article2</span> </a></li>@endif
                      @if( auth()->user()->roles->estAutoriserDeVoirCategorieBoutique )<li> <a href="{{ route('A_Categorie') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-coins fa-fw mr-1"></span><span>Catégories</span> </a></li>@endif
                      <li> <a href="{{ route('mode_strict') }}"><span style="color: #f7bac5; margin-right:8px" class="fa-solid fa-user-ninja mr-1"></span><span>Mode Strict</span> </a></li>
+                     <li> <a href="{{ route('payment_selection') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-cog mr-1"></span><span>Paramètrage</span> </a></li>
+
                   </ul>
                </li>
             @endif

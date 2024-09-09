@@ -74,7 +74,7 @@
                 <input type="hidden" name="vads_page_action" value="PAYMENT" />
                 <input type="hidden" name="vads_payment_cards" value="VISA;MASTERCARD" />
                 <input type="hidden" name="vads_payment_config" value="{{ $payment_config }}" /> 
-                <input type="hidden" name="vads_site_id" value="31118669" />
+                <input type="hidden" name="vads_site_id" value="{{ $vads_site_id  }}" />
                 <input type="hidden" name="vads_url_cancel" value="{{ route('panier', ['message' => 'Transaction annulée']) }}" />
                 <input type="hidden" name="vads_url_error" value="{{ route('panier', ['message' => 'Erreur lors de la transaction']) }}" />
                 <input type="hidden" name="vads_url_refused" value="{{ route('panier', ['message' => 'Transaction refusée']) }}" />

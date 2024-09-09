@@ -261,44 +261,45 @@ fieldset {
                                 <th><a></a></th> <!-- New column for delete button -->
                             </thead>
                             <tbody>
-                                @foreach ($shop as $shop)
-    <tr>
-        @if ($shop->article_id == -1)
-            <td colspan="2" style="text-align:center;">Réduction</td>
-            <td></td>
-            <td>{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
-            <td></td>
-        @else
-            <form>
-                <td style="width: 600px;">
-                    <div class="row">
-                        <div class="col-md-2 col-12">
-                            <img style="height: 70px" src="{{ $shop->image }}" alt="">
-                        </div>
-                        <div class="col-md-6 col-12">
-                            <a href="{{ route('singleProduct', ['id' => $shop->id_shop_article]) }}" style="text-decoration: none;" target="_blank">
-                                <input type="hidden" name="user_id" value="{{ $bill->user_id }}">
-                                <select name="designation" class="border form-select mt-3 @error('role') is-invalid @enderror" name="status" id="status" autocomplete="status" autofocus role="listbox">
-                                    <option value="{{ $shop->designation }}" role="option" selected>
-                                        {{ $shop->designation }} 
-                                        @if(!empty($shop->declinaison_libelle))
-                                            [{{ $shop->declinaison_libelle }}]
+                                @foreach ($shop as $item)
+                                    <tr>
+                                        @if ($item->article_id == -1)
+                                            <td colspan="2" style="text-align:center;">Réduction</td>
+                                            <td></td>
+                                            <td>{{ number_format($item->sub_total, 2, ',', ' ') }} €</td>
+                                            <td></td>
+                                        @else
+                                            <td style="width: 600px;">
+                                                <div class="row">
+                                                    <div class="col-md-2 col-12">
+                                                        <img style="height: 70px" src="{{ $item->image }}" alt="">
+                                                    </div>
+                                                    <div class="col-md-6 col-12">
+                                                        @if ($item->id_shop_article)
+                                                            <!-- Lien cliquable si l'ID est présent -->
+                                                            <a href="{{ route('singleProduct', ['id' => $item->id_shop_article]) }}" style="text-decoration: none;" target="_blank">
+                                                                {{ $item->designation }}
+                                                                @if(!empty($item->declinaison_libelle))
+                                                                    [{{ $item->declinaison_libelle }}]
+                                                                @endif
+                                                            </a>
+                                                        @else
+                                                            <!-- Texte non cliquable si l'ID n'est pas présent -->
+                                                            {{ $item->designation }}
+                                                            @if(!empty($item->declinaison_libelle))
+                                                                [{{ $item->declinaison_libelle }}]
+                                                            @endif
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ $item->quantity }} </td>
+                                            <td>{{ number_format($item->ttc, 2, ',', ' ') }} €</td>
+                                            <td>{{ number_format($item->sub_total, 2, ',', ' ') }} €</td>
+                                            <td>{{ $item->addressee }}</td>
                                         @endif
-                                    </option>
-                                </select>
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </form>
-            <td>{{ $shop->quantity }} </td>
-            <td>{{ number_format($shop->ttc, 2, ',', ' ') }} €</td>
-            <td>{{ number_format($shop->sub_total, 2, ',', ' ') }} €</td>
-            <td>{{ $shop->addressee }}</td>
-        @endif
-    </tr>
-@endforeach
-
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                         

@@ -563,29 +563,31 @@
 </main>
 <script>
 $(document).ready(function() {
-        $('.change-designation-button').click(function() {
-            var liaisonId = $(this).data('liaison-id');
-            var selectedValue = $(this).closest('tr').find('.designation-select').val();
-            var declinaisonId = $(this).closest('tr').find('.designation-select option:selected').data('declinaison-id');
-            var user_id = {{ $bill->user_id }};
-            $.ajax({
-                url: '/admin/paiement/facture/updateDes/' + liaisonId,
-                method: 'PUT',
-                data: {
-                    designation: selectedValue,
-                    declinaison_id: declinaisonId,
-                    user_id: user_id,
-                    "_token": "{{ csrf_token() }}"
-                },
-                success: function(response) {
-                    alert(response.message);
-                },
-                error: function(error) {
-                    console.error(error);
-                }
-            });
+    $('.change-designation-button').click(function() {
+        var liaisonId = $(this).data('liaison-id');
+        var selectedValue = $(this).closest('tr').find('.designation-select').val();
+        var declinaisonId = $(this).closest('tr').find('.designation-select option:selected').data('declinaison-id');
+        var user_id = {{ $bill->user_id }};
+        $.ajax({
+            url: '/admin/paiement/facture/updateDes/' + liaisonId,
+            method: 'PUT',
+            data: {
+                designation: selectedValue,
+                declinaison_id: declinaisonId,
+                user_id: user_id,
+                "_token": "{{ csrf_token() }}"
+            },
+            success: function(response) {
+                alert(response.message);
+                location.reload();
+            },
+            error: function(error) {
+                console.error(error);
+            }
         });
     });
+});
+
 
 document.getElementById("payment_method").addEventListener("change", function() {
     updateBillDetails({
@@ -639,6 +641,7 @@ function updateBillDetails(data) {
         success: function(response) {
             alert('Le message a été supprimé avec succès.');
             $('#message-' + messageId).hide(); 
+                location.reload();
         }
       });
     }

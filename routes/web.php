@@ -251,6 +251,8 @@ Route::get('category-subcategory/remove/{id_shop_category}', [A_Controller_categ
 
 
 Route::get('/mode_strict', [A_Controller_categorie::class, 'mode_strict'])->name('mode_strict');
+Route::get('/payment_selection', [A_Controller_categorie::class, 'payment_selection'])->name('payment_selection');
+Route::post('/process-payment', [A_Controller_categorie::class, 'processPayment'])->name('payment.process');
 
 }); 
 

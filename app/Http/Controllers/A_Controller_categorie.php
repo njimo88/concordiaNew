@@ -19,6 +19,7 @@ use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\TryCatch;
 use App\Models\Basket;
 use App\Models\shop_article_2;
+use App\Models\BankAccount;
 
 
 
@@ -51,9 +52,21 @@ class A_Controller_categorie extends Controller
 
     }
 
+    public function payment_selection()
+    {
+       $bank_accounts = BankAccount::all();
+        $selected_bank_id = SystemSetting::where('name', 'selected_bank_id')->value('value');
+        return view('payment_selection', compact('bank_accounts', 'selected_bank_id'));
+    }
+
+    public function processPayment(Request $request)
+    {
+        SystemSetting::where('name', 'selected_bank_id')->update(['value' => $request->bank_id]);
+        return redirect()->back()->with('success', 'La banque sélectionnée a été mise à jour.');
+    }
+
     public function mode_strict ()
     {
-
         return view('A_Categorie_strict');
     }
 

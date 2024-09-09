@@ -695,18 +695,25 @@ if ($total < 0) {
         if ($user->belongsToFamily($bill->family_id) || Route::currentRouteName() === 'facture.showBill') {
         
         $shop = DB::table('liaison_shop_articles_bills')
-        ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') 
-        ->select('id_user','quantity', 'ttc', 'sub_total', 'designation', 'addressee', 'shop_article.image', 'shop_article.id_shop_article', 'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle','liaison_shop_articles_bills.id_shop_article as article_id')
-        ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-        ->leftJoin('shop_article', function($join) {
-            $join->on('shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-                 ->where('shop_article.id_shop_article', '<>', -1); 
-        })
-        ->where('bills.id', '=', $id)
-        ->orderBy('designation', 'asc')
-        ->get()
-        ;
-
+    ->leftJoin('declinaisons', 'declinaisons.id', '=', 'liaison_shop_articles_bills.declinaison') 
+    ->select(
+        'id_user', 'quantity', 'ttc', 'sub_total', 'designation', 'addressee', 
+        'shop_article.image', 'shop_article.id_shop_article', 
+        'liaison_shop_articles_bills.id_liaison', 'declinaisons.libelle as declinaison_libelle',
+        'liaison_shop_articles_bills.id_shop_article as article_id'
+    )
+    ->leftJoin('shop_article', function($join) {
+        $join->on('shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+             ->where('shop_article.id_shop_article', '<>', -1);
+    })
+    ->leftJoin('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+    ->leftJoin('old_bills', 'old_bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+    ->where(function($query) use ($id) {
+        $query->where('bills.id', '=', $id)
+              ->orWhere('old_bills.id', '=', $id);
+    })
+    ->orderBy('designation', 'asc')
+    ->get();
 
         
 

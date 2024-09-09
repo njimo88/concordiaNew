@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\bills;
 use App\Models\liaison_shop_articles_bills;
 use App\Models\old_bills;
+use App\Models\BankAccount;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Models\Shop_article;
@@ -35,20 +36,23 @@ class UsersController extends Controller
 
     
     
-    public function showForm($nombre_virment, $total)
+   public function showForm($nombre_virment, $total)
 {
+    $selectedBankId = DB::table('system')->where('name', 'selected_bank_id')->value('value');
+    $bank = BankAccount::find($selectedBankId);
+
+    $vads_site_id = $bank->site_id;
+    $key = $bank->secret_key;
 
     $paniers = DB::table('basket')
-    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-    ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
-    ->where('basket.user_id', '=',auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id', 'basket.user_id','basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref', 'users.name', 'users.lastname')
-    ->orderBy('basket.pour_user_id')
-    ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
-    ->get();
-
-    
+        ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+        ->join('shop_article', 'shop_article.id_shop_article', '=', 'basket.ref')
+        ->where('basket.user_id', '=', auth()->user()->user_id)
+        ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref', 'users.name', 'users.lastname')
+        ->orderBy('basket.pour_user_id')
+        ->orderBy('basket.ref')
+        ->select('basket.user_id', 'basket.ref', 'basket.qte', 'shop_article.title', 'shop_article.image', 'shop_article.totalprice', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+        ->get();
 
     MiseAjourArticlePanier($paniers);
     $can_purchase = true;
@@ -63,158 +67,154 @@ class UsersController extends Controller
         }
     }
 
-    if (!$can_purchase ) {
+    if (!$can_purchase) {
         $error_msg = "Les articles suivants ne peuvent pas être achetés: " . implode(', ', $unavailable_articles);
         return redirect()->back()->withErrors([$error_msg]);
-    }else{
+    } else {
         $paniers = DB::table('basket')
-    ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
-    ->leftJoin('shop_article', function($join) {
-        $join->on('shop_article.id_shop_article', '=', 'basket.ref')
-             ->where('shop_article.id_shop_article', '<>', -1); 
-    })
-    ->where('basket.user_id', '=', auth()->user()->user_id)
-    ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction','shop_article.type_article')
-    ->orderBy('basket.pour_user_id')
-    ->orderBy('basket.ref')
-    ->select('basket.user_id', 'basket.ref', 'basket.qte', 'basket.pour_user_id', 'shop_article.title','shop_article.type_article', 'basket.declinaison', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
-    ->get();
+            ->join('users', 'users.user_id', '=', 'basket.pour_user_id')
+            ->leftJoin('shop_article', function($join) {
+                $join->on('shop_article.id_shop_article', '=', 'basket.ref')
+                     ->where('shop_article.id_shop_article', '<>', -1); 
+            })
+            ->where('basket.user_id', '=', auth()->user()->user_id)
+            ->groupBy('basket.pour_user_id', 'basket.user_id', 'basket.ref', 'basket.qte', 'basket.declinaison', 'shop_article.title', 'shop_article.image', 'basket.prix', 'shop_article.ref', 'users.name', 'users.lastname', 'basket.reduction','shop_article.type_article')
+            ->orderBy('basket.pour_user_id')
+            ->orderBy('basket.ref')
+            ->select('basket.user_id', 'basket.ref', 'basket.qte', 'basket.pour_user_id', 'shop_article.title','shop_article.type_article', 'basket.declinaison', 'shop_article.image', 'basket.prix as totalprice', 'basket.reduction', 'shop_article.ref as reff', 'users.name', 'users.lastname', DB::raw('SUM(basket.qte) as total_qte'))
+            ->get();
 
         $payment = DB::table('bills_payment_method')->where('id', '=', 1)->first()->payment_method;
 
-    $total = 0;
-    foreach ($paniers as $panier) {
-        $total += $panier->qte * $panier->totalprice;
-    }
-    if ($total < 0) {
         $total = 0;
-    }
-    if($paniers->count() == 0){
-        return redirect()->route('panier');}
-        else{
-    $bill = new bills;
-    $bill->user_id = auth()->user()->user_id;
-    $bill->date_bill = date('Y-m-d H:i:s');
-    $bill->type = "facture";
-    $bill->number = $nombre_virment;
-    $bill->payment_method = 1;
-    $bill->status = 31; 
-    $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
-
-    $nb_paiment = calculerPaiements(1,$total,$nombre_virment);
-
-    $bill->payment_total_amount = $total;
-    $bill->family_id = auth()->user()->family_id;
-    $bill->ref = "0";
-    $bill->save();
-
-    $year = date('Y');
-    $billIdWithOffset = $bill->id + 10000;
-    $bill->ref = "{$year}-{$billIdWithOffset}";
-    
-    $bill->save();
-
-    // envoi du mail Paiement Accepté
-    if ($bill->status == 100) {
-        $generatePDFController = new generatePDF();  
-        $pdfPath = $generatePDFController->generatePDFreduction_FiscaleOutput($bill->id);
-        Mail::send('emails.order_accepted', ['user' => $user, 'bill' => $bill], function ($message) use ($receiverEmail, $pdfPath,$bill) {
-            $message->from(config('mail.from.address'), config('mail.from.name'));
-            $message->to($receiverEmail);
-            $message->subject("Paiement accepté - Commande : " . $bill->ref);
-        });
-    }
-
-
-
-     // Ajouter des lignes dans la table de liaison
-     foreach ($paniers as $panier) {
-        $pou_user = User::where('user_id', $panier->pour_user_id)->first();
-        $liaison = new liaison_shop_articles_bills;
-        $liaison->bill_id = $bill->id;
-        $liaison->href_product = $panier->reff;
-        $liaison->quantity = $panier->qte;
-        $liaison->ttc = round($panier->totalprice, 2);
-        $liaison->addressee = $pou_user->lastname . ' ' . $pou_user->name;
-        $liaison->sub_total = round($panier->qte * $panier->totalprice, 2);
-        if ($panier->ref == -1) {
-            $liaison->designation = "Réduction";
-
-        } else {
-            $liaison->designation = $panier->title;
+        foreach ($paniers as $panier) {
+            $total += $panier->qte * $panier->totalprice;
         }
-        $liaison->id_shop_article = $panier->ref;
-        $liaison->declinaison = $panier->declinaison;
-        $liaison->id_user = $pou_user->user_id;
-        if ($panier->type_article == 2) {
-            $liaison->is_prepared = 0;
-            $liaison->is_distributed = 0;
-        } else {
-            $liaison->is_prepared = 1;
-            $liaison->is_distributed = 1;
+        if ($total < 0) {
+            $total = 0;
         }
-        $liaison->save();
-    }
-    incrementReductionUsageCount($paniers);
-    DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
-    MiseAjourStock();
+        if($paniers->count() == 0){
+            return redirect()->route('panier');
+        } else {
+            $bill = new bills;
+            $bill->user_id = auth()->user()->user_id;
+            $bill->date_bill = date('Y-m-d H:i:s');
+            $bill->type = "facture";
+            $bill->number = $nombre_virment;
+            $bill->payment_method = 1;
+            $bill->status = 31; 
+            $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
 
-    $userId = Auth::user()->user_id;
-    $user = User::find($userId);
+            $nb_paiment = calculerPaiements(1,$total,$nombre_virment);
 
-    
-    $year = date('Y');
-    $billIdWithOffset = $bill->id + 10000;
-    $userId = $user->user_id;
-    $orderId = "{$year}-{$billIdWithOffset}-{$userId}";
-   
-    $paiements = calculerPaiements(1, $total, $nombre_virment);
+            $bill->payment_total_amount = $total;
+            $bill->family_id = auth()->user()->family_id;
+            $bill->ref = "0";
+            $bill->save();
 
-    $utcDate = gmdate('YmdHis');
-    $vads_trans_id = substr(uniqid(), -6);
-    $key = "mfBCrQHiXRZHmkUQ";
+            $year = date('Y');
+            $billIdWithOffset = $bill->id + 10000;
+            $bill->ref = "{$year}-{$billIdWithOffset}";
+            
+            $bill->save();
 
-    // Change payment configuration depending on the number of payments
-    $payment_config = $nombre_virment > 1
-        ? 'MULTI:first=' . $paiements[0]*100 . ';count=' . $nombre_virment . ';period=30'
-        : 'SINGLE';
-    
-        $data = [
-            "vads_cust_id" => $user->user_id,
-            "vads_cust_email" => $user->email,
-            "vads_cust_first_name" => remove_accents($user->name),
-            "vads_cust_last_name" => remove_accents($user->lastname),
-            "vads_cust_phone" => $user->phone,
-            "vads_cust_address" => remove_accents($user->address),
-            "vads_cust_zip" => remove_accents($user->zip),
-            "vads_cust_city" => remove_accents($user->city),
-            "vads_cust_country" => remove_accents($user->country),
-            "vads_action_mode" => "INTERACTIVE",
-            "vads_amount" => $total*100,
-            "vads_currency" => "978",
-            "vads_ctx_mode" => "PRODUCTION",
-            "vads_order_id" => $orderId,
-            "vads_page_action" => "PAYMENT",
-            "vads_payment_cards" => "VISA;MASTERCARD",
-            "vads_payment_config" => $payment_config,
-            "vads_site_id" => "31118669",
-            "vads_trans_date" => $utcDate,
-            "vads_trans_id" => $vads_trans_id,
-            "vads_version" => "V2",
-            "vads_url_success" => route('detail_paiement', ['id' => $bill->id]),
-            "vads_url_cancel" => route('panier', ['message' => 'Transaction annulée']),
-            "vads_url_error" => route('panier', ['message' => 'Erreur lors de la transaction']),
-            "vads_url_refused" => route('panier', ['message' => 'Transaction refusée']),
-            "vads_redirect_success_timeout" => "0",
-            "vads_redirect_error_timeout" => "0",
-            "vads_return_mode" => "GET",
-        ];
+            // envoi du mail Paiement Accepté
+            if ($bill->status == 100) {
+                $generatePDFController = new generatePDF();  
+                $pdfPath = $generatePDFController->generatePDFreduction_FiscaleOutput($bill->id);
+                Mail::send('emails.order_accepted', ['user' => $user, 'bill' => $bill], function ($message) use ($receiverEmail, $pdfPath, $bill) {
+                    $message->from(config('mail.from.address'), config('mail.from.name'));
+                    $message->to($receiverEmail);
+                    $message->subject("Paiement accepté - Commande : " . $bill->ref);
+                });
+            }
+
+            // Ajouter des lignes dans la table de liaison
+            foreach ($paniers as $panier) {
+                $pou_user = User::where('user_id', $panier->pour_user_id)->first();
+                $liaison = new liaison_shop_articles_bills;
+                $liaison->bill_id = $bill->id;
+                $liaison->href_product = $panier->reff;
+                $liaison->quantity = $panier->qte;
+                $liaison->ttc = round($panier->totalprice, 2);
+                $liaison->addressee = $pou_user->lastname . ' ' . $pou_user->name;
+                $liaison->sub_total = round($panier->qte * $panier->totalprice, 2);
+                if ($panier->ref == -1) {
+                    $liaison->designation = "Réduction";
+                } else {
+                    $liaison->designation = $panier->title;
+                }
+                $liaison->id_shop_article = $panier->ref;
+                $liaison->declinaison = $panier->declinaison;
+                $liaison->id_user = $pou_user->user_id;
+                if ($panier->type_article == 2) {
+                    $liaison->is_prepared = 0;
+                    $liaison->is_distributed = 0;
+                } else {
+                    $liaison->is_prepared = 1;
+                    $liaison->is_distributed = 1;
+                }
+                $liaison->save();
+            }
+            incrementReductionUsageCount($paniers);
+            DB::table('basket')->where('user_id', auth()->user()->user_id)->delete();
+            MiseAjourStock();
+
+            $userId = Auth::user()->user_id;
+            $user = User::find($userId);
+
+            $year = date('Y');
+            $billIdWithOffset = $bill->id + 10000;
+            $userId = $user->user_id;
+            $orderId = "{$year}-{$billIdWithOffset}-{$userId}";
         
-    $signature = generateSignature($data, $key, "HMAC-SHA-256");
+            $paiements = calculerPaiements(1, $total, $nombre_virment);
 
-    return view('admin.payment_form')->with(compact( 'nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements' , 'vads_trans_id', 'total', 'user','payment_config','bill'));
-        }}
+            $utcDate = gmdate('YmdHis');
+            $vads_trans_id = substr(uniqid(), -6);
+
+            $payment_config = $nombre_virment > 1
+                ? 'MULTI:first=' . $paiements[0]*100 . ';count=' . $nombre_virment . ';period=30'
+                : 'SINGLE';
+            
+            $data = [
+                "vads_cust_id" => $user->user_id,
+                "vads_cust_email" => $user->email,
+                "vads_cust_first_name" => remove_accents($user->name),
+                "vads_cust_last_name" => remove_accents($user->lastname),
+                "vads_cust_phone" => $user->phone,
+                "vads_cust_address" => remove_accents($user->address),
+                "vads_cust_zip" => remove_accents($user->zip),
+                "vads_cust_city" => remove_accents($user->city),
+                "vads_cust_country" => remove_accents($user->country),
+                "vads_action_mode" => "INTERACTIVE",
+                "vads_amount" => $total*100,
+                "vads_currency" => "978",
+                "vads_ctx_mode" => "PRODUCTION",
+                "vads_order_id" => $orderId,
+                "vads_page_action" => "PAYMENT",
+                "vads_payment_cards" => "VISA;MASTERCARD",
+                "vads_payment_config" => $payment_config,
+                "vads_site_id" => $vads_site_id,
+                "vads_trans_date" => $utcDate,
+                "vads_trans_id" => $vads_trans_id,
+                "vads_version" => "V2",
+                "vads_url_success" => route('detail_paiement', ['id' => $bill->id]),
+                "vads_url_cancel" => route('panier', ['message' => 'Transaction annulée']),
+                "vads_url_error" => route('panier', ['message' => 'Erreur lors de la transaction']),
+                "vads_url_refused" => route('panier', ['message' => 'Transaction refusée']),
+                "vads_redirect_success_timeout" => "0",
+                "vads_redirect_error_timeout" => "0",
+                "vads_return_mode" => "GET",
+            ];
+            
+            $signature = generateSignature($data, $key, "HMAC-SHA-256");
+
+            return view('admin.payment_form')->with(compact('vads_site_id','nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements', 'vads_trans_id', 'total', 'user', 'payment_config', 'bill'));
+        }
+    }
 }
+
 
 
 public function showFormFrais($nombre_virment, $total,$bill_id)
@@ -222,6 +222,12 @@ public function showFormFrais($nombre_virment, $total,$bill_id)
     $userId = Auth::user()->user_id;
     $user = User::find($userId);
     $bill_id = $bill_id;
+
+    $selectedBankId = DB::table('system')->where('name', 'selected_bank_id')->value('value');
+    $bank = BankAccount::find($selectedBankId);
+
+    $vads_site_id = $bank->site_id;
+    $key = $bank->secret_key;
 
     $bill = bills::latest('id')->first();
     $year = date('Y');
@@ -233,9 +239,8 @@ public function showFormFrais($nombre_virment, $total,$bill_id)
 
     $utcDate = gmdate('YmdHis');
     $vads_trans_id = substr(uniqid(), -6);
-    $key = "mfBCrQHiXRZHmkUQ";
 
-    // Change payment configuration depending on the number of payments
+
     $payment_config = $nombre_virment > 1
         ? 'MULTI:first=' . $paiements[0]*100 . ';count=' . $nombre_virment . ';period=30'
         : 'SINGLE';
@@ -258,7 +263,7 @@ public function showFormFrais($nombre_virment, $total,$bill_id)
             "vads_page_action" => "PAYMENT",
             "vads_payment_cards" => "VISA;MASTERCARD",
             "vads_payment_config" => $payment_config,
-            "vads_site_id" => "31118669",
+            "vads_site_id" => $vads_site_id,
             "vads_trans_date" => $utcDate,
             "vads_trans_id" => $vads_trans_id,
             "vads_version" => "V2",
@@ -266,14 +271,13 @@ public function showFormFrais($nombre_virment, $total,$bill_id)
             "vads_url_cancel" => route('mesfactures', ['message' => 'Transaction annulée']),
             "vads_url_error" => route('mesfactures', ['message' => 'Erreur lors de la transaction']),
             "vads_url_refused" => route('mesfactures', ['message' => 'Transaction refusée']),
-            // New keys for automatic redirection
             "vads_redirect_success_timeout" => "0",
             "vads_redirect_error_timeout" => "0",
             "vads_return_mode" => "GET",
         ];
         
     $signature = generateSignature($data, $key, "HMAC-SHA-256");
-    return view('admin.payment_formFrais')->with(compact( 'nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements' , 'vads_trans_id', 'total', 'user','payment_config','bill_id'));
+    return view('admin.payment_formFrais')->with(compact( 'vads_site_id','nombre_virment', 'signature', 'utcDate', 'orderId', 'paiements' , 'vads_trans_id', 'total', 'user','payment_config','bill_id'));
 
 }
 

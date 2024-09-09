@@ -166,24 +166,29 @@
             
             <div class="product-div-right">
                 <span class="product-name">{{ $articl->title }}</span>
-                <span class="product-price">
-                    @php
-                        $reducedPrice = getReducedPriceGuest($articl->id_shop_article, $articl->totalprice);
-                        $priceToDisplay = $reducedPrice ? $reducedPrice : $articl->totalprice;
-                        $DescReduc = getFirstReductionDescriptionGuest($articl->id_shop_article);
-                    @endphp
-                    @if ($reducedPrice && $reducedPrice != $articl->totalprice)
-                        <span class="original-price">{{ number_format($articl->totalprice, 2, ',', ' ') }} €</span>
-                        <span class="reduced-price">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span>
-                        @if ($DescReduc)
-                            <div class="desc-reduc-ribbon">{{ $DescReduc }}</div>
+                <div class="price-and-new-badge">
+                    <span class="product-price">
+                        @php
+                            $reducedPrice = getReducedPriceGuest($articl->id_shop_article, $articl->totalprice);
+                            $priceToDisplay = $reducedPrice ? $reducedPrice : $articl->totalprice;
+                            $DescReduc = getFirstReductionDescriptionGuest($articl->id_shop_article);
+                        @endphp
+                        @if ($reducedPrice && $reducedPrice != $articl->totalprice)
+                            <span class="original-price">{{ number_format($articl->totalprice, 2, ',', ' ') }} €</span>
+                            <span class="reduced-price">{{ number_format($priceToDisplay, 2, ',', ' ') }} €</span>
+                            @if ($DescReduc)
+                                <div class="desc-reduc-ribbon">{{ $DescReduc }}</div>
+                            @endif
+                        @else
+                            <span class="reduced-price">{{ number_format($articl->totalprice, 2, ',', ' ') }} €</span>
                         @endif
-                    @else
-                        <span class="reduced-price">{{ number_format($articl->totalprice, 2, ',', ' ') }} €</span>
+                    </span>
+                    @if($articl->nouveaute == 1)
+                        <div class="new-badge"><img src="{{ asset('assets/images/Nouveau.png') }}" alt="Nouveau"></div>
                     @endif
-                </span>
+                </div>
                 <div style="margin-top: 20px;">
-                  @include('availability', ['data' => $articl])
+                    @include('availability', ['data' => $articl])
                 </div>
                 <div class="product-rating">
                     <span><i class="fas fa-star"></i></span>
@@ -193,11 +198,9 @@
                     <span><i class="fas fa-star-half-alt"></i></span>
                     <span>(350 votes)</span>
                 </div>
-                
                 <p class="product-description">{!! $articl->description !!}</p>
-                
-                
             </div>
+
         </div>
 
         <div class="row">
@@ -226,6 +229,36 @@
 </div>
 
 <style>
+    .price-and-new-badge {
+    display: flex;
+    align-items: center;
+}
+
+.product-price {
+    display: flex;
+    flex-direction: column;
+}
+
+.new-badge {
+    margin-left: 60px; 
+}
+
+.new-badge img {
+    max-width: 100px; 
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .price-and-new-badge {
+        flex-direction: row; 
+        align-items: center;
+    }
+
+    .new-badge {
+        margin-left: 170px; 
+    }
+}
+
 .desc-reduc-ribbon.fa-check-cross {
     background-color: #d02700; 
     color: white; 
