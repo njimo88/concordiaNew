@@ -69,7 +69,7 @@
                 <input type="hidden" name="vads_cust_zip" value="{{ remove_accents($user->zip) }}" />
                 <input type="hidden" name="vads_cust_city" value="{{ remove_accents($user->city) }}" />
                 <input type="hidden" name="vads_cust_country" value="{{ remove_accents($user->country) }}" />
-                <input type="hidden" name="vads_ctx_mode" value="PRODUCTION" />
+                <input type="hidden" name="vads_ctx_mode" value="TEST" />
                 <input type="hidden" name="vads_order_id" value="{{ $orderId  }}" />
                 <input type="hidden" name="vads_page_action" value="PAYMENT" />
                 <input type="hidden" name="vads_payment_cards" value="VISA;MASTERCARD" />
