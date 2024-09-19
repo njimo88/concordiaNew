@@ -120,41 +120,46 @@ a{
     background-position-y: center;
 }
 
-
-
-.btn-danger {
+.btn-danger1 {
     background-color: #c20012;
     border-color: #c20012;
     color: white;
 }
 
-.btn-danger:hover{
-    color: white !important;
-    background-color: #272e5c !important;  
+.btn-danger1:hover{
+    color: black !important;
+    background-color: #960018 !important;  
 }
 
 .custom-alert {
-        border-radius: 5px;
-        padding: 15px;
-        margin-top: 20px;
-        font-weight: bold;
-        text-align: center;
-        color: #333;
-        background-color: #f5f5f5;
-        border: 1px solid #d1d1d1;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        transition: all 0.3s ease-in-out;
-    }
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #d1d1d1;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease-in-out;
+}
 
-    .custom-alert:hover {
-        box-shadow: 0 6px 10px rgba(0,0,0,0.1);
-        transform: translateY(-2px);
-    }
+.custom-alert:hover {
+    box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
 .btn-success {
     background-color: #129e3c;
     border-color: #129e3c;
     color: white;
 }
+
+.btn-success:hover{
+    color: black !important;
+    background-color: #096A09 !important;  
+}
+
 </style>
 <main style="background-color: #ebf5ff !important; min-height: 90vh; " class="main" id="main ">
     @if ($errors->any())
@@ -258,8 +263,9 @@ a{
                 <div class="col">PRIX TOTAL</div>
                 <div class="col text-right">{{ number_format($total, 2, ',', ' ') }}&nbsp;€</div>
             </div>
+            <a href="{{ route('Vider_panier', auth()->user()->user_id) }}" class="btn btn-danger1 my-2">Vider le panier</a>
             <a href="{{ route('paiement') }}" class="btn btn-success">VALIDER</a>
-            <a href="{{ route('Vider_panier', auth()->user()->user_id) }}" class="btn btn-danger my-2">Vider le panier</a>
+
         </div>
     </div>
 </div>
