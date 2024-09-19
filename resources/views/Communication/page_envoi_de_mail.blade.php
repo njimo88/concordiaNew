@@ -60,7 +60,7 @@
       border-color: #17a2b8;
   }
 </style>
-<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
+<script src="//cdn.ckeditor.com/4.25.0/full/ckeditor.js"></script>
 <script>
   CKEDITOR.replace('editor1', {
     filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",

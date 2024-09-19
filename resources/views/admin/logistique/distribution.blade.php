@@ -202,10 +202,10 @@
                         <div class="card user-card">
                             <div class="card-body">
                                 <div class="user-avatar m-2">
-                                    <img src="{{ $liaison->shopArticle->image }}" alt="{{ $liaison->shopArticle->title }}" class="rounded-circle">
+                                    <img src="{{ optional($liaison->shopArticle)->image }}" alt="{{ optional($liaison->shopArticle)->title }}" class="rounded-circle">
                                 </div>
                                 <div class="user-info">
-                                    <h5 class="user-name">{{ $liaison->shopArticle->title }} @if (isset($liaison->declinaisonName)) [{{ $liaison->declinaisonName }}] @endif</h5>
+                                    <h5 class="user-name">{{ optional($liaison->shopArticle)->title }} @if (isset($liaison->declinaisonName)) [{{ $liaison->declinaisonName }}] @endif</h5>
                                     <p class="user-location">Destinataire : {{ $liaison->addressee }}</p>
                                     <p class="user-status">Préparé par : {{ optional($liaison->preparationConfirmation->user)->lastname . ' ' . optional($liaison->preparationConfirmation->user)->name }} le {{ optional($liaison->preparationConfirmation)->confirmed_at->format('d/m/Y à H:i') }}</p>
                                     <p class="user-status">Distribué par : {{ optional($liaison->distributionDetail->user)->lastname . ' ' . optional($liaison->distributionDetail->user)->name }} le {{ optional($liaison->distributionDetail)->distributed_at->format('d/m/Y à H:i') }}</p>

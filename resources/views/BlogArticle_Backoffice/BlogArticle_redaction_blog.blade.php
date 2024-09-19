@@ -45,7 +45,7 @@
                       <textarea type="text" name="titre" class="form-control" required></textarea>
                       <br>
                     <label></label>
-                      <textarea name="editor1"  id="ckeditor" class="form-control" required></textarea>
+                      <textarea name="editor1"   class="form-control" required></textarea>
                       
                    
       
@@ -168,7 +168,8 @@
 
 
 </form>
-<script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+
 
 </main>
 

@@ -1291,7 +1291,8 @@ foreach($Shop_article as $value1){
        @endif
 
 
-       <script src="//cdn.ckeditor.com/4.20.2/full/ckeditor.js"></script>
+       <script src="//cdn.ckeditor.com/4.25.0/full/ckeditor.js"></script>
+
 <script type="text/javascript">
     CKEDITOR.replace('editor1', {
         filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
