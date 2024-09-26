@@ -281,7 +281,8 @@
 </div>
 </form>
 
-<script src="//cdn.ckeditor.com/4.25.0/full/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+
 
 
 

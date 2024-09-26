@@ -45,7 +45,7 @@
                       <textarea type="text" name="titre" class="form-control" required></textarea>
                       <br>
                     <label></label>
-                      <textarea name="editor1"   class="form-control" required></textarea>
+                      <textarea name="editor1" class="form-control" required></textarea>
                       
                    
       

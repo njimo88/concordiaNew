@@ -60,34 +60,8 @@
       border-color: #17a2b8;
   }
 </style>
-<script src="//cdn.ckeditor.com/4.25.0/full/ckeditor.js"></script>
-<script>
-  CKEDITOR.replace('editor1', {
-    filebrowserUploadUrl: "{{route('ckeditor.upload', ['_token' => csrf_token() ])}}",
-    filebrowserBrowseUrl: "/elfinder/ckeditor",
-    filebrowserUploadMethod: 'form',
-    language: 'fr',
-    toolbar: [
-        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-        { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll'] },
-        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-        { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
-        { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-        { name: 'insert', items: ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe'] },
-        '/',
-        { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
-        { name: 'colors', items: ['TextColor', 'BGColor'] },
-        { name: 'tools', items: ['Maximize', 'ShowBlocks'] },
-        { name: 'document', items: ['Source', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates'] },
-    ],
-    uiColor: '#FFDC6E',
-    on: {
-        loaded: function() {
-            ajaxRequest({method: "POST", url: action, redirectTo: redirectPage, form: form});
-        }
-    },
-  });
-  </script>
+<script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+
 <main class="main" id="main">
   <?php
 $successMessage = $_GET['successMessage'] ?? '';
@@ -191,7 +165,7 @@ if (!empty($successMessage)) {
                       <textarea style="height: 40px;" type="text" name="titre" class="form-control" required></textarea>
                       <br>
                     <label></label>
-                    <textarea name="editor1"  id="ckeditor" class="form-control" required></textarea>
+                    <textarea name="editor1" id="ckeditor" class="form-control" required></textarea>
                     <div class="form-group mt-3">
                       <label>Pièces jointes :</label>
                       <button id="add-file-btn" type="button" class="btn btn-primary">Ajouter un fichier</button>
@@ -410,6 +384,7 @@ if (!empty($successMessage)) {
     //send email
     const sendButton = document.getElementById('send-button');
 sendButton.addEventListener('click', function (event) {
+    console.log('clicked');
     event.preventDefault();
     const loadingIcon = document.getElementById('loading-icon');
     const selectedUserIds = Array.from(selectedUsers.querySelectorAll('a.list-group-item')).map(user => user.dataset.id);

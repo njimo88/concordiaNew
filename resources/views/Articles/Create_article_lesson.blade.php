@@ -286,7 +286,8 @@ color: rgba(0, 0, 0, 0.356);
   </div>     
 </div>
 </form>
-<script src="//cdn.ckeditor.com/4.25.0/full/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+
 
 <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script>

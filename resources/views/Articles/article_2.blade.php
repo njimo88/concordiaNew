@@ -314,7 +314,7 @@
                                                  <label>Résumé </label>
                                                      <textarea type="text" name="short_description" class="form-control" > {{$value1->short_description}}</textarea>
                                                  <label>Description</label>
-                                                     <textarea name="editor1"  id="ckeditor" class="form-control" required> {{$value1->description}}</textarea>
+                                                     <textarea name="editor1" class="form-control" required> {{$value1->description}}</textarea>
                                                      
                                                  
                                      
@@ -343,7 +343,8 @@
   
 
 
-<script src="//cdn.ckeditor.com/4.25.0/full/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+
 
 
 

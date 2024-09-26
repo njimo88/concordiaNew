@@ -300,7 +300,8 @@ color: rgba(0, 0, 0, 0.356);
   
 
 
-<script src="//cdn.ckeditor.com/4.25.0/full/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+
 
 
 

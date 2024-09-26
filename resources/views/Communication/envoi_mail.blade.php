@@ -60,7 +60,7 @@
 
                             <input type="text" name="title" class="form-control" placeholder="Title">
 
-                            <textarea name="editor1"  id="ckeditor" class="form-control" name="ckeditor"></textarea>
+                            <textarea name="editor1" class="form-control" name="ckeditor"></textarea>
                             
             </div>
                 <div class="col-md-2">

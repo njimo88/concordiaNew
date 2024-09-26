@@ -81,7 +81,7 @@ $date = Carbon::now();
                       <textarea type="text" name="titre" class="form-control" required> {{$data1->titre}}</textarea>
                       <br>
                     <label></label>
-                      <textarea name="editor1"  id="ckeditor" class="form-control" required>{{$data1->contenu}}</textarea>
+                      <textarea name="editor1" class="form-control" required>{{$data1->contenu}}</textarea>
                       
                    
       
@@ -235,7 +235,10 @@ $date = Carbon::now();
 
 </main>
 
-<script src="//cdn.ckeditor.com/4.25.0/full/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+
+
+
 
 
 
