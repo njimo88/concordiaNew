@@ -1,5 +1,4 @@
-Swift Mailer
-------------
+## Swift Mailer
 
 Swift Mailer is a component based mailing solution for PHP.
 It is released under the MIT license.
@@ -9,8 +8,7 @@ to use in complex web application with a great deal of flexibility.
 
 For full details on usage, read the [documentation](https://swiftmailer.symfony.com/docs/introduction.html).
 
-Sponsors
---------
+## Sponsors
 
 <div>
     <a href="https://blackfire.io/docs/introduction?utm_source=swiftmailer&utm_medium=github_readme&utm_campaign=logo">

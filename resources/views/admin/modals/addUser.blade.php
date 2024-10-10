@@ -8,9 +8,9 @@
         <!-- Form Heading -->
         @csrf
         <div class="form-heading">
-          <img src="{{asset('assets\images\logo.png')}}" alt="" />
-          <h1>Creation d'un user</h1>
-          <p>Veuillez remplir tous les champs obligatoires pour créer un user !</p>
+          <img src="{{asset('assets\images\LogoHB.png')}}" alt="" />
+          <h1>Creation d'un membre</h1>
+          <p>Veuillez remplir tous les champs obligatoires pour créer un membre !</p>
         </div>
   
         <!-- Input Wrap -->
@@ -82,7 +82,7 @@
                   </span>
               @enderror
               <div class="label">
-                <label for="password">Mot de pass</label>
+                <label for="password">Mot de passe</label>
               </div>
             </div>
             <div class="col-sm input">
@@ -138,7 +138,7 @@
   
           <!-- Birthdate-->
           <div class="col-sm-6 input-group date mt-3" id='datetimepicker2'>
-            <label class="col-12" for="birthdate">La Date de naissance</label>
+            <label class="col-12" for="birthdate">La date de naissance</label>
             <input class="col-6  datepicker p-2 border" data-date-format="mm/dd/yyyy" type="date" name="birthdate" id="birthdate" class="" value="{{ old('birthdate') }}">
             
             @error('birthdate')
@@ -214,7 +214,7 @@
           
             <!-- submit button -->
           <div class="input-wrap">
-            <button type="submit" >{{ __('Register') }}</button>
+            <button type="submit" >Ajouter</button>
           </div>
   
         </div>

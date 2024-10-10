@@ -56,7 +56,7 @@
                                 </span>
                             @enderror
                             <div class="label">
-                              <label for="password">Changer  Mot de pass</label>
+                              <label for="password">Changer  Mot de passe</label>
                             </div>
                         </div>
                         <div class="col-md-6 input">

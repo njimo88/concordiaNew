@@ -1,9 +1,9 @@
-@import "Style-config.less";
+@import 'Style-config.less';
 
 body {
     .mutiple-select {
         max-width: 100%;
-        width: ~"calc(100% - 10px)";
+        width: ~'calc(100% - 10px)';
         background-color: @bg-color;
         border: @border-width solid @main-color;
         border-radius: 5px;
@@ -54,13 +54,13 @@ body {
             }
 
             .selected-itens {
-                width: ~"calc(100% - 20px)";
+                width: ~'calc(100% - 20px)';
                 overflow: hidden;
                 display: flex;
                 flex-wrap: nowrap;
                 position: relative;
 
-                &.more::after{
+                &.more::after {
                     content: '...';
                     position: absolute;
                     line-height: 1;
@@ -89,7 +89,6 @@ body {
                         background-size: cover;
                         background-position: center;
                         background-repeat: no-repeat;
-                        
                     }
 
                     .btn-remove {
@@ -114,15 +113,13 @@ body {
                     }
                 }
             }
-
-
         }
 
         .itens-list {
             position: absolute;
-            top: ~"calc(100% + 3px)";
+            top: ~'calc(100% + 3px)';
             left: 0;
-            width: ~"calc(100% - 12px)";
+            width: ~'calc(100% - 12px)';
             max-height: 200px;
             overflow: hidden;
             background-color: @bg-color;
@@ -150,7 +147,7 @@ body {
             }
 
             .option-item {
-                width: ~"calc(100% - 5px)";
+                width: ~'calc(100% - 5px)';
                 display: flex;
                 align-items: center;
                 padding: 5px;
@@ -195,7 +192,6 @@ body {
                     background-size: cover;
                     background-position: center;
                     background-repeat: no-repeat;
-                    
                 }
             }
         }
@@ -214,8 +210,8 @@ body {
 
             .itens-list {
                 padding: 2px;
-                top: ~"calc(100% + 2px)";
-                width: ~"calc(100% - 6px)";
+                top: ~'calc(100% + 2px)';
+                width: ~'calc(100% - 6px)';
 
                 .form-control {
                     font-size: 15px;
@@ -236,12 +232,11 @@ body {
             }
         }
 
-        -webkit-touch-callout: none;        
-        -webkit-user-select: none;        
-        -khtml-user-select: none;        
-        -moz-user-select: none;        
-        -ms-user-select: none;        
-        user-select: none;        
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
-
 }

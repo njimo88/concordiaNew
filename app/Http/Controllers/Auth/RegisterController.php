@@ -53,14 +53,14 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
 
-            'name' => ['required', 'alpha', 'max:255'],
-            'lastname' => ['required', 'alpha', 'max:255'],
+            'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+            'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone' =>  ['required', 'regex:/^0[0-9]{9}$/'],
             'profession' => 'required|string|max:191',
             'gender' => 'required|in:male,female',
-            'birthdate' => 'required|date|before:today',
+            'birthdate' => 'required|date|before:' . date('Y-m-d', strtotime('-18 years')),
             'nationality' => 'required',
             'address' => 'required',
             'zip' => ['required', 'regex:/^\d{5}(?:[-\s]\d{4})?$/'],
@@ -82,7 +82,7 @@ class RegisterController extends Controller
                 'gender.required' => "Le champ sexe est requis.",
                 'birthdate.required' => 'La date de naissance est requise',
                 'birthdate.date' => 'Format de date non valide',
-                'birthdate.before' => 'La date de naissance doit être antérieure à aujourd\'hui',
+                'birthdate.before' => 'Vous devez avoir au moins 18 ans.',
                 'profession.alpha' => "La profession doit être une chaîne de caractères.",
                 'address.required' => "Le champ address est requis.",
                 'zip.required' => "Le champ code postal est requis.",
@@ -105,8 +105,8 @@ class RegisterController extends Controller
         $biggest_family_id = User::max('family_id');
         return User::create([
             'username'=> $data['email'],
-            'name' => $data['name'],
-            'lastname' => $data['lastname'],
+            'name' => strtoupper($data['name']),
+            'lastname' => ucfirst($data['lastname']),
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'phone' => $data['phone'],

@@ -5,77 +5,67 @@
 
 @php
 
-require_once('../app/fonction.php');
+require_once(app_path().'/fonction.php');
 $saison_active = saison_active() ;
 
 @endphp
 <main id="main" class="main">
   <div class="row">
-    <div class="col-md-4"><a href="{{route('enregistrer_appel',$id_cours)}}"><button>Retour</button></a></div>
+    <div class="col-md-4"><a href="{{route('index_cours')}}"><button>Retour</button></a></div>
     <div class="col-md-4"></div>
-    <div class="col-md-4"><a class="btn btn-primary" href=""><button id="generate-pdf">Generer PDF </button></a></div>
+    <div class="col-md-4">
+        <a class="btn btn-primary" id="generate-pdf" href="/generate-pdf/{{ $id_cours }}">
+            Generer PDF
+        </a>
+    </div>
+    
   
   </div>
     
 
                         <h2 style="text-align:center;">Fiche de presence </h2>
 <div class="container">
+    @php
+
+        $array_user_id = [] ;
+        $array_user_presence = [] ;
+
+    @endphp
+
+
 
 <table class="table">
   <thead>
-    <tr>
-      <th scope="col">Date</th>
-      @foreach($users as $data)
-            <th scope="col">{{$data->name }} {{$data->lastname}}</th>
-            @endforeach
-    </tr>
+      <tr>
+          <th>Date</th>
+          @foreach($appel as $data1)
+             <th>{{$data1->date}}</th>
+          @endforeach
+      </tr>
   </thead>
   <tbody>
-  @foreach($appel as $data1)
-    <tr>
-    
-    <th scope="row">{{$data1->date}}</th>
-
-    @foreach ($present as $value) 
-        @foreach($value as $key => $val)
-
-            @if($key==$data1->date)
-                @foreach($val as $valeur)
-
-            <th scope="col"> 
-                
-            @if ($valeur == 1) 
-            
-            <div style="color:green"> <i class="fa fa-check"></i> </div>
-
-            @else
-
-            <div style="color:red"> <i class="fa-solid fa-xmark"></i> </div>
-
-
-            @endif
-
-            </th>
-
-                @endforeach
-
-            @endif
-
-        @endforeach
-
-    @endforeach
-
-  
-    </tr>
-   
-    @endforeach
-     
-    
+      @foreach($users as $user)
+          <tr>
+              <td>{{$user->name}} {{$user->lastname}}</td>
+              @foreach($appel as $data1)
+                  <td>
+                      @if(isset($attendance[$user->user_id][$data1->date]))
+                          @if ($attendance[$user->user_id][$data1->date] == 1)
+                              <div style="color:green"><i class="fa fa-check"></i></div>
+                          @else
+                              <div style="color:red"><i class="fa-solid fa-xmark"></i></div>
+                          @endif
+                      @endif
+                  </td>
+              @endforeach
+          </tr>
+      @endforeach
   </tbody>
 </table>
 
 
 
+</div>
 
 
 
@@ -112,7 +102,11 @@ function generatePDF(callback) {
   
 }
 
+ var courseId = {{ $id_cours }} ;
 
+function generatePDF(courseId) {
+    window.open('/generate-pdf/' + courseId, '_blank');
+}
 
 
 </script>

@@ -5,10 +5,9 @@ A PHP client for interacting with the GoCardless Pro API.
 [![PHP version](https://badge.fury.io/ph/gocardless%2Fgocardless-pro.svg)](https://badge.fury.io/ph/gocardless%2Fgocardless-pro)
 [![CircleCI](https://circleci.com/gh/gocardless/gocardless-pro-php.svg?style=shield)](https://circleci.com/gh/gocardless/gocardless-pro-php)
 
-
-- ["Getting started" guide](https://developer.gocardless.com/getting-started/api/introduction/?lang=php) with copy and paste PHP code samples
-- [API Reference](https://developer.gocardless.com/api-reference)
-- [Composer Package](https://packagist.org/packages/gocardless/gocardless-pro)
+-   ["Getting started" guide](https://developer.gocardless.com/getting-started/api/introduction/?lang=php) with copy and paste PHP code samples
+-   [API Reference](https://developer.gocardless.com/api-reference)
+-   [Composer Package](https://packagist.org/packages/gocardless/gocardless-pro)
 
 ### Installation
 
@@ -20,11 +19,13 @@ curl -sS https://getcomposer.org/installer | php
 ```
 
 Next, run the Composer command to install the latest stable version of `gocardless-pro`.
+
 ```bash
 php composer.phar require gocardless/gocardless-pro
 ```
 
 After installing, you need to require Composer's autoloader:
+
 ```php
 require 'vendor/autoload.php';
 ```
@@ -33,9 +34,9 @@ require 'vendor/autoload.php';
 
 We strongly recommend using [Composer](https://getcomposer.org/) - it'll make it easier to manage your dependencies and stay up to date. But if you don't want to, you can also install the library manually:
 
-* Make sure you have PHP's [cURL](http://php.net/manual/en/curl.installation.php), [JSON](http://php.net/manual/en/json.installation.php) and [mbstring](http://php.net/manual/en/mbstring.installation.php) extensions enabled (Composer checks these dependencies automatically)
-* Download the latest zipped release of [Guzzle](https://github.com/guzzle/guzzle/releases), which we use for making HTTP requests, and `require` the `autoloader.php` file
-* Grab the PHP library's [source](https://github.com/gocardless/gocardless-pro-php/archive/master.zip), and `require` the `lib/loader.php` file
+-   Make sure you have PHP's [cURL](http://php.net/manual/en/curl.installation.php), [JSON](http://php.net/manual/en/json.installation.php) and [mbstring](http://php.net/manual/en/mbstring.installation.php) extensions enabled (Composer checks these dependencies automatically)
+-   Download the latest zipped release of [Guzzle](https://github.com/guzzle/guzzle/releases), which we use for making HTTP requests, and `require` the `autoloader.php` file
+-   Grab the PHP library's [source](https://github.com/gocardless/gocardless-pro-php/archive/master.zip), and `require` the `lib/loader.php` file
 
 ### Initialising A Client
 
@@ -64,7 +65,7 @@ You can make a request to get a list of resources using the `list` method.
 $client->customers()->list();
 ```
 
-*Note: This README will use customers throughout but each of the resources in the API is available in this library.*
+_Note: This README will use customers throughout but each of the resources in the API is available in this library._
 
 If you need to pass any options, the last (or only, in the absence of URL params) argument to `list()` is an array of URL parameters:
 
@@ -96,9 +97,9 @@ $client->customers()->get($customer_id, ['params' => ['some_flag' => true]]);
 
 Both individual resource and ListResponse instances have an `api_response` attribute, which lets you access the following properties of the request:
 
-- `status`
-- `headers`
-- `body`
+-   `status`
+-   `headers`
+-   `body`
 
 ```php
 $api_response = $client->customers()->get($customer_id)->api_response;
@@ -123,7 +124,6 @@ $client->customers()->update($customer_id, [
 ]);
 ```
 
-
 If you wish to take advantage of [idempotency](https://developer.gocardless.com/pro/2015-07-06/#making-requests-idempotency-keys)
 in your requests, you can do so by passing an idempotency header. For example:
 
@@ -137,14 +137,13 @@ $client->customers()->create([
 It you were to make this request again, the API would reject the request and
 the client would raise an InvalidStateException.
 
-
 ### Handling Failures
 
 When the API returns an error, the library will return a corresponding subclass of `ApiException`, one of:
 
-- `InvalidApiUsageException`
-- `InvalidStateException`
-- `ValidationFailedException`
+-   `InvalidApiUsageException`
+-   `InvalidStateException`
+-   `ValidationFailedException`
 
 These types of error are covered in the [API documentation](https://developer.gocardless.com/pro/#overview-errors).
 
@@ -165,14 +164,13 @@ try {
 ```
 
 Properties of the exception can be accessesed with the following methods:
-- `$e->getType();`
-- `$e->getCode();`
-- `$e->getErrors();`
-- `$e->getDocumentationUrl();`
-- `$e->getMessage();`
-- `$e->getRequestId();`
 
-
+-   `$e->getType();`
+-   `$e->getCode();`
+-   `$e->getErrors();`
+-   `$e->getDocumentationUrl();`
+-   `$e->getMessage();`
+-   `$e->getRequestId();`
 
 ## Supporting PHP < 5.5
 

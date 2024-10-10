@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,10 +10,11 @@ use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Traits\HasPermissions;
 use App\Models\Role;
 use App\Models\Basket;
+use App\Models\bills;
+use App\Models\LiaisonShopArticlesBill;
+use Illuminate\Contracts\Auth\CanResetPassword;
 
-
-
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPassword
 {
     
     use HasApiTokens, HasFactory, Notifiable;
@@ -50,6 +50,7 @@ class User extends Authenticatable
         'created_at',
         'updated_at',
         'licenceFFGYM',
+        'initial_password',
     ];
 
     public function roles()
@@ -62,6 +63,26 @@ class User extends Authenticatable
         return $this->hasMany(Basket::class, 'user_id');
     }
     
+    public function belongsToFamily($familyId)
+{
+    return $this->family_id === intval($familyId);
+}
+
+public function bills()
+    {
+        return $this->hasMany(bills::class, 'user_id');
+    }
+
+public function old_bills()
+{
+    return $this->hasMany(old_bills::class, 'user_id');
+}
+
+public function liaisonShopArticlesBill()
+{
+    return $this->hasMany(LiaisonShopArticlesBill::class, 'id_user');
+}
+
 
     /**
      * The attributes that should be hidden for serialization.

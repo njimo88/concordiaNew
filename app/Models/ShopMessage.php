@@ -11,6 +11,7 @@ class ShopMessage extends Model
 
     protected $table = 'shop_messages';
     public $timestamps = false;
+    protected $primaryKey = 'id_shop_message';
 
 
     protected $fillable = [

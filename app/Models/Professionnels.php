@@ -10,6 +10,7 @@ class Professionnels extends Model
 {
     use HasFactory;
     protected $table = 'users_professionals';
+    public $timestamps = false;
     
     protected $primaryKey = 'cle';
 
@@ -38,3 +39,5 @@ class Professionnels extends Model
         'updated_at',
     ];
 }
+
+

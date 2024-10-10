@@ -1,91 +1,205 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>jQuery MultiPick.js Plugin Example</title>
+        <link
+            href="https://www.jqueryscript.net/css/jquerysctipttop.css"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <link rel="stylesheet" href="../multiPick.css" />
+        <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+        <link
+            href="https://www.jqueryscript.net/css/jquerysctipttop.css"
+            rel="stylesheet"
+            type="text/css"
+        />
+        <script src="../multipick.js"></script>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>jQuery MultiPick.js Plugin Example</title>
-<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="../multiPick.css">
-<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
-    <script src="../multipick.js"></script>
+        <style>
+            html,
+            * {
+                font-family: 'Inter';
+            }
+            body {
+                background-color: #fafafa;
+                line-height: 1.6;
+            }
+            .lead {
+                font-size: 1.5rem;
+                font-weight: 300;
+            }
+            .container {
+                margin: 150px auto;
+                max-width: 640px;
+            }
+        </style>
+    </head>
 
-    <style>
-html,* { font-family: 'Inter';  }
-body { background-color: #fafafa; line-height:1.6;}
-.lead { font-size: 1.5rem; font-weight: 300; }
-.container { margin: 150px auto; max-width: 640px; }
-    </style>
-</head>
+    <body>
+        <div id="jquery-script-menu">
+            <div class="jquery-script-center">
+                <ul>
+                    <li>
+                        <a
+                            href="https://www.jqueryscript.net/form/searchable-multi-select-pick.html"
+                            >Download This Plugin</a
+                        >
+                    </li>
+                    <li>
+                        <a href="https://www.jqueryscript.net/"
+                            >Back To jQueryScript.Net</a
+                        >
+                    </li>
+                </ul>
+                <div id="carbon-block"></div>
+                <div class="jquery-script-ads">
+                    <script
+                        async
+                        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2783044520727903"
+                        crossorigin="anonymous"
+                    ></script>
+                    <!-- jQuery_demo -->
+                    <ins
+                        class="adsbygoogle"
+                        style="
+                            display: inline-block;
+                            width: 728px;
+                            height: 90px;
+                        "
+                        data-ad-client="ca-pub-2783044520727903"
+                        data-ad-slot="2780937993"
+                    ></ins>
+                    <script>
+                        ;(adsbygoogle = window.adsbygoogle || []).push({})
+                    </script>
+                </div>
+                <div class="jquery-script-clear"></div>
+            </div>
+        </div>
+        <div class="container">
+            <h1>jQuery MultiPick.js Plugin Example</h1>
+            <p class="lead">
+                An easy-to-use multi-select jQuery plugin that allows users to
+                choose one or more items from a pre-defined list of options.
+            </p>
+            <select id="multiPick">
+                <option
+                    value="0"
+                    data-img="https://www.jqueryscript.net/dummy/1.jpg"
+                >
+                    Option 0
+                </option>
+                <option
+                    value="1"
+                    data-img="https://www.jqueryscript.net/dummy/2.jpg"
+                >
+                    Option 1
+                </option>
+                <option
+                    value="2"
+                    data-img="https://www.jqueryscript.net/dummy/3.jpg"
+                >
+                    Option 2
+                </option>
+                <option
+                    value="3"
+                    data-img="https://www.jqueryscript.net/dummy/4.jpg"
+                >
+                    Option 3
+                </option>
+                <option
+                    value="4"
+                    data-img="https://www.jqueryscript.net/dummy/5.jpg"
+                >
+                    Option 4
+                </option>
+                <option
+                    value="5"
+                    data-img="https://www.jqueryscript.net/dummy/6.jpg"
+                >
+                    Option 4
+                </option>
+                <option
+                    value="6"
+                    data-img="https://www.jqueryscript.net/dummy/7.jpg"
+                >
+                    Option 5
+                </option>
+                <option
+                    value="7"
+                    data-img="https://www.jqueryscript.net/dummy/6.jpg"
+                >
+                    Option 6
+                </option>
+                <option
+                    value="8"
+                    data-img="https://www.jqueryscript.net/dummy/4.jpg"
+                >
+                    Option 7
+                </option>
+                <option
+                    value="9"
+                    data-img="https://www.jqueryscript.net/dummy/5.jpg"
+                >
+                    Option 8
+                </option>
+                <option
+                    value="10"
+                    data-img="https://www.jqueryscript.net/dummy/1.jpg"
+                >
+                    Option 9
+                </option>
+            </select>
+        </div>
+    </body>
 
-<body><div id="jquery-script-menu">
-<div class="jquery-script-center">
-<ul>
-<li><a href="https://www.jqueryscript.net/form/searchable-multi-select-pick.html">Download This Plugin</a></li>
-<li><a href="https://www.jqueryscript.net/">Back To jQueryScript.Net</a></li>
-</ul><div id="carbon-block"></div>
-<div class="jquery-script-ads"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2783044520727903"
-     crossorigin="anonymous"></script>
-<!-- jQuery_demo -->
-<ins class="adsbygoogle"
-     style="display:inline-block;width:728px;height:90px"
-     data-ad-client="ca-pub-2783044520727903"
-     data-ad-slot="2780937993"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script></div>
-<div class="jquery-script-clear"></div>
-</div>
-</div>
-    <div class="container">
-        <h1>jQuery MultiPick.js Plugin Example</h1>
-        <p class="lead">An easy-to-use multi-select jQuery plugin that allows users to choose one or more items from a pre-defined list of options.</p>
-        <select id="multiPick">
-            <option value="0" data-img="https://www.jqueryscript.net/dummy/1.jpg">Option 0</option>
-            <option value="1" data-img="https://www.jqueryscript.net/dummy/2.jpg">Option 1</option>
-            <option value="2" data-img="https://www.jqueryscript.net/dummy/3.jpg">Option 2</option>
-            <option value="3" data-img="https://www.jqueryscript.net/dummy/4.jpg">Option 3</option>
-            <option value="4" data-img="https://www.jqueryscript.net/dummy/5.jpg">Option 4</option>
-            <option value="5" data-img="https://www.jqueryscript.net/dummy/6.jpg">Option 4</option>
-            <option value="6" data-img="https://www.jqueryscript.net/dummy/7.jpg">Option 5</option>
-            <option value="7" data-img="https://www.jqueryscript.net/dummy/6.jpg">Option 6</option>
-            <option value="8" data-img="https://www.jqueryscript.net/dummy/4.jpg">Option 7</option>
-            <option value="9" data-img="https://www.jqueryscript.net/dummy/5.jpg">Option 8</option>
-            <option value="10" data-img="https://www.jqueryscript.net/dummy/1.jpg">Option 9</option>
-        </select>
-    </div>
-</body>
-
-<script>
-    $('#multiPick').multiPick({
-        limit: 3,
-        image: true,
-        closeAfterSelect: false,
-        search: true,
-        placeholder: 'Select',
-        slim: false
-    });      
-    
-</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1VDDWMRSTH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-1VDDWMRSTH');
-</script><script>
-try {
-  fetch(new Request("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", { method: 'HEAD', mode: 'no-cors' })).then(function(response) {
-    return true;
-  }).catch(function(e) {
-    var carbonScript = document.createElement("script");
-    carbonScript.src = "//cdn.carbonads.com/carbon.js?serve=CK7DKKQU&placement=wwwjqueryscriptnet";
-    carbonScript.id = "_carbonads_js";
-    document.getElementById("carbon-block").appendChild(carbonScript);
-  });
-} catch (error) {
-  console.log(error);
-}
-</script>
+    <script>
+        $('#multiPick').multiPick({
+            limit: 3,
+            image: true,
+            closeAfterSelect: false,
+            search: true,
+            placeholder: 'Select',
+            slim: false,
+        })
+    </script>
+    <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-1VDDWMRSTH"
+    ></script>
+    <script>
+        window.dataLayer = window.dataLayer || []
+        function gtag() {
+            dataLayer.push(arguments)
+        }
+        gtag('js', new Date())
+        gtag('config', 'G-1VDDWMRSTH')
+    </script>
+    <script>
+        try {
+            fetch(
+                new Request(
+                    'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
+                    { method: 'HEAD', mode: 'no-cors' },
+                ),
+            )
+                .then(function (response) {
+                    return true
+                })
+                .catch(function (e) {
+                    var carbonScript = document.createElement('script')
+                    carbonScript.src =
+                        '//cdn.carbonads.com/carbon.js?serve=CK7DKKQU&placement=wwwjqueryscriptnet'
+                    carbonScript.id = '_carbonads_js'
+                    document
+                        .getElementById('carbon-block')
+                        .appendChild(carbonScript)
+                })
+        } catch (error) {
+            console.log(error)
+        }
+    </script>
 </html>

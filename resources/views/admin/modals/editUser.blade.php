@@ -1,6 +1,6 @@
 
 <div style="max-width: 80vw !important;" class="container rounded bg-white m-0 my-4">
-                    
+               
                         
                     
 
@@ -12,6 +12,8 @@
                     @method('PUT')
                     <div class="col-md-3 border-right">
                         <div class="d-flex flex-column align-items-center text-center p-3 py-2">
+                            <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+
                             @if($n_users->image)
                                     <img class="rounded-circle mt-5" width="150px" src="{{  $n_users->image }}" >
                                 @elseif ($n_users->gender == 'male')
@@ -19,11 +21,11 @@
                                 @elseif ($n_users->gender == 'female')
                                     <img class="rounded-circle mt-5" width="150px" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
                                 @endif
-                            <span style="">{{ $n_users->lastname }} {{ $n_users->name }} N°{{ $n_users->user_id }}</span>
+                            <span class="text-dark">{{ $n_users->lastname }} {{ $n_users->name }} N°{{ $n_users->user_id }}</span>
                         </div>
                     </div>
                 <div class="col-md-9 border-right">
-                    <div class="p-3 py-5">
+                    <div class="p-3 pb-5">
                         <div class="row">
                             <div class="col-md-6 mt-2">
                                 <h4 class="text-right mt-3">Paramètres du Profil</h4>
@@ -32,12 +34,21 @@
                                 <div class="labels">
                                     <label for="role">Rôle</label>
                                 </div>
-                               <select  @if(auth()->user()->role < 100)
-                                disabled @endif class="border col-md-12 form-group selectpicker @error('role') is-invalid @enderror" name="role" id="role" autocomplete="role" autofocus role="listbox" data-style='btn-info'>
+                                <select  @if(auth()->user()->role < 90 || Route::currentRouteName() === 'portesOuvertes')
+                                    disabled 
+                                    @endif 
+                                    class="border col-md-12 form-group selectpicker @error('role') is-invalid @enderror" 
+                                    name="role" 
+                                    id="role" 
+                                    autocomplete="role" 
+                                    autofocus 
+                                    role="listbox" 
+                                    data-style='btn-info'>
                                     @foreach($roles as $role)
                                         <option value="{{ $role->id }}" {{ $n_users->role == $role->id ? 'selected' : '' }} role="option">{{ $role->name }}</option>
                                     @endforeach
                                 </select>
+                                
                                
                                 @error('role')
                                     <span class="text-danger" role="alert">
@@ -216,8 +227,7 @@
                                 <div class="labels">
                                     <label for="password">Changer MDP</label>
                                   </div>
-                                <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
-                                readonly @endif class="form-control" type="password" id="password" placeholder=" " class=" @error('password') is-invalid @enderror" name="password"  autocomplete="new-password" />
+                                <input  class="form-control" type="password" id="password" placeholder=" " class=" @error('password') is-invalid @enderror" name="password"  autocomplete="new-password" />
                                 @error('password')
                                     <span class="text-danger" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -228,7 +238,7 @@
                                 <div class="labels">
                                     <label for="password-confirm">Confirmer MDP</label>
                                   </div>
-                                <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
+                                <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id || Route::currentRouteName() != 'portesOuvertes')
                                 readonly @endif class="form-control" type="password" id="password-confirm" placeholder=" "  name="password_confirmation"  autocomplete="new-password" />
                             </div>
                             <div class="col-sm-4 input mt-2">
@@ -269,7 +279,7 @@
                         </div>
                         @if(auth()->user()->role >= $n_users->role || auth()->user()->user_id == $n_users->user_id)
                         
-                            <div class="mt-5 text-center"><button class="btn btn-primary profile-button" type="submit">Sauver Profil</button></div>
+                            <div class="mt-3 text-end"><button class="btn btn-dark profile-button" type="submit">Sauver Profil</button></div>
                         @endif
                     </div>
                 </div>

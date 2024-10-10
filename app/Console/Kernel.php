@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Jobs\ClickAsso;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,8 +16,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('process:email-queue')->everyMinute();
+        $schedule->job(new ClickAsso)->dailyAt('00:00');
+        $schedule->command('bills:transfer')->dailyAt('00:00');
+        $schedule->job(new \App\Jobs\SyncWithClickAssoJob)->dailyAt('00:00');
+        $schedule->command('baskets:delete-daily')->dailyAt('00:00');
+        $schedule->command('bills:delete-old-unpaid')->everyFiveMinutes();
     }
+    
 
     /**
      * Register the commands for the application.
@@ -29,4 +36,5 @@ class Kernel extends ConsoleKernel
 
         require base_path('routes/console.php');
     }
+    
 }

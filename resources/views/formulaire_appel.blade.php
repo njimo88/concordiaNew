@@ -5,7 +5,7 @@
 
 @php
 
-require_once('../app/fonction.php');
+require_once(app_path().'/fonction.php');
 $saison_active = saison_active() ;
 
 @endphp
@@ -46,7 +46,7 @@ $saison_active = saison_active() ;
                                             <label class="form-check-label" for="flexCheckDefault">
                                                     {{ $data->name}}  {{$data->lastname}}
                                             </label>
-                                </div>
+                                    </div>
                         
                         </td>
                         <td>

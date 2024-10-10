@@ -16,7 +16,7 @@ If you disable the test, and if an image does not exist, it will display a 16x16
 
 ## FallBack Image
 
-If you disable the "Image Must Exist" test, you can specify a fallback image with the following method: 
+If you disable the "Image Must Exist" test, you can specify a fallback image with the following method:
 
 ```php
 $html2pdf->setFallbackImage($imageFilename);
@@ -53,6 +53,7 @@ You can specify your own debugger. It must implement `\Spipu\Html2Pdf\Debug\Debu
 $debug = new \Spipu\Html2Pdf\Debug\Debug();
 $html2pdf->setModeDebug($debug);
 ```
+
 ## Version
 
 You can get the current Html2Pdf version with the following methods:

@@ -14,6 +14,8 @@ return [
     */
 
     'default' => env('MAIL_MAILER', 'smtp'),
+   // 'default' => env('MAIL_MAILER', 'sendmail'),
+   // 'driver' => env('MAIL_DRIVER', 'sendmail'),
 
     /*
     |--------------------------------------------------------------------------
@@ -36,9 +38,9 @@ return [
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
-            'port' => env('MAIL_PORT', 587),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'host' => env('MAIL_HOST', 'smtp.ionos.fr'),
+            'port' => env('MAIL_PORT', 465),
+            'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
@@ -59,7 +61,8 @@ return [
 
         'sendmail' => [
             'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+            'path' => env('MAIL_SENDMAIL_PATH',  'C:/wamp64/sendmail/sendmail.exe -t -i'),
+           
         ],
 
         'log' => [
@@ -94,6 +97,14 @@ return [
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
+    ],
+   
+    'stream' => [
+        'ssl' => [
+            'allow_self_signed' => true,
+            'verify_peer'       => false,
+            'verify_peer_name'  => false,
+        ],
     ],
 
     /*

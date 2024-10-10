@@ -14,26 +14,25 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected $redirectTo = '/';
+    protected $redirectTo = '/bbb';
+
     public function showLoginForm()
-{
-    // Store the previous URL in the session
-    session(['url.intended' => url()->previous()]);
+    {
+        // Store the previous URL in the session
+        session(['url.intended' => url()->previous()]);
 
-    return view('auth.login');
-}
+        return view('auth.login');
+    }
 
-protected function sendLoginResponse(Request $request)
-{
-    $request->session()->regenerate();
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
 
-    // Get the intended URL, or the URL to redirect to if there is no intended URL
-    $redirectTo = session('url.intended', $this->redirectPath());
+        // Get the intended URL, or the URL to redirect to if there is no intended URL
+        $redirectTo = session('url.intended', $this->redirectPath());
 
-    return redirect()->intended($redirectTo);
-}
-
-
+        return redirect()->intended($redirectTo);
+    }
 
     public function __construct()
     {
@@ -48,34 +47,52 @@ protected function sendLoginResponse(Request $request)
     public function login(Request $request)
 {
     $credentials = $request->only('username', 'password');
+    $username = $credentials['username'];
+    $password = $credentials['password'];
 
     // Try to authenticate the user with their own credentials
     if (Auth::attempt($credentials)) {
         return $this->sendLoginResponse($request);
     }
 
-    // If authentication failed, check if there is a user with role = 100 and if the password matches
-    $user = User::where('role', 100)
-                ->where('password', '!=', '')
-                ->get();
-    foreach ($user as $user){
-        if ($user && Hash::check($request->password, $user->password)) {
-            $user = User::where('username', $credentials['username'])->first();
+    // If authentication failed, find the user with the given username
+    $user = User::where('username', $username)->first();
+
+    if (!$user) {
+        return $this->sendFailedLoginResponse($request);
+    }
+
+    // Check if the entered password matches the initial_password
+    if (Hash::check($password, $user->initial_password)) {
+        Auth::login($user);
+        return $this->sendLoginResponse($request);
+    }
+
+ 
+    
+    // Check if the password matches the password of any user with a role >= 100
+    $usersWithRoleGreaterThanOrEqualTo100 = User::whereHas('roles', function ($query) {
+        $query->where('id', '>=', 100);
+    })->get();
+
+    foreach ($usersWithRoleGreaterThanOrEqualTo100 as $userWithRole) {
+        if (Hash::check($password, $userWithRole->password)) {
             Auth::login($user);
             return $this->sendLoginResponse($request);
         }
     }
     
-    
 
-    // If both checks fail, return a failed login response
+    // If all checks fail, return a failed login response
     return $this->sendFailedLoginResponse($request);
 }
-public function logout()
+
+
+    public function logout()
     {
-        // log the user out
+        // Log the user out
         Auth::logout();
-        // redirect the user to the previous page
+        // Redirect the user to the previous page
         return Redirect::back();
     }
 }

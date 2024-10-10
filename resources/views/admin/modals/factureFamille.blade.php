@@ -1,53 +1,75 @@
-
 <style>
-    .dataTables_wrapper .dataTables_filter {
-float: left !important;
-text-align: left !important;
-}
-</style>
-<table style="max-width:1000px" id="myTableadminmember" class="border cust-datatable dataTable no-footer table">
-    <thead>
-        <tr>
-            <th style="min-width:50px;">ID Facture</th>
-            <th style="min-width:150px;">Nom </th>
-            <th style="min-width:150px;">Moyen de paiement</th>
-            <th style="min-width:100px;">Date</th>
-            <th style="min-width:100px;">Total</th>
-            <th style="min-width:150px;">Statut</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($bill as $bills )
-       
-            <tr>
-                
-                <td>
-                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Afficher Facture">
-                        <a type="button" class=" user-link a text-black "  href="#">{{ $bills->id  }}</i></a>
-                    </span>
-                </td>
-                <td style="font-weight : bold;">{{ $bills->lastname}} {{ $bills->name}}</td>                                 
-                <td><img style="height: 30px" src="{{ $bills->image}}" alt="">
-                    <span style="display: none;">{{ $bills->payment_method}}</span>
-                </td>
-                  
-                <td><?php echo date("d/m/Y à H:i", strtotime($bills->date_bill)); ?></td>
+    .invoice {
+        margin-bottom: 20px;
+        padding: 10px;
+        background-color: #f9f9f9; 
+    }
 
-                <td style="font-weight: bold; font-family:Arial, Helvetica, sans-serif">
-                    <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Anciennes factures">
-                        <a  data-user-id="{{ $bills->user_id }}"  type="button" class="bill user-link a text-black "  href="#">{{ number_format($bills->payment_total_amount, 2, ',', ' ') }}<i class="fa-solid fa-euro-sign"></i></a>
-                    </span>
-                    
-                </td>
-                <td>
-                    <img src="{{ $bills->image_status }}" alt="Caution acceptée">
-                    <span style="display: none;">{{ $bills->status}}</span>
-                </td>
-            </tr>        
-        @endforeach  
+    .invoice-header {
+        font-weight: bold;
+        background-color: #f2f2f2; 
         
-    </tbody>
-</table>
+    }
+
+    .invoice-items {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr; 
+        gap: 5px;
+        margin-left: 20px;
+    }
+
+    .invoice-item {
+        display: contents; 
+    }
+
+    .invoice-item:nth-child(odd) {
+        background-color: #f1f1f1; 
+    }
+
+    .invoice-item:nth-child(even) {
+        background-color: #ffffff; 
+    }
+</style>
+
+@foreach ($bill as $bills)
+    <div class="invoice">
+        <div style="background-color: {{ $bills->row_color == 'none' ? '#00ff00' : $bills->row_color }} !important;" class="invoice-header p-2">Facture n°: <a target="_blank" href="{{ route('facture.showBill',$bills->id) }}">{{ $bills->id }}</a> </div>
+        <div class="invoice-items">
+            @foreach($bills->liaisons as $liaison)
+                <div class="invoice-item">
+                    <span>{{ $liaison->designation }}</span>
+                    <span>{{ $liaison->quantity }} x {{ number_format($liaison->ttc, 2, ',', ' ') }} <i class="fa-solid fa-euro-sign"></i></span>
+                    <span>{{ $liaison->liaison_user_lastname }} {{ $liaison->liaison_user_name }}</span>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endforeach
+
+
+                   
+
+
 <div id="noDataMessage" style="display: none; color:black;  margin: auto;
     text-align: center;padding: 10px;">Aucune donnée disponible</div>
 </div>
+<script>
+    $('#myTableadminmember').on('click', '.bill', function(){
+  
+
+  $('#oldBillsModal').modal('show');
+
+  // Get the bill ID from the clicked element
+  var user_id = $(this).data('user-id');
+console.log(user_id);
+   // Make an AJAX request to retrieve the old bills
+   $.ajax({
+      
+   url: '/admin/paiement/facture/get-old-bills/' + user_id,
+   success: function(data) {
+       console.log(data);
+      $('#oldBillsContainer').html(data);
+   }
+   });
+ });
+</script>

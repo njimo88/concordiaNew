@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Category;
 
 class A_Blog_Post extends Model
 {
@@ -20,10 +21,8 @@ class A_Blog_Post extends Model
         'date_post', 
         'titre',
         'contenu', 
-        'categorie1',
-        'categorie2',
+        'categorie',
         'status',
-        'post_url Index',
         'id_user',
         'id_last_editor',
         'highlighted',
@@ -31,4 +30,12 @@ class A_Blog_Post extends Model
         'private'
 
     ];
+
+    public function getCategoriesAttribute()
+    {
+        $categoryIds = json_decode($this->categorie, true);
+        return $categoryIds ? Category::whereIn('id_categorie', $categoryIds)->get() : collect();
+    }
+
+
 }

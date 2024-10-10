@@ -11,24 +11,23 @@ use App\Models\rooms;
 use App\Models\shop_article_0;
 use App\Models\shop_article_1;
 use App\Models\shop_article_2;
+use App\Models\Parametre;
+use App\Models\Declinaison;
 use Illuminate\Http\Request;
-require_once('../app/fonction.php');
+require_once(app_path().'/fonction.php');
 class Article_Controller extends Controller
 
 {
-    // Page d'affichages de la data table d'articles
+
     public function index(Request $request){
         $S_active = saison_active();
-        $saison = $request->input('saison');
-       
-         $saison_list = Shop_article::select('saison')->distinct('name')->get();
-         $requete_article = Shop_article::where('saison',$S_active)->paginate(50) ;
-
-         $requete_article_pick = Shop_article::where('saison',  $saison)->paginate(50) ;
-
-        
-
-        return view('Articles/MainPage_article',compact('requete_article','saison_list','saison','requete_article_pick'))->with('user', auth()->user()) ;
+        $saison = $request->input('saison');    
+        $saison_list = Shop_article::select('saison')->distinct('name')->get();
+        $requete_article = Shop_article::where('saison',$S_active)->get() ;
+        $requete_article_pick = Shop_article::where('saison',  $saison)->get() ;
+        return view('Articles/MainPage_article',
+        compact('requete_article','saison_list','saison','requete_article_pick'))
+        ->with('user', auth()->user()) ;
     }
 
     function index_include(Request $request){
@@ -40,19 +39,6 @@ class Article_Controller extends Controller
 
     
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public function TESTSAISON(Request $request){
         $la_saison =  $request->saison ;
@@ -164,10 +150,6 @@ class Article_Controller extends Controller
             'prix_adhesion'  =>    'required|numeric|gt:0',
             'prix_assurance'  =>   'required|numeric|gt:0',
             'prix_licence_fede' =>  'required|numeric|gt:0',
-
-         
-           
-    
         ], $messages = [
             'title.required' => "Le champ titre est requis.",
             'title.max' => "Le titre ne doit pas dépasser 255 caractères.",
@@ -177,11 +159,8 @@ class Article_Controller extends Controller
             'ref.alpha' => "ref doit être une chaîne de caractères.",
             'agemin.required' => 'age minimum est requis.',
             'agemax.required' => 'age maximum est requis.',
-
         ]);
-    
-    
-   
+
         $article  = new Shop_article;
  
         $article->saison = $request->input('saison');
@@ -233,7 +212,7 @@ class Article_Controller extends Controller
         $article->categories =  json_encode($request->input('category'),JSON_NUMERIC_CHECK);
        
         $article->save();
-
+        
       
         // recupere l'id de l'article qu'on a juste cree
         $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
@@ -296,23 +275,6 @@ class Article_Controller extends Controller
 
         ]);
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
         $article  = new Shop_article;
  
         $article->saison = $request->input('saison');
@@ -403,50 +365,6 @@ class Article_Controller extends Controller
 
     public function inserer_article_produit(Request $request){
 
-        $validatedData = $request->validate( [
-            'saison' => 'required|numeric',
-            'title'  =>  ['required', 'alpha', 'max:255'],
-            'image'  =>  ['required', 'alpha', 'max:255'],
-             'ref'  =>  ['required', 'alpha', 'max:255'],
-            'startvalidity' => 'required|date',
-            'endvalidity'   => 'required|date',
-            'agemin' => 'required|numeric|gt:0',
-            'agemax' => 'required|numeric|gt:0',
-            'price' => 'required|numeric',
-            'price_indicative' => 'required|numeric',
-            'totalprice' => 'required|numeric',
-            'stock_ini'  =>    'required|numeric',
-            'stock_actuel' => 'required|numeric',
-            'alert_stock'  => 'required|numeric',
-
-            'max_per_user'      =>  'required|numeric|gt:0',
-            'short_description'  => ['required', 'alpha', 'max:255'],
-            'editor1'       =>  ['required', 'alpha', 'max:255'],
-
-           
-         
-           
-    
-        ], $messages = [
-            'title.required' => "Le champ titre est requis.",
-            'title.max' => "Le titre ne doit pas dépasser 255 caractères.",
-            'image.required' => "Le champ image est requis.",
-            'image.alpha' => "l'image doit être une chaîne de caractères.",
-            'ref.required' => "Le champ ref est requis.",
-            'ref.alpha' => "ref doit être une chaîne de caractères.",
-            'agemin.required' => 'age minimum est requis.',
-            'agemax.required' => 'age maximum est requis.',
-
-        ]);
-    
-
-
-
-
-
-
-
-      
         $article  = new Shop_article;
  
         $article->saison = $request->input('saison');
@@ -470,8 +388,8 @@ class Article_Controller extends Controller
         $article->alert_stock       = $request->input('alert_stock');
         $article->type_article      = $request->input('type_article');
         $article->max_per_user      = $request->input ('max_per_user');
-        $article->short_description = $request->input('short_description');
-        $article->description       = $request->input('editor1') ;
+        $article->short_description = $request->input('short_description') || '';
+        $article->description       = $request->input('editor1') || '';
 
        
         if($request->has('nouveaute')){
@@ -508,7 +426,7 @@ class Article_Controller extends Controller
         $requete_produit = new shop_article_2;
         $requete_produit->id_shop_article  =  $requete_article["id_shop_article"];
  
-        $requete_produit->declinaison = $request->input('Json_declinaison');
+        $requete_produit->declinaison = $request->input('Json_declinaison') || '[]'; 
        
 
         $requete_produit->save();
@@ -530,28 +448,29 @@ class Article_Controller extends Controller
             $requete_prof = User::select("*")->where('role','>', 29)->get();
 
 
-            $Shop_article  = Shop_article::where('id_shop_article', $id)->get();
+$Shop_article = Shop_article::where('id_shop_article', $id)->get();
 
             $shop_article_0 = shop_article_0::where('id_shop_article', $id)->get();
-            $Shop_article   = Shop_article::where('id_shop_article', $id)->get();
+            $shop_article  = Shop_article::where('id_shop_article', $id)->first();
+
             $shop_article_1 = shop_article_1::where('id_shop_article', $id)->get();
             $shop_article_2 = shop_article_2::where('id_shop_article', $id)->get();
 
-           if ($shop_article_0 ->count() == 1 ){
+           if ($shop_article->type_article == 0 ){
                 return view('Articles/article_0',compact('Shop_article','saison_list','shop_article_0','requete_cate','requete_prof','id_article'))->with('user', auth()->user()) ;
-           }elseif($shop_article_1->count() == 1 ){
+           }elseif($shop_article->type_article == 1 ){
+            
                 return view('Articles/article_1',compact('Shop_article','saison_list','shop_article_1','requete_cate','requete_prof','id_article','rooms'))->with('user', auth()->user()) ;
            }
-           elseif($shop_article_2->count() == 1 ){
-            
-            return view('Articles/article_2',compact('Shop_article', 'shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','id_article','Id','id_article'))->with('user', auth()->user()) ;
+           elseif($shop_article->type_article == 2 ){
+            $declinaisons = Declinaison::where('shop_article_id', $id)->get();
+            return view('Articles/article_2',compact('Shop_article', 'shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','id_article','Id','id_article','declinaisons'))->with('user', auth()->user()) ;
         }
            }
 
  // methode du POST pour effectuer la duplication          
 
            public function duplicate($id,Request $request){
-
             $requete_cate = Shop_category::get() ;
             $saison_list = Shop_article::select('saison')->distinct('name')->get();
             $requete_prof = User::select("*")->where('role','>', 29)->get();
@@ -563,6 +482,7 @@ class Article_Controller extends Controller
             $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
 
             $Shop_article  = Shop_article::where('id_shop_article', $id)->get();
+            $shop_article  = Shop_article::where('id_shop_article', $id)->first();
 
             $shop_article_0 = shop_article_0::where('id_shop_article', $id)->get();
            
@@ -571,30 +491,26 @@ class Article_Controller extends Controller
 
             // insertion des elements dans la BD table shop_article
             $article  = new Shop_article;
-            $article->id_shop_article =  $requete_article["id_shop_article"] + 1 ;
             $article->saison = $request->input('saison');
             $article->title  = $request->input('title');
             $article->image  = $request->input('image');
-            $article->ref    = $request->input('ref');
-            
+            $article->ref    = $request->input('ref');         
             $article->nouveaute = $request->input('nouveaute');
             $article->startvalidity = $request->input('startvalidity');
             $article->endvalidity = $request->input('endvalidity');
-            $article->need_member = $request->input('need_member'); 
-            
+            $article->need_member = $request->input('need_member');  
             $article->agemin           = $request->input('agemin');
             $article->agemax           = $request->input('agemax');
             $article->price            = $request->input('price');
             $article->price_indicative = $request->input('price_indicative');
-            $article->totalprice       = 10;
+            $article->totalprice       = $request->input('price');
             $article->stock_ini         = $request->input('stock_ini');
             $article->stock_actuel      = $request->input('stock_actuel');
             $article->alert_stock       = $request->input('alert_stock');
             $article->type_article      = $request->input('type_article');
             $article->max_per_user      = $request->input ('max_per_user');
-            $article->short_description = $request->input('short_description');
-            $article->description       = $request->input('editor1') ;
-    
+            $article->short_description = $request->short_description;
+            $article->description       = $request->input('editor1') || '';
             $article->afiscale = $request->input('afiscale');
             $article->sex_limit = $request->input('sex_limit');
             $article->selected_limit = $request->input('strict' );
@@ -602,7 +518,7 @@ class Article_Controller extends Controller
     
            $article->save();
 
-           if ($shop_article_0 ->count() == 1 ){
+           if ($shop_article->type_article == 0  ){
                         //----------------------------------------- inserer les infos dans la table member  --------------------------- //
                             
                             
@@ -626,103 +542,103 @@ class Article_Controller extends Controller
                             
                                         
 
-           }elseif($shop_article_1->count() == 1 ){
+           }elseif($shop_article->type_article == 1  ){
 
-                          // recupere l'id de l'article qu'on a juste cree
-                          $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
-                          //----------------------------------------- inserer les infos dans la table lesson  --------------------------- //
-                          
+                $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();                
+        
+                $requete_lesson =  new shop_article_1 ;
+
+                if(isset($request->room) and isset($request->enddate) and  isset($request->startdate)){
+                    $lesson_tab  = json_encode( array( 
                     
-                            $requete_lesson =  new shop_article_1 ;
-
-                            if(isset($request->room) and isset($request->enddate) and  isset($request->startdate)){
-                                $lesson_tab  = json_encode( array( 
-                                
-                                    "room" => $request->input('room'), 
-                                    "start_date" =>  $request->input('startdate'), 
-                                    "end_date" =>   $request->input('enddate')
-                                
-                                ),JSON_NUMERIC_CHECK);
-
-                                $requete_lesson->save();
-
-                            }
-                        
-    
-
-                            $stock_ini_tab = json_encode( array("stock_ini" => (array)(int)$request->input('stock_ini')) );
-                            $stock_actuel_tab = json_encode( array("stock_actuel" => (array)(int)$request->input('stock_actuel')) );
-                            $lesson_tab  = json_encode( array( 
-                            
-                                "room" => $request->input('room'), 
-                                "start_date" =>  $request->input('startdate'), 
-                                "end_date" =>   $request->input('enddate')
-                            
-                            ),JSON_NUMERIC_CHECK);
+                        "room" => $request->input('room'), 
+                        "start_date" =>  $request->input('startdate'), 
+                        "end_date" =>   $request->input('enddate')
                     
-                           
+                    ),JSON_NUMERIC_CHECK);
+
+                    $requete_lesson->save();
+
+                }
+            
 
 
-                            $teacher_tab =  json_encode( $request->input('prof'),JSON_NUMERIC_CHECK );
-                         
-                     
+                $stock_ini_tab = json_encode( array("stock_ini" => (array)(int)$request->input('stock_ini')) );
+                $stock_actuel_tab = json_encode( array("stock_actuel" => (array)(int)$request->input('stock_actuel')) );
+                $lesson_tab  = json_encode( array( 
+                
+                    "room" => $request->input('room'), 
+                    "start_date" =>  $request->input('startdate'), 
+                    "end_date" =>   $request->input('enddate')
+                
+                ),JSON_NUMERIC_CHECK);
+        
+                
+
+
+                $teacher_tab =  json_encode( $request->input('prof'),JSON_NUMERIC_CHECK );
+                
+            
 
 
 
-                            $requete_lesson->id_shop_article  =  $requete_article["id_shop_article"];
+                $requete_lesson->id_shop_article  =  $requete_article["id_shop_article"];
 
 
-                            $requete_lesson->stock_ini           =   $stock_ini_tab ;
-                            $requete_lesson->stock_actuel        =    $stock_actuel_tab;
-                            $requete_lesson->teacher             =    $teacher_tab ;
-                            $requete_lesson->lesson              =  $request->input('json') ;
+                $requete_lesson->stock_ini           =   $stock_ini_tab ;
+                $requete_lesson->stock_actuel        =    $stock_actuel_tab;
+                $requete_lesson->teacher             =    $teacher_tab ;
+                $requete_lesson->lesson              =  $request->input('json') ;
 
-                            $requete_lesson->save();
-
-
+                $requete_lesson->save();
 
 
-                        
-             return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+
+
+            
+    return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
 
                            
                               
                 
                             
            }
-           elseif($shop_article_2->count() == 1 ){
+           elseif($shop_article->type_article == 2 ) {
+    // The new article ID will be $article->id after saving.
+    $newArticleId = $article->id_shop_article;
+    // on appelle le modele shop_article_2 = produit
+    $requete_produit = new shop_article_2;
 
-                $requete_article = Shop_article::select('id_shop_article')->orderBy('created_at', 'desc')->first();
-            
-                    // on appelle le modele shop_article_2 = produit
-                $requete_produit = new shop_article_2 ;
+    if(isset($request->editor1)){
+        $article->description = $request->editor1;
+        $article->save();
+    }
 
-                if(isset($request->Json_declinaison)){
-                    $requete_produit->declinaison = $request->input('Json_declinaison');
-                    $requete_produit->save();
-                }
-                if(isset($request->editor1)){
-
-                    $article->description = $request->editor1;
-                    $article->save();
-                }
+    $requete_produit->id_shop_article = $newArticleId; 
+    $requete_produit->declinaison = $request->input('declinaison') ? $request->input('declinaison') : '[]'; // '[]' est une chaîne vide JSON valide
 
 
-                $requete_produit->id_shop_article = $requete_article["id_shop_article"]; 
+    $requete_produit->save();
+    
+    // Fetch the declinations for the original article.
+    $originalDeclinaisons = Declinaison::where('shop_article_id', $id)->get();
 
-               // $requete_declinaison =  shop_article_2::select('declinaison')->where('id_shop_article',$id)->get();
-              
-                $requete_produit->declinaison = $request->input('thejson') ;
+    // Loop through each declination and duplicate it for the new article.
+    foreach ($originalDeclinaisons as $declinaison) {
+        $newDeclinaison = new Declinaison();
+        $newDeclinaison->shop_article_id = $newArticleId;
+        $newDeclinaison->libelle = $declinaison->libelle;
+        $newDeclinaison->stock_ini_d = $declinaison->stock_ini_d;
+        $newDeclinaison->stock_actuel_d = $declinaison->stock_actuel_d;
+        $newDeclinaison->save();
+    }
 
-                $requete_produit->save();
-        
+    $article->updateInitialStock();
 
 
-            return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+    return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+}
 
-          
-        
-        }
 
 
 
@@ -734,18 +650,26 @@ class Article_Controller extends Controller
 
 // SUPPRESSION D'ARTICLES
 
-    public function delete($id)
-    {
-        
-        $Shop_article = Shop_article::where('id_shop_article', $id)->delete();
-        $shop_article_1 = shop_article_1::where('id_shop_article', $id)->delete();
-        $shop_article_0 = shop_article_0::where('id_shop_article', $id)->delete();
-        $shop_article_2 = shop_article_2::where('id_shop_article', $id)->delete();
-      
-      //  return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
-      return redirect()->back()->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
-
+public function delete($id)
+{
+    // Check if the article is of type 2 and has associated declinaisons
+    $shop_article_2 = shop_article_2::find($id);
+    if ($shop_article_2) {
+        // Delete the associated declinaisons
+        Declinaison::where('shop_article_id', $id)->delete();
     }
+    
+    // Delete other related records
+    $Shop_article = Shop_article::where('id_shop_article', $id)->delete();
+    $shop_article_1 = shop_article_1::where('id_shop_article', $id)->delete();
+    $shop_article_0 = shop_article_0::where('id_shop_article', $id)->delete();
+    if ($shop_article_2) {
+        $shop_article_2->delete();
+    }
+
+    return redirect()->back()->with('user', auth()->user())->with('success', 'article a été supprimé avec succès');
+}
+
 
 
 
@@ -757,20 +681,69 @@ class Article_Controller extends Controller
         $requete_cate = Shop_category::get() ;
 
         $requete_prof = User::select("*")->where('role','>', 29)->get();
-        $rooms = rooms::get();
+        $rooms = rooms::orderBy('name', 'asc')->get();
 
-        $saison_list = Shop_article::select('saison')->distinct('name')->get();
+
+        $saison_list = Parametre::select('saison')->distinct('name')->get();
 
         $Shop_article = Shop_article::where('id_shop_article', $id)->get();
         $shop_article_1 = shop_article_1::where('id_shop_article', $id)->get();
         $shop_article_0 = shop_article_0::where('id_shop_article', $id)->get();
         $shop_article_2 = shop_article_2::where('id_shop_article', $id)->get();
-     
         
+        $parametre = Parametre::where('activate', 1)->first();
+
+        // Récupérer les articles correspondants
+        $articleLicence1 = Shop_article::find($parametre->articles_licence1);
+        $articleLicence2 = Shop_article::find($parametre->articles_licence2);
+        $articleLicence3 = Shop_article::find($parametre->articles_licence3);
+        $articleLicence4 = Shop_article::find($parametre->articles_licence4);
+
+        $declinaisons = Declinaison::where('shop_article_id', $id)->get();
+
     
-        return view('Articles/edit_index',compact('Shop_article','shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','Id','rooms'))->with('user', auth()->user());
+        return view('Articles/edit_index',compact('Shop_article','articleLicence1','articleLicence2','articleLicence3','articleLicence4','parametre','shop_article_1','shop_article_0','shop_article_2','requete_cate','saison_list','requete_prof','Id','rooms', 'declinaisons'))->with('user', auth()->user()) ;
 
     }
+
+    public function updateLesson(Request $request)
+    {
+        $shopArticleId = $request->input('shop_article_id');
+        $lessonIndex = $request->input('lesson_index');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $startTime = $request->input('start_time');
+        $endTime = $request->input('end_time');
+        $room = $request->input('room');
+    
+        // Récupérer le shop article correspondant
+        $shopArticle = shop_article_1::find($shopArticleId);
+        if ($shopArticle) {
+            $lessons = json_decode($shopArticle->lesson, true);
+    
+            // Mettre à jour les informations de la séance
+            if (isset($lessons['start_date'][$lessonIndex])) {
+                $lessons['start_date'][$lessonIndex] = $startDate . ' ' . $startTime;
+            }
+    
+            if (isset($lessons['end_date'][$lessonIndex])) {
+                $lessons['end_date'][$lessonIndex] = $endDate . ' ' . $endTime;
+            }
+    
+            if (isset($lessons['room'][$lessonIndex])) {
+                $lessons['room'][$lessonIndex] = $room;
+            }
+    
+            // Mettre à jour la colonne "lesson" dans la base de données
+            $shopArticle->lesson = json_encode($lessons);
+            $shopArticle->save();
+    
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['success' => false, 'message' => 'Shop article not found']);
+    }
+    
 
        //Modification des articles
     public function edit(Request $request, $id){
@@ -778,6 +751,7 @@ class Article_Controller extends Controller
           // $article= Shop_article::where('id_shop_article', $id)->firstOrFail(); apparemment, la fonction firstorfail force a utiliser id comme primary key
             $article= Shop_article::find($id); 
             $article->update($request->all());
+            $id_article = $article->id_shop_article;
             $article_2 = shop_article_2::find($id);    
             $article_1 = shop_article_1::find($id);
             $article_0 = shop_article_0::find($id);
@@ -817,19 +791,27 @@ class Article_Controller extends Controller
                                 if(isset($request->category)){
                                  
                                     $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
-                                   
+                                    
                                     $article->save();  
+                                    updateArticleCategories($id_article, $request->category);
+                                    updateTotalPrice($article);
+
                                 }
 
                               
 
                              
-                                $article_0->update($request->all()); 
+                                if($article_0) { 
+                                    $article_0->update($request->all()); 
+                                }
+                                
  
                               
                                
 
            }elseif($type_article == 1){
+                            
+            
 
                                 if(isset($request->editor1)){
 
@@ -863,7 +845,9 @@ class Article_Controller extends Controller
                                 
                                     $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
                                 
-                                    $article->save();  
+                                    $article->save(); 
+                                    updateArticleCategories($id_article, $request->category); 
+                                    updateTotalPrice($article);
                                 }
 
 
@@ -899,10 +883,28 @@ class Article_Controller extends Controller
 
                              
 
-
                                 
-                                $article_1->update($request->all());
-                                            
+                             if($article_1) { 
+                                $article_1->update($request->all()); 
+                            }
+                            
+                                if(shop_article_1::hasMultipleTeachers($id_article)) {
+                                    $article->image = '/uploads/users/froze/multiple_teachers_image.png';
+                                    $article->save();
+                                } else {
+                                    $article1 =  shop_article_1::find($id_article);
+                                    $teachers = json_decode($article1->teacher, true);
+                                    $teacherId = $teachers[0]; 
+                                    $teacher = User::find($teacherId); 
+                                
+                                    if($teacher && $teacher->image) {
+                                        $article->image = asset($teacher->image);
+                                        $article->save(); 
+                                    } else {
+                                        $article->image = asset('assets/images/default_teacher_image.png'); 
+                                        $article->save(); 
+                                    }
+                                }
 
 
 
@@ -939,8 +941,10 @@ class Article_Controller extends Controller
                                     if(isset($request->category)){
                                     
                                         $article->categories =  json_encode($request->category,JSON_NUMERIC_CHECK);
-                                    
-                                        $article->save();  
+                                        $article->save(); 
+                                        updateArticleCategories($id_article, $request->category);
+                                         
+                                        updateTotalPrice($article);
                                     }
 
                                     if($request->has('sex_limit')){
@@ -954,8 +958,9 @@ class Article_Controller extends Controller
 
 
 
-                                            
-                                    $article_2->update($request->all());
+                                            if($article_2){
+                                                $article_2->update($request->all());
+                                            }
                             
 
            }
@@ -1043,9 +1048,6 @@ public function upload(Request $request)
 
 
 }
-
-
-
 
 
 

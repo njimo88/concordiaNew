@@ -163,7 +163,12 @@ function ColorFont ( $datedujour )
 function AfficheMois ( $mois , $annee , $user_id )
 {
 
-	$sql = new mysqli('db566489223.db.1and1.com', 'dbo566489223', 'mickmickmath', 'db566489223');
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "test2";
+	
+	$sql = new mysqli($servername, $username, $password, $dbname);
 
 	//mysqli_query("SET NAMES UTF8");
 
@@ -327,7 +332,12 @@ function AfficheMois ( $mois , $annee , $user_id )
 
 function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
 {
-	$sql = new mysqli('db566489223.db.1and1.com', 'dbo566489223', 'mickmickmath', 'db566489223');
+	$servername = "localhost";
+	$username = "root";
+	$password = "";
+	$dbname = "test2";
+	
+	$sql = new mysqli($servername, $username, $password, $dbname);
 
 	//mysqli_query("SET NAMES UTF8");
 
@@ -451,8 +461,8 @@ function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
 					$colorchecked = 'transparent' ;
 					if (JourFerie(mktime(0,0,0,$mois,$i,$annee))) { $readonly = ' readonly ' ; $colorchecked ='#FF4500' ; } ;
 
-					$congeschecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-vide.png" width="16">' ; if ($NbCongesextrait[$i] == "TRUE") { $congeschecked = '<img src="../assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#77B5FE' ; } ;
-					$maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-vide.png" width="16">' ; if ($NbMaladieextrait[$i] == "TRUE") { $maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#FD6C9E' ; } ;
+					$congeschecked = '<img src="../assets/imgs/icon/case-vide.png" width="16">' ; if ($NbCongesextrait[$i] == "TRUE") { $congeschecked = '<img src="../assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#77B5FE' ; } ;
+					$maladiechecked = '<img src="../assets/imgs/icon/case-vide.png" width="16">' ; if ($NbMaladieextrait[$i] == "TRUE") { $maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#FD6C9E' ; } ;
 
 					$resultatpdfrenvoye .= '
 					<tr bgcolor="'.ColorFont(mktime(0,0,0,$mois,$i,$annee)).'"  height="20px">
@@ -487,7 +497,7 @@ function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
 				$resultatrenvoye .= '<input type="hidden" name="user[2]" value="'.$user['Email'].'">' ;
 
 				$resultatrenvoye .= '<div align="center"><table border="5px" width="80%><tbody align="left"><tr><td>' ;
-				$resultatrenvoye .= '<table align="center"><tbody><tr><td bgcolor="#FF0000" color="white"><h1>Validez-vous cette déclaration d\'heures pour '.$Moislettres[$mois].' '.$annee.' ?&nbsp;</h1></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input size="100%" type="hidden" name="valeurpdf" value="'.htmlentities($resultatpdfrenvoye, ENT_QUOTES, "UTF-8").'"><input type="submit" name="Statut" value="Valider">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="Statut" value="Annuler"></td></tr></tbody></table><hr>' ;
+				$resultatrenvoye .= '<table align="center"><tbody><tr><td bgcolor="#FF0000" color="white"><h4>Validez-vous cette déclaration d\'heures pour '.$Moislettres[$mois].' '.$annee.' ?&nbsp;</h4></td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input size="100%" type="hidden" name="valeurpdf" value="'.htmlentities($resultatpdfrenvoye, ENT_QUOTES, "UTF-8").'"><input type="submit" name="Statut" value="Valider">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="Statut" value="Annuler"></td></tr></tbody></table><hr>' ;
 
 				/* $resultatrenvoye .= '<h1>'.$NomEmploye.' '.$PrenomEmploye.'</h1>' ;
 				$resultatrenvoye .= '<h3>Saison '.$saison.'-'.$saisonplusun.' : Du 1er Août '.$saison.' au 31 Juillet '.$saisonplusun.'</h3>' ;
@@ -538,8 +548,8 @@ function AfficheMois_valide ( $mois , $annee , $user_id , $valeurpdf)
 					$colorchecked = 'transparent' ;
 					if (JourFerie(mktime(0,0,0,$mois,$i,$annee))) { $readonly = ' readonly ' ; $colorchecked ='#FF4500' ; } ;
 
-					$congeschecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-vide.png" width="16">' ; if ($NbCongesextrait[$i] == "TRUE") { $congeschecked = '<img src="../assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#77B5FE' ; } ;
-					$maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-vide.png" width="16">' ; if ($NbMaladieextrait[$i] == "TRUE") { $maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#FD6C9E' ; } ;
+					$congeschecked = '<img src="../assets/imgs/icon/case-vide.png" width="16">' ; if ($NbCongesextrait[$i] == "TRUE") { $congeschecked = '<img src="../assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#77B5FE' ; } ;
+					$maladiechecked = '<img src="../assets/imgs/icon/case-vide.png" width="16">' ; if ($NbMaladieextrait[$i] == "TRUE") { $maladiechecked = '<img src="https://www.gym-concordia.com/assets/imgs/icon/case-cochee.png" width="16">' ; $colorchecked = '#FD6C9E' ; } ;
 
 					$resultatrenvoye .= '
 					<tr bgcolor="'.ColorFont(mktime(0,0,0,$mois,$i,$annee)).'"  height="20px">

@@ -37,7 +37,11 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\CheckFirstLoginOfDay::class,
+            \App\Http\Middleware\MaintenanceMode::class,
+           
+           
         ],
+
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
@@ -65,5 +69,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'role' => \App\Http\Middleware\EnsureUserHasRole::class,
+        'visitor.counter' => \App\Http\Middleware\VisitorCounter::class,
+       'PageCounterMiddleware' => \App\Http\Middleware\PageCounterMiddleware::class
     ];
 }

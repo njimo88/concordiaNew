@@ -1,14 +1,39 @@
 @extends('layouts.app')
 
 @section('content')
-<main id="main" class="main" class="mt-0" style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height: 100vh;">
+<style>
+  @media (min-width: 1600px) {
+  .container {
+    max-width: 1500px !important;
+  }
+}
+.breadcrumb-item a {
+    color: black;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+
+
+</style>
+<main id="main" class="main pt-3" class="mt-0" style="background-image: url('{{asset("/assets/images/background.png")}}'); min-height: 100vh;">
   
+  @if($messageContent)
+      <div style="background-color: #fefefe" class="container mb-3 p-3 border rounded">
+          <div class="row">
+              <div class="col-12">
+                  <!-- Affichez le contenu du champ Message -->
+                  {!! $messageContent !!}
+              </div>
+          </div>
+      </div>
+      @endif
 
   <div class="container">
     
 
     
-<section style="padding-top:40px !important" id="portfolio" class="border border-dark portfolio sections-bg row ">
+<section id="portfolio" class="border border-dark portfolio sections-bg row py-3">
       <div class=" container" data-aos="fade-up">
         @php $memory = 0 ; @endphp 
     <nav aria-label="breadcrumb">
@@ -57,10 +82,11 @@
           
       </nav>
       <hr>
-        <div class="section-header">
-          <h2> {{$info2->name}}</h2>
-          <p>{!!$info2->description!!}</p>
+        
+        <div class="widget-title col-12 d-flex justify-content-start align-items-center">
+          <span>{{ $info2->name }}</span>
         </div>
+        <div class="px-2"><p class="px-3">{!!$info2->description!!}</p></div>
 
         <div class="portfolio-isotope" data-portfolio-filter="*" data-portfolio-layout="masonry" data-portfolio-sort="original-order" data-aos="fade-up" data-aos-delay="100">
 
@@ -79,7 +105,8 @@
              
                 <a href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" ><img style="width: 100% !important;" src="{{ $data->image }}" class="img-fluid" alt=""></a>
                 <div class="portfolio-info d-flex justify-content-center">
-                  <h5 class="d-flex justify-content-center"><a style="text-align:center !important" href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" title="More Details"> {{ $data->name}}</a></h5>
+                  <h5 class="d-flex justify-content-center"><a style="text-align:center !important; color: darkblue;" href="{{ route('sous_categorie', ['id' =>  $data->id_shop_category]) }}" title="More Details"> {{ $data->name}}</a></h5>
+
                 
                 </div>
               </div>
@@ -95,18 +122,18 @@
 
       </div>
     </section><!-- End Portfolio Section -->
+  </section>
+    
+</section>
 
+    </div>
     @if( $display_product == TRUE )
                          <p>  @include('A_Shop_Affichage_Article') </p>
                           
                     @endif
        
      
-    </section>
     
-  </section>
-
-      </div>
-    </main>
+                  </main>
 
 @endsection

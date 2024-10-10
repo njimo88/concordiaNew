@@ -1,12 +1,13 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+<link rel="icon" href="{{ asset('assets/images/favicon.png') }}" type="image/x-icon">
+
     <title>Dashboard - Admin </title>
     <meta name="robots" content="noindex, nofollow">
     <meta content="" name="description">
     <meta content="" name="keywords">
-    
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{asset('assetsAdmin/css/bootstrap-icons.css')}}" rel="stylesheet">
     <link href="{{asset('assetsAdmin/css/boxicons.min.css')}}" rel="stylesheet">
     <link href="{{asset('assetsAdmin/css/quill.snow.css')}}" rel="stylesheet">

@@ -2,10 +2,27 @@
 
 @section('content')
 <main id="main" class="main">
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+<style>
+    .btn-close {
+  background-size: 72%;
+  align-self: end;
+}
+</style>
     <div style="--bs-modal-width: 80vw !important; height: 95vh !important;" class="modal fade " id="editusermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content" id="editusermodalContainer">
                 
+            <div class="modal-content d-flex justify-content-center" id="editusermodalContainer">
+                <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
+
             </div>
         </div>
            
@@ -13,15 +30,6 @@
             
     
 
-    <div class="modal fade " id="deleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-notify modal-info" role="document">
-            <!--Content-->
-            <div class="modal-content text-center" id="deleteUserContainer">
-
-            </div>
-            <!--/.Content-->
-          </div>
-    </div>
 
     <div class="modal fade " id="Resetpass" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-notify modal-info" role="document">
@@ -32,12 +40,9 @@
           </div>
     </div>
        
-
-
-    <!-- ---- modal famille facture ---- -->
-    <div style="--bs-modal-width: 80vw !important; height: 95vh !important; overflow-y: auto;" class="modal fade " id="factureFamille" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div style="--bs-modal-width: 1000px !important; z-index: 1000000 !important;" class="modal fade " id="oldBillsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered " role="document">
-            <div class="modal-content">
+            <div class="modal-content p-3">
               <!--Body-->
                 <section class="section">
                     <div class="row">
@@ -49,7 +54,35 @@
                                         <div class="text-center pt-3 pb-2">
                                             <img style="width: 100px" src="{{ asset('assets\images\family.png') }}"
                                                 alt="Check" width="60">
-                                            <h2 class="my-4">Factures Famille</h2>
+                                            <h2 class="my-4">Anciennes Factures </h2>
+                                            </div>
+                                    </div>
+                                    <div  class="row modal-body overflow-x" id="oldBillsContainer">
+                                        <!-- content -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+           </div>
+      </div>
+    </div>
+
+    <!-- ---- modal famille facture ---- -->
+    <div style="--bs-modal-width: 55vw !important; height: 80vh !important; overflow-y: auto;" class="modal fade " id="factureFamille" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+              <!--Body-->
+                <section class="section">
+                    <div class="row">
+                        <div class="col-12 main-datatable" style="padding-right: calc(var(--bs-gutter-x) * .0) ; padding-left: calc(var(--bs-gutter-x) * .0);">
+                            <div class="card_body">
+                                <div class="row d-flex">
+                                    <!-- Button trigger modal -->
+                                    <div class="col-12 add_flex justify-content-center mt-4">
+                                        <div class="text-start pt-3 pb-2">
+                                            <h1 class="my-4">Factures Famille</h1>
                                             </div>
                                     </div>
                                     <div  class="row modal-body overflow-x" id="familyBillsContainer">
@@ -93,7 +126,16 @@
            </div>
       </div>
     </div>
+   
+    <div class="modal fade " id="deleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-notify modal-info" role="document">
+            <!--Content-->
+            <div class="modal-content text-center" id="deleteUserContainer">
 
+            </div>
+            <!--/.Content-->
+          </div>
+    </div>
 
 
     <div class="pagetitle">
@@ -117,10 +159,13 @@
                                     {{ session('success') }}
                                 </div>
                         @endif
+                        <div class="col-6 form-group  ">
+                            <input type="text" id="search" class="form-control" placeholder="Rechercher">
+                        </div>
                         <!-- Button trigger modal -->
                         @if (auth()->user()->roles->supprimer_edit_ajout_user)
-                            <div class="col-6 form-group mt-3 ">
-                                <button data-toggle="modal" data-target="#addMember" type="button"  class="m-0 user-link btn btn-primary">Ajouter un user <i class="mx-2 fa-solid fa-plus"></i></button>
+                            <div class="col-6 form-group mt-3 d-flex justify-content-end">
+                                <button data-toggle="modal" data-target="#addMember" type="button"  class="m-0 user-link btn btn-primary">Ajouter un membre <i class="mx-2 fa-solid fa-plus"></i></button>
                             </div>
                         @endif
                         
@@ -132,69 +177,30 @@
                               </div>
                             </div>
                           </div>
-                    </div>
-                    <div class="overflow-x">
-                        <table style="width:100%;" id="myTableMembers" class="table cust-datatable dataTable no-footer border">
-                            <thead>
-                                <tr>
-                                    <th class="border">username</th>
-                                    <th class="border">Nom Prénom</th>
-                                    <th class="border">Téléphone</th>
-                                    <th class="border">D Naissance</th>
-                                    <th class="border">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               
-                               
-                                @foreach ($n_users as $n_users)
+                          <div class="overflow-x">
+                            <table style="width:100%;" id="myTableMembers" class="table cust-datatable dataTable no-footer border">
+                                <thead>
                                     <tr>
-                                        <td style="width:200px">{{ $n_users->username }}</td>
-                                        <td style="font-weight : bold;width:200px;">
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Editer le profil">
-                                                <a data-user-id="{{ $n_users->user_id }}"  type="button" class="editusermodal user-link a text-black "  href="#">{{ $n_users->name }} {{ $n_users->lastname }}</a>
-                                            </span>
-                                        </td>
-                                        <!-- Modal -->
-                                                                             
-                                        <td>{{ $n_users->phone }}</td>
-                                        <td>@if($n_users->birthdate)
-                                                <?php echo date("d/m/Y", strtotime($n_users->birthdate)); ?>
-                                            @else
-                                                $n_users->birthdate
-                                            @endif
-                                        </td>
-                                        <td> 
-                                            @if (auth()->user()->roles->supprimer_edit_ajout_user)  
-                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="DELETE">
-                                                    <img data-user-id="{{ $n_users->user_id }}" class="deleteUser editbtn2 mx-2" src="{{ asset('assets/images/delete.png') }}" alt="">
-                                                </span>
-                                            @endif
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Facture Famille">
-                                            <img  data-family-id="{{ $n_users->family_id }}"  type="button" class="familybill editbtn2 mx-2" src="{{ asset('assets/images/icon.png') }}"> 
-                                            </span>
-                                            @if (auth()->user()->roles->reinitialiser_mot_de_passe_user)
-                                                <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Réinitialiser le mot de passe">
-                                                    <img data-user-id="{{ $n_users->user_id }}" class="Resetpass editbtn2 mx-2" src="{{ asset('assets/images/rotate.png') }}"> 
-                                                </span>
-                                            @endif
-                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Les membres de ma famille">
-                                                <img data-user-id="{{ $n_users->family_id }}"  type="button" class="familymem editbtn2 mx-2" src="{{ asset('assets/images/familyy.png') }}"> 
-                                            </span>
-                                        </td>
-                                        
+                                        <th class="border d-none d-md-table-cell">username</th> 
+                                        <th class="border">Nom Prénom</th>
+                                        <th class="border d-none d-md-table-cell">Infos</th> 
+                                        <th class="border">Action</th>
                                     </tr>
-                                @endforeach
-                    
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                   
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                        
                     </div>
+                    
                 </div>
             </div>
         </div>
 
    </section>
-  
 @endsection
 
 

@@ -37,9 +37,7 @@
             }
         },
         "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "OSL-3.0"
-        ],
+        "license": ["OSL-3.0"],
         "authors": [
             {
                 "name": "Spipu",
@@ -49,11 +47,7 @@
         ],
         "description": "Html2Pdf is a HTML to PDF converter written in PHP5 (it uses TCPDF). OFFICIAL PACKAGE",
         "homepage": "http://html2pdf.fr/",
-        "keywords": [
-            "html",
-            "html2pdf",
-            "pdf"
-        ]
+        "keywords": ["html", "html2pdf", "pdf"]
     },
     {
         "name": "tecnickcom/tcpdf",
@@ -97,9 +91,7 @@
             ]
         },
         "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "LGPL-3.0"
-        ],
+        "license": ["LGPL-3.0"],
         "authors": [
             {
                 "name": "Nicola Asuni",

@@ -64,7 +64,16 @@ return array(
     |
     */
 
-    'roots' => null,
+    'roots' => [
+        [
+            'driver' => 'LocalFileSystem',
+            'path' => base_path('public/uploads'),
+            'URL' => env('APP_URL') . '/uploads',
+            'accessControl' => 'access' // La fonction de contrôle d'accès
+        ]
+    ],
+    
+    
 
     /*
     |--------------------------------------------------------------------------

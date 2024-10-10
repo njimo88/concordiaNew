@@ -1,4 +1,5 @@
 # filter-multi-select
+
 <p>Multiple select dropdown with filter jQuery plugin.</p>
 
 <p><a href="https://jsfiddle.net/andreww1011/s5rp8buv/">JSFiddle</a></p>
@@ -20,6 +21,7 @@
 </p>
 
 # Usage
+
 <p>
   <ol>
     <li>Load jQuery, Bootstrap, and the plugin bundle in your HTML code.
@@ -60,6 +62,7 @@
 </p>
 
 # Options
+
 <p>The following indexed parameters can be passed to <code>filterMultiSelect()</code> at construction.
   <ul>
     <li><code>placeholderText</code> - text to show as a placeholder when no items are selected.  <i>default="nothing selected"</i></li>
@@ -75,6 +78,7 @@
 </p>
 
 # API
+
 <p>The following methods are exposed on the plugin:
   <ul>
     <li><code>hasOption(value:string)</code> - returns true if this dropdown has an option with the specified <i>value</i> attribute, otherwise false.</li>

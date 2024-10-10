@@ -2,6 +2,7 @@
 
 @section('content')
 <main style="background-image: url('{{asset("/assets/images/background.png")}}');min-height:100vh;" id="main" class="main">
+    
 <div class="container">
 <div class="row" id="corps-pricipal" style=" padding:16px; justify-content:center">
     <div class=" border border-dark" style="background-color: white; padding:16px; border-radius:10px;margin-top:80px;">
@@ -49,21 +50,24 @@
                 <td width="10%" class="align-middle"><p class="text-muted small">{{ $panier->reff }} @if ($panier->declinaison_libelle != null)
                     [{{ $panier->declinaison_libelle }}]
                 @endif</p></td>
-                <td width="20%" class="align-middle">
+                <td width="10%" class="align-middle">
                     <img width="70px" src="{{ $panier->image }}">
                 </td>
-                <td width="30%" class="align-middle">
+                <td width="40%" class="align-middle">
                     <h6 class="text-dark">{{ $panier->title }}
                         @if ($panier->declinaison_libelle != null)
                             [{{ $panier->declinaison_libelle }}]
                         @endif
+                        @if ($panier->reduction != null)
+                            <span class="text-danger">({{ $panier->reduction }})</span>
+                        @endif
                     </h6>
                 </td>
-                <td class="align-middle">
-                    <p class="text-muted small">{{ $panier->total_qte }} x {{ number_format($panier->price, 2, ',', ' ') }}&nbsp;€</p>
+                <td width="15%" class="align-middle">
+                    <p class="text-muted small">{{ $panier->total_qte }} x {{ number_format($panier->prix, 2, ',', ' ') }}&nbsp;€</p>
                 </td>
-                <td class="align-middle">
-                    <p><b>{{ number_format($panier->price*$panier->total_qte, 2, ',', ' ') }}&nbsp;€</b></p>
+                <td width="15%" class="align-middle">
+                    <p><b>{{ number_format($panier->prix*$panier->total_qte, 2, ',', ' ') }}&nbsp;€</b></p>
                 </td>
             </tr>
             @endforeach

@@ -14,25 +14,25 @@
 
 /********************** COMMAND "RESIZE" ****************************/
 .elfinder-resize-container {
-    margin-top: .3em;
+    margin-top: 0.3em;
 }
 
 .elfinder-resize-type {
     float: left;
-    margin-bottom: .4em;
+    margin-bottom: 0.4em;
 }
 
 .elfinder-resize-control {
     float: left;
 }
 
-.elfinder-resize-control input[type=number] {
+.elfinder-resize-control input[type='number'] {
     border: 1px solid #aaa;
     text-align: right;
     width: 4.5em;
 }
 
-.elfinder-mobile .elfinder-resize-control input[type=number] {
+.elfinder-mobile .elfinder-resize-control input[type='number'] {
     width: 3.5em;
 }
 
@@ -80,7 +80,7 @@
 .elfinder-resize-handle-hline,
 .elfinder-resize-handle-vline {
     position: absolute;
-    background-image: url("../img/crop.gif");
+    background-image: url('../img/crop.gif');
 }
 
 .elfinder-resize-handle-hline {
@@ -305,7 +305,10 @@
     height: 30px;
 }
 
-.elfinder-touch .elfinder-dialog-resize .elfinder-resize-preview .ui-resizable-se {
+.elfinder-touch
+    .elfinder-dialog-resize
+    .elfinder-resize-preview
+    .ui-resizable-se {
     width: 30px;
     height: 30px;
     margin: 0;
@@ -324,7 +327,7 @@
     left: 50%;
     bottom: 0;
     margin-left: -8px;
-    margin-bottom: -11px;;
+    margin-bottom: -11px;
 }
 
 .elfinder-dialog-resize .elfinder-resize-row .ui-buttonset {
@@ -389,37 +392,64 @@
     background-color: #fff;
 }
 
-.elfinder-dialog-edit .ui-dialog-content.elfinder-edit-editor .elfinder-edit-imageeditor {
+.elfinder-dialog-edit
+    .ui-dialog-content.elfinder-edit-editor
+    .elfinder-edit-imageeditor {
     width: 100%;
     height: 300px;
     max-height: 100%;
     text-align: center;
 }
 
-.elfinder-dialog-edit .ui-dialog-content.elfinder-edit-editor .elfinder-edit-imageeditor * {
+.elfinder-dialog-edit
+    .ui-dialog-content.elfinder-edit-editor
+    .elfinder-edit-imageeditor
+    * {
     -webkit-user-select: none;
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
 }
 
-.elfinder-edit-imageeditor .tui-image-editor-main-container .tui-image-editor-main {
+.elfinder-edit-imageeditor
+    .tui-image-editor-main-container
+    .tui-image-editor-main {
     top: 0;
 }
 
-.elfinder-edit-imageeditor .tui-image-editor-main-container .tui-image-editor-header {
+.elfinder-edit-imageeditor
+    .tui-image-editor-main-container
+    .tui-image-editor-header {
     display: none;
 }
 
-.elfinder-edit-imageeditor .tui-image-editor-main.tui-image-editor-menu-crop .tui-image-editor-wrap,
-.elfinder-edit-imageeditor .tui-image-editor-main.tui-image-editor-menu-flip .tui-image-editor-wrap,
-.elfinder-edit-imageeditor .tui-image-editor-main.tui-image-editor-menu-rotate .tui-image-editor-wrap,
-.elfinder-edit-imageeditor .tui-image-editor-main.tui-image-editor-menu-draw .tui-image-editor-wrap,
-.elfinder-edit-imageeditor .tui-image-editor-main.tui-image-editor-menu-shape .tui-image-editor-wrap,
-.elfinder-edit-imageeditor .tui-image-editor-main.tui-image-editor-menu-icon .tui-image-editor-wrap,
-.elfinder-edit-imageeditor .tui-image-editor-main.tui-image-editor-menu-text .tui-image-editor-wrap,
-.elfinder-edit-imageeditor .tui-image-editor-main.tui-image-editor-menu-mask .tui-image-editor-wrap,
-.elfinder-edit-imageeditor .tui-image-editor-main.tui-image-editor-menu-filter .tui-image-editor-wrap {
+.elfinder-edit-imageeditor
+    .tui-image-editor-main.tui-image-editor-menu-crop
+    .tui-image-editor-wrap,
+.elfinder-edit-imageeditor
+    .tui-image-editor-main.tui-image-editor-menu-flip
+    .tui-image-editor-wrap,
+.elfinder-edit-imageeditor
+    .tui-image-editor-main.tui-image-editor-menu-rotate
+    .tui-image-editor-wrap,
+.elfinder-edit-imageeditor
+    .tui-image-editor-main.tui-image-editor-menu-draw
+    .tui-image-editor-wrap,
+.elfinder-edit-imageeditor
+    .tui-image-editor-main.tui-image-editor-menu-shape
+    .tui-image-editor-wrap,
+.elfinder-edit-imageeditor
+    .tui-image-editor-main.tui-image-editor-menu-icon
+    .tui-image-editor-wrap,
+.elfinder-edit-imageeditor
+    .tui-image-editor-main.tui-image-editor-menu-text
+    .tui-image-editor-wrap,
+.elfinder-edit-imageeditor
+    .tui-image-editor-main.tui-image-editor-menu-mask
+    .tui-image-editor-wrap,
+.elfinder-edit-imageeditor
+    .tui-image-editor-main.tui-image-editor-menu-filter
+    .tui-image-editor-wrap {
     height: calc(100% - 150px);
 }
 
@@ -434,7 +464,7 @@
 }
 
 .ui-dialog-buttonpane .ui-dialog-buttonset.elfinder-edit-extras {
-    margin: 0 1em 0 .2em;
+    margin: 0 1em 0 0.2em;
     float: left;
 }
 
@@ -467,7 +497,7 @@
 .elfinder-dialog-edit .elfinder-toast > div {
     width: 280px;
 }
- 
+
 .elfinder-edit-onlineconvert-button {
     display: inline-block;
     width: 180px;
@@ -485,8 +515,16 @@
     text-align: center;
     padding: 8px;
     background-color: #eee;
-    background-image: -webkit-linear-gradient(top, hsl(0,0%,98%) 0%,hsl(0,0%,77%) 100%);
-    background-image: linear-gradient(to bottom, hsl(0,0%,98%) 0%,hsl(0,0%,77%) 100%);
+    background-image: -webkit-linear-gradient(
+        top,
+        hsl(0, 0%, 98%) 0%,
+        hsl(0, 0%, 77%) 100%
+    );
+    background-image: linear-gradient(
+        to bottom,
+        hsl(0, 0%, 98%) 0%,
+        hsl(0, 0%, 77%) 100%
+    );
 }
 .elfinder-edit-onlineconvert-button .elfinder-button-icon {
     margin: 0 10px;
@@ -503,7 +541,7 @@
     text-align: center;
 }
 .elfinder-edit-onlineconvert-link .elfinder-button-icon {
-    background-image: url("../img/editor-icons.png");
+    background-image: url('../img/editor-icons.png');
     background-repeat: no-repeat;
     background-position: 0 -144px;
     margin-bottom: -3px;
@@ -526,24 +564,32 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
     margin: auto 0px auto auto;
 }
 
-.elfinder-touch div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
+.elfinder-touch
+    div.elfinder-cwd-wrapper-list
+    tr.ui-state-default
+    td
+    span.ui-icon {
     top: 7px;
 }
 
-.elfinder-rtl div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
+.elfinder-rtl
+    div.elfinder-cwd-wrapper-list
+    tr.ui-state-default
+    td
+    span.ui-icon {
     margin: auto auto auto 0px;
 }
 
 /********************** COMMAND "HELP" ****************************/
 /* help dialog */
 .elfinder-help {
-    margin-bottom: .5em;
+    margin-bottom: 0.5em;
     -webkit-overflow-scrolling: touch;
 }
 
 /* fix tabs */
 .elfinder-help .ui-tabs-panel {
-    padding: .5em;
+    padding: 0.5em;
     overflow: auto;
     padding: 10px;
 }
@@ -553,12 +599,12 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
 }
 
 .elfinder-dialog .ui-tabs .ui-tabs-nav li a {
-    padding: .2em .8em;
+    padding: 0.2em 0.8em;
     display: inline-block;
 }
 
 .elfinder-touch .elfinder-dialog .ui-tabs .ui-tabs-nav li a {
-    padding: .5em .5em;
+    padding: 0.5em 0.5em;
 }
 
 .elfinder-dialog .ui-tabs-active a {
@@ -592,12 +638,12 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
 
 .elfinder-help h3 {
     font-size: 1.5em;
-    margin: .2em 0 .3em 0;
+    margin: 0.2em 0 0.3em 0;
 }
 
 .elfinder-help-separator {
     clear: both;
-    padding: .5em;
+    padding: 0.5em;
 }
 
 .elfinder-help-link {
@@ -613,7 +659,7 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
 }
 
 .elfinder-help .ui-priority-secondary {
-    font-size: .9em;
+    font-size: 0.9em;
 }
 
 .elfinder-help .ui-priority-primary {
@@ -624,8 +670,8 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
     clear: both;
     text-align: right;
     border-bottom: 1px solid #ccc;
-    margin: .5em 0;
-    font-size: .9em;
+    margin: 0.5em 0;
+    font-size: 0.9em;
 }
 
 .elfinder-help-team div {
@@ -633,7 +679,7 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
 }
 
 .elfinder-help-license {
-    font-size: .9em;
+    font-size: 0.9em;
 }
 
 .elfinder-help-disabled {
@@ -655,8 +701,21 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
     -moz-box-shadow: 5px 5px 9px #111;
     -webkit-box-shadow: 5px 5px 9px #111;
     box-shadow: 5px 5px 9px #111;
-    background: -moz-radial-gradient(80px 80px, circle farthest-corner, #d90004 35%, #960004 100%);
-    background: -webkit-gradient(radial, 80 80, 60, 80 80, 120, from(#d90004), to(#960004));
+    background: -moz-radial-gradient(
+        80px 80px,
+        circle farthest-corner,
+        #d90004 35%,
+        #960004 100%
+    );
+    background: -webkit-gradient(
+        radial,
+        80 80,
+        60,
+        80 80,
+        120,
+        from(#d90004),
+        to(#960004)
+    );
     -moz-border-radius: 100px;
     -webkit-border-radius: 100px;
     border-radius: 100px;
@@ -722,11 +781,11 @@ ul.elfinder-help-integrations a:hover {
 }
 
 .elfinder-help-debug dt:before {
-    content: "[";
+    content: '[';
 }
 
 .elfinder-help-debug dt:after {
-    content: "]";
+    content: ']';
 }
 
 .elfinder-help-debug dd {
@@ -759,7 +818,7 @@ ul.elfinder-help-integrations a:hover {
 .elfinder-preference dl {
     width: 100%;
     display: inline-block;
-    margin: .5em 0;
+    margin: 0.5em 0;
 }
 
 .elfinder-preference dt {
@@ -784,7 +843,7 @@ ul.elfinder-help-integrations a:hover {
 }
 
 .elfinder-preference dd label,
-.elfinder-preference dd input[type=checkbox] {
+.elfinder-preference dd input[type='checkbox'] {
     white-space: nowrap;
     display: inline-block;
     cursor: pointer;
@@ -818,7 +877,9 @@ ul.elfinder-help-integrations a:hover {
     margin: 0 -10px;
 }
 
-.elfinder-preference .elfinder-preference-taball .elfinder-reference-hide-taball {
+.elfinder-preference
+    .elfinder-preference-taball
+    .elfinder-reference-hide-taball {
     display: none;
 }
 
@@ -838,7 +899,7 @@ ul.elfinder-help-integrations a:hover {
 }
 
 .elfinder-preference-theme dt:after {
-    content: " :";
+    content: ' :';
 }
 
 .elfinder-preference-theme dd {
@@ -924,7 +985,7 @@ ul.elfinder-help-integrations a:hover {
 
 .elfinder-rename-batch .elfinder-rename-batch-type label {
     margin: 2px;
-    font-size: .9em;
+    font-size: 0.9em;
 }
 
 .elfinder-rename-batch-preview {
@@ -932,7 +993,6 @@ ul.elfinder-help-integrations a:hover {
     font-size: 1.1em;
     min-height: 4ex;
 }
-
 
 /* File: /css/common.css */
 /*********************************************/
@@ -1006,7 +1066,7 @@ div.elfinder {
 
 /* in lazy execution status */
 .elfinder.elfinder-processing * {
-    cursor: progress !important
+    cursor: progress !important;
 }
 
 .elfinder.elfinder-processing.elfinder-touch .elfinder-workzone:after {
@@ -1017,13 +1077,14 @@ div.elfinder {
     content: '';
     left: 0;
     background-image: url(../img/progress.gif);
-    opacity: .6;
+    opacity: 0.6;
     pointer-events: none;
 }
 
 /* for disable select of Touch devices */
-.elfinder *:not(input):not(textarea):not(select):not([contenteditable=true]),
-.elfinder-contextmenu *:not(input):not(textarea):not(select):not([contenteditable=true]) {
+.elfinder *:not(input):not(textarea):not(select):not([contenteditable='true']),
+.elfinder-contextmenu
+    *:not(input):not(textarea):not(select):not([contenteditable='true']) {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     /*-webkit-touch-callout:none;*/
     -webkit-user-select: none;
@@ -1155,7 +1216,7 @@ div.elfinder {
 /* transparent overlay */
 .elfinder-overlay {
     position: absolute;
-    opacity: .2;
+    opacity: 0.2;
     filter: Alpha(Opacity=20);
 }
 
@@ -1167,12 +1228,12 @@ div.elfinder {
 }
 
 /* for html5 drag and drop */
-[draggable=true] {
+[draggable='true'] {
     -khtml-user-drag: element;
 }
 
 /* for place holder to content editable elements */
-.elfinder [contentEditable=true]:empty:not(:focus):before {
+.elfinder [contentEditable='true']:empty:not(:focus):before {
     content: attr(data-ph);
 }
 
@@ -1181,7 +1242,7 @@ div.elfinder {
     position: fixed;
     bottom: 0;
     max-width: 100%;
-    opacity: .8;
+    opacity: 0.8;
 }
 
 .elfinder div.elfinder-bottomtray > div {
@@ -1253,7 +1314,7 @@ div.elfinder {
 /* menu item */
 .elfinder .elfinder-contextmenu-header {
     margin-top: -4px;
-    padding: 0 .5em .2ex;
+    padding: 0 0.5em 0.2ex;
     border: none;
     text-align: center;
 }
@@ -1301,52 +1362,52 @@ div.elfinder {
 
 /* root icon of each volume */
 .elfinder-navbar-root-local.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_local.svg");
+    background-image: url('../img/volume_icon_local.svg');
     background-size: contain;
 }
 
 .elfinder-navbar-root-trash.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_trash.svg");
+    background-image: url('../img/volume_icon_trash.svg');
     background-size: contain;
 }
 
 .elfinder-navbar-root-ftp.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_ftp.svg");
+    background-image: url('../img/volume_icon_ftp.svg');
     background-size: contain;
 }
 
 .elfinder-navbar-root-sql.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_sql.svg");
+    background-image: url('../img/volume_icon_sql.svg');
     background-size: contain;
 }
 
 .elfinder-navbar-root-dropbox.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_dropbox.svg");
+    background-image: url('../img/volume_icon_dropbox.svg');
     background-size: contain;
 }
 
 .elfinder-navbar-root-googledrive.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_googledrive.svg");
+    background-image: url('../img/volume_icon_googledrive.svg');
     background-size: contain;
 }
 
 .elfinder-navbar-root-onedrive.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_onedrive.svg");
+    background-image: url('../img/volume_icon_onedrive.svg');
     background-size: contain;
 }
 
 .elfinder-navbar-root-box.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_box.svg");
+    background-image: url('../img/volume_icon_box.svg');
     background-size: contain;
 }
 
 .elfinder-navbar-root-zip.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_zip.svg");
+    background-image: url('../img/volume_icon_zip.svg');
     background-size: contain;
 }
 
 .elfinder-navbar-root-network.elfinder-contextmenu-icon {
-    background-image: url("../img/volume_icon_network.svg");
+    background-image: url('../img/volume_icon_network.svg');
     background-size: contain;
 }
 
@@ -1369,19 +1430,31 @@ div.elfinder {
     text-align: right;
 }
 
-.elfinder .elfinder-contextmenu-ltr .elfinder-contextmenu-sub .elfinder-contextsubmenu-item-icon {
+.elfinder
+    .elfinder-contextmenu-ltr
+    .elfinder-contextmenu-sub
+    .elfinder-contextsubmenu-item-icon {
     padding-left: 28px;
 }
 
-.elfinder .elfinder-contextmenu-rtl .elfinder-contextmenu-sub .elfinder-contextsubmenu-item-icon {
+.elfinder
+    .elfinder-contextmenu-rtl
+    .elfinder-contextmenu-sub
+    .elfinder-contextsubmenu-item-icon {
     padding-right: 28px;
 }
 
-.elfinder-touch .elfinder-contextmenu-ltr .elfinder-contextmenu-sub .elfinder-contextsubmenu-item-icon {
+.elfinder-touch
+    .elfinder-contextmenu-ltr
+    .elfinder-contextmenu-sub
+    .elfinder-contextsubmenu-item-icon {
     padding-left: 36px;
 }
 
-.elfinder-touch .elfinder-contextmenu-rtl .elfinder-contextmenu-sub .elfinder-contextsubmenu-item-icon {
+.elfinder-touch
+    .elfinder-contextmenu-rtl
+    .elfinder-contextmenu-sub
+    .elfinder-contextsubmenu-item-icon {
     padding-right: 36px;
 }
 
@@ -1563,7 +1636,7 @@ div.elfinder {
     top: 0px;
     left: 0px;
     background-color: transparent;
-    opacity: .4;
+    opacity: 0.4;
     filter: Alpha(Opacity=40);
 }
 
@@ -1573,7 +1646,7 @@ div.elfinder {
 }
 
 .elfinder-cwd-file.ui-selected .elfinder-cwd-select {
-    opacity: .8;
+    opacity: 0.8;
     filter: Alpha(Opacity=80);
 }
 
@@ -1587,11 +1660,13 @@ div.elfinder {
     width: 30px;
     height: 30px;
     top: 0px;
-    opacity: .8;
+    opacity: 0.8;
     filter: Alpha(Opacity=80);
 }
 
-.elfinder .elfinder-workzone.elfinder-cwd-wrapper-empty .elfinder-cwd-selectall {
+.elfinder
+    .elfinder-workzone.elfinder-cwd-wrapper-empty
+    .elfinder-cwd-selectall {
     display: none;
 }
 
@@ -1617,7 +1692,9 @@ div.elfinder {
     left: 0px;
 }
 
-.elfinder-cwd-view-icons .elfinder-cwd-file .elfinder-cwd-select.ui-state-hover {
+.elfinder-cwd-view-icons
+    .elfinder-cwd-file
+    .elfinder-cwd-select.ui-state-hover {
     background-color: transparent;
 }
 
@@ -1871,122 +1948,163 @@ div.elfinder {
 
 /* volume icon of root in folder */
 .elfinder-navbar-root-local .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-local.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-local.elfinder-droppable-active
+    .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-local td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_local.svg");
-    background-image: url("../img/volume_icon_local.png") \9;
+    background-image: url('../img/volume_icon_local.svg');
+    background-image: url('../img/volume_icon_local.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
-.elfinder-cwd .elfinder-navbar-root-local.elfinder-droppable-active .elfinder-cwd-icon {
+.elfinder-cwd
+    .elfinder-navbar-root-local.elfinder-droppable-active
+    .elfinder-cwd-icon {
     background-position: 1px -1px;
 }
 
 .elfinder-navbar-root-trash .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-trash.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-trash.elfinder-droppable-active
+    .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-trash td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_trash.svg");
-    background-image: url("../img/volume_icon_trash.png") \9;
+    background-image: url('../img/volume_icon_trash.svg');
+    background-image: url('../img/volume_icon_trash.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
-.elfinder-cwd .elfinder-navbar-root-trash.elfinder-droppable-active .elfinder-cwd-icon {
+.elfinder-cwd
+    .elfinder-navbar-root-trash.elfinder-droppable-active
+    .elfinder-cwd-icon {
     background-position: 1px -1px;
 }
 
 .elfinder-navbar-root-ftp .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-ftp.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-ftp.elfinder-droppable-active
+    .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-ftp td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_ftp.svg");
-    background-image: url("../img/volume_icon_ftp.png") \9;
+    background-image: url('../img/volume_icon_ftp.svg');
+    background-image: url('../img/volume_icon_ftp.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
-.elfinder-cwd .elfinder-navbar-root-ftp.elfinder-droppable-active .elfinder-cwd-icon {
+.elfinder-cwd
+    .elfinder-navbar-root-ftp.elfinder-droppable-active
+    .elfinder-cwd-icon {
     background-position: 1px -1px;
 }
 
 .elfinder-navbar-root-sql .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-sql.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-sql.elfinder-droppable-active
+    .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-sql td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_sql.svg");
-    background-image: url("../img/volume_icon_sql.png") \9;
+    background-image: url('../img/volume_icon_sql.svg');
+    background-image: url('../img/volume_icon_sql.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
-.elfinder-cwd .elfinder-navbar-root-sql.elfinder-droppable-active .elfinder-cwd-icon {
+.elfinder-cwd
+    .elfinder-navbar-root-sql.elfinder-droppable-active
+    .elfinder-cwd-icon {
     background-position: 1px -1px;
 }
 
 .elfinder-navbar-root-dropbox .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-dropbox.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-dropbox.elfinder-droppable-active
+    .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-dropbox td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_dropbox.svg");
-    background-image: url("../img/volume_icon_dropbox.png") \9;
+    background-image: url('../img/volume_icon_dropbox.svg');
+    background-image: url('../img/volume_icon_dropbox.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
-.elfinder-cwd .elfinder-navbar-root-dropbox.elfinder-droppable-active .elfinder-cwd-icon {
+.elfinder-cwd
+    .elfinder-navbar-root-dropbox.elfinder-droppable-active
+    .elfinder-cwd-icon {
     background-position: 1px -1px;
 }
 
 .elfinder-navbar-root-googledrive .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-googledrive.elfinder-droppable-active .elfinder-cwd-icon,
-.elfinder-cwd-view-list .elfinder-navbar-root-googledrive td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_googledrive.svg");
-    background-image: url("../img/volume_icon_googledrive.png") \9;
+.elfinder-cwd
+    .elfinder-navbar-root-googledrive.elfinder-droppable-active
+    .elfinder-cwd-icon,
+.elfinder-cwd-view-list
+    .elfinder-navbar-root-googledrive
+    td
+    .elfinder-cwd-icon {
+    background-image: url('../img/volume_icon_googledrive.svg');
+    background-image: url('../img/volume_icon_googledrive.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
 .elfinder-navbar-root-onedrive .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-onedrive.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-onedrive.elfinder-droppable-active
+    .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-onedrive td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_onedrive.svg");
-    background-image: url("../img/volume_icon_onedrive.png") \9;
+    background-image: url('../img/volume_icon_onedrive.svg');
+    background-image: url('../img/volume_icon_onedrive.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
 .elfinder-navbar-root-box .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-box.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-box.elfinder-droppable-active
+    .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-box td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_box.svg");
-    background-image: url("../img/volume_icon_box.png") \9;
+    background-image: url('../img/volume_icon_box.svg');
+    background-image: url('../img/volume_icon_box.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
 .elfinder-navbar-root-zip .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-zip.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-zip.elfinder-droppable-active
+    .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-zip td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_zip.svg");
-    background-image: url("../img/volume_icon_zip.png") \9;
+    background-image: url('../img/volume_icon_zip.svg');
+    background-image: url('../img/volume_icon_zip.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
-.elfinder-cwd .elfinder-navbar-root-googledrive.elfinder-droppable-active .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-onedrive.elfinder-droppable-active .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-box.elfinder-droppable-active .elfinder-cwd-icon {
+.elfinder-cwd
+    .elfinder-navbar-root-googledrive.elfinder-droppable-active
+    .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-onedrive.elfinder-droppable-active
+    .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-box.elfinder-droppable-active
+    .elfinder-cwd-icon {
     background-position: 1px -1px;
 }
 
 .elfinder-navbar-root-network .elfinder-cwd-icon,
-.elfinder-cwd .elfinder-navbar-root-network.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd
+    .elfinder-navbar-root-network.elfinder-droppable-active
+    .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-network td .elfinder-cwd-icon {
-    background-image: url("../img/volume_icon_network.svg");
-    background-image: url("../img/volume_icon_network.png") \9;
+    background-image: url('../img/volume_icon_network.svg');
+    background-image: url('../img/volume_icon_network.png') \9;
     background-position: 0 0;
     background-size: contain;
 }
 
-.elfinder-cwd .elfinder-navbar-root-network.elfinder-droppable-active .elfinder-cwd-icon {
+.elfinder-cwd
+    .elfinder-navbar-root-network.elfinder-droppable-active
+    .elfinder-cwd-icon {
     background-position: 1px -1px;
 }
 
@@ -2017,19 +2135,19 @@ div.elfinder {
 
 /* addtional type badge name */
 .elfinder-cwd-icon.elfinder-cwd-icon-mp2t:before {
-    content: 'ts'
+    content: 'ts';
 }
 
 .elfinder-cwd-icon.elfinder-cwd-icon-dash-xml:before {
-    content: 'dash'
+    content: 'dash';
 }
 
 .elfinder-cwd-icon.elfinder-cwd-icon-x-mpegurl:before {
-    content: 'hls'
+    content: 'hls';
 }
 
 .elfinder-cwd-icon.elfinder-cwd-icon-x-c:before {
-    content: 'c++'
+    content: 'c++';
 }
 
 /* thumbnail image */
@@ -2067,18 +2185,18 @@ div.elfinder {
     background-image: url('../img/icons-big.png') \9;
     background-repeat: no-repeat;
     background-size: auto !important;
-    opacity: .8;
+    opacity: 0.8;
     filter: Alpha(Opacity=60);
     -webkit-transform-origin: 54px -24px;
-    -webkit-transform: scale(.6);
+    -webkit-transform: scale(0.6);
     -moz-transform-origin: 54px -24px;
-    -moz-transform: scale(.6);
+    -moz-transform: scale(0.6);
     -ms-transform-origin: 54px -24px;
-    -ms-transform: scale(.6);
+    -ms-transform: scale(0.6);
     -o-transform-origin: 54px -24px;
-    -o-transform: scale(.6);
+    -o-transform: scale(0.6);
     transform-origin: 54px -24px;
-    transform: scale(.6);
+    transform: scale(0.6);
 }
 
 /* thumbnail image and draging icon */
@@ -2181,14 +2299,14 @@ div.elfinder {
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-spreadsheetml-sheet:after,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-spreadsheetml-template,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-spreadsheetml-template:after {
-    background-position: 0 -1450px
+    background-position: 0 -1450px;
 }
 
 .elfinder-cwd-icon-vnd-oasis-opendocument-spreadsheet,
 .elfinder-cwd-icon-vnd-oasis-opendocument-spreadsheet-template,
 .elfinder-cwd-icon-vnd-oasis-opendocument-spreadsheet-template:after,
 .elfinder-cwd-icon-vnd-oasis-opendocument-spreadsheet:after {
-    background-position: 0 -1700px
+    background-position: 0 -1700px;
 }
 
 .elfinder-cwd-icon-vnd-ms-powerpoint,
@@ -2211,14 +2329,14 @@ div.elfinder {
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-presentationml-slideshow:after,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-presentationml-template,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-presentationml-template:after {
-    background-position: 0 -1400px
+    background-position: 0 -1400px;
 }
 
 .elfinder-cwd-icon-vnd-oasis-opendocument-presentation,
 .elfinder-cwd-icon-vnd-oasis-opendocument-presentation-template,
 .elfinder-cwd-icon-vnd-oasis-opendocument-presentation-template:after,
 .elfinder-cwd-icon-vnd-oasis-opendocument-presentation:after {
-    background-position: 0 -1650px
+    background-position: 0 -1650px;
 }
 
 .elfinder-cwd-icon-msword,
@@ -2233,7 +2351,7 @@ div.elfinder {
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-wordprocessingml-document:after,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-wordprocessingml-template,
 .elfinder-cwd-icon-vnd-openxmlformats-officedocument-wordprocessingml-template:after {
-    background-position: 0 -1500px
+    background-position: 0 -1500px;
 }
 
 .elfinder-cwd-icon-vnd-oasis-opendocument-text,
@@ -2244,12 +2362,12 @@ div.elfinder {
 .elfinder-cwd-icon-vnd-oasis-opendocument-text-web,
 .elfinder-cwd-icon-vnd-oasis-opendocument-text-web:after,
 .elfinder-cwd-icon-vnd-oasis-opendocument-text:after {
-    background-position: 0 -1750px
+    background-position: 0 -1750px;
 }
 
 .elfinder-cwd-icon-vnd-ms-office,
 .elfinder-cwd-icon-vnd-ms-office:after {
-    background-position: 0 -500px
+    background-position: 0 -500px;
 }
 
 .elfinder-cwd-icon-vnd-oasis-opendocument-chart,
@@ -2266,7 +2384,7 @@ div.elfinder {
 .elfinder-cwd-icon-vnd-oasis-opendocument-image:after,
 .elfinder-cwd-icon-vnd-openofficeorg-extension,
 .elfinder-cwd-icon-vnd-openofficeorg-extension:after {
-    background-position: 0 -1600px
+    background-position: 0 -1600px;
 }
 
 .elfinder-cwd-icon-html:after,
@@ -2442,7 +2560,8 @@ div.elfinder {
     background-color: white;
 }
 
-.elfinder-droppable-active + .elfinder-cwd-wrapper-list.elfinder-cwd-fixheader:before {
+.elfinder-droppable-active
+    + .elfinder-cwd-wrapper-list.elfinder-cwd-fixheader:before {
     background-color: #8cafed;
 }
 
@@ -2498,12 +2617,50 @@ div.elfinder {
 
 .elfinder .elfinder-cwd table thead td.ui-state-active {
     background: #ebf1f6;
-    background: -moz-linear-gradient(top, #ebf1f6 0%, #abd3ee 50%, #89c3eb 51%, #d5ebfb 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ebf1f6), color-stop(50%, #abd3ee), color-stop(51%, #89c3eb), color-stop(100%, #d5ebfb));
-    background: -webkit-linear-gradient(top, #ebf1f6 0%, #abd3ee 50%, #89c3eb 51%, #d5ebfb 100%);
-    background: -o-linear-gradient(top, #ebf1f6 0%, #abd3ee 50%, #89c3eb 51%, #d5ebfb 100%);
-    background: -ms-linear-gradient(top, #ebf1f6 0%, #abd3ee 50%, #89c3eb 51%, #d5ebfb 100%);
-    background: linear-gradient(to bottom, #ebf1f6 0%, #abd3ee 50%, #89c3eb 51%, #d5ebfb 100%);
+    background: -moz-linear-gradient(
+        top,
+        #ebf1f6 0%,
+        #abd3ee 50%,
+        #89c3eb 51%,
+        #d5ebfb 100%
+    );
+    background: -webkit-gradient(
+        linear,
+        left top,
+        left bottom,
+        color-stop(0%, #ebf1f6),
+        color-stop(50%, #abd3ee),
+        color-stop(51%, #89c3eb),
+        color-stop(100%, #d5ebfb)
+    );
+    background: -webkit-linear-gradient(
+        top,
+        #ebf1f6 0%,
+        #abd3ee 50%,
+        #89c3eb 51%,
+        #d5ebfb 100%
+    );
+    background: -o-linear-gradient(
+        top,
+        #ebf1f6 0%,
+        #abd3ee 50%,
+        #89c3eb 51%,
+        #d5ebfb 100%
+    );
+    background: -ms-linear-gradient(
+        top,
+        #ebf1f6 0%,
+        #abd3ee 50%,
+        #89c3eb 51%,
+        #d5ebfb 100%
+    );
+    background: linear-gradient(
+        to bottom,
+        #ebf1f6 0%,
+        #abd3ee 50%,
+        #89c3eb 51%,
+        #d5ebfb 100%
+    );
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ebf1f6', endColorstr='#d5ebfb', GradientType=0);
 }
 
@@ -2517,7 +2674,7 @@ div.elfinder {
 }
 
 .elfinder .elfinder-cwd table tbody td:first-child {
-    position: relative
+    position: relative;
 }
 
 .elfinder .elfinder-cwd table td div {
@@ -2571,11 +2728,15 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 }
 
 /* filename container in ltr/rtl enviroment */
-.elfinder-ltr .elfinder-cwd-view-list.elfinder-has-checkbox .elfinder-cwd-file-wrapper {
+.elfinder-ltr
+    .elfinder-cwd-view-list.elfinder-has-checkbox
+    .elfinder-cwd-file-wrapper {
     margin-left: 8px;
 }
 
-.elfinder-rtl .elfinder-cwd-view-list.elfinder-has-checkbox .elfinder-cwd-file-wrapper {
+.elfinder-rtl
+    .elfinder-cwd-view-list.elfinder-has-checkbox
+    .elfinder-cwd-file-wrapper {
     margin-right: 8px;
 }
 
@@ -2598,7 +2759,7 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 .elfinder-cwd-view-list .elfinder-lock,
 .elfinder-cwd-view-list .elfinder-symlink {
     margin-top: -6px;
-    opacity: .6;
+    opacity: 0.6;
     filter: Alpha(Opacity=60);
 }
 
@@ -2735,7 +2896,7 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 
 .elfinder-cwd-wrapper-trash .elfinder-cwd-message-board .elfinder-cwd-trash {
     display: block;
-    opacity: .3;
+    opacity: 0.3;
 }
 
 /* overlay message board for expires */
@@ -2745,7 +2906,7 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
     font-size: 24px;
     width: 100%;
     text-align: right;
-    opacity: .25;
+    opacity: 0.25;
 }
 
 .elfinder-rtl .elfinder-cwd-message-board .elfinder-cwd-expires {
@@ -2771,7 +2932,7 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 }
 
 .std42-dialog.elfinder-dialog-minimized {
-    overFlow: hidden;
+    overflow: hidden;
     position: relative;
     float: left;
     width: auto;
@@ -2792,16 +2953,16 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
     border-top: 0 solid transparent;
     border-right: 0 solid transparent;
     font-weight: normal;
-    padding: .2em 1em;
+    padding: 0.2em 1em;
 }
 
 .std42-dialog.elfinder-dialog-minimized .ui-dialog-titlebar {
-    padding: 0 .5em;
+    padding: 0 0.5em;
     height: 20px;
 }
 
 .elfinder-touch .std42-dialog.elfinder-dialog-minimized .ui-dialog-titlebar {
-    padding: .3em .5em;
+    padding: 0.3em 0.5em;
 }
 
 .std42-dialog.ui-draggable-disabled .ui-dialog-titlebar {
@@ -2818,7 +2979,9 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
     word-break: break-all;
 }
 
-.std42-dialog.elfinder-dialog-minimized .ui-dialog-titlebar span.elfinder-dialog-title {
+.std42-dialog.elfinder-dialog-minimized
+    .ui-dialog-titlebar
+    span.elfinder-dialog-title {
     display: list-item;
     display: -moz-inline-box;
     white-space: nowrap;
@@ -2832,10 +2995,13 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 }
 
 .elfinder-touch .std42-dialog .ui-dialog-titlebar span.elfinder-dialog-title {
-    padding-top: .15em;
+    padding-top: 0.15em;
 }
 
-.elfinder-touch .std42-dialog.elfinder-dialog-minimized .ui-dialog-titlebar span.elfinder-dialog-title {
+.elfinder-touch
+    .std42-dialog.elfinder-dialog-minimized
+    .ui-dialog-titlebar
+    span.elfinder-dialog-title {
     max-width: -webkit-calc(100% - 36px);
     max-width: -moz-calc(100% - 36px);
     max-width: calc(100% - 36px);
@@ -2867,7 +3033,9 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
     float: right;
 }
 
-.std42-dialog .ui-dialog-titlebar .elfinder-titlebar-button.elfinder-titlebar-button-right {
+.std42-dialog
+    .ui-dialog-titlebar
+    .elfinder-titlebar-button.elfinder-titlebar-button-right {
     left: 10px;
     right: -10px;
 }
@@ -2876,19 +3044,26 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
     width: 17px;
     height: 17px;
     border-width: 1px;
-    opacity: .7;
+    opacity: 0.7;
     filter: Alpha(Opacity=70);
     -moz-border-radius: 8px;
     -webkit-border-radius: 8px;
     border-radius: 8px;
 }
 
-.elfinder-mobile .std42-dialog .ui-dialog-titlebar .elfinder-titlebar-button .ui-icon {
-    opacity: .5;
+.elfinder-mobile
+    .std42-dialog
+    .ui-dialog-titlebar
+    .elfinder-titlebar-button
+    .ui-icon {
+    opacity: 0.5;
     filter: Alpha(Opacity=50);
 }
 
-.std42-dialog.elfinder-dialog-minimized .ui-dialog-titlebar .elfinder-titlebar-button .ui-icon {
+.std42-dialog.elfinder-dialog-minimized
+    .ui-dialog-titlebar
+    .elfinder-titlebar-button
+    .ui-icon {
     opacity: 1;
     filter: Alpha(Opacity=100);
 }
@@ -2900,7 +3075,7 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 .elfinder-spinner {
     width: 14px;
     height: 14px;
-    background: url("../img/spinner-mini.gif") center center no-repeat;
+    background: url('../img/spinner-mini.gif') center center no-repeat;
     margin: 0 5px;
     display: inline-block;
     vertical-align: middle;
@@ -2912,14 +3087,14 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 }
 
 .elfinder-rtl .elfinder-spinner,
-.elfinder-rtl .elfinder-spinner-text  {
+.elfinder-rtl .elfinder-spinner-text {
     float: right;
 }
 
-
-
 /* resize handle for touch devices */
-.elfinder-touch .std42-dialog.ui-dialog:not(ui-resizable-disabled) .ui-resizable-se {
+.elfinder-touch
+    .std42-dialog.ui-dialog:not(ui-resizable-disabled)
+    .ui-resizable-se {
     width: 12px;
     height: 12px;
     -moz-transform-origin: bottom right;
@@ -2937,7 +3112,7 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 
 /* content */
 .std42-dialog .ui-dialog-content {
-    padding: .3em .5em;
+    padding: 0.3em 0.5em;
 }
 
 .elfinder .std42-dialog .ui-dialog-content,
@@ -2956,7 +3131,7 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 .std42-dialog .ui-dialog-buttonpane {
     border: 0 solid;
     margin: 0;
-    padding: .5em;
+    padding: 0.5em;
     text-align: right;
 }
 
@@ -2965,8 +3140,8 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 }
 
 .std42-dialog .ui-dialog-buttonpane button {
-    margin: .2em 0 0 .4em;
-    padding: .2em;
+    margin: 0.2em 0 0 0.4em;
+    padding: 0.2em;
     outline: 0px solid;
 }
 
@@ -3000,7 +3175,7 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
     left: 10px;
     top: 50%;
     margin-top: -15px;
-    background: url("../img/dialogs.png") 0 0 no-repeat;
+    background: url('../img/dialogs.png') 0 0 no-repeat;
 }
 
 .elfinder-rtl .elfinder-dialog-icon {
@@ -3029,16 +3204,16 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 /*********************** NOTIFY DIALOG **************************/
 
 .elfinder-dialog-notify {
-    top : 36px;
-    width : 280px;
+    top: 36px;
+    width: 280px;
 }
 
 .elfinder-ltr .elfinder-dialog-notify {
-    right : 12px;
+    right: 12px;
 }
 
 .elfinder-rtl .elfinder-dialog-notify {
-    left : 12px;
+    left: 12px;
 }
 
 .elfinder-dialog-notify .ui-dialog-titlebar {
@@ -3050,20 +3225,32 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
     height: 10px;
 }
 
-.elfinder > .elfinder-dialog-notify .ui-dialog-titlebar .elfinder-titlebar-button {
+.elfinder
+    > .elfinder-dialog-notify
+    .ui-dialog-titlebar
+    .elfinder-titlebar-button {
     top: 2px;
 }
 
-.elfinder.elfinder-touch > .elfinder-dialog-notify .ui-dialog-titlebar .elfinder-titlebar-button {
+.elfinder.elfinder-touch
+    > .elfinder-dialog-notify
+    .ui-dialog-titlebar
+    .elfinder-titlebar-button {
     top: 4px;
 }
 
-.elfinder > .elfinder-dialog-notify .ui-dialog-titlebar .elfinder-titlebar-button {
+.elfinder
+    > .elfinder-dialog-notify
+    .ui-dialog-titlebar
+    .elfinder-titlebar-button {
     left: -18px;
     right: 18px;
 }
 
-.elfinder > .elfinder-dialog-notify .ui-dialog-titlebar .elfinder-titlebar-button.elfinder-titlebar-button-right {
+.elfinder
+    > .elfinder-dialog-notify
+    .ui-dialog-titlebar
+    .elfinder-titlebar-button.elfinder-titlebar-button-right {
     left: 18px;
     right: -18px;
 }
@@ -3077,11 +3264,14 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
     top: 26px;
 }
 
-.elfinder-dialog-notify.elfinder-titlebar-button-hide .ui-dialog-titlebar-close {
+.elfinder-dialog-notify.elfinder-titlebar-button-hide
+    .ui-dialog-titlebar-close {
     display: none;
 }
 
-.elfinder-dialog-notify.elfinder-dialog-minimized.elfinder-titlebar-button-hide .ui-dialog-titlebar span.elfinder-dialog-title {
+.elfinder-dialog-notify.elfinder-dialog-minimized.elfinder-titlebar-button-hide
+    .ui-dialog-titlebar
+    span.elfinder-dialog-title {
     max-width: initial;
 }
 
@@ -3093,7 +3283,7 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 .elfinder-notify {
     border-bottom: 1px solid #ccc;
     position: relative;
-    padding: .5em;
+    padding: 0.5em;
 
     text-align: center;
     overflow: hidden;
@@ -3127,7 +3317,8 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
     background: url(../img/progress.gif) center center repeat-x;
 }
 
-.elfinder-notify-progressbar, .elfinder-notify-progress {
+.elfinder-notify-progressbar,
+.elfinder-notify-progress {
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     border-radius: 2px;
@@ -3263,13 +3454,13 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 
 .elfinder-info-title strong {
     display: block;
-    padding: .3em 0 .5em 0;
+    padding: 0.3em 0 0.5em 0;
 }
 
 .elfinder-info-tb {
     min-width: 200px;
     border: 0 solid;
-    margin: 1em .2em 1em .2em;
+    margin: 1em 0.2em 1em 0.2em;
     width: 100%;
 }
 
@@ -3347,7 +3538,7 @@ button.elfinder-info-button {
 }
 
 .elfinder-upload-dialog-or {
-    margin: .3em 0;
+    margin: 0.3em 0;
     text-align: center;
 }
 
@@ -3407,7 +3598,7 @@ button.elfinder-info-button {
 
 /*********************** RM CONFIRM **************************/
 .elfinder-rm-title {
-    margin-bottom: .5ex;
+    margin-bottom: 0.5ex;
 }
 
 .elfinder-rm-title .elfinder-cwd-icon {
@@ -3438,36 +3629,37 @@ button.elfinder-info-button {
 
 /* File: /css/fonts.css */
 .elfinder-font-mono {
-    font-family: "Ricty Diminished", "Myrica M", Consolas, "Courier New", Courier, Monaco, monospace;
+    font-family: 'Ricty Diminished', 'Myrica M', Consolas, 'Courier New',
+        Courier, Monaco, monospace;
     font-size: 1.1em;
 }
 
 .elfinder-contextmenu .elfinder-contextmenu-item span {
-    font-size: .72em;
+    font-size: 0.72em;
 }
 
 .elfinder-cwd-view-icons .elfinder-cwd-filename {
-    font-size: .7em;
+    font-size: 0.7em;
 }
 
 .elfinder-cwd-view-list td {
-    font-size: .7em;
+    font-size: 0.7em;
 }
 
 .std42-dialog .ui-dialog-titlebar {
-    font-size: .82em;
+    font-size: 0.82em;
 }
 
 .std42-dialog .ui-dialog-content {
-    font-size: .72em;
+    font-size: 0.72em;
 }
 
 .std42-dialog .ui-dialog-buttonpane {
-    font-size: .76em;
+    font-size: 0.76em;
 }
 
 .elfinder-info-tb {
-    font-size: .9em;
+    font-size: 0.9em;
 }
 
 .elfinder-upload-dropbox {
@@ -3479,40 +3671,40 @@ button.elfinder-info-button {
 }
 
 .dialogelfinder .dialogelfinder-drag {
-    font-size: .9em;
+    font-size: 0.9em;
 }
 
 .elfinder .elfinder-navbar {
-    font-size: .72em;
+    font-size: 0.72em;
 }
 
 .elfinder-place-drag .elfinder-navbar-dir {
-    font-size: .9em;
+    font-size: 0.9em;
 }
 
 .elfinder-quicklook-title {
-    font-size: .7em;
+    font-size: 0.7em;
     font-weight: normal;
 }
 
 .elfinder-quicklook-info-data {
-    font-size: .72em;
+    font-size: 0.72em;
 }
 
 .elfinder-quicklook-preview-text-wrapper {
-    font-size: .9em;
+    font-size: 0.9em;
 }
 
 .elfinder-button-menu-item {
-    font-size: .72em;
+    font-size: 0.72em;
 }
 
 .elfinder-button-search input {
-    font-size: .8em;
+    font-size: 0.8em;
 }
 
 .elfinder-statusbar div {
-    font-size: .7em;
+    font-size: 0.7em;
 }
 
 .elfinder-drag-num {
@@ -3520,9 +3712,8 @@ button.elfinder-info-button {
 }
 
 .elfinder-toast {
-    font-size: .76em;
+    font-size: 0.76em;
 }
-
 
 /* File: /css/navbar.css */
 /*********************************************/
@@ -3574,12 +3765,13 @@ button.elfinder-info-button {
 .elfinder-tree {
     display: table;
     width: 100%;
-    margin: 0 0 .5em 0;
+    margin: 0 0 0.5em 0;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 /* one folder wrapper */
-.elfinder-navbar-wrapper, .elfinder-place-wrapper {
+.elfinder-navbar-wrapper,
+.elfinder-place-wrapper {
 }
 
 /* folder */
@@ -3615,7 +3807,7 @@ button.elfinder-info-button {
     display: none;
     top: 50%;
     margin-top: -8px;
-    background-image: url("../img/arrows-normal.png");
+    background-image: url('../img/arrows-normal.png');
     background-repeat: no-repeat;
     /*	border:1px solid #111;*/
 }
@@ -3646,7 +3838,7 @@ button.elfinder-info-button {
 }
 
 .ui-state-active .elfinder-navbar-arrow {
-    background-image: url("../img/arrows-active.png");
+    background-image: url('../img/arrows-active.png');
 }
 
 /* collapsed/expanded arrow view */
@@ -3655,7 +3847,7 @@ button.elfinder-info-button {
 }
 
 .elfinder-subtree-chksubdir .elfinder-navbar-arrow {
-    opacity: .25;
+    opacity: 0.25;
     filter: Alpha(Opacity=25);
 }
 
@@ -3680,7 +3872,7 @@ button.elfinder-info-button {
     position: absolute;
     top: 50%;
     margin-top: -8px;
-    background-image: url("../img/toolbar.png");
+    background-image: url('../img/toolbar.png');
     background-repeat: no-repeat;
     background-position: 0 -16px;
 }
@@ -3716,53 +3908,53 @@ button.elfinder-info-button {
 
 /* root icon of each volume "\9" for IE8 trick */
 .elfinder-tree .elfinder-navbar-root-local .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_local.svg");
-    background-image: url("../img/volume_icon_local.png") \9;
+    background-image: url('../img/volume_icon_local.svg');
+    background-image: url('../img/volume_icon_local.png') \9;
 }
 
 .elfinder-tree .elfinder-navbar-root-trash .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_trash.svg");
-    background-image: url("../img/volume_icon_trash.png") \9;
+    background-image: url('../img/volume_icon_trash.svg');
+    background-image: url('../img/volume_icon_trash.png') \9;
 }
 
 .elfinder-tree .elfinder-navbar-root-ftp .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_ftp.svg");
-    background-image: url("../img/volume_icon_ftp.png") \9;
+    background-image: url('../img/volume_icon_ftp.svg');
+    background-image: url('../img/volume_icon_ftp.png') \9;
 }
 
 .elfinder-tree .elfinder-navbar-root-sql .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_sql.svg");
-    background-image: url("../img/volume_icon_sql.png") \9;
+    background-image: url('../img/volume_icon_sql.svg');
+    background-image: url('../img/volume_icon_sql.png') \9;
 }
 
 .elfinder-tree .elfinder-navbar-root-dropbox .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_dropbox.svg");
-    background-image: url("../img/volume_icon_dropbox.png") \9;
+    background-image: url('../img/volume_icon_dropbox.svg');
+    background-image: url('../img/volume_icon_dropbox.png') \9;
 }
 
 .elfinder-tree .elfinder-navbar-root-googledrive .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_googledrive.svg");
-    background-image: url("../img/volume_icon_googledrive.png") \9;
+    background-image: url('../img/volume_icon_googledrive.svg');
+    background-image: url('../img/volume_icon_googledrive.png') \9;
 }
 
 .elfinder-tree .elfinder-navbar-root-onedrive .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_onedrive.svg");
-    background-image: url("../img/volume_icon_onedrive.png") \9;
+    background-image: url('../img/volume_icon_onedrive.svg');
+    background-image: url('../img/volume_icon_onedrive.png') \9;
 }
 
 .elfinder-tree .elfinder-navbar-root-box .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_box.svg");
-    background-image: url("../img/volume_icon_box.png") \9;
+    background-image: url('../img/volume_icon_box.svg');
+    background-image: url('../img/volume_icon_box.png') \9;
 }
 
 .elfinder-tree .elfinder-navbar-root-zip .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_zip.svg");
-    background-image: url("../img/volume_icon_zip.png") \9;
+    background-image: url('../img/volume_icon_zip.svg');
+    background-image: url('../img/volume_icon_zip.png') \9;
 }
 
 .elfinder-tree .elfinder-navbar-root-network .elfinder-navbar-icon {
-    background-image: url("../img/volume_icon_network.svg");
-    background-image: url("../img/volume_icon_network.png") \9;
+    background-image: url('../img/volume_icon_network.svg');
+    background-image: url('../img/volume_icon_network.png') \9;
 }
 
 /* icon in active/hove/dropactive state */
@@ -3803,7 +3995,7 @@ button.elfinder-info-button {
 .elfinder-navbar .elfinder-perms,
 .elfinder-navbar .elfinder-lock,
 .elfinder-navbar .elfinder-symlink {
-    opacity: .6;
+    opacity: 0.6;
     filter: Alpha(Opacity=60);
 }
 
@@ -3867,7 +4059,7 @@ button.elfinder-info-button {
     position: absolute;
     top: 50%;
     margin: -8px 2px 0 2px;
-    opacity: .5;
+    opacity: 0.5;
     filter: Alpha(Opacity=50);
 }
 
@@ -3905,22 +4097,26 @@ button.elfinder-info-button {
 
 .elfinder-ltr .elfinder-navbar-swipe-handle {
     left: 0px;
-    background: linear-gradient(to right,
-    rgba(221, 228, 235, 1) 0,
-    rgba(221, 228, 235, 0.8) 5px,
-    rgba(216, 223, 230, 0.3) 8px,
-    rgba(0, 0, 0, 0.1) 95%,
-    rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(
+        to right,
+        rgba(221, 228, 235, 1) 0,
+        rgba(221, 228, 235, 0.8) 5px,
+        rgba(216, 223, 230, 0.3) 8px,
+        rgba(0, 0, 0, 0.1) 95%,
+        rgba(0, 0, 0, 0) 100%
+    );
 }
 
 .elfinder-rtl .elfinder-navbar-swipe-handle {
     right: 0px;
-    background: linear-gradient(to left,
-    rgba(221, 228, 235, 1) 0,
-    rgba(221, 228, 235, 0.8) 5px,
-    rgba(216, 223, 230, 0.3) 8px,
-    rgba(0, 0, 0, 0.1) 95%,
-    rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(
+        to left,
+        rgba(221, 228, 235, 1) 0,
+        rgba(221, 228, 235, 0.8) 5px,
+        rgba(216, 223, 230, 0.3) 8px,
+        rgba(0, 0, 0, 0.1) 95%,
+        rgba(0, 0, 0, 0) 100%
+    );
 }
 
 /* File: /css/places.css */
@@ -3956,7 +4152,7 @@ button.elfinder-info-button {
 /* quicklook window */
 .elfinder-quicklook {
     position: absolute;
-    background: url("../img/quicklook-bg.png");
+    background: url('../img/quicklook-bg.png');
     overflow: hidden;
     -moz-border-radius: 7px;
     -webkit-border-radius: 7px;
@@ -3981,7 +4177,7 @@ button.elfinder-info-button {
     height: 14px;
     right: 5px;
     bottom: 3px;
-    background: url("../img/toolbar.png") 0 -496px no-repeat;
+    background: url('../img/toolbar.png') 0 -496px no-repeat;
 }
 
 .elfinder-quicklook.elfinder-touch .ui-resizable-se {
@@ -4104,7 +4300,7 @@ button.elfinder-info-button {
     cursor: pointer;
     border-radius: 10px;
     border: 1px solid;
-    opacity: .7;
+    opacity: 0.7;
     filter: Alpha(Opacity=70);
 }
 
@@ -4113,7 +4309,7 @@ button.elfinder-info-button {
 }
 
 .elfinder-mobile .elfinder-quicklook-titlebar-icon .ui-icon {
-    opacity: .6;
+    opacity: 0.6;
     filter: Alpha(Opacity=60);
 }
 
@@ -4141,7 +4337,9 @@ button.elfinder-info-button {
     margin-right: 10px;
 }
 
-.elfinder-touch .elfinder-quicklook-titlebar-icon.elfinder-titlebar-button-right .ui-icon {
+.elfinder-touch
+    .elfinder-quicklook-titlebar-icon.elfinder-titlebar-button-right
+    .ui-icon {
     margin-left: 10px;
 }
 
@@ -4206,13 +4404,13 @@ button.elfinder-info-button {
 .elfinder-quicklook-info .elfinder-quicklook-info-data:first-child {
     color: #fff;
     font-weight: bold;
-    padding-bottom: .5em;
+    padding-bottom: 0.5em;
 }
 
 /* other data in info */
 .elfinder-quicklook-info-data {
     clear: both;
-    padding-bottom: .2em;
+    padding-bottom: 0.2em;
     color: #fff;
 }
 
@@ -4318,8 +4516,7 @@ button.elfinder-info-button {
     height: 32px;
     margin: 0 7px;
     float: left;
-    background: url("../img/quicklook-icons.png") 0 0 no-repeat;
-
+    background: url('../img/quicklook-icons.png') 0 0 no-repeat;
 }
 
 /* fullscreen icon */
@@ -4376,7 +4573,6 @@ button.elfinder-info-button {
     display: none;
 }
 
-
 /* text files preview wrapper */
 .elfinder-quicklook-preview-text-wrapper {
     width: 100%;
@@ -4395,7 +4591,7 @@ button.elfinder-info-button {
     color: #222;
     font-size: 90%;
     overflow: auto;
-    -webkit-overflow-scrolling: touch
+    -webkit-overflow-scrolling: touch;
 }
 
 /* archive files preview header */
@@ -4467,7 +4663,10 @@ embed.elfinder-quicklook-preview-audio {
 }
 
 /* video.js error message */
-.elfinder-quicklook-preview .vjs-error .vjs-error-display .vjs-modal-dialog-content {
+.elfinder-quicklook-preview
+    .vjs-error
+    .vjs-error-display
+    .vjs-modal-dialog-content {
     font-size: 12pt;
     padding: 0;
     color: #fff;
@@ -4494,7 +4693,7 @@ embed.elfinder-quicklook-preview-audio {
     cursor: default;
     text-align: center;
     font-weight: normal;
-    padding: .2em .5em;
+    padding: 0.2em 0.5em;
     border-right: 0 solid transparent;
     border-bottom: 0 solid transparent;
     border-left: 0 solid transparent;
@@ -4557,7 +4756,7 @@ embed.elfinder-quicklook-preview-audio {
 
 .elfinder-workzone-path .elfinder-path {
     position: relative;
-    font-size: .75em;
+    font-size: 0.75em;
     font-weight: normal;
     float: none;
     max-width: none;
@@ -4633,7 +4832,7 @@ embed.elfinder-quicklook-preview-audio {
 /* info of current selected item */
 .elfinder-stat-selected {
     order: 2;
-    margin: 0 .5em;
+    margin: 0 0.5em;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -4674,7 +4873,7 @@ embed.elfinder-quicklook-preview-audio {
     -moz-box-shadow: 0 0 12px #999999;
     -webkit-box-shadow: 0 0 12px #999999;
     box-shadow: 0 0 12px #999999;
-    color: #FFFFFF;
+    color: #ffffff;
     opacity: 0.9;
     filter: alpha(opacity=90);
     background-color: #030303;
@@ -4682,34 +4881,34 @@ embed.elfinder-quicklook-preview-audio {
 }
 
 .elfinder .elfinder-toast > .toast-info {
-    background-color: #2F96B4;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGwSURBVEhLtZa9SgNBEMc9sUxxRcoUKSzSWIhXpFMhhYWFhaBg4yPYiWCXZxBLERsLRS3EQkEfwCKdjWJAwSKCgoKCcudv4O5YLrt7EzgXhiU3/4+b2ckmwVjJSpKkQ6wAi4gwhT+z3wRBcEz0yjSseUTrcRyfsHsXmD0AmbHOC9Ii8VImnuXBPglHpQ5wwSVM7sNnTG7Za4JwDdCjxyAiH3nyA2mtaTJufiDZ5dCaqlItILh1NHatfN5skvjx9Z38m69CgzuXmZgVrPIGE763Jx9qKsRozWYw6xOHdER+nn2KkO+Bb+UV5CBN6WC6QtBgbRVozrahAbmm6HtUsgtPC19tFdxXZYBOfkbmFJ1VaHA1VAHjd0pp70oTZzvR+EVrx2Ygfdsq6eu55BHYR8hlcki+n+kERUFG8BrA0BwjeAv2M8WLQBtcy+SD6fNsmnB3AlBLrgTtVW1c2QN4bVWLATaIS60J2Du5y1TiJgjSBvFVZgTmwCU+dAZFoPxGEEs8nyHC9Bwe2GvEJv2WXZb0vjdyFT4Cxk3e/kIqlOGoVLwwPevpYHT+00T+hWwXDf4AJAOUqWcDhbwAAAAASUVORK5CYII=") !important;
+    background-color: #2f96b4;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGwSURBVEhLtZa9SgNBEMc9sUxxRcoUKSzSWIhXpFMhhYWFhaBg4yPYiWCXZxBLERsLRS3EQkEfwCKdjWJAwSKCgoKCcudv4O5YLrt7EzgXhiU3/4+b2ckmwVjJSpKkQ6wAi4gwhT+z3wRBcEz0yjSseUTrcRyfsHsXmD0AmbHOC9Ii8VImnuXBPglHpQ5wwSVM7sNnTG7Za4JwDdCjxyAiH3nyA2mtaTJufiDZ5dCaqlItILh1NHatfN5skvjx9Z38m69CgzuXmZgVrPIGE763Jx9qKsRozWYw6xOHdER+nn2KkO+Bb+UV5CBN6WC6QtBgbRVozrahAbmm6HtUsgtPC19tFdxXZYBOfkbmFJ1VaHA1VAHjd0pp70oTZzvR+EVrx2Ygfdsq6eu55BHYR8hlcki+n+kERUFG8BrA0BwjeAv2M8WLQBtcy+SD6fNsmnB3AlBLrgTtVW1c2QN4bVWLATaIS60J2Du5y1TiJgjSBvFVZgTmwCU+dAZFoPxGEEs8nyHC9Bwe2GvEJv2WXZb0vjdyFT4Cxk3e/kIqlOGoVLwwPevpYHT+00T+hWwXDf4AJAOUqWcDhbwAAAAASUVORK5CYII=') !important;
 }
 
 .elfinder .elfinder-toast > .toast-error {
-    background-color: #BD362F;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHOSURBVEhLrZa/SgNBEMZzh0WKCClSCKaIYOED+AAKeQQLG8HWztLCImBrYadgIdY+gIKNYkBFSwu7CAoqCgkkoGBI/E28PdbLZmeDLgzZzcx83/zZ2SSXC1j9fr+I1Hq93g2yxH4iwM1vkoBWAdxCmpzTxfkN2RcyZNaHFIkSo10+8kgxkXIURV5HGxTmFuc75B2RfQkpxHG8aAgaAFa0tAHqYFfQ7Iwe2yhODk8+J4C7yAoRTWI3w/4klGRgR4lO7Rpn9+gvMyWp+uxFh8+H+ARlgN1nJuJuQAYvNkEnwGFck18Er4q3egEc/oO+mhLdKgRyhdNFiacC0rlOCbhNVz4H9FnAYgDBvU3QIioZlJFLJtsoHYRDfiZoUyIxqCtRpVlANq0EU4dApjrtgezPFad5S19Wgjkc0hNVnuF4HjVA6C7QrSIbylB+oZe3aHgBsqlNqKYH48jXyJKMuAbiyVJ8KzaB3eRc0pg9VwQ4niFryI68qiOi3AbjwdsfnAtk0bCjTLJKr6mrD9g8iq/S/B81hguOMlQTnVyG40wAcjnmgsCNESDrjme7wfftP4P7SP4N3CJZdvzoNyGq2c/HWOXJGsvVg+RA/k2MC/wN6I2YA2Pt8GkAAAAASUVORK5CYII=") !important;
+    background-color: #bd362f;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHOSURBVEhLrZa/SgNBEMZzh0WKCClSCKaIYOED+AAKeQQLG8HWztLCImBrYadgIdY+gIKNYkBFSwu7CAoqCgkkoGBI/E28PdbLZmeDLgzZzcx83/zZ2SSXC1j9fr+I1Hq93g2yxH4iwM1vkoBWAdxCmpzTxfkN2RcyZNaHFIkSo10+8kgxkXIURV5HGxTmFuc75B2RfQkpxHG8aAgaAFa0tAHqYFfQ7Iwe2yhODk8+J4C7yAoRTWI3w/4klGRgR4lO7Rpn9+gvMyWp+uxFh8+H+ARlgN1nJuJuQAYvNkEnwGFck18Er4q3egEc/oO+mhLdKgRyhdNFiacC0rlOCbhNVz4H9FnAYgDBvU3QIioZlJFLJtsoHYRDfiZoUyIxqCtRpVlANq0EU4dApjrtgezPFad5S19Wgjkc0hNVnuF4HjVA6C7QrSIbylB+oZe3aHgBsqlNqKYH48jXyJKMuAbiyVJ8KzaB3eRc0pg9VwQ4niFryI68qiOi3AbjwdsfnAtk0bCjTLJKr6mrD9g8iq/S/B81hguOMlQTnVyG40wAcjnmgsCNESDrjme7wfftP4P7SP4N3CJZdvzoNyGq2c/HWOXJGsvVg+RA/k2MC/wN6I2YA2Pt8GkAAAAASUVORK5CYII=') !important;
 }
 
 .elfinder .elfinder-toast > .toast-success {
-    background-color: #51A351;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVEhLY2AYBfQMgf///3P8+/evAIgvA/FsIF+BavYDDWMBGroaSMMBiE8VC7AZDrIFaMFnii3AZTjUgsUUWUDA8OdAH6iQbQEhw4HyGsPEcKBXBIC4ARhex4G4BsjmweU1soIFaGg/WtoFZRIZdEvIMhxkCCjXIVsATV6gFGACs4Rsw0EGgIIH3QJYJgHSARQZDrWAB+jawzgs+Q2UO49D7jnRSRGoEFRILcdmEMWGI0cm0JJ2QpYA1RDvcmzJEWhABhD/pqrL0S0CWuABKgnRki9lLseS7g2AlqwHWQSKH4oKLrILpRGhEQCw2LiRUIa4lwAAAABJRU5ErkJggg==") !important;
+    background-color: #51a351;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADsSURBVEhLY2AYBfQMgf///3P8+/evAIgvA/FsIF+BavYDDWMBGroaSMMBiE8VC7AZDrIFaMFnii3AZTjUgsUUWUDA8OdAH6iQbQEhw4HyGsPEcKBXBIC4ARhex4G4BsjmweU1soIFaGg/WtoFZRIZdEvIMhxkCCjXIVsATV6gFGACs4Rsw0EGgIIH3QJYJgHSARQZDrWAB+jawzgs+Q2UO49D7jnRSRGoEFRILcdmEMWGI0cm0JJ2QpYA1RDvcmzJEWhABhD/pqrL0S0CWuABKgnRki9lLseS7g2AlqwHWQSKH4oKLrILpRGhEQCw2LiRUIa4lwAAAABJRU5ErkJggg==') !important;
 }
 
 .elfinder .elfinder-toast > .toast-warning {
-    background-color: #F89406;
-    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGYSURBVEhL5ZSvTsNQFMbXZGICMYGYmJhAQIJAICYQPAACiSDB8AiICQQJT4CqQEwgJvYASAQCiZiYmJhAIBATCARJy+9rTsldd8sKu1M0+dLb057v6/lbq/2rK0mS/TRNj9cWNAKPYIJII7gIxCcQ51cvqID+GIEX8ASG4B1bK5gIZFeQfoJdEXOfgX4QAQg7kH2A65yQ87lyxb27sggkAzAuFhbbg1K2kgCkB1bVwyIR9m2L7PRPIhDUIXgGtyKw575yz3lTNs6X4JXnjV+LKM/m3MydnTbtOKIjtz6VhCBq4vSm3ncdrD2lk0VgUXSVKjVDJXJzijW1RQdsU7F77He8u68koNZTz8Oz5yGa6J3H3lZ0xYgXBK2QymlWWA+RWnYhskLBv2vmE+hBMCtbA7KX5drWyRT/2JsqZ2IvfB9Y4bWDNMFbJRFmC9E74SoS0CqulwjkC0+5bpcV1CZ8NMej4pjy0U+doDQsGyo1hzVJttIjhQ7GnBtRFN1UarUlH8F3xict+HY07rEzoUGPlWcjRFRr4/gChZgc3ZL2d8oAAAAASUVORK5CYII=") !important;
+    background-color: #f89406;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGYSURBVEhL5ZSvTsNQFMbXZGICMYGYmJhAQIJAICYQPAACiSDB8AiICQQJT4CqQEwgJvYASAQCiZiYmJhAIBATCARJy+9rTsldd8sKu1M0+dLb057v6/lbq/2rK0mS/TRNj9cWNAKPYIJII7gIxCcQ51cvqID+GIEX8ASG4B1bK5gIZFeQfoJdEXOfgX4QAQg7kH2A65yQ87lyxb27sggkAzAuFhbbg1K2kgCkB1bVwyIR9m2L7PRPIhDUIXgGtyKw575yz3lTNs6X4JXnjV+LKM/m3MydnTbtOKIjtz6VhCBq4vSm3ncdrD2lk0VgUXSVKjVDJXJzijW1RQdsU7F77He8u68koNZTz8Oz5yGa6J3H3lZ0xYgXBK2QymlWWA+RWnYhskLBv2vmE+hBMCtbA7KX5drWyRT/2JsqZ2IvfB9Y4bWDNMFbJRFmC9E74SoS0CqulwjkC0+5bpcV1CZ8NMej4pjy0U+doDQsGyo1hzVJttIjhQ7GnBtRFN1UarUlH8F3xict+HY07rEzoUGPlWcjRFRr4/gChZgc3ZL2d8oAAAAASUVORK5CYII=') !important;
 }
 
 .elfinder .elfinder-toast > div button.ui-button {
     background-image: none;
     margin-top: 8px;
-    padding: .5em .8em;
+    padding: 0.5em 0.8em;
 }
 
 .elfinder .elfinder-toast > .toast-success button.ui-button {
     background-color: green;
-    color: #FFF;
+    color: #fff;
 }
 
 .elfinder .elfinder-toast > .toast-success button.ui-button.ui-state-hover {
@@ -4719,17 +4918,17 @@ embed.elfinder-quicklook-preview-audio {
 
 .elfinder .elfinder-toast > .toast-info button.ui-button {
     background-color: #046580;
-    color: #FFF;
+    color: #fff;
 }
 
 .elfinder .elfinder-toast > .toast-info button.ui-button.ui-state-hover {
-    background-color: #7DC6DB;
+    background-color: #7dc6db;
     color: #046580;
 }
 
 .elfinder .elfinder-toast > .toast-warning button.ui-button {
     background-color: #dd8c1a;
-    color: #FFF;
+    color: #fff;
 }
 
 .elfinder .elfinder-toast > .toast-warning button.ui-button.ui-state-hover {
@@ -4819,7 +5018,7 @@ embed.elfinder-quicklook-preview-audio {
 
 .elfinder .elfinder-button.ui-state-disabled .elfinder-button-icon,
 .elfinder .elfinder-button.ui-state-disabled .elfinder-button-text {
-    opacity: .4;
+    opacity: 0.4;
     filter: Alpha(Opacity=40);
 }
 
@@ -4868,7 +5067,8 @@ embed.elfinder-quicklook-preview-audio {
     transform-origin: 12px 8px;
 }
 
-.elfinder-rtl.elfinder-touch .elfinder-button-icon.elfinder-contextmenu-extra-icon {
+.elfinder-rtl.elfinder-touch
+    .elfinder-button-icon.elfinder-contextmenu-extra-icon {
     transform-origin: 4px 8px;
 }
 
@@ -5131,7 +5331,7 @@ embed.elfinder-quicklook-preview-audio {
 
 /* button with spinner icon */
 .elfinder-button-icon-spinner {
-    background: url("../img/spinner-mini.gif") center center no-repeat;
+    background: url('../img/spinner-mini.gif') center center no-repeat;
 }
 
 /* menu */
@@ -5155,7 +5355,7 @@ embed.elfinder-quicklook-preview-audio {
 }
 
 .elfinder-touch .elfinder-button-menu-item {
-    padding: 12px 19px
+    padding: 12px 19px;
 }
 
 /* fix hover ui class */
@@ -5274,7 +5474,7 @@ embed.elfinder-quicklook-preview-audio {
 }
 
 /* search text field */
-.elfinder-button-search input[type=text] {
+.elfinder-button-search input[type='text'] {
     box-sizing: border-box;
     width: 100%;
     height: 26px;
@@ -5307,7 +5507,7 @@ embed.elfinder-quicklook-preview-audio {
     height: 18px;
     top: 50%;
     margin: -8px 4px 0 4px;
-    opacity: .6;
+    opacity: 0.6;
     filter: Alpha(Opacity=60);
 }
 
@@ -5340,11 +5540,12 @@ embed.elfinder-quicklook-preview-audio {
     height: 50px;
     width: 100%;
     pointer-events: none;
-    background: linear-gradient(to bottom,
-    rgba(221, 228, 235, 1) 0,
-    rgba(221, 228, 235, 0.8) 2px,
-    rgba(216, 223, 230, 0.3) 5px,
-    rgba(0, 0, 0, 0.1) 95%,
-    rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(
+        to bottom,
+        rgba(221, 228, 235, 1) 0,
+        rgba(221, 228, 235, 0.8) 2px,
+        rgba(216, 223, 230, 0.3) 5px,
+        rgba(0, 0, 0, 0.1) 95%,
+        rgba(0, 0, 0, 0) 100%
+    );
 }
-

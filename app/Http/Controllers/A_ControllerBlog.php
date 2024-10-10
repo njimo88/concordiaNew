@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\A_Blog_Post;
-use App\Models\A_Categorie1;
-use App\Models\A_Categorie2;
 use App\Models\liaison_blog_posts;
 use App\Models\liaison_blog_terms;
 use Illuminate\Pagination\Paginator;
@@ -14,7 +12,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Mockery\Generator\StringManipulation\Pass\Pass;
 use PhpParser\Node\Stmt\Else_;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Category;
 
 require_once(app_path().'/fonction.php');
 
@@ -74,70 +72,85 @@ class A_ControllerBlog extends Controller
     DB::table('parametre')->where('activate', 1)->increment('determinesection', 1);
 }
 
-    public function a_fetchPost(Request $request){
-        
-        $a_post = A_Blog_Post::latest('date_post')->paginate(3);
-        $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
-        $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
-        $post = DB::table('blog_posts')
-        ->join('system', 'blog_posts.id_blog_post_primaire', '=', 'system.value')
-        ->where('system.id_system', '=', 6)
-        ->select('blog_posts.contenu')
-        ->first();
+public function index(Request $request)
 
-        printUsersBirthdayOnImage();
+{
+    $a_post = A_Blog_Post::latest('date_post')
+        ->join('users', 'blog_posts.id_user', '=', 'users.user_id')
+        ->where('status', 'Publié')
+        ->whereRaw('date_post <= ?', [now()])
+        ->select('blog_posts.*', 'users.name', 'users.lastname', 'users.email')
+        ->paginate(10);
+
+    $a_categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+    $a_categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
+
+    // Article d'accueil
+    $post = DB::table('blog_posts')
+    ->join('system', 'blog_posts.id_blog_post_primaire', '=', 'system.value')
+    ->where('system.id_system', '=', 6)
+    ->select('blog_posts.contenu', 'blog_posts.date_post')
+    ->first();
 
 
-   // Check if request is ajax or not 
-  // If request is ajax then we have to return the data of next page's content in json array
-        if($request->ajax()) {
-            return $data = [
-                    "view" => view('A_Blog_scroll',compact('a_post','a_categorie1','a_categorie2'))->render(),
-                    'url' => $a_post->nextPageUrl()
-                    ];
-            }
+        if ($request->ajax()) {
+            Paginator::currentPageResolver(function () use ($request) {
+                return $request->input('page');
+            });
+    
+            $html = view('posts', compact('a_post', 'a_categorie1', 'a_categorie2'))->render();
+            return response()->json(['html' => $html]);
+        }
 
-            
-      return view('A_Blog_index',compact('a_post','a_categorie1','a_categorie2','post'))->with('user', auth()->user());
+    return view('A_Blog_index', compact('a_post', 'a_categorie1', 'a_categorie2', 'post'))->with('user', auth()->user());
 }
+
+
+
+
+
 
 public function Simple_Post($id){
-    $a_post = A_Blog_Post::find($id);
-    $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
-    $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
-    return view('club.Simple_Post',compact('a_post','a_categorie1','a_categorie2'))->with('user', auth()->user());
+    $a_article = A_Blog_Post::join('users', 'blog_posts.id_user', '=', 'users.user_id')
+    ->select('blog_posts.*', 'users.name', 'users.lastname', 'users.email')
+    ->where('blog_posts.id_blog_post_primaire', $id)
+    ->first();
+
+
+    $a_categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+    $a_categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
+    return view('club.Simple_Post',compact('a_article','a_categorie1','a_categorie2'))->with('user', auth()->user());
 }
+
 public function recherche_par_cat1(Request $request, $id) {
+    
 
-    // $a_requete1 = A_Blog_Post::latest('date_post')->paginate(5);
-    $a_requete1 = A_Blog_Post::latest('date_post')->paginate(5000);
-    $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
-    $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
-   
-    $a_result = $id ;
+    $blogs = A_Blog_Post::whereJsonContains('categorie1', intval($id))->latest('date_post')->paginate(6);
 
 
+    $a_categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+    $a_categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
+    $a_result = $id;
 
-    return view('A_blog_par_categorie1', compact('a_requete1','a_result','a_categorie1','a_categorie2'))->with('user', auth()->user()) ;
-   
+    return view('A_blog_par_categorie1', compact('blogs', 'a_result', 'a_categorie1', 'a_categorie2'))->with('user', auth()->user());
+}
 
 
-    }
    
 
 public function recherche_par_cat2(Request $request, $id) {
 
+    $blogs = A_Blog_Post::whereJsonContains('categorie2', intval($id))->latest('date_post')->paginate(6);
 
-    $a_requete1 = A_Blog_Post::latest('date_post')->paginate(1000);
-    $a_categorie1 = A_Categorie1::select('Id_categorie1','image')->get();
-    $a_categorie2 = A_Categorie2::select('Id_categorie2','image')->get();
+    $a_categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
+    $a_categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
  
    
     $a_result = $id ;
 
 
 
-    return view('A_blog_par_categorie2', compact('a_requete1','a_result','a_categorie1','a_categorie2'))->with('user', auth()->user()) ;
+    return view('A_blog_par_categorie2', compact('blogs','a_result','a_categorie1','a_categorie2'))->with('user', auth()->user()) ;
     
 }
 
@@ -174,7 +187,7 @@ public function recherche_par_cat2(Request $request, $id) {
            }
            $cat2 = array_unique($cat2);
            $cat2 = json_encode($cat2);
-           $a_ma_requete->categorie1 = $cat2;
+           $a_ma_requete->categorie = $cat2;
            $a_ma_requete->save();
 
          
@@ -217,7 +230,7 @@ public function recherche_par_cat2(Request $request, $id) {
            }
            $cat2 = array_unique($cat2);
            $cat2 = json_encode($cat2);
-           $a_ma_requete->categorie2 = $cat2;
+           $a_ma_requete->categorie = $cat2;
            $a_ma_requete->save();
 
          

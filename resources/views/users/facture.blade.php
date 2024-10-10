@@ -6,7 +6,7 @@
 <div class="py-5" style="min-height:100vh; background-image: url('{{asset("/assets/images/background.png")}}'); color:#fff;">
     <div class="container border border-dark" style=" background : #fff">
         <div class="row d-flex justify-content-center">
-            <div class="col-11 d-flex justify-content-between   text-dark my-4 p-5">
+            <div class="col-11 d-flex justify-content-between   text-dark p-4">
                 <div>
                     <h1>Liste des factures/Devis</h1>
                 </div>
@@ -38,14 +38,14 @@
                                                 </div>
                                         @endif
                                     </div>
-                                    <form>
-                                        <div class="form-check">
+                                    <form class="row mb-3">
+                                        <div class="form-check col-1">
                                             <input class="form-check-input" type="checkbox" value="" id="factureCheckbox" checked>
                                             <label class="form-check-label" for="factureCheckbox">
                                                 Facture
                                             </label>
                                         </div>
-                                        <div class="form-check">
+                                        <div class="form-check col-2">
                                             <input class="form-check-input" type="checkbox" value="" id="devisCheckbox" checked>
                                             <label class="form-check-label" for="devisCheckbox">
                                                 Devis
@@ -53,7 +53,7 @@
                                         </div>
                                     </form>
                                     <div class="overflow-x">
-                                        <table style=" border: 1px solid ;background : #fff;" id="myTable"  class="table cust-datatable dataTable no-footer">
+                                        <table style=" border: 1px solid ;background : #fff;" id="myTablefacture"  class="table cust-datatable dataTable no-footer">
                                             <thead>
                                                 <th style="min-width:50px;"> <a>ID Facture</a></th>
                                                 <th style="min-width:150px;"><a>Nom</a></th>
@@ -61,7 +61,7 @@
                                                 <th id="date" style="min-width:100px;"><a >Date</a></th>
                                                 <th style="min-width:100px;"><a >Total</a></th>
                                                 <th style="min-width:150px;"><a >Statut</a></th>
-                                                <th style="min-width:150px">Actions</th>
+                                                
                                             </thead>                            
                                             <tbody>
                                                 @foreach ($bill as $bills )
@@ -69,10 +69,10 @@
                                                     <tr data-bill-type="{{ $bills->type }}" style="background-color: {{ $bills->row_color}}"> 
                                                         <td>
                                                             <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Afficher Facture">
-                                                                <a type="button" class=" user-link a text-black "  href="{{ route('user.showBill', ['id' => $bills->id]) }}">{{ intval($bills->id) }}</i></a>
+                                                                <a type="button" target="_blank" class=" user-link a text-black "  href="{{ route('user.showBill', ['id' => $bills->id]) }}">{{ intval($bills->id) }}</i></a>
                                                             </span>
                                                         </td>
-                                                        <td style="font-weight : bold;">{{ $user->lastname}}</td> 
+                                                        <td style="font-weight : bold;">{{ $user->lastname}} {{ $user->name}}</td> 
                                                         <td><img style="height: 30px" src="{{ $bills->image}}" alt="">
                                                             <span style="display: none;">{{ $bills->payment_method}}</span>
                                                         </td>
@@ -86,17 +86,7 @@
                                                             <img src="{{ $bills->image_status }}" alt="Caution acceptée">
                                                             <span style="display: none;">{{ $bills->status}}</span>
                                                         </td>
-                                                        <td>   
-                                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="DELETE">
-                                                                <a data-toggle="modal" data-target="#deleteUserFacture{{ $bills->id }}" href="" type="button" class="btn  rounded-circle "><i style="color: red" class="fa-solid fa-trash"></i></a>
-                                                            </span> 
-                                                            @include('users.modals.deleteFacture')
-                                                            @if ($bills->type == 'devis')
-                                                            <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Ajout Panier">
-                                                                <a data-toggle="modal" data-target="" href="" type="button" class=""><i class="fa-solid fa-euro-sign"></i></a>
-                                                            </span>
-                                                            @endif
-                                                        </td>
+                                                        
                                                     </tr>        
                                                 @endforeach  
                                                 
