@@ -147,28 +147,59 @@
       border-radius: 8px;
       margin-bottom: 20px;
   }
+  .CreatArticle:hover {
+    background-color: #303f9f;
+    color: #303f9f;
+
+}
 </style>
 
 <main class="main" id="main">
     <h1>Gestion des Articles</h1>
-
+   
     <div class="container">
         <div class="season-selector row align-items-center">
-            <div class="col-md-2">
-                <label for="season" class="col-md-12">Sélectionner la saison :</label>
-                <select id="season" class="form-control">
-                    @foreach($saisons as $saison)
-                    <option value="{{ $saison->saison }}" @if($saison->saison == $saison_active) selected @endif>
-                        {{ $saison->saison }}-{{ intval($saison->saison) + 1 }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
+            <form action="{{route('Article2_fetchArticles')}}" method="POST" id="autoSubmitFormSaison">
+                @csrf
+                
+                <div class="col-md-6 row">
+
+                    <div class="col">
+                        <label for="season" class="col-md-12 text-black"> saison :</label>
+                        <select id="season" class="form-control" name="saison" onchange="submitForm()" >
+                            @foreach($saisons as $saison)
+                            <option value="{{ $saison->saison }}" @if($saison->saison == $saison_active) selected @endif>
+                                {{ $saison->saison }}-{{ intval($saison->saison) + 1 }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    
+                    <div class="col form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="mySwitch" name="expire" value="something" 
+                        @if($oldArticles == true) checked @endif onchange="submitForm()">
+                        <label class="form-check-label text-black" for="mySwitch">éxperer</label>
+                    </div>
+
+                    <div class=" col btn-group">
+                        <button type="button" class="btn btn-oldArticlesBtn dropdown-toggle" data-bs-toggle="dropdown">crée article </button>
+                        <div class="dropdown-menu">
+                          <a class="dropdown-item CreatArticle" href="{{ route('index_create_article_member') }}">de type membre </a>
+                          <a class="dropdown-item CreatArticle" href="{{ route('index_create_article_produit') }}">de type produit</a>
+                          <a class="dropdown-item CreatArticle" href="{{ route('index_create_article_lesson') }}">de type cours</a>
+                        </div>
+                    </div>
+                </div>
+                
+            </form>
+
+
+            
             <div class="col-md-3 text-right">
-                <button id="oldArticlesBtn" class="btn btn-oldArticlesBtn">Ancien articles</button>
+                <!-- <button id="oldArticlesBtn"  class="btn btn-oldArticlesBtn">Ancien articles</button> -->
             </div>
         </div>
-    </div>
+    </div> 
 
     <div id="articles-container">
         <!-- Articles initiaux rendus ici -->
@@ -246,129 +277,10 @@
         </table>
     </div>
 </main>
-
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const seasonSelector = document.getElementById('season');
-    const oldArticlesBtn = document.getElementById('oldArticlesBtn');
-    let showOldArticles = false;
-
-    seasonSelector.addEventListener('change', () => {
-        const selectedSeason = seasonSelector.value;
-        console.log('Season changed:', selectedSeason, 'Show old articles:', showOldArticles);
-        fetchArticles(selectedSeason, showOldArticles);
-    });
-
-oldArticlesBtn.addEventListener('click', () => {
-    showOldArticles = !showOldArticles; // Basculer entre true et false
-    const selectedSeason = seasonSelector.value;
-
-    // Mettre à jour le texte du bouton en fonction de l'état
-    oldArticlesBtn.textContent = showOldArticles ? 'Voir articles actuels' : 'Ancien articles';
-
-    console.log('Toggled articles view:', showOldArticles ? 'Showing old articles' : 'Showing current articles');
-    
-    // Fetch articles en fonction de l'état
-    fetchArticles(selectedSeason, showOldArticles);
-});
-
-
-function fetchArticles(selectedSeason, showOldArticles) {
-    console.log(`Fetching articles for season: ${selectedSeason} | Show old articles: ${showOldArticles}`);
-
-    fetch(`/articles/fetch?saison=${selectedSeason}&oldArticles=${showOldArticles}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Error fetching articles: ${response.statusText}`);
-            }
-            return response.json();
-        })
-        .then(articles => {
-            console.log('Articles fetched:', articles);
-            updateArticlesTable(articles);
-        })
-        .catch(error => {
-            console.error('Error fetching articles:', error);
-        });
-}
-
-
-    function updateArticlesTable(articles) {
-        const articlesContainer = document.getElementById('articles-container');
-
-        articlesContainer.innerHTML = ''; // Clear existing content
-
-        let html = `
-            <table class="articles-table">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Référence</th>
-                        <th>Titre</th>
-                        <th>Statut</th>
-                        <th class="prix">Prix TTC</th>
-                        <th class="prix">Prix Cumulé</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        if (articles.length === 0) {
-            html += `<tr><td colspan="8">Aucun article trouvé</td></tr>`;
-        } else {
-            articles.forEach(article => {
-                const now = new Date();
-                const startValidity = new Date(article.startvalidity);
-                const endValidity = new Date(article.endvalidity);
-                const isValid = now >= startValidity && now <= endValidity;
-
-                html += `
-                    <tr>
-                        <td><img class="articleImage" src="${article.image}" alt="Image de l'article"></td>
-                        <td>${article.ref}</td>
-                        <td>
-                            ${article.title}
-                            ${article.sex_limite === null ? '<img src="assets/images/genders.png" alt="icône null">' : ''}
-                            ${article.sex_limite === 'female' ? '<img src="assets/images/femenine.png" alt="icône female">' : ''}
-                            ${article.sex_limite === 'male' ? '<img src="assets/images/male.png" alt="icône male">' : ''}
-                        </td>
-                        <td>${isValid ? '<i class="fa fa-circle text-success"></i>' : '<i class="fa fa-circle text-danger"></i>'}</td>
-                        <td class="prix">${article.price.toFixed(2).replace('.', ',')} €</td>
-                        <td class="prix">${article.totalprice.toFixed(2).replace('.', ',')} €</td>
-                        <td>${article.stock_actuel}/${article.stock_ini}</td>
-                        <td>
-                            <div class="button-group">
-                                <a target="_blank" href="/edit_article/${article.id_shop_article}">
-                                    <button class="button edit">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </button>
-                                </a>
-                                <a href="/delete_article/${article.id_shop_article}">
-                                    <button class="button delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </a>
-                                <a href="/duplicate_article_index/${article.id_shop_article}">
-                                    <button class="button duplicate">
-                                        <i class="fa fa-clone"></i>
-                                    </button>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        html += `
-                </tbody>
-            </table>
-        `;
-
-        articlesContainer.innerHTML = html;
+    //auto refrech on change select and saison 
+    function submitForm() {
+        document.getElementById('autoSubmitFormSaison').submit();
     }
-});
 </script>
 @endsection

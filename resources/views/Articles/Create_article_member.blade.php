@@ -19,7 +19,7 @@
 
         <div class="row py-4 justify-content-end">
                 <div class="col-md-12">
-                        <a href="{{route('index_article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
+                        <a href="{{route('article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
                 </div>
         </div>
 

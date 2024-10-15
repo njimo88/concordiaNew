@@ -312,8 +312,6 @@ Route::get('/Article/create/lesson', [Article_Controller::class, 'index_create_l
 
 
 
-
-
 // route pour afficher le formulaire de facon dynamique sur la date des cours , declencher avec le boutons ajouter une seance
 Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name('test_create_article');
 
@@ -322,7 +320,11 @@ Route::get('/Article/createp', [Article_Controller::class, 'test_create'])->name
 /*------------------------------ Article v2 Back office ----------------------------------------- */
 Route::middleware(['auth'])->group(function () {
     Route::get('/article', [ArticlePostController::class, 'index'])->name('article');
-    Route::get('/articles/fetch', [ArticlePostController::class, 'fetchArticles']);
+    Route::get('/articles/fetch', [ArticlePostController::class, 'fetchArticles'])->name('Article2_fetchArticles');
+    Route::post('/articles/fetch', [ArticlePostController::class, 'fetchArticles'])->name('Article2_fetchArticles');
+
+
+
 
 });
 /*------------------------------ BLOG BACK OFFICE ----------------------------------------- */
