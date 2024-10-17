@@ -84,41 +84,45 @@ class Article_Controller extends Controller
     // Affichage du formulaire creation des produits de type membre
     public function index_create_member(){
 
-        
-        $requete_article = Shop_article::get() ;
+        //$requete_article = Shop_article::get() ; unused 
+      
         $requete_cate = Shop_category::get() ;
-
-        $requete_prof = User::select("*")->where('role','>', 29)->get();
+       
+        //$requete_prof = User::select("*")->where('role','>', 29)->get(); unused
 
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
-        return view('Articles/Create_article_member',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
+        //return view('Articles/Create_article_member',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ; old
+        return view('Articles/Create_article_member',compact('requete_cate','saison_list'))->with('user', auth()->user()) ;
+        
     }
 // Affichage du formulaire creation des produits de type produit
     public function index_create_produit(){
 
-        
-        $requete_article = Shop_article::get() ;
+        //$requete_article = Shop_article::get() ; unused
+
         $requete_cate = Shop_category::get() ;
 
-        $requete_prof = User::select("*")->where('role','>', 29)->get();
+        //$requete_prof = User::select("*")->where('role','>', 29)->get(); unused 
 
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
-        return view('Articles/Create_article_produit',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
+        //return view('Articles/Create_article_produit',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
+        return view('Articles/Create_article_produit',compact('requete_cate','saison_list'))->with('user', auth()->user()) ;
     }
 // Affichage du formulaire creation des produits de type lesson
     public function index_create_lesson(){
 
         
-        $requete_article = Shop_article::get() ;
+        //$requete_article = Shop_article::get() ; unused 
+        
         $requete_cate = Shop_category::get() ;
 
         $requete_prof = User::select("*")->where('role','>', 29)->get();
 
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
 
-        return view('Articles/Create_article_lesson',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
+        return view('Articles/Create_article_lesson',compact('requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
     }
 
 //------------------- CREATION DES DIFFERENTS TYPES D'ARTICLES-------------------------
