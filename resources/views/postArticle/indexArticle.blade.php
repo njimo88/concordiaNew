@@ -178,7 +178,7 @@
                     <div class="col form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="mySwitch" name="expire" value="something" 
                         @if($oldArticles == true) checked @endif onchange="submitForm()">
-                        <label class="form-check-label text-black" for="mySwitch">éxperer</label>
+                        <label class="form-check-label text-black" for="mySwitch">Anciens Articles</label>
                     </div>
 
                     <div class=" col btn-group">
