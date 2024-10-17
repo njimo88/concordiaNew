@@ -25,7 +25,6 @@ class CheckFirstLoginOfDay
 
         if (!Cache::get($cacheKey)) {
 
-            printUsersBirthdayOnImage();
             
             Cache::put($cacheKey, true, Carbon::tomorrow()->diffInSeconds(Carbon::now()));
         }
