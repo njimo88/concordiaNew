@@ -324,8 +324,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/articles/fetch', [ArticlePostController::class, 'fetchArticles'])->name('Article2_fetchArticles');
 
 
-
-
 });
 /*------------------------------ BLOG BACK OFFICE ----------------------------------------- */
 

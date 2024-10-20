@@ -149,10 +149,33 @@
   }
   .CreatArticle:hover {
     background-color: #303f9f;
-    color: #303f9f;
+    color: #303f9f;}
 
-}
+/* Down arrow for the title price ...... */
+    th.sortable {
+            cursor: pointer;
+            position: relative;
+        }
+        th.sortable:after {
+            content: '';
+            padding-left: 5px;
+        }
+        th.sortable.asc:after {
+            content: '▲'; /* Up arrow */
+            color: white;
+        }
+        th.sortable.desc:after {
+            content: '▼'; /* Down arrow */
+            color: white;
+        }
+/* end Down arrow for the title price ...... */
+
+
 </style>
+@php
+require_once(app_path().'/fonction.php');
+
+@endphp
 
 <main class="main" id="main">
     <h1>Gestion des Articles</h1>
@@ -175,24 +198,33 @@
                         </select>
                     </div>
                     
+                    
+
                     <div class="col form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="mySwitch" name="expire" value="something" 
                         @if($oldArticles == true) checked @endif onchange="submitForm()">
                         <label class="form-check-label text-black" for="mySwitch">Anciens Articles</label>
                     </div>
+                   
 
-                    <div class=" col btn-group">
-                        <button type="button" class="btn btn-oldArticlesBtn dropdown-toggle" data-bs-toggle="dropdown">crée article </button>
+                    <div class=" col btn-group mt-2">
+                        <button type="button" class="btn btn-oldArticlesBtn dropdown-toggle " data-bs-toggle="dropdown">crée article </button>
                         <div class="dropdown-menu">
                           <a class="dropdown-item CreatArticle" href="{{ route('index_create_article_member') }}">de type membre </a>
                           <a class="dropdown-item CreatArticle" href="{{ route('index_create_article_produit') }}">de type produit</a>
                           <a class="dropdown-item CreatArticle" href="{{ route('index_create_article_lesson') }}">de type cours</a>
                         </div>
                     </div>
+                    <div class="col">
+                        @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
+                        <button id="updateStock" class="btn btn-oldArticlesBtn">
+                            <i class="fas fa-sync"></i> mise a jour de stock
+                        </button>
+                          @endif
+                    </div>
                 </div>
                 
             </form>
-
 
             
             <div class="col-md-3 text-right">
@@ -203,17 +235,17 @@
 
     <div id="articles-container">
         <!-- Articles initiaux rendus ici -->
-        <table class="articles-table" class="">
+        <table class="articles-table" class="" id="articleTable">
             <thead>
                 <tr>
-                    <th>Image</th>
-                    <th>Référence</th>
-                    <th>Titre</th>
-                    <th>Statut</th>
-                    <th class="prix">Prix TTC</th>
-                    <th class="prix">Prix Cumulé</th>
-                    <th>Stock</th>
-                    <th>Actions</th>
+                    <th onclick="sortTable(0); toggleSort('Image')" class="sortable" data-sort="asc">Image</th>
+                    <th onclick="sortTable(1); toggleSort('Référence')" class="sortable" data-sort="asc">Référence</th>
+                    <th onclick="sortTable(2); toggleSort('Titre')" class="sortable" data-sort="asc">Titre</th>
+                    <th >Statut</th>
+                    <th onclick="sortTableNumbers(4); toggleSort('Prix TTC')" class="sortable prix" data-sort="asc" >Prix TTC</th>
+                    <th onclick="sortTableNumbers(5); toggleSort('Prix Cumulé')" class="sortable prix" data-sort="asc" >Prix Cumulé</th>
+                    <th onclick="sortTableNumbers(6); toggleSort('Stock')" class="sortable " data-sort="asc" >Stock</th>
+                    <th >Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -253,23 +285,26 @@
                     <td class="prix">{{ number_format($article->totalprice, 2, ',', ' ') }} €</td>
                     <td>{{$article->stock_actuel}}/{{ $article->stock_ini }}</td>
                     <td>
-                        <div class="button-group">
-                            <a target="_blank" href="{{ route('edit_article', ['id' => $article->id_shop_article]) }}">
-                                <button class="button edit" article-title="Edit" article-toggle="modal" article-target="#edit">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
-                            </a>
-                            <a href="{{ route('delete_article', ['id' => $article->id_shop_article]) }}">
-                                <button class="button delete" article-title="Delete" article-toggle="modal" article-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </a>
-                            <a href="{{ route('duplicate_article_index', ['id' => $article->id_shop_article]) }}">
-                                <button class="button duplicate" article-title="Edit" article-toggle="modal">
-                                    <i class="fa fa-clone"></i>
-                                </button>
-                            </a>
-                        </div>
+                        @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
+                            <div class="button-group">
+                                <a target="_blank" href="{{ route('edit_article', ['id' => $article->id_shop_article]) }}">
+                                    <button class="button edit" article-title="Edit" article-toggle="modal" article-target="#edit">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                </a>
+                                <a href="{{ route('delete_article', ['id' => $article->id_shop_article]) }}">
+                                    <button class="button delete" article-title="Delete" article-toggle="modal" article-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </a>
+                                <a href="{{ route('duplicate_article_index', ['id' => $article->id_shop_article]) }}">
+                                    <button class="button duplicate" article-title="Edit" article-toggle="modal">
+                                        <i class="fa fa-clone"></i>
+                                    </button>
+                                </a>
+                            </div>
+                        @endif
+                        
                     </td>
                 </tr>
                 @endforeach
@@ -282,5 +317,138 @@
     function submitForm() {
         document.getElementById('autoSubmitFormSaison').submit();
     }
+
 </script>
+
+
+<script> 
+    //sort the article table 
+    function sortTable(n) {
+        
+      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById("articleTable");
+      switching = true;
+      //Set the sorting direction to ascending:
+      dir = "asc"; 
+     
+      while (switching) {
+        //start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        
+        for (i = 1; i < (rows.length - 1); i++) {
+          //start by saying there should be no switching:
+          shouldSwitch = false;
+          
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              //if so, mark as a switch and break the loop:
+              shouldSwitch= true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              //if so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          //Each time a switch is done, increase this count by 1:
+          switchcount ++;      
+        } else {
+          
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+
+        //sort numbers 
+    function sortTableNumbers(n) {
+      var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById("articleTable");
+      switching = true;
+      //Set the sorting direction to ascending:
+      dir = "asc"; 
+   
+      while (switching) {
+        //start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+          //start by saying there should be no switching:
+          shouldSwitch = false;
+        
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+     
+          let value = x.innerHTML;
+          let value2 = y.innerHTML;  // The string you want to process
+          let numericValue = value.replace(/[^0-9,.-]/g, '');
+          let numericValue2 = value2.replace(/[^0-9,.-]/g, '');
+          numericValue = numericValue.replace(',', '.');
+          numericValue2 = numericValue2.replace(',', '.');
+          let number = parseFloat(numericValue);
+          let number2 = parseFloat(numericValue2);
+
+          if (dir == "asc") {
+            if (Number(number) > Number(number2)) {
+              //if so, mark as a switch and break the loop:
+              shouldSwitch= true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (Number(number) < Number(number2)) {
+              //if so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          //Each time a switch is done, increase this count by 1:
+          switchcount ++;      
+        } else {
+       
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+
+    // change the arrow that apear on clicking the title or price ..... 
+    function toggleSort(column) {
+        const headers = document.querySelectorAll('th.sortable');
+        headers.forEach(header => header.classList.remove('asc', 'desc')); // Remove sort classes
+
+        const clickedHeader = document.querySelector(`th[onclick*="${column}"]`);
+        const currentSort = clickedHeader.getAttribute('data-sort');
+
+        if (currentSort === 'asc') {
+            clickedHeader.classList.add('desc'); // Add descending class
+            clickedHeader.setAttribute('data-sort', 'desc'); // Update data-sort attribute
+        } else {
+            clickedHeader.classList.add('asc'); // Add ascending class
+            clickedHeader.setAttribute('data-sort', 'asc'); // Update data-sort attribute
+        }
+    }
+    </script>
+
+    
+    
 @endsection
