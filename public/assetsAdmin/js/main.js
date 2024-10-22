@@ -900,8 +900,11 @@ $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function (d) {
 
 $(document).ready(function () {
     /*----------------------- members------------------------------*/
-    $('#search').on('input', function () {
-        var search = $(this).val()
+    
+    //when the user click the search button 
+    document.getElementById("searchButton").addEventListener("click", function() {
+        var search = document.getElementById("search").value
+        $('#enter-message').hide();  // Hide if search input is empty
 
         $.ajax({
             url: '/admin/members/search',
@@ -917,6 +920,56 @@ $(document).ready(function () {
                 initDataTable()
             },
         })
+
+    });
+
+    $('#search').on('keyup', function (event) {
+
+        //press ENTER =code 13 to triger a search without pagination
+        if (event.keyCode === 13 || event.which === 13) {
+            var search = $(this).val()
+
+           //when press ENTER hide the message that say " Appuyez sur Entrée pour voir tous les résultats"
+            $('#enter-message').hide();  // Hide if search input is empty
+
+            $.ajax({
+                url: '/admin/members/search',
+                method: 'GET',
+                data: {
+                    search: search,
+                },
+                success: function (data) {
+                    if ($.fn.dataTable.isDataTable('#myTableMembers')) {
+                        $('#myTableMembers').DataTable().destroy()
+                    }
+                    $('#myTableMembers tbody').html(data)
+                    initDataTable()
+                },
+            })
+        }else{
+            var search = $(this).val()
+
+             //show the message that say "  Appuyez sur Entrée pour voir tous les résultats "
+            if (search.length > 0) {
+                $('#enter-message').show();
+            } else {
+                $('#enter-message').hide();  // Hide if search input is empty
+            }
+            $.ajax({
+                url: '/admin/members/search_pagination',
+                method: 'GET',
+                data: {
+                    search: search,
+                },
+                success: function (data) {
+                    if ($.fn.dataTable.isDataTable('#myTableMembers')) {
+                        $('#myTableMembers').DataTable().destroy()
+                    }
+                    $('#myTableMembers tbody').html(data)
+                    initDataTable()
+                },
+            })
+        }
     })
 
     // Initialize DataTable if not already initialized

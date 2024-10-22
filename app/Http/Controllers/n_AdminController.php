@@ -129,7 +129,7 @@ class n_AdminController extends Controller
     public function search(Request $request)
     {
         $query = User::query();
-    
+        
         if ($request->has('search') && $request->search !== '') {
             $query->where('username', 'like', '%' . $request->search . '%')
                 ->orWhere('name', 'like', '%' . $request->search . '%')
@@ -138,7 +138,24 @@ class n_AdminController extends Controller
         }
     
         $users = $query->get();
+       
+        return view('admin.members_search_results', compact('users'));
+    }
+    
+    public function search_pagination(Request $request)
+    {
+        $query = User::query();
         
+        if ($request->has('search') && $request->search !== '') {
+            $query->where('username', 'like', '%' . $request->search . '%')
+                ->orWhere('name', 'like', '%' . $request->search . '%')
+                ->orWhere('lastname', 'like', '%' . $request->search . '%')
+                ->orWhere('email', 'like', '%' . $request->search . '%')
+                ->paginate(50);
+        }
+    
+        $users = $query->get();
+       
         return view('admin.members_search_results', compact('users'));
     }
     
