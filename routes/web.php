@@ -128,7 +128,8 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/admin/members/editUser/{user_id}', [n_AdminController::class, 'editUsermodal']);
     Route::get('/admin/members/delete/{user_id}', [n_AdminController::class, 'DeleteUser'])->name('admin.DeleteUser');
     Route::get('/admin/members/deletemodal/{user_id}', [n_AdminController::class, 'DeleteUsermodal']);
-    Route::get('/admin/members/search', [n_AdminController::class, 'search'])->name('members.search');
+    Route::get('/admin/members/search', [n_AdminController::class, 'search'])->name('members.search');# this triger a search of all user when the user press ENTER 
+    Route::get('/admin/members/search_pagination', [n_AdminController::class, 'search_pagination'])->name('members.search_pagination'); #this triger a search while the user writing with pagination of 100 user max
 
 
     Route::get('/admin/portes', [n_AdminController::class, 'PortOuvindex'])->name('portesOuvertes');

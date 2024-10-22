@@ -159,12 +159,18 @@
                                     {{ session('success') }}
                                 </div>
                         @endif
-                        <div class="col-6 form-group  ">
+                        <div class="col-5 form-group  ">
+
                             <input type="text" id="search" class="form-control" placeholder="Rechercher">
+                            <p id="enter-message" style="display:none; color: rgb(230, 6, 6); font-size: 13px;">Appuyez sur Entrée/Rechercher pour voir tous les résultats</p>
+
+                        </div>
+                        <div class="col-2 form-group mt-3 d-flex justify-content-end">
+                                <button id="searchButton" type="button"  class="m-0 user-link btn btn-primary">Rechercher </button>
                         </div>
                         <!-- Button trigger modal -->
                         @if (auth()->user()->roles->supprimer_edit_ajout_user)
-                            <div class="col-6 form-group mt-3 d-flex justify-content-end">
+                            <div class="col-5 form-group mt-3 d-flex justify-content-end">
                                 <button data-toggle="modal" data-target="#addMember" type="button"  class="m-0 user-link btn btn-primary">Ajouter un membre <i class="mx-2 fa-solid fa-plus"></i></button>
                             </div>
                         @endif
@@ -190,7 +196,9 @@
                                 <tbody>
                                    
                                 </tbody>
+                                
                             </table>
+                          
                             
                         </div>
                         
