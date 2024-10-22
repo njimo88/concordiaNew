@@ -43,7 +43,7 @@ foreach($Shop_article as $value1){
                                                      
                                                  </div>
                                                  <div class="col-md-12">
-                                                     <a href="{{route('index_article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
+                                                     <a href="{{route('article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
                                                  </div>
                              </div>
                              
@@ -381,7 +381,7 @@ foreach($Shop_article as $value1){
                                                     
                                                 </div>
                                                 <div class="col-md-12">
-                                                    <a href="{{route('index_article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
+                                                    <a href="{{route('article')}}"><button style="float: right" class="btn btn-danger"> Retour</button></a>
                                                 </div>
                             </div>
                             
@@ -823,7 +823,7 @@ foreach($Shop_article as $value1){
        <main id="main" class="main">
         <div class="row mb-5 d-flex justify-content-end">
             <div class="col-md-12 d-flex justify-content-end">
-                <a href="{{route('index_article')}}">
+                <a href="{{route('article')}}">
                     <button class="btn btn-danger">Retour</button>
                 </a>
             </div>

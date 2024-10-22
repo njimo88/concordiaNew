@@ -18,7 +18,7 @@
                                              
                                          </div>
                                          <div class="col-md-2">
-                                             <a href="{{route('index_article')}}"><button class="btn btn-warning"> retour</button></a>
+                                             <a href="{{route('article')}}"><button class="btn btn-warning"> retour</button></a>
                                          </div>
                      </div>
 

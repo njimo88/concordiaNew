@@ -452,7 +452,7 @@ class Article_Controller extends Controller
             $requete_prof = User::select("*")->where('role','>', 29)->get();
 
 
-$Shop_article = Shop_article::where('id_shop_article', $id)->get();
+            $Shop_article = Shop_article::where('id_shop_article', $id)->get();
 
             $shop_article_0 = shop_article_0::where('id_shop_article', $id)->get();
             $shop_article  = Shop_article::where('id_shop_article', $id)->first();
@@ -542,7 +542,7 @@ $Shop_article = Shop_article::where('id_shop_article', $id)->get();
 
 
                         
-                            return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+                            return redirect()->route('article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
                             
                                         
 
@@ -600,7 +600,7 @@ $Shop_article = Shop_article::where('id_shop_article', $id)->get();
 
 
             
-    return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+    return redirect()->route('article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
 
                            
                               
@@ -640,7 +640,7 @@ $Shop_article = Shop_article::where('id_shop_article', $id)->get();
     $article->updateInitialStock();
 
 
-    return redirect()->route('index_article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
+    return redirect()->route('article')->with('user', auth()->user())->with('success', 'article a été dupliqué avec succès');
 }
 
 
@@ -686,8 +686,6 @@ public function delete($id)
 
         $requete_prof = User::select("*")->where('role','>', 29)->get();
         $rooms = rooms::orderBy('name', 'asc')->get();
-
-
         $saison_list = Parametre::select('saison')->distinct('name')->get();
 
         $Shop_article = Shop_article::where('id_shop_article', $id)->get();
