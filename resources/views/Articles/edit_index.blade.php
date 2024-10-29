@@ -1162,7 +1162,7 @@ foreach($Shop_article as $value1){
                         $end_date = new DateTime($Data_lesson['end_date'][$key]);
                     @endphp
                         <div class="row">
-                            <div class="col-10">
+                            <div class="col-9">
                                 Séance {{ $loop->iteration }}:<br>
                                 Cette séance est dispensée le {{ fetcchDayy($dt) }} {{ $date->format('d') }} {{ fetchMonthh($dt) }}.<br>
                                 De {{ $date->format('G:i') }} à {{ $end_date->format('G:i') }}.<br>

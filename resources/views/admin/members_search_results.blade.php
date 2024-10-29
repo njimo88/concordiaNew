@@ -1,6 +1,6 @@
 @foreach ($users as $n_users)
                                     <tr>
-                                        <td class="d-none d-md-table-cell" style="width:200px">
+                                        <td class=" " style="width:200px">
                                             {{ $n_users->username }}
                                             @if (auth()->user()->roles->supprimer_edit_ajout_user)  
                                                 <span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="Supprimer">
@@ -19,7 +19,7 @@
                                         </td>
                                         <!-- Modal -->
                                                                              
-                                        <td class="d-none d-md-table-cell">
+                                        <td class="">
                                             <a href="tel:{{ $n_users->phone }}">{{ $n_users->phone }}</a>
                                              <br>
                                             @if($n_users->birthdate)

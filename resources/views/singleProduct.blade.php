@@ -123,7 +123,8 @@
 
                                 @if (count($selectedUsers) > 0)
                                     @if(count($declinaisons) > 0)
-                                        <select class="select-form" name="declinaisons" id="declinaisons">
+                                        <select class="select-form" name="declinaisons" id="declinaisons" >
+                                            <option  value="choisirLataille">choisir la taille </option>
                                             @foreach ($declinaisons as $declinaison)
                                                 <option value="{{ $declinaison->id }}">{{ $declinaison->libelle }}</option>
                                             @endforeach
@@ -132,6 +133,7 @@
 
                                     @if (!($articl->type_article == 1 && $coursVente == 0))
                                         <select onchange="updatePriceToDisplay()" class="select-form" name="buyers" id="buyers">
+                                            
                                             @foreach ($selectedUsers as $user)
                                                 <option value="{{ $user->user_id }}">{{ $user->lastname }} {{ $user->name }}</option>
                                             @endforeach

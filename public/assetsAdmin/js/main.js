@@ -397,29 +397,6 @@ $(function () {
                 },
             },
             {
-                data: 'payment_method',
-                name: 'payment_method',
-                orderable: true,
-                render: function (data, type, row) {
-                    return (
-                        '<img style="height: 30px" src="' +
-                        row.icon +
-                        '" alt=""><span style="display: none;">' +
-                        data +
-                        '</span>'
-                    )
-                },
-            },
-            {
-                data: 'date_bill',
-                name: 'date_bill',
-                orderable: true,
-                render: function (data, type, row) {
-                    var parts = data.split(' ')
-                    return parts[0]
-                },
-            },
-            {
                 data: 'payment_total_amount',
                 name: 'payment_total_amount',
                 orderable: true,
@@ -434,6 +411,15 @@ $(function () {
                 },
             },
             {
+                data: 'date_bill',
+                name: 'date_bill',
+                orderable: true,
+                render: function (data, type, row) {
+                    var parts = data.split(' ')
+                    return parts[0]
+                },
+            },
+            {
                 data: 'status',
                 name: 'status',
                 orderable: true,
@@ -445,6 +431,20 @@ $(function () {
                         data +
                         '"><span style="display: none;">' +
                         row.bill_status +
+                        '</span>'
+                    )
+                },
+            },
+            {
+                data: 'payment_method',
+                name: 'payment_method',
+                orderable: true,
+                render: function (data, type, row) {
+                    return (
+                        '<img style="height: 30px" src="' +
+                        row.icon +
+                        '" alt=""><span style="display: none;">' +
+                        data +
                         '</span>'
                     )
                 },

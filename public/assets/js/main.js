@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 /*achat page------------------------------------------------------------------*/
 $('.commanderModal').click(function () {
-    $('#commanderModal').modal('show')
+    
 
     // Get the shop ID from the clicked element
     var shop_id = $(this).data('shop-id')
@@ -331,7 +331,20 @@ $('.commanderModal').click(function () {
     var selected_user_id = $('#buyers').val()
 
     var declinaison = $('#declinaisons').val()
-
+    //if the user choose the right size 
+    if($('#declinaisons').val() && declinaison=="choisirLataille")
+    {
+        //remove the line to avoid replications 
+        if ($('#size-alert').length) {
+            $('#size-alert').remove();
+        }
+        
+      // add line that said choisir la taille
+        $('#declinaisons').before('<div id="size-alert" style="color: red;">choisir la taille </div>');
+       
+        return false;   
+    }
+    $('#commanderModal').modal('show')
     // Get the quantity input value
     var qte = $('#qte').val()
 
