@@ -124,23 +124,38 @@
             </nav>
         </div>
         <div class="col-md-8 d-flex justify-content-start pt-3">
-            <button id="updateStock" class="btn btn-primary">
+            <button id="updateStock" class="form-control d-none d-sm-block btn btn-primary">
                 <i class="fas fa-sync"></i> Mettre à jour le stock
             </button>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            <button style="font-size: 11px" id="updateStock" class=" mb-1 form-control form-control-sm d-block d-sm-none btn btn-primary">
+                <i class="fas fa-sync"></i> Mettre à jour le stock
+            </button>
+            <button type="button" class="form-control d-none d-sm-block btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                <i class="fas fa-file-invoice"></i> Créer une facture
+            </button>
+            <button style="font-size: 11px" type="button" class="mb-1 form-control form-control-sm d-block d-sm-none btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                 <i class="fas fa-file-invoice"></i> Créer une facture
             </button>
         </div>
     </div>
     <div class="col-md-4 d-flex justify-content-between">
-        <a href="{{ route('paiement.facture') }}" id="bills" class="btn btn-success">
+        <a href="{{ route('paiement.facture') }}" id="bills" class="form-control d-none d-sm-block btn btn-success">
+            <i class="fas fa-file-invoice"></i> Factures
+        </a>
+        <a href="{{ route('paiement.facture') }}" style="font-size: 11px" id="bills" class="form-control form-control-sm d-block d-sm-none  btn btn-success">
             <i class="fas fa-file-invoice"></i> Factures
         </a>
 
-        <button id="oldBills" class="btn btn-secondary">
+        <button id="oldBills" class="form-control d-none d-sm-block btn btn-secondary">
             <i class="fas fa-history"></i>  factures
         </button>
-        <button id="filterStatus" class="btn btn-danger">
+        <button style="font-size: 11px" id="oldBills" class="form-control form-control-sm d-block d-sm-none btn btn-secondary">
+            <i class="fas fa-history"></i>  factures
+        </button>
+        <button id="filterStatus" class="form-control d-none d-sm-block btn btn-danger">
+            <i class="fas fa-trash-alt"></i> Corbeille
+        </button>
+        <button style="font-size: 11px" id="filterStatus" class="form-control form-control-sm d-block d-sm-none btn btn-danger">
             <i class="fas fa-trash-alt"></i> Corbeille
         </button>
         
@@ -217,21 +232,20 @@
                          
                     </div>
                     <div class="overflow-x">
-                        <div class="input-group mb-3 mx-5">
+                        
+                        <div class="input-group mb-3">
                             <input type="text" id="customSearch" class="form-control" placeholder="Recherche..." aria-label="Recherche" aria-describedby="search-addon" autocomplete="off">
-                            <div class="input-group-append">
-                                <button id="submitSearch" class="btn btn-outline-primary" type="button">Chercher</button>
-                            </div>
+                            <button id="submitSearch" class="btn btn-primary mt-3" type="button">Rechercher</button>
                         </div>
                         
                         <table style="width:100%;" id="myTable"  class="table cust-datatable dataTable no-footer">
                             <thead>
-                                <th style="min-width:50px;"> <a>ID</a></th>
-                                <th style="min-width:150px;"><a>NOM Prénom</a></th>
-                                <th style="min-width:150px;"><a >Type</a></th>
-                                <th id="date" style="min-width:100px;"><a >Date</a></th>
-                                <th style="min-width:100px;"><a >Total</a></th>
-                                <th style="min-width:150px;"><a >Statut</a></th>
+                                <th style="min-width:40px;"> <a>ID</a></th>
+                                <th style="min-width:120px;"><a>NOM Prénom</a></th>
+                                <th style="min-width:70px;"><a >Total</a></th>
+                                <th id="date" style="min-width:90px;"><a >Date</a></th>
+                                <th style="min-width:80px;"><a >Statut</a></th>
+                                <th style="min-width:70px;"><a >Type</a></th>
                                 <th style="min-width:150px">Actions</th>
                             </thead> 
                             <tbody>

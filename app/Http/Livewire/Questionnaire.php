@@ -19,17 +19,19 @@ class Questionnaire extends Component
         $this->currentQuestion = Question::firstWhere('id', 'Q-000');
         $this->answers = Answer::where('question_id', $this->currentQuestion->id)->get();
         $this->imageSize = $this->getImageSize(count($this->answers));
+        
     }
 
     public function submitAnswer() {
         $answer = Answer::find($this->selectedAnswer);
-    
+        
         if (!$answer) {
             session()->flash('error', 'Invalid answer selected');
             return;
         }
     
         $shopCategory = Shop_category::find($answer->lien);
+        
         if($shopCategory) {
             session(['scores' => [$shopCategory->id_shop_category => 100]]);
             $this->updateSystemSetting(); 
@@ -42,9 +44,9 @@ class Questionnaire extends Component
             $this->updateSystemSetting(); 
             return redirect()->route('result');
         }
-    
+
         $this->updateIntermediateScores();
-    
+
         $this->currentQuestion = Question::firstWhere('id', $answer->lien);
         if (!$this->currentQuestion) {
             $this->calculateFinalScores();

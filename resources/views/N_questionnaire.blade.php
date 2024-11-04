@@ -19,15 +19,9 @@
         }
         }
     
-   
-   
-
     </style>
-        
-        
         
 
 </main>
-
 
 @endsection
