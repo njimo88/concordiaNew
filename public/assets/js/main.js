@@ -340,7 +340,9 @@ $('.commanderModal').click(function () {
         }
         
       // add line that said choisir la taille
-        $('#declinaisons').before('<div id="size-alert" style="color: red;">choisir la taille </div>');
+        $('#declinaisons').before(
+            '<div id="size-alert" style="color: red;">Veuillez sélectionner une taille avant de commander </div>',
+        )
        
         return false;   
     }

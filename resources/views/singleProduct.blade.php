@@ -124,7 +124,7 @@
                                 @if (count($selectedUsers) > 0)
                                     @if(count($declinaisons) > 0)
                                         <select class="select-form" name="declinaisons" id="declinaisons" >
-                                            <option  value="choisirLataille">choisir la taille </option>
+                                            <option  value="choisirLataille">Sélectionnez une taille</option>
                                             @foreach ($declinaisons as $declinaison)
                                                 <option value="{{ $declinaison->id }}">{{ $declinaison->libelle }}</option>
                                             @endforeach
