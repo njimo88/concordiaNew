@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use PDF; 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\DeclarationEmail;
+use Carbon\Carbon;
 
 require_once(app_path().'/fonction.php');
 
@@ -338,14 +339,35 @@ public function getSalaireMinimum()
 
     public function addPro(Request $request)
     {
-        $selectedUserId = $request->input('selected_user_id');
+        $currentDate = Carbon::now();
+        $selectedUserId = $request->input('selected_user_id_2');
         $user = User::find($selectedUserId);
         $addUser = new Professionnels();
+
         $addUser->id_user = $selectedUserId;
         $addUser->lastname = $user->name;
-        $addUser->matricule = 122;
         $addUser->firstname = $user->lastname;
+        $addUser->matricule = 0;
+        $addUser->VolumeHebdo=0;
+        $addUser->SoldeConges=0;
+        $addUser->Lundi=0;
+        $addUser->Mardi=0;
+        $addUser->Mercredi=0;
+        $addUser->Jeudi=0;
+        $addUser->Vendredi=0;
+        $addUser->Samedi=0;
+        $addUser->Dimanche=0;
+        $addUser->OldHeuresRealisees=0;
         $addUser->email = $user->email;
+        $addUser->Groupe=0;
+        $addUser->Embauche= Carbon::today();
+        $addUser->Salaire=0;
+        $addUser->Prime=0;
+        $addUser->masque=0;
+        $addUser->LastDeclarationMonth=$currentDate->month-1;
+        $addUser->LastDeclarationYear=$currentDate->year;
+        $addUser->Saison=$currentDate->year;
+       
         $addUser->save();
         return redirect()->route('Professionnels.gestion')->with('success', $addUser->firstname . ' ' . $addUser->lastname . ' a été ajouté aux professionnels avec succès');
     }
