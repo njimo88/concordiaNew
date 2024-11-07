@@ -149,13 +149,13 @@
         <button id="oldBills" class="form-control d-none d-sm-block btn btn-secondary">
             <i class="fas fa-history"></i>  factures
         </button>
-        <button style="font-size: 11px" id="oldBills" class="form-control form-control-sm d-block d-sm-none btn btn-secondary">
+        <button style="font-size: 11px" id="oldBills2" class="form-control form-control-sm d-block d-sm-none btn btn-secondary">
             <i class="fas fa-history"></i>  factures
         </button>
         <button id="filterStatus" class="form-control d-none d-sm-block btn btn-danger">
             <i class="fas fa-trash-alt"></i> Corbeille
         </button>
-        <button style="font-size: 11px" id="filterStatus" class="form-control form-control-sm d-block d-sm-none btn btn-danger">
+        <button style="font-size: 11px" id="filterStatus2" class="form-control form-control-sm d-block d-sm-none btn btn-danger">
             <i class="fas fa-trash-alt"></i> Corbeille
         </button>
         
