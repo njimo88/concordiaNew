@@ -60,7 +60,8 @@
       border-color: #17a2b8;
   }
 </style>
-<script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.25.0-lts/full/ckeditor.js"></script>
+
 
 <main class="main" id="main">
   <?php
@@ -156,6 +157,7 @@ if (!empty($successMessage)) {
                                   <span>Sélectionner tous</span>
                                </a>
                                 <div class="list-group" id="selected-users">
+                                    
                                 </div>
                             </div>
                         </div>
@@ -441,13 +443,22 @@ sendButton.addEventListener('click', function (event) {
         .then(data => {
             const responseModal = document.getElementById('responseModal');
             const responseModalBody = document.getElementById('responseModalBody');
-            responseModalBody.textContent = data.message;
+
+            // Get all child elements (e.g., spans) inside selectedUsers
+            const names = Array.from(selectedUsers.children).map(child => child.textContent);
+            // Join the names with " | " as a separator
+            const formattedNames = names.join(' | ');
+
+            responseModalBody.textContent = data.message + " à " + selectedUserIds.length + " utilisateurs qui sont : "+ formattedNames;
             $(responseModal).modal('show');
             sendButton.disabled = false;
             loadingIcon.style.display = 'none';
             checkAllSelected.checked = false;
         });
     });
+    console.log(selectedUsers)
+    console.log(selectedUserIds)
+    console.log(selectedUserIds.length)
 });
 
 

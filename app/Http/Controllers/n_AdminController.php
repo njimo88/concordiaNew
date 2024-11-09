@@ -45,18 +45,19 @@ class n_AdminController extends Controller
                         DB::table('system')->where('name', 'date_de_rentree')->increment('value');
                     }
                    
-                    $visitorCount = statistiques_visites::where('page', '=', '/')->first();
-                            if($visitorCount){
-                                
-                                $nbre_visit = $visitorCount->nbre_visitors ;
-                            }else{
+                    $visitorCount = statistiques_visites::where('page', '/')
+                    ->where('annee', now()->year)
+                    ->value('nbre_visitors');
+                    
+                            if(!$visitorCount){
                                 $nbre_visit = 0 ;
+                            }else{
+                                $nbre_visit = $visitorCount;
                             }
                
-
-                    $get_stat_pages = statistiques_visites::where('page', '!=', '/')->orderBy('nbre_visitors', 'desc')
+                    $get_stat_pages = statistiques_visites::where('page', '!=', '/')->where('annee', now()->year)->orderBy('nbre_visitors', 'desc')
                     ->limit(10)->get();
-
+                    
                     $saison_actu = saison_active() ;
 
                     $shop_article_lesson =  shop_article_1::select('shop_article_1.teacher', 'shop_article.title','shop_article_1.id_shop_article','shop_article.stock_actuel','shop_article.stock_ini')

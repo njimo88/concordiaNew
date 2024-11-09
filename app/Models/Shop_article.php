@@ -59,7 +59,7 @@ class Shop_article extends Model
         ->where('liaison_shop_articles_bills.id_shop_article', $this->id_shop_article)
         ->count();
 }
-    
+
 public function liaisonShopArticlesBill()
 {
     return $this->hasMany(LiaisonShopArticlesBill::class, 'id_shop_article');
