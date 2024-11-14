@@ -894,18 +894,18 @@ public function exportCSVproduit(Request $request)
             $now = new \DateTime();
             $age = $now->diff($birthdate)->y;
             $data = [
-                utf8_encode($user->produit),
-                utf8_encode($user->name),
-                utf8_encode($user->lastname),
+                mb_convert_encoding($user->produit, 'UTF-8', 'auto'),
+                mb_convert_encoding($user->name, 'UTF-8', 'auto'),
+                mb_convert_encoding($user->lastname, 'UTF-8', 'auto'),
                 $user->gender == 'male' ? 'Homme' : 'Femme',
                 $birthdate->format('d/m/Y'),
                 $age,
-                utf8_encode($user->nationality),
-                utf8_encode($user->address),
-                utf8_encode($user->postal_code),
-                utf8_encode($user->city),
+                mb_convert_encoding($user->nationality, 'UTF-8', 'auto'),
+                mb_convert_encoding($user->address, 'UTF-8', 'auto'),
+                mb_convert_encoding($user->postal_code, 'UTF-8', 'auto'),
+                mb_convert_encoding($user->city, 'UTF-8', 'auto'),
                 $user->phone,
-                utf8_encode($user->email),
+                mb_convert_encoding($user->email, 'UTF-8', 'auto'),
                 $user->family_id,
                 $user->role
             ];

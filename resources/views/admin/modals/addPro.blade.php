@@ -13,7 +13,7 @@
                         <h1 class="fw-bold">Choisisez un User pour être élu comme <span style="font-weight:bold">&#10024; Professionnel &#10024;</span></h1>
                     </div>
                     <div class="col-lg-5 mt-5">
-                        <select class="selectpicker" data-live-search="true" data-width="auto" data-style="btn-primary" id="user-select">
+                        <select name="selected_user_id_2" class="selectpicker" data-live-search="true" data-width="auto" data-style="btn-primary" id="user-select">
                             <option selected>Ouvrez ce menu de sélection</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->user_id }}">{{ $user->name }} {{ $user->lastname }} (n° {{ $user->user_id }})</option>

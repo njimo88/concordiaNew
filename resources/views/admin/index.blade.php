@@ -123,7 +123,7 @@ $all_periods = [];
                    <div class="card info-card sales-card p-3">
 
                       <div class="card-body pt-4" style="min-height: 87px;">
-                         <h5 style="font-size:15px;">Pages Visitées</h5>
+                         <h5 style="font-size:15px;">Nombre de visites </h5>
                          <div>
                             <i style=" color: #e60000;font-size:160%;  position:absolute; top: 7px; right:7px;" class="fa fa-eye"></i></div>
                           

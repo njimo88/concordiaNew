@@ -523,8 +523,22 @@ $(function () {
             .url('/admin/paiement/facture/data?statusOldBills=true')
             .load()
     })
+        //this is for using double button , one for large device and second for small device with same id and id2
+    $('#oldBills2').click(function (e) {
+        e.preventDefault()
+        table.ajax
+            .url('/admin/paiement/facture/data?statusOldBills=true')
+            .load()
+    })
 
     $('#filterStatus').click(function (e) {
+        e.preventDefault()
+        table.ajax
+            .url('/admin/paiement/facture/data?statusLessThan10=true')
+            .load()
+    })
+    //this is for using double button , one for large device and second for small device with same id and id2
+    $('#filterStatus2').click(function (e) {
         e.preventDefault()
         table.ajax
             .url('/admin/paiement/facture/data?statusLessThan10=true')

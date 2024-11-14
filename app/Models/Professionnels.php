@@ -34,6 +34,8 @@ class Professionnels extends Model
         'Salaire',
         'Prime',
         'masque',
+        'LastDeclarationMonth',
+        'LastDeclarationYear',
         'email',
         'Saison',
         'updated_at',

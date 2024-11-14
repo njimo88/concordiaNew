@@ -2,7 +2,13 @@
 
 @section('content')
 
+
+
 <main class="main" id="main">
+
+    <!-- si le client a la permission de voir preparation logistique -->
+    @if (auth()->user()->roles->estAutoriserDeVoirPreparationLogistique)
+   
     <div class="container mt-3">
         @if($products->isEmpty())
             <div class="alert alert-info">Aucun produit à préparer pour le moment.</div>
@@ -60,7 +66,7 @@
           <p><strong>Quantité :</strong> <span id="modalArticleQuantity"></span></p>
         </div>
         <div class="modal-footer" >
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+         <!-- this button doesn't work  <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button> -->
           <button type="button" class="btn btn-primary" id="confirmPreparation">Confirmer</button>
         </div>
       </div>
@@ -103,7 +109,10 @@
     </div>
 </div>
 
+<!-- si le user n'est pas autorisé redirection to another page  -->
+@else
 
+@endif
 
   
 <style>
