@@ -153,6 +153,7 @@
 </style>
 
 <main class="main" id="main">
+    @if (auth()->user()->roles->estAutoriserDeVoirDistributionLogistique)
     <div class="tabs-container">
         <div class="tab active" onclick="changeTab('nonDistribue')">Non Distribués</div>
         <div class="tab" onclick="changeTab('distribue')">Distribués</div>
@@ -239,7 +240,7 @@
                 <p><strong>Quantité :</strong> <span id="modalArticleQuantity"></span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>-->
                 <button type="button" class="btn btn-primary" id="confirmDistribution">Confirmer</button>
             </div>
         </div>
@@ -271,6 +272,10 @@
             </div>
         </div>
     </div>
+    @else
+
+@endif
+
 </div>
 
 
