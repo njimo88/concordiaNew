@@ -32,7 +32,7 @@
 
     <div class="col-md-8">
     
-    <form action="{{route('edit_cate',['id' => $data->Id_categorie])}}" method="POST">
+    <form action="{{route('edit_cate',['id' => $data->id_categorie])}}" method="POST">
 
    
     
@@ -125,7 +125,7 @@
     <div class="col-md-8">
  
     
-    <form action="{{route('edit_cate',['id' => $data->Id_categorie])}}" method="POST">
+    <form action="{{route('edit_cate',['id' => $data->id_categorie])}}" method="POST">
  
         @csrf
   <div class="mb-3 ">

@@ -168,7 +168,7 @@
 
 
 </form>
-<script src="https://cdn.ckeditor.com/4.25.0-lts/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.25.0-lts/full/ckeditor.js"></script>
 
 
 </main>
