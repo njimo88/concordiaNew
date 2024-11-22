@@ -33,9 +33,12 @@
         margin-top: 10px;
         background-color: #f4effa; 
     }
+    .articles-table th{
+        padding: 5px;
+    }
 
-    .articles-table th, .articles-table td {
-        padding: 15px;
+     .articles-table td {
+        padding: 0px;
         text-align: left;
         border-bottom: 1px solid #ddd;
     }
@@ -54,7 +57,7 @@
     }
 
     .articles-table td .articleImage {
-        width: 100px; /* Adjust based on your needs */
+        width: 90px; /* Adjust based on your needs */
         height: auto;
         border: 1px solid #ddd; /* A subtle border for images */
     }
@@ -288,17 +291,17 @@ require_once(app_path().'/fonction.php');
                         @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
                             <div class="button-group">
                                 <a target="_blank" href="{{ route('edit_article', ['id' => $article->id_shop_article]) }}">
-                                    <button class="button edit" article-title="Edit" article-toggle="modal" article-target="#edit">
+                                    <button style="padding-top: 2px; padding-bottom:2px;" class="button edit" article-title="Edit" article-toggle="modal" article-target="#edit">
                                         <i class="bi bi-pencil-fill"></i>
                                     </button>
                                 </a>
                                 <a href="{{ route('delete_article', ['id' => $article->id_shop_article]) }}">
-                                    <button class="button delete" article-title="Delete" article-toggle="modal" article-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');">
+                                    <button style="padding-top: 2px; padding-bottom:2px;" class="button delete" article-title="Delete" article-toggle="modal" article-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </a>
                                 <a href="{{ route('duplicate_article_index', ['id' => $article->id_shop_article]) }}">
-                                    <button class="button duplicate" article-title="Edit" article-toggle="modal">
+                                    <button style="padding-top: 2px; padding-bottom:2px;" class="button duplicate" article-title="Edit" article-toggle="modal">
                                         <i class="fa fa-clone"></i>
                                     </button>
                                 </a>
