@@ -24,8 +24,6 @@ foreach($Shop_article as $value1){
 
 
 @endphp
- 
-
 
     @if($type_article == 0)
        
@@ -628,36 +626,12 @@ foreach($Shop_article as $value1){
                             
                             <div class="row justify-content-center py-5" style="background-color: #333333;">
                                 <div class="col-lg-8">
-                                    <h3 class="mb-4 text-center text-white">Paramètres spécifiques</h3>
-                                    <div class="bg-white p-4 shadow rounded">
-                                        <div id="add-declinaison" class="mb-4">
-                                            @csrf
-                                            <input type="hidden" id="shop_article_id" value="{{ $data->id_shop_article }}">
-                                            <div class="form-group">
-                                                <label for="libelle" class="text-secondary">Libelle de la déclinaison :</label>
-                                                <input type="text" class="form-control" id="libelle" name="libelle" placeholder="Entrez le libelle de la déclinaison" >
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="stock_ini_d" class="text-secondary">Stock Initial :</label>
-                                                <input type="number" class="form-control" id="stock_ini_d" name="stock_ini_d" placeholder="Entrez le stock initial" >
-                                            </div>
-                                            <button type="button" id="add-declinaison-btn" class="btn" style="background-color: #482683; color: #fff;">Ajouter déclinaison</button>
-                                        </div>
-                                        <div class="declinaisons-list">
-                                            @foreach($declinaisons as $declinaison)
-                                            <div class="row mb-4">
-                                                <div class="col-md-12">
-                                                    <div class="card text-center bg-light shadow">
-                                                        <div class="card-body">
-                                                            <h5 class="card-title text-secondary">{{ $declinaison->libelle }} ({{ $declinaison->stock_actuel_d }} / {{ $declinaison->stock_ini_d }})</h5>
-                                                            <button type="button" class="btn mt-2 delete-declinaison-btn" style="background-color: #63c3d1; color: #fff;" data-id="{{ $declinaison->id }}">Supprimer</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
+
+                                    <h5 class="mb-4 text-center text-white">Paramètres spécifiques</h5>
+
+                                    @livewire('declinaison-articletype2', ['articleId' => $data->id_shop_article,'declinaisons' => $declinaisons, ])
+
+                                    
                                 </div>
                             </div>
                             

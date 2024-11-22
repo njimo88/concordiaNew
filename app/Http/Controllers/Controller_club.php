@@ -73,7 +73,6 @@ class Controller_club extends Controller
 
         }
 
-    
         $saison_list = Shop_article::select('saison')->distinct('saison')->orderBy('saison', 'ASC')->get();
     
         return view('club/cours_index',compact('saison_list','shop_article_first','users_saison_active','saison_actu'))->with('user', auth()->user());
