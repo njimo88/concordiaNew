@@ -34,6 +34,11 @@ class DeclinaisonArticletype2 extends Component
 
     public function create()
     {
+        $this->validate([
+            'declinationName' => 'required|string|max:255',
+            'stockInitial' => 'required|integer',
+        ]);
+
         $declinaison = new Declinaison();
         $declinaison->shop_article_id =$this->articleId;
         $declinaison->libelle = $this->declinationName;
@@ -60,6 +65,12 @@ class DeclinaisonArticletype2 extends Component
         $this->EditedecID=0;
     }
     public function SaveEdit($declinaisonID) {
+        //$this->validate();
+        $this->validate([
+            'NewdeclinationName' => 'required|string|max:255',
+            'NewstockInitial' => 'required|integer',
+            'NewstockActual' => 'required|integer',
+        ]);
         $this->EditedecID=0;
         $declinaison = Declinaison::find($declinaisonID);
         

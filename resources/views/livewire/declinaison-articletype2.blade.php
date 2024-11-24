@@ -15,14 +15,14 @@
             <div class="mb-3">
                 <input wire:model="declinationName" type="text" class="form-control" id="declinationName" placeholder="Entre Libelle de la déclinaison ">
                 @error('declinationName')
-                    <span  class="text-red-500 text-xs "> {{$message}} </span>
+                    <small  class="text-danger "> {{$message}} </small>
                 @enderror
             </div>
             <div class="mb-3">
                
                 <input wire:model="stockInitial" type="text" class="form-control" id="declinationName" placeholder="Enter stock initial">
                 @error('stockInitial')
-                    <span  class="text-red-500 text-xs "> {{$message}} </span>
+                    <small  class="text-danger "> {{$message}} </small>
                 @enderror
             </div>
             <input type="hidden" id="declinationId">
@@ -38,10 +38,19 @@
             @if ($EditedecID == $item->id)
                 <li wire:key="{{$item->id}}" class="list-group-item d-flex justify-content-between align-items-center">
                     <input wire:model="NewdeclinationName" type="text" class="form-control form-control-sm">
+                    @error('NewdeclinationName')
+                        <small  class="text-danger "> {{$message}} </small>
+                    @enderror
                     <label for="NewstockInitial" class=" text-black m-1" >  <small> Stock initial</small></label>
                     <input wire:model="NewstockInitial" type="text" class="form-control  form-control-sm"  >
-                    <label for="NewstockInitial" class="text-black m-1"> <small> Stock actual</small></label>
+                    @error('NewstockInitial')   
+                        <small  class="text-danger "> {{$message}} </small>
+                    @enderror
+                    <label for="NewstockActual" class="text-black m-1"> <small> Stock actual</small></label>
                     <input wire:model="NewstockActual" type="text" class=" form-control  form-control-sm"  >
+                    @error('NewstockActual')
+                        <small  class="text-danger"> {{$message}} </small>
+                    @enderror
                     <div>
                         <button wire:click.prevent="SaveEdit({{$item->id}})" class="btn btn-sm btn-success m-1 " >Save</button>
                         <button wire:click.prevent="reload" class="btn btn-sm btn-secondary " >annuler</button>

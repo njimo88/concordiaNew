@@ -38,7 +38,7 @@
     }
 
      .articles-table td {
-        padding: 0px;
+        padding: 1px;
         text-align: left;
         border-bottom: 1px solid #ddd;
     }
@@ -291,17 +291,17 @@ require_once(app_path().'/fonction.php');
                         @if (auth()->user()->roles->supprimer_edit_dupliquer_ajout_article)
                             <div class="button-group">
                                 <a target="_blank" href="{{ route('edit_article', ['id' => $article->id_shop_article]) }}">
-                                    <button style="padding-top: 2px; padding-bottom:2px;" class="button edit" article-title="Edit" article-toggle="modal" article-target="#edit">
+                                    <button style="padding-top: 2px; padding-bottom:2px; padding-left: 10px; padding-right: 10px;" class="button edit" article-title="Edit" article-toggle="modal" article-target="#edit">
                                         <i class="bi bi-pencil-fill"></i>
                                     </button>
                                 </a>
                                 <a href="{{ route('delete_article', ['id' => $article->id_shop_article]) }}">
-                                    <button style="padding-top: 2px; padding-bottom:2px;" class="button delete" article-title="Delete" article-toggle="modal" article-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');">
+                                    <button style=" padding-top: 2px; padding-bottom:2px; padding-left: 10px; padding-right: 10px;" class="button delete" article-title="Delete" article-toggle="modal" article-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </a>
                                 <a href="{{ route('duplicate_article_index', ['id' => $article->id_shop_article]) }}">
-                                    <button style="padding-top: 2px; padding-bottom:2px;" class="button duplicate" article-title="Edit" article-toggle="modal">
+                                    <button style="padding-top: 2px; padding-bottom:2px; padding-left: 10px; padding-right: 10px;" class="button duplicate" article-title="Edit" article-toggle="modal">
                                         <i class="fa fa-clone"></i>
                                     </button>
                                 </a>

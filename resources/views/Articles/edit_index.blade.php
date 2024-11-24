@@ -629,8 +629,9 @@ foreach($Shop_article as $value1){
 
                                     <h5 class="mb-4 text-center text-white">Paramètres spécifiques</h5>
 
+                                    <!-- i use livewire to show declinaison for article type 2 --> 
+                                    
                                     @livewire('declinaison-articletype2', ['articleId' => $data->id_shop_article,'declinaisons' => $declinaisons, ])
-
                                     
                                 </div>
                             </div>
