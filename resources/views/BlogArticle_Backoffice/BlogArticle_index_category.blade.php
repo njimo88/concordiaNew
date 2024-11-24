@@ -99,8 +99,8 @@ Créer une catégorie
 <td>{{$data->description}}</td>
 
 @if (auth()->user()->roles->supprimer_edit_ajout_categorie)
-<td><p data-placement="top" data-toggle="tooltip" title="Editer"><a href="{{ route('edit_index',['id' => $data->Id_categorie]) }}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier cette catégorie ?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
-<td><p data-placement="top" data-toggle="tooltip" title="Effacer"><a href="{{route('delete_cate',['id' => $data->Id_categorie])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer cette catégorie ?');" ><i class="bi bi-trash"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Editer"><a href="{{ route('edit_index',['id' => $data->id_categorie]) }}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier cette catégorie ?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Effacer"><a href="{{route('delete_cate',['id' => $data->id_categorie])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer cette catégorie ?');" ><i class="bi bi-trash"></i></button></a></p></td>
 @endif
 @endforeach
 
@@ -161,8 +161,8 @@ Créer une catégorie
 <td>{{$data->description}}</td>
 
 @if (auth()->user()->roles->supprimer_edit_ajout_categorie)
-<td><p data-placement="top" data-toggle="tooltip" title="Edit"><a href="{{ route('edit_index',['id' => $data->Id_categorie]) }}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier cette catégorie ?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
-<td><p data-placement="top" data-toggle="tooltip" title="Delete"><a href="{{route('delete_cate',['id' => $data->Id_categorie])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer cette catégorie ?');" ><i class="bi bi-trash"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Edit"><a href="{{ route('edit_index',['id' => $data->id_categorie]) }}"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" onclick="return confirm('êtes-vous sûr de vouloir modifier cette catégorie ?');"><i class="bi bi-pencil-fill"></i></button></a></p></td>
+<td><p data-placement="top" data-toggle="tooltip" title="Delete"><a href="{{route('delete_cate',['id' => $data->id_categorie])}}"><button class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal" data-target="#delete" onclick="return confirm('êtes-vous sûr de vouloir supprimer cette catégorie ?');" ><i class="bi bi-trash"></i></button></a></p></td>
 @endif
 </tr>
 @endforeach

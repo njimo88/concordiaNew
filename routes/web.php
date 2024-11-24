@@ -331,6 +331,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
 
 Route::get('/BlogArticle_index', [BlogArticle_Controller::class, 'index'])->name('index');
+Route::post('/BlogArticle_index', [BlogArticle_Controller::class, 'edit_color_user'])->name('edit_color_user');
 
 //delete blog
 Route::get('/BlogArticle_blog/delete/{id}', [BlogArticle_Controller::class, 'delete_blog'])->name('delete_blog');

@@ -45,6 +45,7 @@ class User extends Authenticatable implements CanResetPassword
         'family_id',
         'image',
         'role',
+        'color',
         'family_level',
         'color',
         'created_at',

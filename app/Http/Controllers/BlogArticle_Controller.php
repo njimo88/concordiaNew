@@ -23,11 +23,20 @@ class BlogArticle_Controller extends Controller
         $requete_user = DB::table('users')
         ->join('blog_posts', 'blog_posts.id_user', '=', 'users.user_id')
         ->orderBy('blog_posts.date_post', 'desc') 
-        ->select('users.lastname','users.name','blog_posts.*')
+        ->select('users.lastname','users.name','users.user_id','users.color','blog_posts.*')
         ->get();
 
-
-        return view('BlogArticle_Backoffice/BlogArticle_index',compact('requete_blog','requete_article','requete_user'))->with('user', auth()->user()) ;
+        $userNamesAndIds = $requete_user->map(function ($user) {
+            return [
+                'user_id' => $user->user_id,
+                'name' => $user->name,
+                'lastname' => $user->lastname,
+                'color' => $user->color,
+            ];
+        })->unique('user_id') 
+        ->values(); 
+        
+        return view('BlogArticle_Backoffice/BlogArticle_index',compact('userNamesAndIds','requete_blog','requete_article','requete_user'))->with('user', auth()->user()) ;
 
     }
 
@@ -40,6 +49,20 @@ class BlogArticle_Controller extends Controller
         $Categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
         return view('BlogArticle_Backoffice/BlogArticle_edit_blog',compact('blog','Categorie2','Categorie1','Id'))->with('user', auth()->user()) ;
 
+    }
+    function edit_color_user(Request $request){
+        $request->validate([
+            'color' => 'required|string|max:7', // Validate hex color code
+        ]);
+        if($request->user_id=="null")
+        {
+            return redirect()->back()->with('user', auth()->user());
+        }
+        //update the color 
+        DB::table('users')
+        ->where('user_id', $request->user_id)
+        ->update(['color' => $request->color]);
+        return redirect()->back()->with('user', auth()->user())->with('success', 'la couleur été modifier avec succès');
     }
 
     function edit_blog($id, Request $request){
@@ -169,7 +192,6 @@ class BlogArticle_Controller extends Controller
 
         $requete_categorie1  = Category::whereBetween('id_categorie', [100, 199])->paginate(30);
         $requete_categorie2 = Category::whereBetween('id_categorie', [200, 299])->paginate(30);
-
         return view('BlogArticle_Backoffice/BlogArticle_index_category',compact('requete_categorie1','requete_categorie2'))->with('user', auth()->user())  ;
 
     }
@@ -273,7 +295,7 @@ function edit_index($id){
     $Id =$id;
     $cate1 = Category::where('Id_categorie', $id)->get();
     $cate2 = Category::where('Id_categorie', $id)->get();
-
+    
     return view('BlogArticle_Backoffice/index_category_edit',compact('cate1','cate2','Id'))->with('user', auth()->user());
 
 

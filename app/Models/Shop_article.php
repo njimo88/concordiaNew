@@ -117,12 +117,15 @@ public function updateInitialStock()
         }
 
         $totalInitialStock = $this->declinaisons()->sum('stock_ini_d');
+        $totalActualStock = $this->declinaisons()->sum('stock_actuel_d');
 
         $this->stock_ini = $totalInitialStock;
+        $this->stock_actuel = $totalActualStock;
         $this->save();
     }
 
-    public function getDisplayNameAttribute()
+
+public function getDisplayNameAttribute()
 {
     if ($this->type_article == 2 && $this->declinaisons()->count() > 0) {
         return $this->title . ' [' . $this->declinaisons->first()->libelle . ']';
