@@ -41,16 +41,17 @@
                     @error('NewdeclinationName')
                         <small  class="text-danger "> {{$message}} </small>
                     @enderror
-                    <label for="NewstockInitial" class=" text-black m-1" >  <small> Stock initial</small></label>
-                    <input wire:model="NewstockInitial" type="text" class="form-control  form-control-sm"  >
-                    @error('NewstockInitial')   
-                        <small  class="text-danger "> {{$message}} </small>
-                    @enderror
                     <label for="NewstockActual" class="text-black m-1"> <small> Stock actual</small></label>
                     <input wire:model="NewstockActual" type="text" class=" form-control  form-control-sm"  >
                     @error('NewstockActual')
                         <small  class="text-danger"> {{$message}} </small>
                     @enderror
+                    <label for="NewstockInitial" class=" text-black m-1" >  <small> Stock initial</small></label>
+                    <input wire:model="NewstockInitial" type="text" class="form-control  form-control-sm"  >
+                    @error('NewstockInitial')   
+                        <small  class="text-danger "> {{$message}} </small>
+                    @enderror
+                    
                     <div>
                         <button wire:click.prevent="SaveEdit({{$item->id}})" class="btn btn-sm btn-success m-1 " >Save</button>
                         <button wire:click.prevent="reload" class="btn btn-sm btn-secondary " >annuler</button>
@@ -58,7 +59,7 @@
                 </li>        
             @else
                 <li wire:key="{{$item->id}}" class="list-group-item d-flex justify-content-between align-items-center">
-                    {{$item->libelle}}  ( {{ $item->stock_ini_d }} / {{ $item->stock_actuel_d }} )
+                    {{$item->libelle}}  ( {{ $item->stock_actuel_d }} / {{ $item->stock_ini_d }} )
                     <div>
                         <button wire:click.prevent="edit({{$item->id}})" class="btn btn-sm btn-primary " >modifier</button>
                         <button wire:click.prevent="delete({{$item->id}})" class="btn btn-sm btn-danger " >supprimer</button>
