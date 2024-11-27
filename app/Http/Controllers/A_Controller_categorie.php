@@ -41,7 +41,6 @@ class A_Controller_categorie extends Controller
       //  $info = Shop_category::where('id_shop_category_parent','=','0')->orderBy('order_category', 'ASC')->get();
       $info = [
         'categories' =>  Shop_category::where('id_shop_category_parent','=>','9')->orderBy('order_category', 'ASC')->get(),
-    
             ];
 
         $shop_category =   Shop_category::get() ;
@@ -457,6 +456,7 @@ public function commanderModal($shop_id, $user_id, Request $request)
     public function saveNestedCategories(Request $request){
         
         $json = $request->nested_category_array;
+        dd($json);
         $decoded_json = json_decode($json, TRUE);
 
         $simplified_list = [];
@@ -528,53 +528,140 @@ public function commanderModal($shop_id, $user_id, Request $request)
         }
     }
 
-
-
     public function create(Request $request){
 
-
         $this->validate($request, [
-            'nom' => 'required|max:255|alpha',
+            'nom' => 'required|max:255|string',
             'image' => 'required|max:255',
-            'description' => 'required|max:255'
+            'description' => 'required'
 
         ]);
       
-
         $category  = new Shop_category ;
         $category->name = $request->input('nom');
         $category->image = $request->input('image');
         $category->description = $request->input('description');
 
         if ($request->input('action') == "new_cat"){
-        
-
-        
-            $category->id_shop_category = $request->input('id');
-            $category->id_shop_category_parent = 0;
-            $category->order_category = $request->input('id');
-
-            if($request->has('active')){
-                $category->active = $request->input('active') ;
-            }else{
-                $category->active = 0 ;
-            }
-
             
+            // Level 1 new category: Generate the next 1-digit ID
+            $lastChildId = Shop_category::select('id_shop_category ')->where("id_shop_category_parent","=",0)->max('id_shop_category');
+            $lastChildId =$lastChildId + 1;
+
+            if ( $lastChildId==100) //mean we reache the max of id for the childs level 0 
+            {   
+                $existID=true;
+                $lastChildId=1; // we begin from the first child id like 110 or 210...
+                while($existID) // we test if we have the same id with other category 
+                {
+                    $islastChildIdExist = Shop_category::select('id_shop_category')->where("id_shop_category","=",$lastChildId)->max('id_shop_category');
+                    if($islastChildIdExist!=null)
+                       $lastChildId=$lastChildId+1;
+                    else
+                        $existID=false; // we get an new id 
+                }
+            }
+            $category->id_shop_category = $lastChildId;
+            $category->id_shop_category_parent = 0;
+            $category->order_category = $lastChildId;
+
+            if( $request->input('active')== 1)
+                $category->active = $request->input('active') ;
+            else
+                $category->active =0;
 
         }
         else{
 
             $requete_order = Shop_category::select('order_category')->where("id_shop_category","="," $request->input('action') ")->get() ;
-           
-            $category->id_shop_category =  $request->input('id');
-            $category->id_shop_category_parent = (int)$request->input('action');
-            $category->order_category = 1;
-            if($request->has('active')){
-                $category->active = $request->input('active') ;
-            }else{
-                $category->active = 0 ;
+            $parentIdLength = strlen((string) $request->input('action'));
+
+            if ($parentIdLength < 3) {
+                $lastChildId = Shop_category::select('id_shop_category')->where("id_shop_category_parent","=",$request->input('action'))->max('id_shop_category');
+
+                if ($lastChildId!=null){
+                    $lastChildId =$lastChildId+1;
+
+                    if ( $lastChildId==($request->input('action')+1)*100) //mean we reache the max of id for the childs 
+                    {   
+                        $existID=true;
+                        $lastChildId=$request->input('action') * 100 + 1; // we begin from the first child id like 110 or 210...
+                        while($existID) // we test if we have the same id with other category 
+                        {
+                            $islastChildIdExist = Shop_category::select('id_shop_category ')->where("id_shop_category","=",$lastChildId)->max('id_shop_category');
+                            if($islastChildIdExist!=null)
+                               $lastChildId=$lastChildId+1;
+                            else
+                                $existID=false; // we get an new id 
+                        }
+                    }
+
+                }else
+                // no child for the parent so we create new one 
+                $lastChildId=$request->input('action') * 100 + 1;
+                  
             }
+
+            elseif ($parentIdLength < 5) {
+                $lastChildId = Shop_category::select('id_shop_category')->where("id_shop_category_parent","=",$request->input('action'))->max('id_shop_category');
+
+                if ($lastChildId!=null){
+
+                    $lastChildId =(int)substr($lastChildId, 3)+1;
+                    $lastChildId = (int)($request->input('action'). $lastChildId);
+
+                    if ( $lastChildId==($request->input('action')+1)*100) //mean we reache the max of id for the childs 
+                    {   
+                        $existID=true;
+                        $lastChildId=$request->input('action') * 100 + 1; // we begin from the first child id like 1251 or 1252...
+                        while($existID) // we test if we have the same id with other category 
+                        {
+                            $islastChildIdExist = Shop_category::select('id_shop_category ')->where("id_shop_category","=",$lastChildId)->max('id_shop_category');
+                            if($islastChildIdExist!=null)
+                               $lastChildId=$lastChildId+1;
+                            else
+                                $existID=false; // we get an new id 
+                        }
+                    }
+
+                }else
+                // no child for the parent so we create new one 
+                $lastChildId=$request->input('action') * 100 + 1;
+
+            }elseif($parentIdLength < 7) {
+                $lastChildId = Shop_category::select('id_shop_category')->where("id_shop_category_parent","=",$request->input('action'))->max('id_shop_category');
+
+                if ($lastChildId!=null){
+                    $lastChildId =(int)substr($lastChildId, 5)+1;
+                    $lastChildId = (int)($request->input('action'). $lastChildId);
+
+                    if ( $lastChildId==($request->input('action')+1)*100) //mean we reache the max of id for the childs 
+                    {   
+                        $existID=true;
+                        $lastChildId=$request->input('action') * 100 + 1; // we begin from the first child id like 1251 or 1252...
+                        while($existID) // we test if we have the same id with other category 
+                        {
+                            $islastChildIdExist = Shop_category::select('id_shop_category ')->where("id_shop_category","=",$lastChildId)->max('id_shop_category');
+                            if($islastChildIdExist!=null)
+                               $lastChildId=$lastChildId+1;
+                            else
+                                $existID=false; // we get an new id 
+                        }
+                    }
+
+                }else
+                // no child for the parent so we create new one 
+                $lastChildId=$request->input('action') * 100 + 1;
+
+            }
+
+            $category->id_shop_category = $lastChildId;
+            $category->id_shop_category_parent = (int)$request->input('action');
+            $category->order_category = $lastChildId;
+            if( $request->input('active')== 1)
+                $category->active = $request->input('active') ;
+            else
+                $category->active =0;
         
 
         }
@@ -587,34 +674,167 @@ public function commanderModal($shop_id, $user_id, Request $request)
 
     }
     
-
-
     public function remove(Request $request, $id){
 
-        $category  = Shop_category::where('id_shop_category', $id)->delete();
+        Shop_category::where('id_shop_category', $id)->delete();
     
-      return redirect(route('index_article'))->with('success', "Categorie supprimée.");
+      return redirect(route('A_Categorie'))->with('success', "Categorie supprimée.");
     }
-
 
 
     public function edit_index(Request $request, $id){
 
-        
             //'categories' => Shop_category::orderBy('name', 'ASC')->get(),
-            $info = Shop_category::where('id_shop_category', $id)->get();
-            $shop_category = Shop_category::where('id_shop_category', $id)->get();
+            $info = Shop_category::where('id_shop_category', $id)->first();
             $shop_article = Shop_article::get();
+            $Allshop_category =   Shop_category::get() ;
+            $parrent_Category= Shop_category::where('id_shop_category',$info->id_shop_category_parent )->first();
 
-            return view('Category_modify',compact('shop_article','info','shop_category'))->with('user', auth()->user());
+            return view('Category_modify',compact('shop_article','info','Allshop_category','parrent_Category'))->with('user', auth()->user());
     }
 
+// save the edited Category 
+public function saveEditedCategory(Request $request){
+    
+    $this->validate($request, [
+        'id'=>'required|numeric',
+        'nom' => 'required|max:255|string',
+        'image' => 'required|max:255',
+        'description' => 'required'
 
+    ]);
+    $category = Shop_category::where('id_shop_category', $request->input('id'))->first();
 
+    if ($request->input('action') == "new_cat"){
 
+        $lastChildId = Shop_category::select('id_shop_category')->where("id_shop_category_parent","=",0)->max('id_shop_category');
 
+        if ( $lastChildId==100) //mean we reache the max of id for the childs level 0 
+                {   
+                    $existID=true;
+                    $lastChildId=1; // we begin from the first child id like 110 or 210...
+                    while($existID) // we test if we have the same id with other category 
+                    {
+                        $islastChildIdExist = Shop_category::select('id_shop_category')->where("id_shop_category","=",$lastChildId)->max('id_shop_category');
+                        if($islastChildIdExist!=null)
+                           $lastChildId=$lastChildId+1;
+                        else
+                            $existID=false; // we get an new id 
+                    }
+                }
 
+        $category->id_shop_category = $lastChildId;
+        $category->id_shop_category_parent = 0;
+        $category->order_category = $lastChildId;
 
+        if( $request->input('active')== 1)
+        $category->active = $request->input('active') ;
+        else
+        $category->active =0;
+
+    }else
+    {
+        $category->name = $request->input('nom');
+        $category->image = $request->input('image');
+        $category->description = $request->input('description');  
+
+        $parentIdLength = strlen((string) $request->input('action'));
+
+        if ($parentIdLength < 3) {
+            $lastChildId = Shop_category::select('id_shop_category')->where("id_shop_category_parent","=",$request->input('action'))->max('id_shop_category');
+
+            if ($lastChildId!=null){
+                $lastChildId =$lastChildId+1;
+
+                if ( $lastChildId==($request->input('action')+1)*100) //mean we reache the max of id for the childs 
+                {   
+                    $existID=true;
+                    $lastChildId=$request->input('action') * 100 + 1; // we begin from the first child id like 110 or 210...
+                    while($existID) // we test if we have the same id with other category 
+                    {
+                        $islastChildIdExist = Shop_category::select('id_shop_category')->where("id_shop_category","=",$lastChildId)->max('id_shop_category');
+                        if($islastChildIdExist!=null)
+                           $lastChildId=$lastChildId+1;
+                        else
+                            $existID=false; // we get an new id 
+                    }
+                }
+
+            }else
+            // no child for the parent so we create new one 
+            $lastChildId=$request->input('action') * 100 + 1;
+              
+        }
+
+        if ($parentIdLength < 5) {
+            $lastChildId = Shop_category::select('id_shop_category')->where("id_shop_category_parent","=",$request->input('action'))->max('id_shop_category');
+
+            if ($lastChildId!=null){
+                $lastChildId =(int)substr($lastChildId, 3)+1;
+                $lastChildId = (int)($request->input('action'). $lastChildId);
+
+                if ( $lastChildId==($request->input('action')+1)*100) //mean we reache the max of id for the childs 
+                {   
+                    $existID=true;
+                    $lastChildId=$request->input('action') * 100 + 1; // we begin from the first child id like 1251 or 1252...
+                    while($existID) // we test if we have the same id with other category 
+                    {
+                        $islastChildIdExist = Shop_category::select('id_shop_category')->where("id_shop_category","=",$lastChildId)->max('id_shop_category');
+                        if($islastChildIdExist!=null)
+                           $lastChildId=$lastChildId+1;
+                        else
+                            $existID=false; // we get an new id 
+                    }
+                }
+
+            }else
+            // no child for the parent so we create new one 
+            $lastChildId=$request->input('action') * 100 + 1;
+
+        }
+        if ($parentIdLength < 7) {
+            $lastChildId = Shop_category::select('id_shop_category')->where("id_shop_category_parent","=",$request->input('action'))->max('id_shop_category');
+
+            if ($lastChildId!=null){
+                $lastChildId =(int)substr($lastChildId, 3)+1;
+                $lastChildId = (int)($request->input('action'). $lastChildId);
+
+                if ( $lastChildId==($request->input('action')+1)*100) //mean we reache the max of id for the childs 
+                {   
+                    $existID=true;
+                    $lastChildId=$request->input('action') * 100 + 1; // we begin from the first child id like 1251 or 1252...
+                    while($existID) // we test if we have the same id with other category 
+                    {
+                        $islastChildIdExist = Shop_category::select('id_shop_category')->where("id_shop_category","=",$lastChildId)->max('id_shop_category');
+                        if($islastChildIdExist!=null)
+                           $lastChildId=$lastChildId+1;
+                        else
+                            $existID=false; // we get an new id 
+                    }
+                }
+
+            }else
+            // no child for the parent so we create new one 
+            $lastChildId=$request->input('action') * 100 + 1;
+
+        }
+
+        $category->id_shop_category = $lastChildId;        
+        $category->id_shop_category_parent = (int)$request->input('action');
+        $category->order_category = $lastChildId;
+        
+        if( $request->input('active')== 1)
+            $category->active = $request->input('active') ;
+        else
+        $category->active =0;
+
+    }
+    
+
+    $category->save();
+    return redirect(route('A_Categorie'))->with('success', 'La catégorie a été modifiée avec succes.');
+
+}
 
    /*
     public function store(Request $request){

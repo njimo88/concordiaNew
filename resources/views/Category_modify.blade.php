@@ -20,47 +20,57 @@
 
             <div class="divo">
 
-                    <form action="{{ route('create-categories') }}" method="POST">
+                    <form  action="{{ route('saveEditedCategory') }}" method="POST">
                                    
                                     {{csrf_field()}}
-                         
-                        <label for="fname">ID de la catégorie</label>
-                        <input type="text" id="fname" name="id" placeholder="ID de la catégorie..">
-                                    
-                        <label for="fname">Nom</label>
-                        <input type="text" id="fname" name="nom" placeholder="le nom de la catégorie..">
-
-                        <label for="lname">Image</label>
-                        <input type="text" id="lname" name="image" placeholder="le chemin de l'image..">
-
-                        <label for="lname">Description</label>
-                        <input type="text" id="lname" name="description" placeholder="la description..">
-
-
-                        <label for="">Action</label>
-                        <select id="" name="action">
-                        
-
-                        <option value="new_cat">Créer une nouvelle catégorie</option>
-
-                        @foreach($shop_category as $dt)
-                        
-                         <option value="{{ $dt->id_shop_category }}">{{ $dt->id_shop_category}} -
-                            {{ $dt->name }}</option>
-                         
                        
-                         
-                        @endforeach
+                            <label for="fname">ID de la catégorie {{$info->id_shop_category}}</label>
+                            <input class="form-control" hidden type="text"  id="fname" name="id" placeholder="ID de la catégorie.." value="{{$info->id_shop_category}}">
+                                        
+                            <label for="fname">Nom</label>
+                            <input type="text" id="fname" name="nom" placeholder="le nom de la catégorie.." value="{{$info->name}}">
+                                @error('nom')
+                                    <span style="color: red;">{{ $message }}</span>
+                                @enderror
+                            <label for="lname">Image</label>
+                            <input type="text" id="lname" name="image" placeholder="le chemin de l'image.." value="{{$info->image}}">
+                                @error('image')
+                                    <span style="color: red;">{{ $message }}</span>
+                                @enderror
+                            <label for="lname">Description</label>
+                            <input type="text" id="lname" name="description" placeholder="la description.." value="{{$info->description}}">
+                                @error('description')
+                                 <span style="color: red;">{{ $message }}</span>
+                                @enderror
+                            <label for="">Action</label>
+                            <select id="" name="action">
+                                <option value="new_cat">Créer une nouvelle catégorie</option>
+                                @foreach($Allshop_category as $dt)
+                                
+                                    @if ($info->id_shop_category_parent == $dt->id_shop_category)
+                                        <option value="{{ $dt->id_shop_category  }}" selected>
+                                            {{ $parrent_Category->id_shop_category}}-{{$parrent_Category->name }}
+                                        </option>
+                                    @else
+                                        <option value="{{ $dt->id_shop_category}}" >
+                                            {{ $dt->id_shop_category}}-{{$dt->name}} 
+                                        </option>
+                                    @endif
+                                
+                                @endforeach
+                                
+                            
+                             </select>
+                             <br>
+                            
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Active ?
+                            </label>
+                            <input class="form-check-input" type="checkbox" value="{{1}}" {{ $info->active=="1"? 'checked':'' }} name="active" id="flexCheckDefault">
 
-                        </select>
+                            <input type="submit" class="btn btn-success" value="Valider">
+                            <a href="{{ route('A_Categorie') }}" class="btn btn-secondary btn-sm" >annuler</a>
                         
-                        <input class="form-check-input" type="checkbox" value="{{1}}"  name="active" id="flexCheckDefault">
-                        <label class="form-check-label" for="flexCheckDefault">
-                            Active ?
-                        </label>
-                       
-                    
-                        <input type="submit" value="Valider">
                     </form>
             </div>
 

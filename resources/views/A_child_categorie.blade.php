@@ -38,10 +38,10 @@
     <ol class="dd-list list-group">
         @foreach($category->categories as $kk => $sub_category)
             <li class="dd-item list-group-item" data-id="{{ $sub_category['id_shop_category'] }}" >
-                <div class="dd-handle" >{{ $sub_category['name'] }}</div>
+                <div class="dd-handle" >{{ $sub_category['name'] }} <small class="text-secondary">[{{ $sub_category['id_shop_category'] }}]</small></div>
                 <div class="dd-option-handle">
                 <a href="{{ route('category-edit', [ 'id_shop_category' => $sub_category['id_shop_category'] ]) }}" class="btn btn-success btn-sm" >Modifier</a> 
-                <a href="{{ route('category-remove', [ 'id_shop_category' => $sub_category['id_shop_category'] ]) }}" class="btn btn-danger btn-sm" >Supprimer</a> 
+                <a href="{{ route('category-remove', [ 'id_shop_category' => $sub_category['id_shop_category'] ]) }}" class="btn btn-danger btn-sm" onclick="return confirm('êtes-vous sûr de vouloir supprimer?');">Supprimer</a> 
                 </div>
 
                 @include('A_Category-sub-subcategory', [ 'category' => $sub_category])
