@@ -242,6 +242,7 @@ Route::get('/Categorie_back', [A_Controller_categorie::class, 'index'])->name('A
 Route::post('/Categorie/save', [A_Controller_categorie::class, 'saveNestedCategories'])->name('save-categories');
 
 Route::post('category-subcategory/create', [A_Controller_categorie::class, 'create'])->name('create-categories');
+Route::post('category-subcategory/saveEditedCategory', [A_Controller_categorie::class, 'saveEditedCategory'])->name('saveEditedCategory');
 
 Route::post('category-subcategory/save', [A_Controller_categorie::class, 'store'])->name('category-subcategory.store');
 Route::get('category-subcategory/edit/{id_shop_category}', [A_Controller_categorie::class, 'edit_index'])->name('category-edit');
