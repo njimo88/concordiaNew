@@ -365,6 +365,7 @@ foreach($Shop_article as $value1){
 </main>
 
        @elseif($type_article == 2)
+
        <main id="main" class="main">
 
        <div class="container">
@@ -387,6 +388,12 @@ foreach($Shop_article as $value1){
                                     
                             <form  method="POST" action="{{route('edit_article',$Id)}}" enctype="multipart/form-data" formnovalidate="formnovalidate">
                             @csrf
+                            <div class="row mt-4 d-flex justify-content-center">
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <input class="btn btn-success" name="modifier" type="submit" value="Valider">
+                                </div>
+                            </div>
+                            
                             <div class="my-4 text-center">
                                 <h3 class="bg-success text-white p-2">Paramètres Généraux</h3>  
                             </div>
@@ -624,17 +631,7 @@ foreach($Shop_article as $value1){
                                         }
                             </style>
                             
-                            <div class="row justify-content-center py-5" style="background-color: #333333;">
-                                <div class="col-lg-8">
-
-                                    <h5 class="mb-4 text-center text-white">Paramètres spécifiques</h5>
-
-                                    <!-- i use livewire to show declinaison for article type 2 --> 
-                                    
-                                    @livewire('declinaison-articletype2', ['articleId' => $data->id_shop_article,'declinaisons' => $declinaisons, ])
-                                    
-                                </div>
-                            </div>
+                            
                             
                             <script>
                             document.addEventListener("DOMContentLoaded", function() {
@@ -784,12 +781,20 @@ foreach($Shop_article as $value1){
                             @endforeach
                                     
                             </div>
-                            <div class="row mt-4 d-flex justify-content-center">
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <input class="btn btn-success" name="modifier" type="submit" value="Valider">
+                            
+                            </form>
+
+                            <div class="row justify-content-center py-5" style="background-color: #333333;">
+                                <div class="col-lg-8">
+
+                                    <h5 class="mb-4 text-center text-white">Paramètres spécifiques</h5>
+
+                                    <!-- i use livewire to show declinaison for article type 2 --> 
+                                    
+                                    @livewire('declinaison-articletype2', ['articleId' => $data->id_shop_article,'declinaisons' => $declinaisons, ])
+                                    
                                 </div>
                             </div>
-                            </form>
 
 
        @else
