@@ -533,14 +533,14 @@ public function commanderModal($shop_id, $user_id, Request $request)
         $this->validate($request, [
             'nom' => 'required|max:255|string',
             'image' => 'required|max:255',
-            'description' => 'required'
+            'editor1' => 'required'
 
         ]);
       
         $category  = new Shop_category ;
         $category->name = $request->input('nom');
         $category->image = $request->input('image');
-        $category->description = $request->input('description');
+        $category->description = $request->input('editor1');
 
         if ($request->input('action') == "new_cat"){
             
@@ -700,7 +700,7 @@ public function saveEditedCategory(Request $request){
         'id'=>'required|numeric',
         'nom' => 'required|max:255|string',
         'image' => 'required|max:255',
-        'description' => 'required'
+        'editor1' => 'required'
 
     ]);
     $category = Shop_category::where('id_shop_category', $request->input('id'))->first();
@@ -736,7 +736,7 @@ public function saveEditedCategory(Request $request){
     {
         $category->name = $request->input('nom');
         $category->image = $request->input('image');
-        $category->description = $request->input('description');  
+        $category->description = $request->input('editor1');  
 
         $parentIdLength = strlen((string) $request->input('action'));
 

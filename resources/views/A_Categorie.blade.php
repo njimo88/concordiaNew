@@ -1,6 +1,8 @@
 @extends('layouts.template')
 
 @section('content')
+<script src="https://cdn.ckeditor.com/4.25.0-lts/full/ckeditor.js"></script>
+
 <main id="main" class="main">
   
         <div class="container">
@@ -65,7 +67,8 @@
                             <span style="color: red;">{{ $message }}</span>
                             @enderror
                         <label for="lname">Description</label>
-                        <input type="text" id="lname" name="description" placeholder="la description..">
+                        <input hidden type="text" id="lname" name="description111111" placeholder="la description..">
+                        <textarea name="editor1" id="ckeditor" class="form-control" required ></textarea>
                             @error('description')
                                 <span style="color: red;">{{ $message }}</span>
                             @enderror
