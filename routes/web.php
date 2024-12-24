@@ -293,11 +293,9 @@ Route::post('/Article/updateSeance', [Article_Controller::class, 'updateLesson']
 Route::post('images/upload', 'ImageController@upload')->name('ckeditor.upload');
 
 
-
 // Dupliquer un article
 Route::post('/Article/duplicate/{id}', [Article_Controller::class, 'duplicate'])->name('duplicate_article');
 Route::get('/Article/duplicate/{id}', [Article_Controller::class, 'duplicate_index'])->name('duplicate_article_index');
-
 
 
 Route::get('/Article/delete/{id}', [Article_Controller::class, 'delete'])->name('delete_article');
