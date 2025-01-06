@@ -128,22 +128,19 @@ $date = Carbon::now();
  
 
   @php
-                                $json_cate = json_decode($data1->categorie) ;  
+                               
+                                $json_cate = json_decode($data1->categorie) ;
+                                $json_cate = $json_cate ?? [];  
                                 
                             @endphp
-
-                            
-                                
+ 
                                 @foreach($Categorie1 as $data)
                                 
                                 <tr>
-                            
                                     <td>{{$data->nom_categorie}}</td>
                                     
                                     <td><input style="vertical-align:center;" class="input" for="catenvoi" type="checkbox" name="category1[]"  value="{{$data->Id_categorie }}" {{ in_array($data->Id_categorie ,$json_cate) ? 'checked ': " "}}></td>
                                     
-                                
-
                                 </tr>
 
                             @endforeach
@@ -172,7 +169,10 @@ $date = Carbon::now();
  
 
   @php
+                                
                                 $json_cate = json_decode($data1->categorie) ;  
+                                $json_cate = $json_cate ?? [];
+                                
                                 
                             @endphp
 
@@ -184,7 +184,7 @@ $date = Carbon::now();
                             
                                     <td>{{$data->nom_categorie}}</td>
                                     
-                                    <td><input class="input" style="vertical-align:center;" for="catenvoi" type="checkbox" name="category2[]"  value="{{$data->Id_categorie }}" {{ in_array($data->Id_categorie ,$json_cate) ? 'checked ': " "}}></td>
+                                    <td><input class="input" style="vertical-align:center;" for="catenvoi" type="checkbox" name="category2[]"  value="{{$data->Id_categorie }}" {{ in_array($data->Id_categorie, $json_cate ) ? 'checked' : '' }}></td>
                                     
                                 
 

@@ -47,6 +47,7 @@ class BlogArticle_Controller extends Controller
         $blog  =  A_Blog_Post::where('id_blog_post_primaire', $id)->get();
         $Categorie1 = Category::whereBetween('id_categorie', [100, 199])->get();
         $Categorie2 = Category::whereBetween('id_categorie', [200, 299])->get();
+        
         return view('BlogArticle_Backoffice/BlogArticle_edit_blog',compact('blog','Categorie2','Categorie1','Id'))->with('user', auth()->user()) ;
 
     }
@@ -68,7 +69,7 @@ class BlogArticle_Controller extends Controller
     function edit_blog($id, Request $request){
 
         $blog = A_Blog_Post::find($id); 
-
+       
         if(isset($request->category1)){
                                  
             $blog->categorie =  json_encode($request->category1,JSON_NUMERIC_CHECK);
