@@ -12,11 +12,11 @@ class ArticlePostController extends Controller
     public function index(Request $request)
     {
         $saisons = Parametre::select('saison')->distinct()->orderBy('saison', 'desc')->get();
+        
         $saison_active = $request->input('saison', $saisons->first()->saison);
         $showOldArticles=false;
         $now = Carbon::now();
         $articles = Shop_article::where('saison', $saison_active)
-            ->where('startvalidity', '<=', $now)
             ->where('endvalidity', '>=', $now)
             ->orderBy('ref', 'asc')
             ->get();
@@ -50,8 +50,7 @@ public function fetchArticles(Request $request)
 if ($showOldArticles) {
     $articlesQuery->where('endvalidity', '<', $now); // Articles expirés
 } else {
-    $articlesQuery->where('startvalidity', '<=', $now)
-                  ->where('endvalidity', '>=', $now); // Articles valides
+    $articlesQuery->where('endvalidity', '>=', $now); // Articles valides
 }
     
 
