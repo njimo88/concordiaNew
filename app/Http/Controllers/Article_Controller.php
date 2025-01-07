@@ -106,6 +106,7 @@ class Article_Controller extends Controller
         //$requete_prof = User::select("*")->where('role','>', 29)->get(); unused 
 
         $saison_list = Shop_article::select('saison')->distinct('name')->get();
+        
 
         //return view('Articles/Create_article_produit',compact('requete_article','requete_cate','saison_list','requete_prof'))->with('user', auth()->user()) ;
         return view('Articles/Create_article_produit',compact('requete_cate','saison_list'))->with('user', auth()->user()) ;
