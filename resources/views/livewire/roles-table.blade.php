@@ -104,7 +104,7 @@
                         <div class="modal-body">
                             @if($count > 0)
                                 <ul>
-                                    @foreach(\App\Models\User::where('role', $roleId)->get() as $user)
+                                    @foreach(\App\Models\User::where('role', $roleId)->orderBy("name", "asc")->orderBy("lastname", "asc")->get() as $user)
                                         <li>{{ $user->name }} {{ $user->lastname }} ({{ $user->email }})</li>
                                     @endforeach
                                 </ul>
