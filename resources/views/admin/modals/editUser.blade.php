@@ -7,7 +7,7 @@
 
 
 
-                <form class="row"  action="{{ route("admin.editUser", $n_users->user_id) }}" method="post">
+                <form class="row"  action="{{ route("admin.editUser", $n_users->user_id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="col-md-3 border-right">
@@ -245,8 +245,24 @@
                                 <div class="labels">
                                     <label for="crt">Certificat médical</label>
                                   </div> 
+                              @if($n_users->medicalCertificate && $n_users->medicalCertificate->file_path)
+                              <!-- Lien pour ouvrir l'image dans un modal -->
+                                  <img src="{{ asset($n_users->medicalCertificate->file_path) }}" alt="Certificat Médical" class="rounded mx-auto d-block" style="max-height: 150px;">
+                              @endif
                               <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
-                                readonly @endif type="text" id="crt" placeholder=" " class=" form-control @error('crt') is-invalid @enderror" name="crt" value=""  autocomplete="crt" autofocus />
+                                readonly @endif type="file" accept="image/*" id="crt" placeholder=" " class=" form-control @error('crt') is-invalid @enderror" name="crt" value="" capture="environment" autocomplete="crt" autofocus />
+                              @error('crt')
+                                  <span class="text-danger" role="alert">
+                                      <strong>{{ $message }}</strong>
+                                  </span>
+                              @enderror
+                            </div>
+                            <div class="col-sm-4 input mt-2">
+                                <div class="labels">
+                                    <label for="crt">Date expiration Certificat</label>
+                                  </div> 
+                              <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
+                                readonly @endif type="date" id="crt_expiration" placeholder=" " class=" form-control @error('crt_expiration') is-invalid @enderror" name="crt_expiration" value="{{ $n_users->medicalCertificate->expiration_date ?? '' }}"  autocomplete="crt_expiration" autofocus/>
                               @error('crt')
                                   <span class="text-danger" role="alert">
                                       <strong>{{ $message }}</strong>

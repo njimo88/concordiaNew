@@ -1,0 +1,315 @@
+@extends('layouts.template')
+
+@section('content')
+
+@php
+$isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles->supprimer_edit_ajout_user == 0;
+@endphp
+
+<main id="main" class="main">
+<div class="container rounded bg-white my-4 p-4">
+    <form action="{{ route('admin.editSpecificUser', $user->user_id) }}" method="post" class="row" enctype="multipart/form-data">
+        @csrf
+
+        <!-- Profile Header -->
+        <div class="col-md-3 border-right d-flex flex-column align-items-center text-center">
+            <div></div> <!-- Div to fill in the space -->
+            <div id="user-container">
+                <img class="rounded-circle mt-3" width="150px" 
+                    src="{{ $user->image ?? ($user->gender == 'male' ? asset('assets/images/user.jpg') : asset('assets/images/femaleuser.png')) }}" 
+                    alt="User Image">
+                <span class="text-dark mt-2">{{ $user->lastname }} {{ $user->name }} (N°{{ $user->user_id }})</span>
+            </div>  
+            <div></div> <!-- Div to fill in the space -->
+        </div>
+
+        <!-- Profile Form -->
+        <div class="col-md-9">
+            <div class="p-3">
+
+                <!-- Section Title -->
+                <h4 class="text-center mb-4">Paramètres du Profil</h4>
+
+                <!-- Form Fields -->
+                <div class="row g-3">
+
+                    <!-- Role -->
+                    <div class="col-md-4">
+                        <label for="role" class="form-label">Rôle</label>
+                        <select id="role" name="role" class="form-select" {{ $isAuthorized ? 'disabled' : '' }}>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->id }}" {{ $user->role == $role->id ? 'selected' : '' }}>
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Name -->
+                    <div class="col-md-4">
+                        <label for="name" class="form-label">Nom</label>
+                        <input type="text" id="name" name="name" class="form-control" value="{{ $user->name }}" 
+                                {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('name')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Lastname -->
+                    <div class="col-md-4">
+                        <label for="lastname" class="form-label">Prénom</label>
+                        <input type="text" id="lastname" name="lastname" class="form-control" value="{{ $user->lastname }}" 
+                        {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('lastname')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Username and Gender -->
+                    <div class="col-md-4">
+                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" id="username" name="username" class="form-control" value="{{ $user->username }}" 
+                        {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('username')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-md-4">
+                        <label for="gender" class="form-label">Sexe</label>
+                        <select id="gender" name="gender" class="form-select" {{ $isAuthorized ? 'disabled' : '' }}>
+                            <option value="">--Choisir une option--</option>
+                            <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>Homme</option>
+                            <option value="female" {{ $user->gender == 'female' ? 'selected' : '' }}>Femme</option>
+                        </select>
+                        @error('gender')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-4">
+                        <label for="email" class="form-label">Adresse Mail</label>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ $user->email }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('email')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Profession -->
+                    <div class="col-md-4">
+                        <label for="profession" class="form-label">Profession</label>
+                        <input type="text" id="profession" name="profession" class="form-control" value="{{ $user->profession }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('profession')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="col-md-4">
+                        <label for="phone" class="form-label">Téléphone</label>
+                        <input type="text" id="phone" name="phone" class="form-control" value="{{ $user->phone }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('phone')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Medical Certificate -->
+                    <div class="col-md-4">
+                        <label for="crt" class="form-label">Certificat Médical</label>
+                        @if($user->medicalCertificate && $user->medicalCertificate->file_path)
+                            <!-- Lien pour ouvrir l'image dans un modal -->
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal">
+                                <img src="{{ asset($user->medicalCertificate->file_path) }}" alt="Certificat Médical" class="rounded mx-auto d-block" style="max-height: 150px;">
+                            </a>
+                        @endif
+                        <input type="file" id="crt" name="crt" class="form-control" accept="image/*" {{ $isAuthorized ? 'disabled' : '' }} capture="environment">
+                        @error('crt')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>                    
+
+                    <!-- Medical Certificate Expiration Date -->
+                    <div class="col-md-4">
+                        <label for="crt_expiration" class="form-label">Date expiration Certificat</label>
+                        <input type="date" id="crt_expiration" name="crt_expiration"
+                            class="form-control" value="{{ $user->medicalCertificate->expiration_date ?? '' }}" 
+                            {{ $isAuthorized ? 'disabled' : '' }}>
+                        @error('crt_expiration')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Birthdate -->
+                    <div class="col-md-4">
+                        <label for="birthdate" class="form-label">Date de Naissance</label>
+                        <input type="date" id="birthdate" name="birthdate" class="form-control" value="{{ $user->birthdate }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('birthdate')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Nationality -->
+                    <div class="col-md-4">
+                        <label for="nationality" class="form-label">Nationalité</label>
+                        <select data-flag="true" id="nationality" class="selectpicker countrypicker" data-default="{{ $user->nationality }}" name="nationality" value="{{ $user->nationality }}" autocomplete="country" autofocus {{ $isAuthorized ? 'disabled' : '' }}>
+                        </select>
+                        @error('nationality')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Address -->
+                    <div class="col-md-4">
+                        <label for="address" class="form-label">Adresse</label>
+                        <input type="text" id="address" name="address" class="form-control" value="{{ $user->address }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('address')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- City -->
+                    <div class="col-md-4">
+                        <label for="city" class="form-label">Ville</label>
+                        <input type="text" id="city" name="city" class="form-control" value="{{ $user->city }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('city')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Postal Code -->
+                    <div class="col-md-4">
+                        <label for="zip" class="form-label">Code Postal</label>
+                        <input type="text" id="zip" name="zip" class="form-control" value="{{ $user->zip }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('zip')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Country -->
+                    <div class="col-md-4">
+                        <label for="country" class="form-label">Pays</label>
+                        <select data-flag="true" id="country" class="selectpicker countrypicker" name="country" data-default="{{ $user->country }}" value="{{ $user->country }}" required autocomplete="country" autofocus {{ $isAuthorized ? 'disabled' : '' }}>
+                        </select>
+                        @error('country')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Inscription date -->
+                    <div class="col-md-4">
+                        <label for="created_at">Date d'inscription</label>
+                        <input type="date" id="created_at" placeholder=" " name="created_at" class="form-control" value="{{ $user->created_at->format('Y-m-d') }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('created_at')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <!-- Licence FFGYM -->
+                    <div class="col-md-4">
+                        <label for="licenceFFGYM">Licence FFGYM</label>
+                        <input type="text" id="licenceFFGYM" placeholder=" " name="licenceFFGYM" class="form-control" value="{{ $user->licenceFFGYM }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        @error('licenceFFGYM')
+                            <span class="text-danger" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="col-md-12 text-center mt-4">
+                    @if(!$isAuthorized)
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Certificat Médical</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Image qui sera affichée dans le modal -->
+                @if($user->medicalCertificate && $user->medicalCertificate->file_path)
+                <img src="{{ asset($user->medicalCertificate->file_path) }}" class="rounded mx-auto d-block zoomed-in" alt="Certificat Médical">
+                @else
+                <div>Aucun certificat trouvé</div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<style>
+    select {
+        margin: 15px 0;
+    }
+
+    .countrypicker{
+        margin: 7.5px 0;
+    }
+
+    #user-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .zoomed-in {
+        width: 100%;
+        height: 100%;
+    }
+
+    @media screen and (max-width: 992px) {
+        .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+            width: 145px;
+        }
+    }
+</style>
+
+@endsection
