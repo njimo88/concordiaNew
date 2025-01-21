@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Shop_category;
 use App\Models\appels;
 use App\Models\Declinaison;
+use App\Models\MedicalCertificates;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Laravel\Ui\Presets\Preset;
@@ -43,18 +44,44 @@ class Controller_club extends Controller
             'users.email',
             'liaison_shop_articles_bills.id_shop_article',
             'bills_status.row_color',
-            'bills.id'
+            'bills.id',
+            'medical_certificates.expiration_date' // Ajouter la date d'expiration
         )
             ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
             ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-            ->join('bills_status', 'bills.status', '=', 'bills_status.id')  // This is the new join to get the row_color
+            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+            ->leftJoin('medical_certificates', 'medical_certificates.user_id', '=', 'users.user_id') // Ajouter la jointure pour les certificats médicaux
             ->where('shop_article.saison', $saison_actu)
             ->where('bills.status', '>', 9)
             ->distinct('users.user_id')
             ->orderBy('users.name', 'ASC')
             ->get();
 
+
+        $currentDate = Carbon::now();
+
+        // Fonction pour obtenir la couleur de l'icone d'oeil en fonction de la validité du certificat
+        $users_saison_active->map(function ($user) use ($currentDate) {
+            $expirationDate = $user->expiration_date;
+
+            if ($expirationDate) {
+                $expirationDate = Carbon::parse($expirationDate);
+                $diffInYears = $currentDate->diffInYears($expirationDate, false);
+
+                if ($diffInYears >= 2) {
+                    $user->medical_certificate_color = 'green';
+                } elseif ($diffInYears >= 1) {
+                    $user->medical_certificate_color = 'orange';
+                } elseif ($diffInYears < 1) {
+                    $user->medical_certificate_color = 'red';
+                }
+            } else {
+                $user->medical_certificate_color = 'black'; // Pas de certificat
+            }
+
+            return $user;
+        });
 
         /* ------------------------------------------requetes pour l'admin------------------------------*/
 
@@ -1027,5 +1054,12 @@ public function enregister_appel_method_test($id , Request $request){
             'Id' => $declinaison->id,
             'deleteRoute' => route('delete.declinaison', $declinaison->id)
         ]);
+    }
+
+    public function validationCertificats()
+    {
+        $certificatesToValidate = MedicalCertificates::where('validated', 0)->get();
+
+        return view('club/certificatesValidation', compact('certificatesToValidate'));
     }
 }
