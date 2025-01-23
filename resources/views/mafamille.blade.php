@@ -118,7 +118,7 @@ border: 2px solid #272E5C;
                             <div class="upper-container">
                                 <div class="image-container">
                                     @if($n_users->image)
-                                        <img src="{{ $n_users->image }}" alt="{{ $n_users->name }}" onclick="chooseProfileImage({{ $n_users->user_id }});">
+                                        <img  src="{{ asset($n_users->image) }}" alt="{{ $n_users->name }}" onclick="chooseProfileImage({{ $n_users->user_id }});">
                                     @elseif ($n_users->gender == 'male')
                                         <img src="{{ asset('assets\images\user.jpg') }}" alt="male" onclick="chooseProfileImage({{ $n_users->user_id }});">
                                     @elseif ($n_users->gender == 'female')

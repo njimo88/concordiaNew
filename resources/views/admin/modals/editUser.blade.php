@@ -15,13 +15,31 @@
                             <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
 
                             @if($n_users->image)
-                                    <img class="rounded-circle mt-5" width="150px" src="{{  $n_users->image }}" >
+                                    <img class="rounded-circle mt-5" width="150px" src="{{  asset($n_users->image) }}" >
                                 @elseif ($n_users->gender == 'male')
                                     <img class="rounded-circle mt-5" width="150px" src="{{ asset('assets\images\user.jpg') }}" alt="male">
                                 @elseif ($n_users->gender == 'female')
                                     <img class="rounded-circle mt-5" width="150px" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
                                 @endif
                             <span class="text-dark">{{ $n_users->lastname }} {{ $n_users->name }} N°{{ $n_users->user_id }}</span>
+                        </div>
+                        <div>
+                            @php
+                                $isFrozeImage = str_contains($n_users->image, 'uploads/users_test/frozen/');
+                            @endphp
+                            @if(!$isFrozeImage || (auth()->user()->role >= 90))
+                                <input type="file" name="profile_image" accept="image/*" style="margin-bottom: 10px;">
+                                <div class="form-check mt-3">
+                                    <input type="checkbox" class="form-check-input" id="delete_image" name="delete_image" value="1">
+                                    <label class="form-check-label" for="delete_image">Supprimer la photo</label>
+                                </div>
+                                @if(auth()->user()->role >= 90)
+                                    <div class="form-check mt-3">
+                                        <input type="checkbox" class="form-check-input" id="freeze_image" name="freeze_image" value="1" @if(str_contains($n_users->image ?? '', 'frozen')) checked @endif>
+                                        <label class="form-check-label" for="freeze_image">Geler la photo</label>
+                                    </div>
+                                @endif
+                            @endif            
                         </div>
                     </div>
                 <div class="col-md-9 border-right">

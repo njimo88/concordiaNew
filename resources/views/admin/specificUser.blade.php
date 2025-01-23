@@ -7,6 +7,11 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
 @endphp
 
 <main id="main" class="main">
+@if (session()->has('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
 <div class="container rounded bg-white my-4 p-4">
     <form action="{{ route('admin.editSpecificUser', $user->user_id) }}" method="post" class="row" enctype="multipart/form-data">
         @csrf
@@ -15,11 +20,33 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
         <div class="col-md-3 border-right d-flex flex-column align-items-center text-center">
             <div></div> <!-- Div to fill in the space -->
             <div id="user-container">
-                <img class="rounded-circle mt-3" width="150px" 
-                    src="{{ $user->image ?? ($user->gender == 'male' ? asset('assets/images/user.jpg') : asset('assets/images/femaleuser.png')) }}" 
-                    alt="User Image">
+                @if($user->image)
+                        <img class="rounded-circle mt-5" width="150px" src="{{ asset($user->image) }}" >
+                    @elseif ($user->gender == 'male')
+                        <img class="rounded-circle mt-5" width="150px" src="{{ asset('assets\images\user.jpg') }}" alt="male">
+                    @elseif ($user->gender == 'female')
+                        <img class="rounded-circle mt-5" width="150px" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
+                @endif
                 <span class="text-dark mt-2">{{ $user->lastname }} {{ $user->name }} (N°{{ $user->user_id }})</span>
             </div>  
+            <div>
+                @php
+                    $isFrozeImage = str_contains($user->image, 'uploads/users_test/frozen/');
+                @endphp
+                @if(!$isFrozeImage || (auth()->user()->role >= 90))
+                    <input type="file" name="profile_image" accept="image/*" style="margin-bottom: 10px;">
+                    <div class="form-check mt-3">
+                        <input type="checkbox" class="form-check-input" id="delete_image" name="delete_image" value="1">
+                        <label class="form-check-label" for="delete_image">Supprimer la photo</label>
+                    </div>
+                    @if(auth()->user()->role >= 90)
+                        <div class="form-check mt-3">
+                            <input type="checkbox" class="form-check-input" id="freeze_image" name="freeze_image" value="1" @if(str_contains($user->image ?? '', 'frozen')) checked @endif>
+                            <label class="form-check-label" for="freeze_image">Geler la photo</label>
+                        </div>
+                    @endif
+                @endif            
+            </div>
             <div></div> <!-- Div to fill in the space -->
         </div>
 
@@ -253,8 +280,29 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                 <!-- Form Actions -->
                 <div class="col-md-12 text-center mt-4">
                     @if(!$isAuthorized)
-                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                        {{-- <button type="submit" class="btn btn-success">Enregistrer</button> --}}
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">Enregistrer</button>
                     @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmation -->
+        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmModalLabel">Confirmer les modifications</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Êtes-vous sûr de vouloir enregistrer les modifications apportées au profil de l'utilisateur ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <!-- Bouton de confirmation -->
+                        <button type="submit" class="btn btn-success">Confirmer</button>
+                    </div>
                 </div>
             </div>
         </div>
