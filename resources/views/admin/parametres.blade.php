@@ -196,17 +196,6 @@
               </div>
             </div>
         </div>
-    
-        
-    <div class="container">
-      <div class="row">
-              <div class="card border-0 shadow-lg rounded-lg card-custom">
-                  <div class="card-body bg-light">
-                      <a href="{{ route('server.browser') }}" target="_blank">Accéder aux fichiers du serveur</a>
-                  </div>
-              </div>
-  </div>
-
     </main> 
     
     <script>
