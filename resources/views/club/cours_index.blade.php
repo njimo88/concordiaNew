@@ -79,7 +79,7 @@
                                         @if (Auth::user()->role >= 90)
                                             <td>
                                                 <a target="_blank" href="{{ route('facture.showBill', ['id' => $dt->id]) }}">
-                                                    <i class="fas fa-file-invoice" style="color: black;"></i>
+                                                    <i class="fas fa-file-invoice" style="color: black; cursor: pointer; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); font-size: 1.2rem;"></i>
                                                 </a>
                                             </td>
                                         @endif
@@ -88,7 +88,7 @@
                                         </td> --}}
                                         <td>
                                             <a href="/admin/members/user/{{ $dt->user_id }}" target="_blank">
-                                                <i class="fas fa-eye openmodal" style="color:{{ $dt->medical_certificate_color }}; cursor: pointer;"></i>
+                                                <i class="fas fa-id-card" style="color:{{ $dt->medical_certificate_color }}; cursor: pointer; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); font-size: 1.2rem;"></i>
                                             </a>
                                         </td>                                        
                                         <td>
