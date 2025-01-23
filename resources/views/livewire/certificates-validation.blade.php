@@ -17,7 +17,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($certificatesToValidate as $certificate)
+                @forelse($certificatesToValidate as $certificate)
                     <tr>
                         <td class="text-center align-middle">{{ $certificate->id }}</td>
                         <td class="text-center align-middle">
@@ -31,7 +31,7 @@
                                 class="form-control"
                             >
                         </td>
-                        <td class="text-center align-middle">{{ $certificate->user->username }} ({{ $certificate->user->user_id  }})</td>
+                        <td class="text-center align-middle">{{ $certificate->user->name }} {{ $certificate->user->lastname }} ({{ $certificate->user->user_id  }})</td>
                         <td class="text-center align-middle">
                             <div class="buttons-container">
                                 <button data-bs-toggle="modal" data-bs-target="#updateExpiration{{ $certificate->id }}" class="btn btn-warning">
@@ -100,7 +100,11 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="5" class="text-center">Aucun certificat en attente de validation</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

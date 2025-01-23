@@ -70,11 +70,11 @@ class Controller_club extends Controller
                 $diffInYears = $currentDate->diffInYears($expirationDate, false);
 
                 if ($diffInYears >= 2) {
-                    $user->medical_certificate_color = 'green';
+                    $user->medical_certificate_color = '#146314';
                 } elseif ($diffInYears >= 1) {
-                    $user->medical_certificate_color = 'orange';
+                    $user->medical_certificate_color = '#eb7c05';
                 } elseif ($diffInYears < 1) {
-                    $user->medical_certificate_color = 'red';
+                    $user->medical_certificate_color = '#e35f5f';
                 }
             } else {
                 $user->medical_certificate_color = 'black'; // Pas de certificat
