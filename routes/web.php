@@ -210,13 +210,14 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/admin/members/familleMembers/{user_id}', [n_AdminController::class, 'familleMembers']);
     /*----------------------- Systeme ------------------------------ */
     Route::post('/admin/update-system-setting', [n_AdminController::class, 'message_general'])->name('update_system_setting');
-    Route::get('/admin/server-browser', [ServerBrowserController::class, 'index'])->name('server.browser');
+    Route::get('/admin/message-general', [n_AdminController::class, 'messageGeneral'])->name('message.general');
+    Route::post('/admin/message-general', [n_AdminController::class, 'editMessageGeneral'])->name('message.general.edit');
 
     /*---------------------- Sécuriser le browsing du serveur */
-    Route::get('/elfinder', [ServerBrowserController::class, 'index'])->name('server.browser');
+    Route::get('/admin/server-browser', [ServerBrowserController::class, 'index'])->name('server.browser');
+    Route::get('/elfinder', [ServerBrowserController::class, 'index']);
     Route::any('/elfinder/{any?}', [ServerBrowserController::class, 'index'])
-        ->where('any', '.*') // Expression régulière pour capturer tous les sous-chemins
-        ->name('server.browser');
+        ->where('any', '.*');
 
     #-------------------------------- Valider Certificats ------------------------------
 
