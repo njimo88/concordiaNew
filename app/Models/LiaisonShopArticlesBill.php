@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class LiaisonShopArticlesBill extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'liaison_shop_articles_bills';
     protected $primaryKey = 'id_liaison';
     public $timestamps = false;
@@ -32,11 +33,16 @@ class LiaisonShopArticlesBill extends Model
 
 
     public function shopArticle()
-{
-    return $this->belongsTo(Shop_article::class, 'id_shop_article');
-}
+    {
+        return $this->belongsTo(Shop_article::class, 'id_shop_article');
+    }
 
-public function bill()
+    public function declinaison_link()
+    {
+        return $this->belongsTo(Declinaison::class, 'declinaison', 'id');
+    }
+
+    public function bill()
     {
         return $this->belongsTo(bills::class, 'bill_id');
     }
