@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Message;
 use App\Models\statistiques_visites;
 use App\Models\MedicalCertificates;
+use App\Models\Shop_article;
 use Intervention\Image\Facades\Image;
 
 require_once(app_path() . '/fonction.php');
@@ -311,14 +312,18 @@ class n_AdminController extends Controller
 
         // Vérifier si un ancien certificat existe pour cet utilisateur
         if ($user->image && file_exists(public_path($user->image))) {
+            // dd($user->image);
+
             // Supprimer l'ancien fichier
             unlink(public_path($user->image));
         }
 
 
-        $path = '/uploads/users_test/';
+        // dd($user->image);
+
+        $path = '/uploads/users/';
         if ($freeze) {
-            $path = '/uploads/users_test/frozen/';
+            $path = '/uploads/users/frozen/';
         }
 
         if (!$resize) {
@@ -339,6 +344,19 @@ class n_AdminController extends Controller
         $user->update([
             'image' => $filePath, // Chemin du fichier
         ]);
+
+        $imageName = pathinfo($user->image, PATHINFO_FILENAME); // Renvoie "cglusko" sans l'extension
+
+        // dd($user->image);
+        // dd(Shop_article::whereRaw('LOWER(image) LIKE ?', ['%' . strtolower($imageName) . '%'])
+        //     ->orWhereRaw('LOWER(image) LIKE ?', ['%' . strtolower($user->name) . '%'])
+        //     ->orWhereRaw('LOWER(image) LIKE ?', ['%' . strtolower($user->lastname) . '%'])->get());
+
+        // Mettre à jour les articles qui utilisent cette image
+        Shop_article::whereRaw('LOWER(image) LIKE ?', ['%' . strtolower($imageName) . '%'])
+            ->orWhereRaw('LOWER(image) LIKE ?', ['%' . strtolower($user->name) . '%'])
+            ->orWhereRaw('LOWER(image) LIKE ?', ['%' . strtolower($user->lastname) . '%'])
+            ->update(['image' => $filePath]);
     }
 
     public function editUser(Request $request, $user_id)
@@ -451,7 +469,22 @@ class n_AdminController extends Controller
             }
         }
 
-        $profilePicturePath = 'uploads/users_test/';
+        if ($request->input('crt_delete')) {
+            // Vérifier si un certificat médical existe pour cet utilisateur
+            if ($user->medicalCertificate && $user->medicalCertificate->file_path) {
+                // Vérifier si le fichier existe physiquement sur le serveur
+                $filePath = public_path($user->medicalCertificate->file_path);
+                if (file_exists($filePath)) {
+                    // Supprimer le fichier du serveur
+                    unlink($filePath);
+                }
+
+                // Supprimer l'entrée dans la base de données
+                $user->medicalCertificate->delete();
+            }
+        }
+
+        $profilePicturePath = 'uploads/users/';
         $frozenPath = $profilePicturePath . 'frozen/';
 
         // Assurez-vous que les dossiers existent
@@ -630,7 +663,22 @@ class n_AdminController extends Controller
             }
         }
 
-        $profilePicturePath = 'uploads/users_test/';
+        if ($request->input('crt_delete')) {
+            // Vérifier si un certificat médical existe pour cet utilisateur
+            if ($user->medicalCertificate && $user->medicalCertificate->file_path) {
+                // Vérifier si le fichier existe physiquement sur le serveur
+                $filePath = public_path($user->medicalCertificate->file_path);
+                if (file_exists($filePath)) {
+                    // Supprimer le fichier du serveur
+                    unlink($filePath);
+                }
+
+                // Supprimer l'entrée dans la base de données
+                $user->medicalCertificate->delete();
+            }
+        }
+
+        $profilePicturePath = 'uploads/users/';
         $frozenPath = $profilePicturePath . 'frozen/';
 
         // Assurez-vous que les dossiers existent
@@ -776,5 +824,35 @@ class n_AdminController extends Controller
     {
         SystemSetting::where('name', '=', 'Message general')->first()->update(['Message' => $request->input('editor1')]);
         return redirect()->route('message.general')->with('success', 'Message général mis à jour avec succès');
+    }
+
+    public function seeMessageMaintenance()
+    {
+        $message = SystemSetting::where('name', '=', 'maintenance')->first();
+
+        return view('admin.message-maintenance', compact('message'));
+    }
+
+    public function editMessageMaintenance(Request $request)
+    {
+        // dd($request->input('editor1'));
+
+        if (trim($request->input('editor1')) == '' || $request->input('editor1') == null) {
+            $message =
+                '<h2>Réouverture du site internet au plus vite</h2>
+            <div>
+                <p>Désolé pour la gêne occasionnée. <br> Nous effectuons 
+                    actuellement une maintenance. <br> Vous pouvez nous suivre 
+                    sur <a target="_blank" href="https://www.facebook.com/GymConcordia/?locale=fr_FR">
+                        Facebook</a> ou <a target="_blank" href="https://www.instagram.com/gym_concordia/?__coig_restricted=1">
+                            Instagram</a> </p>
+                <p>Nous serons de retour très vite &mdash; La Gym Concordia</p>
+            </div>';
+        } else {
+            $message = $request->input('editor1');
+        }
+
+        SystemSetting::where('name', '=', 'maintenance')->first()->update(['Message' => $message]);
+        return redirect()->route('message.maintenance.see')->with('success', 'Message général mis à jour avec succès');
     }
 }

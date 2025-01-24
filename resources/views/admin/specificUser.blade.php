@@ -3,7 +3,7 @@
 @section('content')
 
 @php
-$isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles->supprimer_edit_ajout_user == 0;
+$isNotAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles->supprimer_edit_ajout_user == 0;
 @endphp
 
 <main id="main" class="main">
@@ -29,9 +29,9 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                 @endif
                 <span class="text-dark mt-2">{{ $user->lastname }} {{ $user->name }} (N°{{ $user->user_id }})</span>
             </div>  
-            <div>
+            {{-- <div>
                 @php
-                    $isFrozeImage = str_contains($user->image, 'uploads/users_test/frozen/');
+                    $isFrozeImage = str_contains($user->image, 'uploads/users/frozen/');
                 @endphp
                 @if(!$isFrozeImage || (auth()->user()->role >= 90))
                     <input type="file" name="profile_image" accept="image/*" style="margin-bottom: 10px;">
@@ -46,7 +46,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                         </div>
                     @endif
                 @endif            
-            </div>
+            </div> --}}
             <div></div> <!-- Div to fill in the space -->
         </div>
 
@@ -63,7 +63,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Role -->
                     <div class="col-md-4">
                         <label for="role" class="form-label">Rôle</label>
-                        <select id="role" name="role" class="form-select" {{ $isAuthorized ? 'disabled' : '' }}>
+                        <select id="role" name="role" class="form-select" {{ $isNotAuthorized ? 'disabled' : '' }}>
                             @foreach($roles as $role)
                                 <option value="{{ $role->id }}" {{ $user->role == $role->id ? 'selected' : '' }}>
                                     {{ $role->name }}
@@ -76,7 +76,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <div class="col-md-4">
                         <label for="name" class="form-label">Nom</label>
                         <input type="text" id="name" name="name" class="form-control" value="{{ $user->name }}" 
-                                {{ $isAuthorized ? 'readonly' : '' }}>
+                                {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('name')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -88,7 +88,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <div class="col-md-4">
                         <label for="lastname" class="form-label">Prénom</label>
                         <input type="text" id="lastname" name="lastname" class="form-control" value="{{ $user->lastname }}" 
-                        {{ $isAuthorized ? 'readonly' : '' }}>
+                        {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('lastname')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -100,7 +100,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <div class="col-md-4">
                         <label for="username" class="form-label">Nom d'utilisateur</label>
                         <input type="text" id="username" name="username" class="form-control" value="{{ $user->username }}" 
-                        {{ $isAuthorized ? 'readonly' : '' }}>
+                        {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('username')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -111,7 +111,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Gender -->
                     <div class="col-md-4">
                         <label for="gender" class="form-label">Sexe</label>
-                        <select id="gender" name="gender" class="form-select" {{ $isAuthorized ? 'disabled' : '' }}>
+                        <select id="gender" name="gender" class="form-select" {{ $isNotAuthorized ? 'disabled' : '' }}>
                             <option value="">--Choisir une option--</option>
                             <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>Homme</option>
                             <option value="female" {{ $user->gender == 'female' ? 'selected' : '' }}>Femme</option>
@@ -126,7 +126,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Email -->
                     <div class="col-md-4">
                         <label for="email" class="form-label">Adresse Mail</label>
-                        <input type="email" id="email" name="email" class="form-control" value="{{ $user->email }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ $user->email }}" {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('email')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -137,7 +137,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Profession -->
                     <div class="col-md-4">
                         <label for="profession" class="form-label">Profession</label>
-                        <input type="text" id="profession" name="profession" class="form-control" value="{{ $user->profession }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        <input type="text" id="profession" name="profession" class="form-control" value="{{ $user->profession }}" {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('profession')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -148,7 +148,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Phone -->
                     <div class="col-md-4">
                         <label for="phone" class="form-label">Téléphone</label>
-                        <input type="text" id="phone" name="phone" class="form-control" value="{{ $user->phone }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        <input type="text" id="phone" name="phone" class="form-control" value="{{ $user->phone }}" {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('phone')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -165,7 +165,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                                 <img src="{{ asset($user->medicalCertificate->file_path) }}" alt="Certificat Médical" class="rounded mx-auto d-block" style="max-height: 150px;">
                             </a>
                         @endif
-                        <input type="file" id="crt" name="crt" class="form-control" accept="image/*" {{ $isAuthorized ? 'disabled' : '' }} capture="environment">
+                        <input type="file" id="crt" name="crt" class="form-control" accept="image/*" {{ $isNotAuthorized ? 'disabled' : '' }} capture="environment">
                         @error('crt')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -178,7 +178,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                         <label for="crt_expiration" class="form-label">Date expiration Certificat</label>
                         <input type="date" id="crt_expiration" name="crt_expiration"
                             class="form-control" value="{{ $user->medicalCertificate->expiration_date ?? '' }}" 
-                            {{ $isAuthorized ? 'disabled' : '' }}>
+                            {{ $isNotAuthorized ? 'disabled' : '' }}>
                         @error('crt_expiration')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -186,10 +186,20 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                         @enderror
                     </div>
 
+                    <!-- Champ de suppression -->
+                    <div class="col-sm-4 input mt-2">
+                        <div class="labels">
+                            <label class="form-check-label" for="crt_delete">Supprimer certificat</label>
+                        </div>
+                        <div class="form-check mt-3">
+                            <input type="checkbox" class="form-check-input" id="crt_delete" name="crt_delete" value="1">
+                        </div>
+                    </div>
+
                     <!-- Birthdate -->
                     <div class="col-md-4">
                         <label for="birthdate" class="form-label">Date de Naissance</label>
-                        <input type="date" id="birthdate" name="birthdate" class="form-control" value="{{ $user->birthdate }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        <input type="date" id="birthdate" name="birthdate" class="form-control" value="{{ $user->birthdate }}" {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('birthdate')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -200,7 +210,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Nationality -->
                     <div class="col-md-4">
                         <label for="nationality" class="form-label">Nationalité</label>
-                        <select data-flag="true" id="nationality" class="selectpicker countrypicker" data-default="{{ $user->nationality }}" name="nationality" value="{{ $user->nationality }}" autocomplete="country" autofocus {{ $isAuthorized ? 'disabled' : '' }}>
+                        <select data-flag="true" id="nationality" class="selectpicker countrypicker" data-default="{{ $user->nationality }}" name="nationality" value="{{ $user->nationality }}" autocomplete="country" autofocus {{ $isNotAuthorized ? 'disabled' : '' }}>
                         </select>
                         @error('nationality')
                             <span class="text-danger" role="alert">
@@ -212,7 +222,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Address -->
                     <div class="col-md-4">
                         <label for="address" class="form-label">Adresse</label>
-                        <input type="text" id="address" name="address" class="form-control" value="{{ $user->address }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        <input type="text" id="address" name="address" class="form-control" value="{{ $user->address }}" {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('address')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -223,7 +233,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- City -->
                     <div class="col-md-4">
                         <label for="city" class="form-label">Ville</label>
-                        <input type="text" id="city" name="city" class="form-control" value="{{ $user->city }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        <input type="text" id="city" name="city" class="form-control" value="{{ $user->city }}" {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('city')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -234,7 +244,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Postal Code -->
                     <div class="col-md-4">
                         <label for="zip" class="form-label">Code Postal</label>
-                        <input type="text" id="zip" name="zip" class="form-control" value="{{ $user->zip }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        <input type="text" id="zip" name="zip" class="form-control" value="{{ $user->zip }}" {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('zip')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -245,7 +255,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Country -->
                     <div class="col-md-4">
                         <label for="country" class="form-label">Pays</label>
-                        <select data-flag="true" id="country" class="selectpicker countrypicker" name="country" data-default="{{ $user->country }}" value="{{ $user->country }}" required autocomplete="country" autofocus {{ $isAuthorized ? 'disabled' : '' }}>
+                        <select data-flag="true" id="country" class="selectpicker countrypicker" name="country" data-default="{{ $user->country }}" value="{{ $user->country }}" required autocomplete="country" autofocus {{ $isNotAuthorized ? 'disabled' : '' }}>
                         </select>
                         @error('country')
                             <span class="text-danger" role="alert">
@@ -257,7 +267,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Inscription date -->
                     <div class="col-md-4">
                         <label for="created_at">Date d'inscription</label>
-                        <input type="date" id="created_at" placeholder=" " name="created_at" class="form-control" value="{{ $user->created_at->format('Y-m-d') }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        <input type="date" id="created_at" placeholder=" " name="created_at" class="form-control" value="{{ $user->created_at->format('Y-m-d') }}" {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('created_at')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -268,7 +278,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
                     <!-- Licence FFGYM -->
                     <div class="col-md-4">
                         <label for="licenceFFGYM">Licence FFGYM</label>
-                        <input type="text" id="licenceFFGYM" placeholder=" " name="licenceFFGYM" class="form-control" value="{{ $user->licenceFFGYM }}" {{ $isAuthorized ? 'readonly' : '' }}>
+                        <input type="text" id="licenceFFGYM" placeholder=" " name="licenceFFGYM" class="form-control" value="{{ $user->licenceFFGYM }}" {{ $isNotAuthorized ? 'readonly' : '' }}>
                         @error('licenceFFGYM')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -279,7 +289,7 @@ $isAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->roles
 
                 <!-- Form Actions -->
                 <div class="col-md-12 text-center mt-4">
-                    @if(!$isAuthorized)
+                    @if(!$isNotAuthorized)
                         {{-- <button type="submit" class="btn btn-success">Enregistrer</button> --}}
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmModal">Enregistrer</button>
                     @endif

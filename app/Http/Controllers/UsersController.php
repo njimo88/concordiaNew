@@ -700,7 +700,22 @@ class UsersController extends Controller
             }
         }
 
-        $profilePicturePath = 'uploads/users_test/';
+        if ($request->input('crt_delete')) {
+            // Vérifier si un certificat médical existe pour cet utilisateur
+            if ($user->medicalCertificate && $user->medicalCertificate->file_path) {
+                // Vérifier si le fichier existe physiquement sur le serveur
+                $filePath = public_path($user->medicalCertificate->file_path);
+                if (file_exists($filePath)) {
+                    // Supprimer le fichier du serveur
+                    unlink($filePath);
+                }
+
+                // Supprimer l'entrée dans la base de données
+                $user->medicalCertificate->delete();
+            }
+        }
+
+        $profilePicturePath = 'uploads/users/';
         $frozenPath = $profilePicturePath . 'frozen/';
 
         // Assurez-vous que les dossiers existent
@@ -733,7 +748,7 @@ class UsersController extends Controller
 
             // Définir les anciens et nouveaux chemins complets
             $oldPath = public_path($profilePicturePath . $imageName);  // Ancien chemin complet
-            $newPath = public_path($profilePicturePath . 'frozen/' . $imageName);  // Nouveau chemin dans le répertoire "frozen"
+            $newPath = public_path($frozenPath . $imageName);  // Nouveau chemin dans le répertoire "frozen"
 
             // Vérifier si le fichier existe avant de le déplacer
             if (file_exists($oldPath) && $imageName != '') {
@@ -741,7 +756,7 @@ class UsersController extends Controller
                 rename($oldPath, $newPath);
 
                 // Mettre à jour le chemin dans la base de données avec le nouveau chemin
-                $user->update(['image' => $profilePicturePath . 'frozen/' . $imageName]);
+                $user->update(['image' => $frozenPath . $imageName]);
             }
         }
         // Si "freeze_image" est décoché et l'image est dans le dossier "frozen"
@@ -750,7 +765,7 @@ class UsersController extends Controller
             $imageName = basename($user->image);
 
             // Définir les anciens et nouveaux chemins complets
-            $oldPath = public_path($profilePicturePath . 'frozen/' . $imageName);
+            $oldPath = public_path($frozenPath . $imageName);
             $newPath = public_path($profilePicturePath . $imageName);
 
             // Vérifier si le fichier existe avant de le déplacer

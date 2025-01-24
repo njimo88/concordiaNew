@@ -23,9 +23,9 @@
                                 @endif
                             <span class="text-dark">{{ $n_users->lastname }} {{ $n_users->name }} N°{{ $n_users->user_id }}</span>
                         </div>
-                        <div>
+                        {{-- <div>
                             @php
-                                $isFrozeImage = str_contains($n_users->image, 'uploads/users_test/frozen/');
+                                $isFrozeImage = str_contains($n_users->image, 'uploads/users/frozen/');
                             @endphp
                             @if(!$isFrozeImage || (auth()->user()->role >= 90))
                                 <input type="file" name="profile_image" accept="image/*" style="margin-bottom: 10px;">
@@ -40,7 +40,7 @@
                                     </div>
                                 @endif
                             @endif            
-                        </div>
+                        </div> --}}
                     </div>
                 <div class="col-md-9 border-right">
                     <div class="p-3 pb-5">
@@ -286,6 +286,15 @@
                                       <strong>{{ $message }}</strong>
                                   </span>
                               @enderror
+                            </div>
+                            <!-- Champ de suppression -->
+                            <div class="col-sm-4 input mt-2">
+                                <div class="labels">
+                                    <label class="form-check-label" for="crt_delete">Supprimer certificat</label>
+                                </div>
+                                <div class="form-check mt-3">
+                                    <input type="checkbox" class="form-check-input" id="crt_delete" name="crt_delete" value="1">
+                                </div>
                             </div>
                             <div class="col-sm-4 input mt-2">
                                 <div class="labels">
