@@ -48,6 +48,9 @@ class Role extends Model
         'declarer_heure_professionnel',
         'voir_declaration_professionnel',
         'estAutoriserDeVoirFichiers',
+        'estAutoriserDeVoirMessageMaintenance',
+        'estAutoriserDeVoirModeStrict',
+        'estAutoriserDeVoirParametrage'
     ];
 
     public function users()
