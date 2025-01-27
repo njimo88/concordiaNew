@@ -16,22 +16,24 @@ class SeatReservation extends Component
     public $Myresevation=[];
     public $spectacleid;
     public $message; 
+    
  
     public function freeReservedAfter10Min() {
 
         $currentTimestamp = now()->timestamp - 1 * 60 ; // Current time in seconds 1 * 60 sec mean after 60 second will disapear 
         $currentTimestamp = date('Y-m-d H:i:s', $currentTimestamp);
         
+        
         $expiredReservations = Reservation::where('status', 'pending')
         ->where('reservation_date', '<', $currentTimestamp) // Check if it's over 10 minutes
         ->get();
 
         foreach ($expiredReservations as $reservation) {
-
+            //dd($reservation->seat());
             // Also update the seat's availability
             $reservation->seat->update([
-                'available' => true,
-                'state'=>0,
+                'available' => 1,
+                'state' => 0
             ]);
             $reservation->delete();
         }
@@ -66,9 +68,19 @@ class SeatReservation extends Component
         // ]);
         // dd("updatedRows");
         // Find the seat by ID
-
+        $this->freeReservedAfter10Min();
         $seat = Seat::find($seatId);
         $user_id= Auth::id();
+        $seat_befor=Seat::find($seatId-1);
+        $seat_after=Seat::find($seatId+1);
+        if ($seat_befor!=null && str_ends_with($seat_befor->seat_number, 'X')){$seat_befor=null;}
+        if ($seat_after!=null && str_ends_with($seat_after->seat_number, 'X')){$seat_after=null;}
+        if ($seat_befor!=null && str_starts_with($seat_befor->seat_number, $seat->seat_number[0]) && $seat_befor->available ){ 
+
+            $this->message='you have to choice the seat next the first seats taken or first seat in the line ';
+            return;
+        }
+            
        
         if ($seat && $seat->available) {
             // Reserve the seat by setting 'available' to false
@@ -94,7 +106,7 @@ class SeatReservation extends Component
             //mean if state ==0 -> there is no one take this seat or if state== current user_id : the user can free the seat 
             if (!((int) $seat->state > 0) || $seat->state ==$user_id)
             {
-                $seat->available = true;
+                $seat->available = 1;
                 $seat->state=0;
                 $seat->save();
 
@@ -108,9 +120,10 @@ class SeatReservation extends Component
             }
             
         }
-
+        $this->freeReservedAfter10Min();
         //get the seats that are reserved by this user 
         $this->Myresevation = Reservation::where('id_user', $user_id)->with('seat')->get();
+        
         
     }
 

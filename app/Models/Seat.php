@@ -9,7 +9,7 @@ class Seat extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id_seat';
-    protected $fillable = ['available', 'seat_number'];
+    protected $fillable = ['available', 'seat_number','state'];
 
     public function spectacle()
     {

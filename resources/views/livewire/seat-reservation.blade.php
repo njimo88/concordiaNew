@@ -55,10 +55,17 @@
         </div>
       </div>
     </div>
-  
-    <div class="alert alert-success" role="alert">
-      {{$message}}
-    </div>
+
+  @if (@isset($message))
+    
+        <div class="alert alert-success alert-dismissible">
+             {{$message}}
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        </div>
+    
+    
+  @endif
+    
   
           <!-- Screen Label -->
           <h2 class="screen-label">Gradin </h2>
@@ -181,6 +188,9 @@
   
   
   <script> 
+
+
+
   //ajust a timer 
   document.addEventListener('DOMContentLoaded', timeRefreching() );
   
@@ -269,6 +279,9 @@
   </script>
   
   <style>
+
+
+
   /* card */
   /* remove the underline from links card */
   .card-link {
