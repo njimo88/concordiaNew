@@ -5,13 +5,19 @@
         </div>
     @endif
 
+    @if (session()->has('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <div class="table-responsive">
         <table class="table">
             <thead>
                 <tr>
                     <th>ID Certificat</th>
                     <th>Image du certificat</th>
-                    <th>Date d'expiration</th>
+                    <th>Date d'emission</th>
                     <th>Nom d'utilisateur</th>
                     <th>Actions</th>
                 </tr>
@@ -27,16 +33,16 @@
                         <td class="text-center align-middle">
                             <input 
                                 type="date" 
-                                wire:model="expirationDates.{{ $certificate->id }}" 
+                                wire:model="emissionDates.{{ $certificate->id }}" 
                                 class="form-control"
                             >
                         </td>
                         <td class="text-center align-middle">{{ $certificate->user->name }} {{ $certificate->user->lastname }} ({{ $certificate->user->user_id  }})</td>
                         <td class="text-center align-middle">
                             <div class="buttons-container">
-                                <button data-bs-toggle="modal" data-bs-target="#updateExpiration{{ $certificate->id }}" class="btn btn-warning">
+                                {{-- <button data-bs-toggle="modal" data-bs-target="#updateExpiration{{ $certificate->id }}" class="btn btn-warning">
                                     Enregistrer et valider
-                                </button>
+                                </button> --}}
                                 <button data-bs-toggle="modal" data-bs-target="#validateCertificate{{ $certificate->id }}" class="btn btn-success">
                                     Valider
                                 </button>
@@ -64,7 +70,7 @@
                     </div>
 
                     <!-- Modal de confirmation pour la mise à jour de l'expiration -->
-                    <div class="modal fade" id="updateExpiration{{ $certificate->id }}" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                    {{-- <div class="modal fade" id="updateExpiration{{ $certificate->id }}" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -80,7 +86,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Modal de confirmation pour la validation du certificat -->
                     <div class="modal fade" id="validateCertificate{{ $certificate->id }}" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
