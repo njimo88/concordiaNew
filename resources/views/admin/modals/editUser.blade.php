@@ -277,10 +277,10 @@
                             </div>
                             <div class="col-sm-4 input mt-2">
                                 <div class="labels">
-                                    <label for="crt">Date expiration Certificat</label>
+                                    <label for="crt">Date Emission Certificat</label>
                                   </div> 
                               <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
-                                readonly @endif type="date" id="crt_expiration" placeholder=" " class=" form-control @error('crt_expiration') is-invalid @enderror" name="crt_expiration" value="{{ $n_users->medicalCertificate->expiration_date ?? '' }}"  autocomplete="crt_expiration" autofocus/>
+                                readonly @endif type="date" id="crt_emission" placeholder=" " class=" form-control @error('crt_emission') is-invalid @enderror" name="crt_emission" value="{{ $n_users->medicalCertificate->emission_date ?? '' }}"  autocomplete="crt_emission" autofocus/>
                               @error('crt')
                                   <span class="text-danger" role="alert">
                                       <strong>{{ $message }}</strong>

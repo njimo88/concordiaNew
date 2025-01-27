@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('medical_certificates', function (Blueprint $table) {
             $table->id(); // ID unique pour chaque certificat
             $table->unsignedBigInteger('user_id'); // ID de l'utilisateur (clé étrangère)
-            $table->date('expiration_date')->default(date('Y-m-d')); // Date d'expiration, par défaut aujourd'hui
+            $table->date('emission_date')->default(date('Y-m-d')); // Date d'expiration, par défaut aujourd'hui
             $table->string('file_path'); // Chemin du fichier (image)
             $table->boolean('validated')->default(0); // Validation par défaut à 1
 

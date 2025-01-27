@@ -610,7 +610,7 @@
             @endif
             @if ( auth()->user()->roles->estAutoriserDeVoirCours || auth()->user()->roles->estAutoriserDeVoirAnimations || auth()->user()->roles->estAutoriserDeVoirStatsExports || auth()->user()->roles->estAutoriserDeVoirValiderCertificats)
                <li class="nav-item">
-                  <a class="nav-link collapsed" data-bs-target="#club-nav" data-bs-toggle="collapse" href="#"><span style="color: #f59f00; margin-right:10px" class="fa fa-medal fa-fw mr-2 gc-orange"></span><span>Le Club</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <a class="nav-link collapsed" data-bs-target="#club-nav" data-bs-toggle="collapse" href="#"><span style="color: #f59f00; margin-right:10px" class="fa fa-medal fa-fw mr-2 gc-orange"></span><span>Le Club @php $certificatsEnAttente = \App\Models\MedicalCertificates::where('validated', 0)->count(); @endphp @if($certificatsEnAttente > 0) <span class="badge bg-danger" style="margin-left: 5px;">{{ $certificatsEnAttente }}</span> @endif</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="club-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if (auth()->user()->roles->estAutoriserDeVoirCours)<li> <a href="{{route('index_cours')}}"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-running fa-fw mr-1"></span><span>Cours</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirAnimations)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-swimming fa-fw mr-1"></span><span>Animations</span> </a></li>@endif 

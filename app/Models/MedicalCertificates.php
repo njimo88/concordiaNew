@@ -19,7 +19,7 @@ class MedicalCertificates extends Model
 
     protected $fillable = [
         'user_id',
-        'expiration_date',
+        'emission_date',
         'file_path',
         'validated'
     ];

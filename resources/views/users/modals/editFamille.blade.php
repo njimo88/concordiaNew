@@ -229,11 +229,11 @@
 
                 <div class="col-md-4 input mt-2">
                     <div class="labels">
-                        <label for="crt">Date Expiration Certificat</label>
+                        <label for="crt">Date Emission Certificat</label>
                     </div>
                     <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
-                    readonly @endif type="date" id="crt_expiration" name="crt_expiration" class="form-control" class=" @error('crt') is-invalid @enderror" name="crt_expiration" value="{{ $n_users->medicalCertificate->expiration_date ?? '' }}" />
-                    @error('crt_expiration')
+                    readonly @endif type="date" id="crt_emission" name="crt_emission" class="form-control" class=" @error('crt') is-invalid @enderror" name="crt_emission" value="{{ $n_users->medicalCertificate->emission_date ?? '' }}" />
+                    @error('crt_emission')
                         <span class="text-danger" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>

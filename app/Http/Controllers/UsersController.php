@@ -644,19 +644,18 @@ class UsersController extends Controller
             unset($request['password']);
         }
 
-        $expirationDate = now();
+        $emissionDate = now();
 
         // Valider la date d'expiration si elle est saisie, qu'il y ait un certificat ou non
-        if ($request->input('crt_expiration')) {
-            $expirationDate = $request->input('crt_expiration');
+        if ($request->input('crt_emission')) {
+            $emissionDate = $request->input('crt_emission');
 
-            // Valider la date d'expiration : elle doit être après ou égale à aujourd'hui
+            // Valider la date d'expiration
             $request->validate([
-                'crt_expiration' => 'required|date|date_format:Y-m-d|after_or_equal:today',
+                'crt_emission' => 'required|date|date_format:Y-m-d',
             ], [
-                'crt_expiration.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
-                'crt_expiration.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
-                'crt_expiration.after_or_equal' => 'La date d\'expiration du certificat médical doit être après ou aujourd\'hui.',
+                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
             ]);
 
             // Si une date d'expiration est saisie mais aucun certificat médical n'est téléchargé,
@@ -678,23 +677,22 @@ class UsersController extends Controller
         if ($request->hasFile('crt') || ($user->medicalCertificate && $user->medicalCertificate->file_path !== "")) {
             // Vérifier que la date d'expiration est bien après aujourd'hui
             $request->validate([
-                'crt_expiration' => 'required|date|date_format:Y-m-d|after_or_equal:today',
+                'crt_emission' => 'required|date|date_format:Y-m-d',
             ], [
-                'crt_expiration.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
-                'crt_expiration.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
-                'crt_expiration.after_or_equal' => 'La date d\'expiration du certificat médical doit être après ou aujourd\'hui.',
+                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
             ]);
         }
 
         // Si un certificat médical est téléchargé
         if ($request->hasFile('crt')) {
             // Appeler la méthode de sauvegarde du certificat avec redimensionnement si nécessaire
-            \App\Http\Controllers\n_AdminController::saveCertificateAndUpdateDatabase($request, $user_id, $user, $expirationDate, 0);
-        } elseif ($request->has('crt_expiration')) {
+            \App\Http\Controllers\n_AdminController::saveCertificateAndUpdateDatabase($request, $user_id, $user, $emissionDate, 0);
+        } elseif ($request->has('crt_emission')) {
             // Mettre à jour la date d'expiration si elle a été saisie sans certificat
             if ($user->medicalCertificate) {
                 $user->medicalCertificate->update([
-                    'expiration_date' => $expirationDate,
+                    'emission_date' => $emissionDate,
                     'validated' => 0
                 ]);
             }
@@ -786,7 +784,7 @@ class UsersController extends Controller
         }
 
         // Mettre à jour les autres informations de l'utilisateur
-        $user->update($request->except(['crt', 'crt_expiration', 'profile_image']));
+        $user->update($request->except(['crt', 'crt_emission', 'profile_image']));
 
         return redirect()->route('users.family')->with('success', $request->name . " " . $request->lastname . ' a été mis à jour avec succès');
     }

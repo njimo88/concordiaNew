@@ -83,9 +83,9 @@
                                                 </a>
                                             </td>
                                         @endif
-                                        {{-- <td>
+                                        <td>
                                             <i class="fas fa-eye openmodal" style="color:blue; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal" data-user-id="{{ $dt->user_id }}"></i>
-                                        </td> --}}
+                                        </td>
                                         <td>
                                             <a href="/admin/members/user/{{ $dt->user_id }}" target="_blank">
                                                 <i class="fas fa-id-card" style="color:{{ $dt->medical_certificate_color }}; cursor: pointer; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); font-size: 1.2rem;"></i>
@@ -110,7 +110,7 @@
     </div>
 
     <!-- Modal -->
-    {{-- <div class="modal fade" id="display_info_user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="display_info_user" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -125,7 +125,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
 </main>
 

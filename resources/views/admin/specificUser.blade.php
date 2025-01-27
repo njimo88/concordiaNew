@@ -175,11 +175,11 @@ $isNotAuthorized = auth()->user()->roles->id < $user->role || auth()->user()->ro
 
                     <!-- Medical Certificate Expiration Date -->
                     <div class="col-md-4">
-                        <label for="crt_expiration" class="form-label">Date expiration Certificat</label>
-                        <input type="date" id="crt_expiration" name="crt_expiration"
-                            class="form-control" value="{{ $user->medicalCertificate->expiration_date ?? '' }}" 
+                        <label for="crt_emission" class="form-label">Date Emission Certificat</label>
+                        <input type="date" id="crt_emission" name="crt_emission"
+                            class="form-control" value="{{ $user->medicalCertificate->emission_date ?? '' }}" 
                             {{ $isNotAuthorized ? 'disabled' : '' }}>
-                        @error('crt_expiration')
+                        @error('crt_emission')
                             <span class="text-danger" role="alert">
                                 <strong>{{ $message }}</strong>
                             </span>
