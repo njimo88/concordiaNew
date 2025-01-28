@@ -133,7 +133,6 @@ class SeatReservation extends Component
                 // Refresh the seats data
                 $this->seats = Seat::where('id_spectacle', $this->spectacleid)->get();
                 $this->freeReservedAfter10Min();
-                $this->freeReservedAfter10Min();
                 
                 $this->message1='Vous avez libéré le siège : '.$seat->seat_number.' ';
                 $this->message2="avec succès. ";

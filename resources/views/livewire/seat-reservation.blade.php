@@ -4,14 +4,14 @@
       <div class=" seat-reservation-container ">
           <br>
           
-  
+          
   
           <!-- Button to Open the Modal -->
   <button   onclick="timeRefreching()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
     <i class="fas fa-calendar-check"></i> Mes Reservations 
     </button>
   
-    <button onclick="location.reload()" wire:click="doubleRefrech()"  id="refreshButton" class="btn btn-secondary" >
+    <button  wire:click="doubleRefrech()"  id="refreshButton" class="btn btn-secondary" >
       <i class="fas fa-sync-alt"></i> Refresh
     </button>
     <!-- The Modal -->
@@ -28,21 +28,19 @@
           <!-- Modal body -->
           <div class="modal-body">
               
-              <h4>Mes Reservations
+              <h4>Mes Reservations</h4>
+              @foreach ($Myresevation as $item)
                   
-                  @foreach ($Myresevation as $item)
-                  
-                  <div id="here" class="seat-timer" 
-                      data-reservation-time="{{$item->reservation_date}}" 
-                      data-seat-number="{{ $item->id_seat }}">
-                      <span class="text-secondary">Siege : {{ $item->seat->seat_number }} </span>
-                      <span class="text-danger timer"></span>
-                  </div>
-                      
-                  @endforeach 
-  
-                  
-              </h4>
+                    <div id="here{{ $item->id_seat }}" class="seat-timer" 
+                        data-reservation-time="{{$item->reservation_date}}" 
+                        data-seat-number="{{ $item->id_seat }}">
+                        <h5>
+                            <span class="text-secondary">Siege : {{ $item->seat->seat_number }} </span>
+                            <span class="text-danger timer"></span>
+                        </h5>
+                        
+                    </div>
+            @endforeach 
       
               
           </div>
@@ -349,14 +347,33 @@ overlay.addEventListener('click', function (event) {
   width: 90%;
   text-align: center;
 }
+/* For large screens */
+@media (min-width: 1200px) {
+  .alert {
+    width: 50%;
+  }
+}
 
+/* For medium screens (tablets, small laptops) */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .alert {
+    width: 70%;
+  }
+}
+
+/* For small screens (phones) */
+@media (max-width: 767px) {
+  .alert {
+    width: 100%;
+  }
+}
 /* Close button styling */
 .close2 {
   position: absolute;
   top: 10px;
   right: 10px;
-  color: #155724;
-  font-size: 20px;
+  color: #ffffff;
+  font-size: 30px;
   font-weight: bold;
   text-decoration: none;
   cursor: pointer;
