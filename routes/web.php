@@ -536,4 +536,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/paiement', [TraitementSupp::class, 'paiement'])->name('paiement');
     Route::get('/fichepaiement/{id}/{nombre_cheques}', [TraitementSupp::class, 'fichepaiement'])->name('fichepaiement');
     Route::post('/choisir_place/{id}', [TraitementSupp::class, 'choisir_place'])->name('choisir_place');
+} );
+
+
+/****------------------- spectacles  and seats  ----------*/
+
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/spectacles', [\App\Http\Controllers\SpectacleController::class, 'index'])->name('spectacles.index');
+    Route::get('/spectacles/create', [\App\Http\Controllers\SpectacleController::class, 'create'])->name('spectacles.create');
+    Route::post('/spectacles/store', [\App\Http\Controllers\SpectacleController::class, 'store'])->name('spectacles.store');
+    Route::get('/spectacles/{spectacle}/edit', [\App\Http\Controllers\SpectacleController::class, 'edit'])->name('spectacles.edit');
+    Route::put('/spectacles/{spectacle}/update', [\App\Http\Controllers\SpectacleController::class, 'update'])->name('spectacles.update');
+    Route::delete('/spectacles/{spectacle}', [\App\Http\Controllers\SpectacleController::class, 'destroy'])->name('spectacles.destroy');
+
+    Route::get('/spectacles/seats/{id}',[\App\Http\Controllers\SpectacleController::class, 'seats'])->name('spectacles.seats');
+    
 });
+
