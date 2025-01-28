@@ -579,9 +579,8 @@
                      {{-- ancienne article @if( auth()->user()->roles->estAutoriserDeVoirArticleBoutique )<li> <a href="{{ route('index_article') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-basket-shopping fa-fw mr-1"></span><span>Article</span> </a></li>@endif --}}
                      @if( auth()->user()->roles->estAutoriserDeVoirArticleBoutique )<li> <a href="{{ route('article') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-basket-shopping fa-fw mr-1"></span><span>Article</span> </a></li>@endif
                      @if( auth()->user()->roles->estAutoriserDeVoirCategorieBoutique )<li> <a href="{{ route('A_Categorie') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-coins fa-fw mr-1"></span><span>Catégories</span> </a></li>@endif
-                     <li> <a href="{{ route('mode_strict') }}"><span style="color: #f7bac5; margin-right:8px" class="fa-solid fa-user-ninja mr-1"></span><span>Mode Strict</span> </a></li>
-                     <li> <a href="{{ route('payment_selection') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-cog mr-1"></span><span>Paramètrage</span> </a></li>
-
+                     @if( auth()->user()->roles->estAutoriserDeVoirModeStrict )<li> <a href="{{ route('mode_strict') }}"><span style="color: #f7bac5; margin-right:8px" class="fa-solid fa-user-ninja mr-1"></span><span>Mode Strict</span> </a></li>@endif
+                     @if( auth()->user()->roles->estAutoriserDeVoirParametrage )<li> <a href="{{ route('payment_selection') }}"><span style="color: #f7bac5; margin-right:8px" class="fa fa-cog mr-1"></span><span>Paramètrage</span> </a></li>@endif
                   </ul>
                </li>
             @endif
@@ -611,7 +610,7 @@
             @endif
             @if ( auth()->user()->roles->estAutoriserDeVoirCours || auth()->user()->roles->estAutoriserDeVoirAnimations || auth()->user()->roles->estAutoriserDeVoirStatsExports || auth()->user()->roles->estAutoriserDeVoirValiderCertificats)
                <li class="nav-item">
-                  <a class="nav-link collapsed" data-bs-target="#club-nav" data-bs-toggle="collapse" href="#"><span style="color: #f59f00; margin-right:10px" class="fa fa-medal fa-fw mr-2 gc-orange"></span><span>Le Club</span><i class="bi bi-chevron-down ms-auto"></i> </a>
+                  <a class="nav-link collapsed" data-bs-target="#club-nav" data-bs-toggle="collapse" href="#"><span style="color: #f59f00; margin-right:10px" class="fa fa-medal fa-fw mr-2 gc-orange"></span><span>Le Club @php $certificatsEnAttente = \App\Models\MedicalCertificates::where('validated', 0)->count(); @endphp @if($certificatsEnAttente > 0) <span class="badge bg-danger" style="margin-left: 5px;">{{ $certificatsEnAttente }}</span> @endif</span><i class="bi bi-chevron-down ms-auto"></i> </a>
                   <ul id="club-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                      @if (auth()->user()->roles->estAutoriserDeVoirCours)<li> <a href="{{route('index_cours')}}"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-running fa-fw mr-1"></span><span>Cours</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirAnimations)<li> <a href="club-apexclub.html"><span style="color: #f59f00; margin-right:10px" class="fa fa-person-swimming fa-fw mr-1"></span><span>Animations</span> </a></li>@endif 
@@ -685,8 +684,10 @@
                      @if (auth()->user()->roles->estAutoriserDeVoirGestionDesDroits)<li> <a href="{{  route('index_roles') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-user-check fa-fw mr-1"></span><span>Gestion des droits</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirParametresGeneraux)<li> <a href="{{ route('parametres') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Paramètres</span> </a></li>@endif
                      @if (auth()->user()->roles->estAutoriserDeVoirSalles)<li> <a href="{{ route('index_salle') }}"><span style="color: #f5f503; margin-right:10px" class="fa fa-map-location-dot fa-fw mr-1"></span><span>Salles</span> </a></li>@endif
-                     @if (auth()->user()->roles->estAutoriserDeVoirMessageGeneral)               <li> <a href="{{ route('masection') }}"><i style="color: #f5f503;" class="fa-regular fa-message"></i></span><span>Message Général</span> </a></li>@endif
-                  </ul>
+                     @if (auth()->user()->roles->estAutoriserDeVoirMessageGeneral)               <li> <a href="{{ route('message.general') }}"><i style="color: #f5f503;" class="fa-regular fa-message"></i></span><span>Message Général</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirFichiers)               <li> <a href="{{ route('server.browser') }}"><i style="color: #f5f503;" class="fa-regular fa-file"></i></span><span>Fichiers Serveur</span> </a></li>@endif
+                     @if (auth()->user()->roles->estAutoriserDeVoirMessageMaintenance)               <li> <a href="{{ route('message.maintenance.see') }}"><i style="color: #f5f503;" class="fa-regular fa-message"></i></span><span>Message de maintenance</span> </a></li>@endif
+                     </ul>
                </li>
             @endif
         </ul>

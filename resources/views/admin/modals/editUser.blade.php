@@ -15,7 +15,7 @@
                             <button type="button" class="btn-close btn-danger" data-bs-dismiss="modal" aria-label="Close"></button>
 
                             @if($n_users->image)
-                                    <img class="rounded-circle mt-5" width="150px" src="{{  $n_users->image }}" >
+                                    <img class="rounded-circle mt-5" width="150px" src="{{  asset($n_users->image) }}" >
                                 @elseif ($n_users->gender == 'male')
                                     <img class="rounded-circle mt-5" width="150px" src="{{ asset('assets\images\user.jpg') }}" alt="male">
                                 @elseif ($n_users->gender == 'female')
@@ -23,6 +23,24 @@
                                 @endif
                             <span class="text-dark">{{ $n_users->lastname }} {{ $n_users->name }} N°{{ $n_users->user_id }}</span>
                         </div>
+                        {{-- <div>
+                            @php
+                                $isFrozeImage = str_contains($n_users->image, 'uploads/users/frozen/');
+                            @endphp
+                            @if(!$isFrozeImage || (auth()->user()->role >= 90))
+                                <input type="file" name="profile_image" accept="image/*" style="margin-bottom: 10px;">
+                                <div class="form-check mt-3">
+                                    <input type="checkbox" class="form-check-input" id="delete_image" name="delete_image" value="1">
+                                    <label class="form-check-label" for="delete_image">Supprimer la photo</label>
+                                </div>
+                                @if(auth()->user()->role >= 90)
+                                    <div class="form-check mt-3">
+                                        <input type="checkbox" class="form-check-input" id="freeze_image" name="freeze_image" value="1" @if(str_contains($n_users->image ?? '', 'frozen')) checked @endif>
+                                        <label class="form-check-label" for="freeze_image">Geler la photo</label>
+                                    </div>
+                                @endif
+                            @endif            
+                        </div> --}}
                     </div>
                 <div class="col-md-9 border-right">
                     <div class="p-3 pb-5">
@@ -259,15 +277,24 @@
                             </div>
                             <div class="col-sm-4 input mt-2">
                                 <div class="labels">
-                                    <label for="crt">Date expiration Certificat</label>
+                                    <label for="crt">Date Emission Certificat</label>
                                   </div> 
                               <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
-                                readonly @endif type="date" id="crt_expiration" placeholder=" " class=" form-control @error('crt_expiration') is-invalid @enderror" name="crt_expiration" value="{{ $n_users->medicalCertificate->expiration_date ?? '' }}"  autocomplete="crt_expiration" autofocus/>
+                                readonly @endif type="date" id="crt_emission" placeholder=" " class=" form-control @error('crt_emission') is-invalid @enderror" name="crt_emission" value="{{ $n_users->medicalCertificate->emission_date ?? '' }}"  autocomplete="crt_emission" autofocus/>
                               @error('crt')
                                   <span class="text-danger" role="alert">
                                       <strong>{{ $message }}</strong>
                                   </span>
                               @enderror
+                            </div>
+                            <!-- Champ de suppression -->
+                            <div class="col-sm-4 input mt-2">
+                                <div class="labels">
+                                    <label class="form-check-label" for="crt_delete">Supprimer certificat</label>
+                                </div>
+                                <div class="form-check mt-3">
+                                    <input type="checkbox" class="form-check-input" id="crt_delete" name="crt_delete" value="1">
+                                </div>
                             </div>
                             <div class="col-sm-4 input mt-2">
                                 <div class="labels">

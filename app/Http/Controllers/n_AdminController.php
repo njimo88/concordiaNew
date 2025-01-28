@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Mail\Message;
 use App\Models\statistiques_visites;
 use App\Models\MedicalCertificates;
+use App\Models\Shop_article;
+use Intervention\Image\Facades\Image;
 
 require_once(app_path() . '/fonction.php');
 
@@ -221,6 +223,142 @@ class n_AdminController extends Controller
         return view('admin.modals.mdpUniversel', compact('n_users'))->with('user', auth()->user());
     }
 
+    public static function resizeAndSaveImage($file, $fileName, $filePath)
+    {
+        $directory = public_path($filePath);
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        // Redimensionner le certificat médical uniquement si nécessaire
+        $image = Image::make($file);
+
+        // Vérifie si la largeur ou la hauteur dépasse 1200 pixels
+        if ($image->width() > 1200 || $image->height() > 1200) {
+            if ($image->width() > $image->height()) {
+                // Redimensionner la largeur à 1200 pixels tout en conservant le ratio
+                $image->resize(1200, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+            } else {
+                // Redimensionner la hauteur à 1200 pixels tout en conservant le ratio
+                $image->resize(null, 1200, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+            }
+        }
+
+        // Sauvegarder le fichier redimensionné ou original si aucun redimensionnement n'est nécessaire
+        // $filePath = 'uploads/CertificatsMedicaux/' . $fileName;
+        $filePath = $filePath . $fileName;
+        $image->save(public_path($filePath), 75);
+
+        // On retourne le chemin
+        return $filePath;
+    }
+
+    public static function saveCertificateAndUpdateDatabase(Request $request, $user_id, $user, $emissionDate, $resize, $validated = 0)
+    {
+        // Gérer l'upload du fichier
+        $file = $request->file('crt');
+
+        // Obtenir l'extension du fichier
+        $extension = $file->getClientOriginalExtension();
+
+        // Générer un nom unique pour le fichier
+        $fileName = "CertifMedic$user_id.$extension";
+
+        // Vérifier si un ancien certificat existe pour cet utilisateur
+        if ($user->medicalCertificate && file_exists(public_path($user->medicalCertificate->file_path))) {
+            // Supprimer l'ancien fichier
+            unlink(public_path($user->medicalCertificate->file_path));
+        }
+
+        if (!$resize) {
+            //------------------SANS RESIZER------------------
+            // Déplacer le fichier vers le dossier public/images/certificatsMedicaux
+            $file->move(public_path('/uploads/CertificatsMedicaux'), $fileName);
+
+            // Le chemin du fichier dans le dossier public
+            $filePath = 'uploads/CertificatsMedicaux/' . $fileName;
+            //------------------SANS RESIZER------------------
+        } else {
+            //------------------AVEC RESIZER------------------
+            $filePath = self::resizeAndSaveImage($file, $fileName, 'uploads/CertificatsMedicaux/');
+            //------------------AVEC RESIZER------------------
+        }
+        // Mettre à jour ou créer un certificat médical
+        MedicalCertificates::updateOrCreate(
+            ['user_id' => $user->user_id], // Trouver le certificat pour cet utilisateur (s'il existe)
+            [
+                'file_path' => $filePath, // Chemin du fichier
+                'emission_date' => $emissionDate, // Utiliser la date d'expiration fournie ou celle par défaut
+                'validated' => $validated // Mettre "validated" à 1 car nous sommes des admins qui modifions ses données
+            ]
+        );
+    }
+
+
+    public static function saveProfilePictureAndUpdateDatabase(Request $request, $user, $user_id, $resize, $freeze = 0)
+    {
+        // Gérer l'upload du fichier
+        $file = $request->file('profile_image');
+
+        // Obtenir l'extension du fichier
+        $extension = $file->getClientOriginalExtension();
+
+        // Générer un nom unique pour le fichier
+        $fileName = "$user_id.$extension";
+
+        // Vérifier si un ancien certificat existe pour cet utilisateur
+        if ($user->image && file_exists(public_path($user->image))) {
+            // dd($user->image);
+
+            // Supprimer l'ancien fichier
+            unlink(public_path($user->image));
+        }
+
+
+        // dd($user->image);
+
+        $path = '/uploads/users/';
+        if ($freeze) {
+            $path = '/uploads/users/frozen/';
+        }
+
+        if (!$resize) {
+            //------------------SANS RESIZER------------------
+            // Déplacer le fichier vers le dossier public/images/certificatsMedicaux
+            $file->move(public_path($path), $fileName);
+
+            // Le chemin du fichier dans le dossier public
+            $filePath = $path . $fileName;
+            //------------------SANS RESIZER------------------
+        } else {
+            //------------------AVEC RESIZER------------------
+            $filePath = self::resizeAndSaveImage($file, $fileName, $path); // FAIRE Pour spécifier le chemin dans la fonction
+            //------------------AVEC RESIZER------------------
+        }
+
+        // Mettre à jour ou créer un certificat médical
+        $user->update([
+            'image' => $filePath, // Chemin du fichier
+        ]);
+
+        $imageName = pathinfo($user->image, PATHINFO_FILENAME); // Renvoie le nom du fichier sans l'extension "eferandel.png" -> "eferandel"
+
+        // dd($user->image);
+        // dd(Shop_article::whereRaw('LOWER(image) LIKE ?', ['%' . strtolower($imageName) . '%'])
+        //     ->orWhereRaw('LOWER(image) LIKE ?', ['%' . strtolower($user->name) . '%'])
+        //     ->orWhereRaw('LOWER(image) LIKE ?', ['%' . strtolower($user->lastname) . '%'])->get());
+
+        // Mettre à jour les articles qui utilisent cette image
+        Shop_article::whereRaw('LOWER(image) LIKE ?', ['%' . strtolower($imageName) . '%'])
+            ->orWhereRaw('LOWER(image) LIKE ?', ['%' . strtolower($user->name) . '%'])
+            ->orWhereRaw('LOWER(image) LIKE ?', ['%' . strtolower($user->lastname) . '%'])
+            ->update(['image' => $filePath]);
+    }
+
     public function editUser(Request $request, $user_id)
     {
         $user = User::find($user_id);
@@ -237,7 +375,6 @@ class n_AdminController extends Controller
             'city' => 'required',
             'nationality' => 'required',
             'licenceFFGYM' => ['nullable', 'regex:/^\d{5}\.\d{3}\.\d{5}$/'],
-            'crt' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
 
         ], $messages = [
             'username.required' => "Le champ nom d'utilisateur est requis.",
@@ -267,9 +404,6 @@ class n_AdminController extends Controller
             'country.required' => "Le champ pays est requis.",
             'licenceFFGYM.required' => "Le champ licence FFGYM est requis.",
             'licenceFFGYM.regex' => "Le format de la licence FFGYM est invalide.",
-            'crt.image' => "Le certificat médical doit être une image.",
-            'crt.mimes' => "Le certificat médical doit être un fichier de type jpeg, png, jpg ou gif.",
-            'crt.max' => "Le certificat médical ne doit pas dépasser 2 Mo.",
         ]);
 
         if (!empty($request->password)) {
@@ -278,64 +412,144 @@ class n_AdminController extends Controller
             unset($request['password']);
         }
 
+        // Définir la valeur par défaut pour la date d'expiration (date actuelle)
+        $emissionDate = now();
 
-        // Si un fichier est téléchargé pour 'crt', valider la date d'expiration
-        if ($request->hasFile('crt') || ($user->medicalCertificate && $user->medicalCertificate->file_path !== "")) {
-            // Si un certificat est téléchargé, la date d'expiration est obligatoire
+        // Valider la date d'expiration si elle est saisie, qu'il y ait un certificat ou non
+        if ($request->input('crt_emission')) {
+            $emissionDate = $request->input('crt_emission');
+
+            // Valider la date d'expiration : elle doit être après ou égale à aujourd'hui
             $request->validate([
-                'crt_expiration' => 'required|date|date_format:Y-m-d|after_or_equal:today',
+                'crt_emission' => 'required|date|date_format:Y-m-d',
             ], [
-                'crt_expiration.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
-                'crt_expiration.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
-                'crt_expiration.after_or_equal' => 'La date d\'expiration du certificat médical doit être après ou aujourd\'hui.',
+                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
             ]);
+
+            // Si une date d'expiration est saisie mais aucun certificat médical n'est téléchargé,
+            // on vérifie si l'utilisateur a déjà un certificat existant. Si ce n'est pas le cas,
+            // on exige un nouveau certificat.
+            if (!$request->hasFile('crt') && (!$user->medicalCertificate || !$user->medicalCertificate->file_path)) {
+                $request->validate([
+                    'crt' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                ], [
+                    'crt.required' => 'Le certificat médical est requis quand une date d\'expiration est saisie.',
+                    'crt.image' => "Le certificat médical doit être une image.",
+                    'crt.mimes' => "Le certificat médical doit être un fichier de type jpeg, png, jpg ou gif.",
+                    'crt.max' => "Le certificat médical ne doit pas dépasser 2 Mo.",
+                ]);
+            }
         }
 
-        // Définir la valeur par défaut pour la date d'expiration (date actuelle)
-        $expirationDate = now();
-
-        if ($request->input('crt_expiration') !== '') {
-            $expirationDate = $request->input('crt_expiration');
+        // Si un certificat est téléchargé ou existe déjà, la date d'expiration est obligatoire
+        if ($request->hasFile('crt') || ($user->medicalCertificate && $user->medicalCertificate->file_path !== "")) {
+            // Vérifier que la date d'expiration est bien après aujourd'hui
+            $request->validate([
+                'crt_emission' => 'required|date|date_format:Y-m-d',
+            ], [
+                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
+            ]);
         }
 
         // Si un certificat médical est téléchargé
         if ($request->hasFile('crt')) {
-            // Gérer l'upload du fichier
-            $file = $request->file('crt');
+            // Appeler la méthode de sauvegarde du certificat avec redimensionnement si nécessaire
+            $this->saveCertificateAndUpdateDatabase($request, $user_id, $user, $emissionDate, 1, 1);
+        } elseif ($request->has('crt_emission')) {
+            // Mettre à jour la date d'expiration si elle a été saisie sans certificat
+            if ($user->medicalCertificate) {
+                $user->medicalCertificate->update([
+                    'emission_date' => $emissionDate,
+                    'validated' => 1
+                ]);
+            }
+        }
 
-            // Obtenir l'extension du fichier
-            $extension = $file->getClientOriginalExtension();
+        if ($request->input('crt_delete')) {
+            // Vérifier si un certificat médical existe pour cet utilisateur
+            if ($user->medicalCertificate && $user->medicalCertificate->file_path) {
+                // Vérifier si le fichier existe physiquement sur le serveur
+                $filePath = public_path($user->medicalCertificate->file_path);
+                if (file_exists($filePath)) {
+                    // Supprimer le fichier du serveur
+                    unlink($filePath);
+                }
 
-            // Générer un nom unique pour le fichier
-            $fileName = "CertifMedic$user_id.$extension";
+                // Supprimer l'entrée dans la base de données
+                $user->medicalCertificate->delete();
+            }
+        }
 
-            // Vérifier si un ancien certificat existe pour cet utilisateur
-            if ($user->medicalCertificate && file_exists(public_path($user->medicalCertificate->file_path))) {
-                // Supprimer l'ancien fichier
-                unlink(public_path($user->medicalCertificate->file_path));
+        $profilePicturePath = 'uploads/users/';
+        $frozenPath = $profilePicturePath . 'frozen/';
+
+        // Assurez-vous que les dossiers existent
+        if (!is_dir(public_path($profilePicturePath))) {
+            mkdir(public_path($profilePicturePath), 0777, true);
+        }
+
+        if (!is_dir(public_path($frozenPath))) {
+            mkdir(public_path($frozenPath), 0777, true);
+        }
+
+        $freeze = 0;
+        if ($request->input('freeze_image')) {
+            $freeze = 1;
+        }
+
+        // Si une photo de profil est téléchargée
+        if ($request->hasFile('profile_image')) {
+            // Appeler la méthode de sauvegarde du certificat avec redimensionnement si nécessaire
+            $this->saveProfilePictureAndUpdateDatabase($request, $user, $user_id, 1, $freeze);
+        }
+        // Gérer les cas où une nouvelle photo est téléchargée et suppression cochée
+        else if ($request->hasFile('profile_image') && $request->input('delete_image')) {
+            $this->saveProfilePictureAndUpdateDatabase($request, $user, $user_id, 1, $freeze);
+        }
+        // Si aucune nouvelle photo n'est téléchargée mais que "freeze" est activé et qu'on a pas coché 'supprimer'
+        else if (!$request->hasFile('profile_image') && file_exists(public_path($user->image)) && $freeze && !$request->input('delete_image')) {
+            // Extraire le nom du fichier à partir du chemin complet
+            $imageName = basename($user->image);
+
+            // Définir les anciens et nouveaux chemins complets
+            $oldPath = public_path($profilePicturePath . $imageName);
+            $newPath = public_path($frozenPath . $imageName);
+
+            // Vérifier si le fichier existe avant de le déplacer
+            if (file_exists($oldPath) && $imageName != '') {
+                rename($oldPath, $newPath);
+
+                // Mettre à jour le chemin dans la base de données avec le nouveau chemin
+                $user->update(['image' => $frozenPath . $imageName]);
+            }
+        }
+        // Si "freeze_image" est décoché et l'image est dans le dossier "frozen"
+        else if (!$freeze && str_contains($user->image ?? '', 'frozen')) {
+            // Extraire le nom du fichier
+            $imageName = basename($user->image);
+
+            // Définir les anciens et nouveaux chemins complets
+            $oldPath = public_path($frozenPath . $imageName);
+            $newPath = public_path($profilePicturePath . $imageName);
+
+            // Vérifier si le fichier existe avant de le déplacer
+            if (file_exists($oldPath)) {
+                rename($oldPath, $newPath);
+
+                // Mettre à jour le chemin dans la base de données avec le nouveau chemin
+                $user->update(['image' => $profilePicturePath . $imageName]);
+            }
+        }
+        // Si "delete_image" est activé, supprimer l'image existante
+        else if ($request->input('delete_image')) {
+            if ($user->image && file_exists(public_path($user->image))) {
+                unlink(public_path($user->image));
             }
 
-            // Déplacer le fichier vers le dossier public/images/certificatsMedicaux
-            $file->move(public_path('/uploads/certificatsMedicaux'), $fileName);
-
-            // Le chemin du fichier dans le dossier public
-            $filePath = 'uploads/CertificatsMedicaux/' . $fileName;
-
-            // Mettre à jour ou créer un certificat médical
-            MedicalCertificates::updateOrCreate(
-                ['user_id' => $user->user_id], // Trouver le certificat pour cet utilisateur (s'il existe)
-                [
-                    'file_path' => $filePath, // Chemin du fichier
-                    'expiration_date' => $expirationDate, // Utiliser la date d'expiration fournie ou celle par défaut
-                ]
-            );
-        } else if ($user->medicalCertificate && $user->medicalCertificate->file_path !== "") {
-            MedicalCertificates::updateOrCreate(
-                ['user_id' => $user->user_id], // Trouver le certificat pour cet utilisateur (s'il existe)
-                [
-                    'expiration_date' => $expirationDate, // Utiliser la date d'expiration fournie ou celle par défaut
-                ]
-            );
+            // Mettre à jour l'utilisateur pour supprimer la référence à l'image
+            $user->update(['image' => null]);
         }
 
         $user->update($request->all());
@@ -355,7 +569,6 @@ class n_AdminController extends Controller
             'email' => 'required|email|max:255',
             'profession' => 'nullable|string|max:191',
             'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
-            'crt' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'birthdate' => 'required|date|date_format:Y-m-d|before:today',
             'nationality' => 'required',
             'address' => 'required',
@@ -375,9 +588,6 @@ class n_AdminController extends Controller
             'profession.string' => "La profession doit être une chaîne de caractères.",
             'phone.required' => "Le champ numéro de téléphone est requis.",
             'phone.regex' => "Le format du numéro de téléphone est invalide. Exemple : 0123456789.",
-            'crt.image' => "Le certificat médical doit être une image.",
-            'crt.mimes' => "Le certificat médical doit être un fichier de type jpeg, png, jpg ou gif.",
-            'crt.max' => "Le certificat médical ne doit pas dépasser 2 Mo.",
             'birthdate.required' => 'La date de naissance est requise.',
             'birthdate.date' => 'Le format de la date de naissance est invalide.',
             'birthdate.before' => 'La date de naissance doit être antérieure à aujourd\'hui.',
@@ -394,62 +604,144 @@ class n_AdminController extends Controller
         // Récupérer l'utilisateur
         $user = User::findOrFail($userId);
 
-        // Si un fichier est téléchargé pour 'crt', valider la date d'expiration
-        if ($request->hasFile('crt') || ($user->medicalCertificate && $user->medicalCertificate->file_path !== "")) {
-            // Si un certificat est téléchargé, la date d'expiration est obligatoire
+        // Définir la valeur par défaut pour la date d'expiration (date actuelle)
+        $emissionDate = now();
+
+        // Valider la date d'expiration si elle est saisie, qu'il y ait un certificat ou non
+        if ($request->input('crt_emission')) {
+            $emissionDate = $request->input('crt_emission');
+
+            // Valider la date d'expiration : elle doit être après ou égale à aujourd'hui
             $request->validate([
-                'crt_expiration' => 'required|date|date_format:Y-m-d|after_or_equal:today',
+                'crt_emission' => 'required|date|date_format:Y-m-d',
             ], [
-                'crt_expiration.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
-                'crt_expiration.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
-                'crt_expiration.after_or_equal' => 'La date d\'expiration du certificat médical doit être après ou aujourd\'hui.',
+                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
             ]);
+
+            // Si une date d'expiration est saisie mais aucun certificat médical n'est téléchargé,
+            // on vérifie si l'utilisateur a déjà un certificat existant. Si ce n'est pas le cas,
+            // on exige un nouveau certificat.
+            if (!$request->hasFile('crt') && (!$user->medicalCertificate || !$user->medicalCertificate->file_path)) {
+                $request->validate([
+                    'crt' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                ], [
+                    'crt.required' => 'Le certificat médical est requis quand une date d\'expiration est saisie.',
+                    'crt.image' => "Le certificat médical doit être une image.",
+                    'crt.mimes' => "Le certificat médical doit être un fichier de type jpeg, png, jpg ou gif.",
+                    'crt.max' => "Le certificat médical ne doit pas dépasser 2 Mo.",
+                ]);
+            }
         }
 
-        $expirationDate = now();
-        // Définir la valeur par défaut pour la date d'expiration (date actuelle)
-        if ($request->input('crt_expiration') !== '') {
-            $expirationDate = $request->input('crt_expiration');
+        // Si un certificat est téléchargé ou existe déjà, la date d'expiration est obligatoire
+        if ($request->hasFile('crt') || ($user->medicalCertificate && $user->medicalCertificate->file_path !== "")) {
+            // Vérifier que la date d'expiration est bien après aujourd'hui
+            $request->validate([
+                'crt_emission' => 'required|date|date_format:Y-m-d',
+            ], [
+                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
+            ]);
         }
 
         // Si un certificat médical est téléchargé
         if ($request->hasFile('crt')) {
-            // Gérer l'upload du fichier
-            $file = $request->file('crt');
+            // Appeler la méthode de sauvegarde du certificat avec redimensionnement si nécessaire
+            $this->saveCertificateAndUpdateDatabase($request, $userId, $user, $emissionDate, 1, 1);
+        } elseif ($request->has('crt_emission')) {
+            // Mettre à jour la date d'expiration si elle a été saisie sans certificat
+            if ($user->medicalCertificate) {
+                $user->medicalCertificate->update([
+                    'emission_date' => $emissionDate,
+                    'validated' => 1
+                ]);
+            }
+        }
 
-            // Obtenir l'extension du fichier
-            $extension = $file->getClientOriginalExtension();
+        if ($request->input('crt_delete')) {
+            // Vérifier si un certificat médical existe pour cet utilisateur
+            if ($user->medicalCertificate && $user->medicalCertificate->file_path) {
+                // Vérifier si le fichier existe physiquement sur le serveur
+                $filePath = public_path($user->medicalCertificate->file_path);
+                if (file_exists($filePath)) {
+                    // Supprimer le fichier du serveur
+                    unlink($filePath);
+                }
 
-            // Générer un nom unique pour le fichier
-            $fileName = "CertifMedic$userId.$extension";
+                // Supprimer l'entrée dans la base de données
+                $user->medicalCertificate->delete();
+            }
+        }
 
-            // Vérifier si un ancien certificat existe pour cet utilisateur
-            if ($user->medicalCertificate && file_exists(public_path($user->medicalCertificate->file_path))) {
-                // Supprimer l'ancien fichier
-                unlink(public_path($user->medicalCertificate->file_path));
+        $profilePicturePath = 'uploads/users/';
+        $frozenPath = $profilePicturePath . 'frozen/';
+
+        // Assurez-vous que les dossiers existent
+        if (!is_dir(public_path($profilePicturePath))) {
+            mkdir(public_path($profilePicturePath), 0777, true);
+        }
+
+        if (!is_dir(public_path($frozenPath))) {
+            mkdir(public_path($frozenPath), 0777, true);
+        }
+
+        $freeze = 0;
+        if ($request->input('freeze_image')) {
+            $freeze = 1;
+        }
+
+        // Si une photo de profil est téléchargée
+        if ($request->hasFile('profile_image')) {
+            // Appeler la méthode de sauvegarde du certificat avec redimensionnement si nécessaire
+            $this->saveProfilePictureAndUpdateDatabase($request, $user, $userId, 1, $freeze);
+        }
+        // Gérer les cas où une nouvelle photo est téléchargée et suppression cochée
+        else if ($request->hasFile('profile_image') && $request->input('delete_image')) {
+            $this->saveProfilePictureAndUpdateDatabase($request, $user, $userId, 1, $freeze);
+        }
+        // Si aucune nouvelle photo n'est téléchargée mais que "freeze" est activé
+        else if (!$request->hasFile('profile_image') && file_exists(public_path($user->image)) && $freeze && !$request->input('delete_image')) {
+            // Extraire le nom du fichier à partir du chemin complet
+            $imageName = basename($user->image);
+
+            // Définir les anciens et nouveaux chemins complets
+            $oldPath = public_path($profilePicturePath . $imageName);
+            $newPath = public_path($frozenPath . $imageName);
+
+            // Vérifier si le fichier existe avant de le déplacer
+            if (file_exists($oldPath) && $imageName != '') {
+                rename($oldPath, $newPath);
+
+                // Mettre à jour le chemin dans la base de données avec le nouveau chemin
+                $user->update(['image' => $frozenPath . $imageName]);
+            }
+        }
+        // Si "freeze_image" est décoché et l'image est dans le dossier "frozen"
+        else if (!$freeze && str_contains($user->image ?? '', 'frozen')) {
+            // Extraire le nom du fichier
+            $imageName = basename($user->image);
+
+            // Définir les anciens et nouveaux chemins complets
+            $oldPath = public_path($frozenPath . $imageName);
+            $newPath = public_path($profilePicturePath . $imageName);
+
+            // Vérifier si le fichier existe avant de le déplacer
+            if (file_exists($oldPath)) {
+                rename($oldPath, $newPath);
+
+                // Mettre à jour le chemin dans la base de données avec le nouveau chemin
+                $user->update(['image' => $profilePicturePath . $imageName]);
+            }
+        }
+        // Si "delete_image" est activé, supprimer l'image existante
+        else if ($request->input('delete_image')) {
+            if ($user->image && file_exists(public_path($user->image))) {
+                unlink(public_path($user->image));
             }
 
-            // Déplacer le fichier vers le dossier public/images/certificatsMedicaux
-            $file->move(public_path('/uploads/CertificatsMedicaux'), $fileName);
-
-            // Le chemin du fichier dans le dossier public
-            $filePath = 'uploads/CertificatsMedicaux/' . $fileName;
-
-            // Mettre à jour ou créer un certificat médical
-            MedicalCertificates::updateOrCreate(
-                ['user_id' => $user->user_id], // Trouver le certificat pour cet utilisateur (s'il existe)
-                [
-                    'file_path' => $filePath, // Chemin du fichier
-                    'expiration_date' => $expirationDate, // Utiliser la date d'expiration fournie ou celle par défaut
-                ]
-            );
-        } else if ($user->medicalCertificate && $user->medicalCertificate->file_path !== "") {
-            MedicalCertificates::updateOrCreate(
-                ['user_id' => $user->user_id], // Trouver le certificat pour cet utilisateur (s'il existe)
-                [
-                    'expiration_date' => $expirationDate, // Utiliser la date d'expiration fournie ou celle par défaut
-                ]
-            );
+            // Mettre à jour l'utilisateur pour supprimer la référence à l'image
+            $user->update(['image' => null]);
         }
 
         // Mettre à jour les autres informations utilisateur
@@ -515,6 +807,48 @@ class n_AdminController extends Controller
     {
         $user = User::find($id);
         $roles = Role::all();
-        return view('admin.modals.specificUser', compact('user', 'roles'));
+        return view('admin.specificUser', compact('user', 'roles'));
+    }
+
+    public function messageGeneral()
+    {
+        $message = SystemSetting::where('name', '=', 'Message general')->first();
+        return view('admin.message-general', compact('message'));
+    }
+
+    public function editMessageGeneral(Request $request)
+    {
+        SystemSetting::where('name', '=', 'Message general')->first()->update(['Message' => $request->input('editor1')]);
+        return redirect()->route('message.general')->with('success', 'Message général mis à jour avec succès');
+    }
+
+    public function seeMessageMaintenance()
+    {
+        $message = SystemSetting::where('name', '=', 'maintenance')->first();
+
+        return view('admin.message-maintenance', compact('message'));
+    }
+
+    public function editMessageMaintenance(Request $request)
+    {
+        // dd($request->input('editor1'));
+
+        if (trim($request->input('editor1')) == '' || $request->input('editor1') == null) {
+            $message =
+                '<h2>Réouverture du site internet au plus vite</h2>
+            <div>
+                <p>Désolé pour la gêne occasionnée. <br> Nous effectuons 
+                    actuellement une maintenance. <br> Vous pouvez nous suivre 
+                    sur <a target="_blank" href="https://www.facebook.com/GymConcordia/?locale=fr_FR">
+                        Facebook</a> ou <a target="_blank" href="https://www.instagram.com/gym_concordia/?__coig_restricted=1">
+                            Instagram</a> </p>
+                <p>Nous serons de retour très vite &mdash; La Gym Concordia</p>
+            </div>';
+        } else {
+            $message = $request->input('editor1');
+        }
+
+        SystemSetting::where('name', '=', 'maintenance')->first()->update(['Message' => $message]);
+        return redirect()->route('message.maintenance.see')->with('success', 'Message général mis à jour avec succès');
     }
 }

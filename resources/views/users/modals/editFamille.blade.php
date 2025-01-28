@@ -14,14 +14,32 @@
         <div class="col-md-3 border-right">
             <div class="d-flex flex-column align-items-center text-center p-3 py-2">
                 @if($n_users->image)
-                        <img class="rounded-circle mt-5" width="150px" src="{{  $n_users->image }}" >
+                        <img class="rounded-circle mt-5" width="150px" src="{{ asset($n_users->image) }}" >
                     @elseif ($n_users->gender == 'male')
                         <img class="rounded-circle mt-5" width="150px" src="{{ asset('assets\images\user.jpg') }}" alt="male">
                     @elseif ($n_users->gender == 'female')
                         <img class="rounded-circle mt-5" width="150px" src="{{ asset('assets\images\femaleuser.png') }}" alt="female">
-                    @endif
+                @endif
                 <span class="text-dark">{{ $n_users->lastname }} {{ $n_users->name }} N°{{ $n_users->user_id }}</span>
             </div>
+            {{-- <div>
+                @php
+                    $isFrozeImage = str_contains($n_users->image, 'uploads/users/frozen/');
+                @endphp
+                @if(!$isFrozeImage || (auth()->user()->role >= 90))
+                    <input type="file" name="profile_image" accept="image/*" style="margin-bottom: 10px;">
+                    <div class="form-check mt-3">
+                        <input type="checkbox" class="form-check-input" id="delete_image" name="delete_image" value="1">
+                        <label class="form-check-label" for="delete_image">Supprimer la photo</label>
+                    </div>
+                    @if(auth()->user()->role >= 90)
+                        <div class="form-check mt-3">
+                            <input type="checkbox" class="form-check-input" id="freeze_image" name="freeze_image" value="1" @if(str_contains($n_users->image ?? '', 'frozen')) checked @endif>
+                            <label class="form-check-label" for="freeze_image">Geler la photo</label>
+                        </div>
+                    @endif
+                @endif            
+            </div> --}}
         </div>
     <div class="col-md-9 border-right">
         <div class="p-3 py-5">
@@ -198,7 +216,7 @@
                         <label for="crt">Certificat Médical</label>
                     </div>
                     @if($n_users->medicalCertificate && $n_users->medicalCertificate->file_path)
-                        <img src="{{ asset($user->medicalCertificate->file_path) }}" alt="Certificat Médical" class="rounded mx-auto d-block" style="max-height: 150px;">
+                        <img src="{{ asset($n_users->medicalCertificate->file_path) }}" alt="Certificat Médical" class="rounded mx-auto d-block" style="max-height: 150px;">
                     @endif
                     <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
                     readonly @endif type="file" id="crt" name="crt" class="form-control" accept="image/*" class=" @error('crt') is-invalid @enderror" name="crt" />
@@ -211,15 +229,24 @@
 
                 <div class="col-md-4 input mt-2">
                     <div class="labels">
-                        <label for="crt">Date Expiration Certificat</label>
+                        <label for="crt">Date Emission Certificat</label>
                     </div>
                     <input @if(auth()->user()->role < $n_users->role && auth()->user()->user_id != $n_users->user_id)
-                    readonly @endif type="date" id="crt_expiration" name="crt_expiration" class="form-control" class=" @error('crt') is-invalid @enderror" name="crt_expiration" value="{{ $n_users->medicalCertificate->expiration_date ?? '' }}" />
-                    @error('crt_expiration')
+                    readonly @endif type="date" id="crt_emission" name="crt_emission" class="form-control" class=" @error('crt') is-invalid @enderror" name="crt_emission" value="{{ $n_users->medicalCertificate->emission_date ?? '' }}" />
+                    @error('crt_emission')
                         <span class="text-danger" role="alert">
                             <strong>{{ $message }}</strong>
                         </span>
                     @enderror
+                </div>
+
+                <div class="col-sm-4 input mt-2">
+                    <div class="labels">
+                        <label class="form-check-label" for="crt_delete">Supprimer certificat</label>
+                    </div>
+                    <div class="form-check mt-3">
+                        <input type="checkbox" class="form-check-input" id="crt_delete" name="crt_delete" value="1">
+                    </div>
                 </div>
 
                 <div class="col-md-4 input mt-2">

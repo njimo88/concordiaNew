@@ -45,7 +45,7 @@ class Controller_club extends Controller
             'liaison_shop_articles_bills.id_shop_article',
             'bills_status.row_color',
             'bills.id',
-            'medical_certificates.expiration_date' // Ajouter la date d'expiration
+            'medical_certificates.emission_date' // Ajouter la date d'expiration
         )
             ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
@@ -62,19 +62,19 @@ class Controller_club extends Controller
         $currentDate = Carbon::now();
 
         // Fonction pour obtenir la couleur de l'icone d'oeil en fonction de la validité du certificat
-        $users_saison_active->map(function ($user) use ($currentDate) {
-            $expirationDate = $user->expiration_date;
+        $users_saison_active->map(function ($user) {
+            $emissionDate = $user->emission_date; // Date d'émission du certificat
 
-            if ($expirationDate) {
-                $expirationDate = Carbon::parse($expirationDate);
-                $diffInYears = $currentDate->diffInYears($expirationDate, false);
+            if ($emissionDate) {
+                $expirationDate = Carbon::parse($emissionDate)->addYears(3); // Calcul de la date d'expiration
+                $diffInYears = now()->diffInYears($expirationDate, false); // Différence en jours (peut être négative si expiré)
 
                 if ($diffInYears >= 2) {
-                    $user->medical_certificate_color = 'green';
+                    $user->medical_certificate_color = '#146314';
                 } elseif ($diffInYears >= 1) {
-                    $user->medical_certificate_color = 'orange';
+                    $user->medical_certificate_color = '#eb7c05';
                 } elseif ($diffInYears < 1) {
-                    $user->medical_certificate_color = 'red';
+                    $user->medical_certificate_color = '#e35f5f';
                 }
             } else {
                 $user->medical_certificate_color = 'black'; // Pas de certificat
