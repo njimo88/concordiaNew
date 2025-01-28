@@ -1,4 +1,5 @@
 @extends('layouts.template')
+
 @section('content')
 <style>
     body {
@@ -58,11 +59,10 @@
     </thead>
     <tbody>
         @foreach($mailHistories as $mail)
-        <tr data-mail-id="{{ $mail->id }}">
-
-            <td>{{ $mail->senderFullName }}</td> 
-            <td>{{ $mail->title }}</td>
-            <td>{{ \Carbon\Carbon::parse($mail->date)->format('d/m/Y H:i') }}</td>
+            <tr data-mail-id="{{ $mail->id }}">
+                <td>{{ $mail->senderFullName }}</td> 
+                <td>{{ $mail->title }}</td>
+                <td>{{ \Carbon\Carbon::parse($mail->date)->format('d/m/Y H:i') }}</td>
                 <div class="modal" id="mailModal{{ $mail->id }}">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -71,12 +71,18 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                {!! $mail->message !!}
+                                <strong>Contenu :</strong><br>
+                                {{-- Vérifier si le message contient une table, si oui, en faire un iframe car ça casse toute la visualisation sinon --}}
+                                @if (stripos($mail->message, '<table') !== false)
+                                    <iframe srcdoc="{{ $mail->message }}" style="width: 100%; height: 500px; border: none;"></iframe>
+                                @else
+                                    {!! $mail->message !!}
+                                @endif
                                 @if(auth()->user()->role >= 90)
                                     @php
                                         $recipients = json_decode($mail->id_user_destinataires, true);
                                     @endphp
-                            
+
                                     <strong>Destinataires :</strong>
                                     @if(count($recipients) > 0)
                                         <ul>
@@ -92,10 +98,9 @@
                         </div>
                     </div>
                 </div>
-        </tr>
+            </tr>
         @endforeach
     </tbody>
 </table>
 </main>
-
 @endsection

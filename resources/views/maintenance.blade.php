@@ -101,10 +101,10 @@
 	@endphp
 
 	{!! $message->Message !!}
-	<br>
+	{{-- <br>
 	<div class="m-3">
 		<img style="width: 100%" src="https://www.gym-concordia.com/2023-05-15%20-%20Reinscriptions.jpg" alt="">
-	</div>
+	</div> --}}
 	
 	<footer>
 		<p><a style="text-decoration: none" href="#" data-bs-toggle="modal" data-bs-target="#passwordModal">&copy;</a> Gym Concordia - {{ date('Y') }}</p>

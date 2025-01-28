@@ -16,7 +16,7 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 
 class User extends Authenticatable implements CanResetPassword
 {
-    
+
     use HasApiTokens, HasFactory, Notifiable;
     protected $table = 'users';
     protected $primaryKey = 'user_id';
@@ -63,27 +63,31 @@ class User extends Authenticatable implements CanResetPassword
     {
         return $this->hasMany(Basket::class, 'user_id');
     }
-    
-    public function belongsToFamily($familyId)
-{
-    return $this->family_id === intval($familyId);
-}
 
-public function bills()
+    public function belongsToFamily($familyId)
+    {
+        return $this->family_id === intval($familyId);
+    }
+
+    public function bills()
     {
         return $this->hasMany(bills::class, 'user_id');
     }
 
-public function old_bills()
-{
-    return $this->hasMany(old_bills::class, 'user_id');
-}
+    public function old_bills()
+    {
+        return $this->hasMany(old_bills::class, 'user_id');
+    }
 
-public function liaisonShopArticlesBill()
-{
-    return $this->hasMany(LiaisonShopArticlesBill::class, 'id_user');
-}
+    public function liaisonShopArticlesBill()
+    {
+        return $this->hasMany(LiaisonShopArticlesBill::class, 'id_user');
+    }
 
+    public function medicalCertificate()
+    {
+        return $this->hasOne(MedicalCertificates::class, 'user_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
