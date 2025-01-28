@@ -11,7 +11,7 @@
     <i class="fas fa-calendar-check"></i> Mes Reservations 
     </button>
   
-    <button wire:click="freeReservedAfter10Min()" class="btn btn-secondary" >
+    <button onclick="location.reload()" wire:click="doubleRefrech()"  id="refreshButton" class="btn btn-secondary" >
       <i class="fas fa-sync-alt"></i> Refresh
     </button>
     <!-- The Modal -->
@@ -35,7 +35,7 @@
                   <div id="here" class="seat-timer" 
                       data-reservation-time="{{$item->reservation_date}}" 
                       data-seat-number="{{ $item->id_seat }}">
-                      <span class="text-secondary">Siege: {{ $item->seat->seat_number }} </span>
+                      <span class="text-secondary">Siege : {{ $item->seat->seat_number }} </span>
                       <span class="text-danger timer"></span>
                   </div>
                       
@@ -56,17 +56,20 @@
       </div>
     </div>
 
-  @if (@isset($message))
-    
-        <div class="alert alert-success alert-dismissible">
-             {{$message}}
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        </div>
-    
-    
+  @if (@isset($message1))
+  
   @endif
+  <div class="overlay" id="overlay">
+    <div class="alert alert-dismissible">
+        {{$message1}} <br>  {{$message2}}
+        
+      <a href="#" id="closeAlert" class="close2" data-dismiss="alert" aria-label="close">&times;</a>
+    </div>
+  </div>
+ 
     
   
+    
           <!-- Screen Label -->
           <h2 class="screen-label">Gradin </h2>
           
@@ -195,6 +198,7 @@
   document.addEventListener('DOMContentLoaded', timeRefreching() );
   
   function timeRefreching() {
+    
       const seatTimers = document.querySelectorAll('.seat-timer');
       const countdownDuration = 10 * 60 * 1000; // 10 minutes in milliseconds
   
@@ -250,7 +254,7 @@
                   
                   if(button.classList.contains('reservedpending')){ //if seat is reserved by the current user 
                       const confirmAction = confirm("Voulez-vous vraiment laisser ce siège?");
-                      
+                      timeRefreching();
                       if (!confirmAction) {
                       //block the event if the user click No 
                       event.preventDefault();
@@ -276,9 +280,92 @@
   
   
       }
+
+    // show the message to the user when he create somthing 
+// Get the overlay and close button elements
+const overlay = document.getElementById('overlay');
+const closeButton = document.getElementById('closeAlert');
+
+// Function to hide the overlay
+function hideOverlay() {
+    timeRefreching();
+  const overlay = document.getElementById('overlay');
+  overlay.style.display = 'none';
+}
+
+
+overlay.addEventListener('click', function (event) {
+  // Check if the clicked element is the close button
+  if (event.target.id === 'closeAlert') {
+    event.preventDefault(); // Prevent the link from navigating
+    hideOverlay();
+   
+    
+  }
+});
+
+// Add an event listener to the close button
+
+// Optional: Hide the overlay when clicking outside the alert
+overlay.addEventListener('click', function (event) {
+  if (event.target === overlay) {
+    hideOverlay();
+    
+    
+  }
+});
+
+
+
+
   </script>
   
   <style>
+
+/* this is the style for the message that apear when user choose a seat  */
+/* Overlay to cover the entire screen */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it appears above other content */
+}
+
+/* Alert box styling */
+.alert {
+  background-color: #4f504f; /* Light green background */
+  color: #ffffff; /* Dark green text */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  
+  width: 90%;
+  text-align: center;
+}
+
+/* Close button styling */
+.close2 {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #155724;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.close2:hover {
+  color: #0b2e13; /* Darker green on hover */
+} 
+/* end message that apear when user choose a seat */
 
 
 
@@ -314,7 +401,7 @@
   .seat-reservation-container {
       
       text-align: center;
-      background-color: #000;
+      background-color: #000000;
       padding-left: 15px;
       padding-right: 15px;
       color: #fff;
