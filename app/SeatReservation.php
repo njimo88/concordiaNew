@@ -149,7 +149,7 @@ class SeatReservation extends Component
 
     public function render()
     {
-        
+        $this->seats = Seat::all();
     return view('livewire.seat-reservation', ['seats' => $this->seats]);
 
     }
