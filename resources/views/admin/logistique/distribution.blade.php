@@ -167,24 +167,28 @@
         <div class="container">
             <div class="row">
                 @foreach ($articlesForDistribution as $article)
-                    <div class="col-12 col-md-6 col-lg-4 mb-3">
-                        <div class="card user-card">
-                            <div class="card-body">
-                                <div class="user-avatar m-2">
-                                    <img src="{{ $article->image }}" alt="{{ $article->title }}" class="rounded-circle">
-                                </div>
-                                <div class="user-info">
-                                    <h5 class="user-name">{{ $article->title }} {{ optional($article->declinaison_info)->libelle }}</h5>
-                                    <p class="user-quantity">Quantité : {{ $article->liaisonShopArticlesBill->sum('quantity') }}</p>
-                                    <p class="user-location">Destinataire : {{ $article->liaisonShopArticlesBill->first()->addressee }}</p>
-                                    <p class="user-status">Préparé par : {{ $article->prepared_by_name }} le {{ $article->prepared_at }}</p>
-                                </div>
-                                <div class="user-action m-3">
-                                    <button type="button" class="btn btn-primary btn-distribute" data-toggle="modal" data-target="#distributionModal" data-article-title="{{ $article->title }}" data-article-quantity="{{ $article->liaisonShopArticlesBill->first()->quantity }}" data-liaison-id="{{ $article->liaisonShopArticlesBill->first()->id_liaison }}">Distribuer</button>
+                    @foreach ($article->liaisonShopArticlesBill as $liaison)
+                        <div class="col-12 col-md-6 col-lg-4 mb-3">
+                            <div class="card user-card">
+                                <div class="card-body">
+                                    <div class="user-avatar m-2">
+                                        <img src="{{ $article->image }}" alt="{{ $article->title }}" class="rounded-circle">
+                                    </div>
+                                    <div class="user-info">
+                                        <h5 class="user-name">{{ $article->title }}
+                                            {{ optional($liaison->declinaison_link)->libelle ? '[' . optional($liaison->declinaison_link)->libelle . ']' : '' }}
+                                        </h5>
+                                        <p class="user-quantity">Quantité : {{ $liaison->quantity }}</p>
+                                        <p class="user-location">Destinataire : {{ $liaison->addressee }}</p>
+                                        <p class="user-status">Préparé par : {{ $liaison->prepared_by_name }} le {{ $liaison->prepared_at }}</p>
+                                    </div>
+                                    <div class="user-action m-3">
+                                        <button type="button" class="btn btn-primary btn-distribute" data-toggle="modal" data-target="#distributionModal" data-article-title="{{ $article->title }}" data-article-quantity="{{ $liaison->quantity }}" data-liaison-id="{{ $liaison->id_liaison }}">Distribuer</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @endforeach
                 @endforeach
             </div>
         </div>

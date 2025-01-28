@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Shop_article;
 use App\Models\shop_article_1;
 use PDF;
@@ -10,6 +11,7 @@ use App\Models\User;
 use App\Models\Shop_category;
 use App\Models\appels;
 use App\Models\Declinaison;
+use App\Models\MedicalCertificates;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Laravel\Ui\Presets\Preset;
@@ -17,20 +19,22 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\Schema;
 
-require_once(app_path().'/fonction.php');
+require_once(app_path() . '/fonction.php');
 
 class Controller_club extends Controller
 {
     //
-    function index_cours(Request $request) {
+    function index_cours(Request $request)
+    {
         /*--------------------------faire l'appel------------------------------ */
         ini_set('memory_limit', '512M');
-    
+
         $saison_actu = $request->input('saison') ?? saison_active();
-    
+
         /*------------------------------------- requetes pour les teachers ------------------------------*/
-       
+
         $users_saison_active = User::select(
             'users.user_id',
             'users.name',
@@ -40,27 +44,53 @@ class Controller_club extends Controller
             'users.email',
             'liaison_shop_articles_bills.id_shop_article',
             'bills_status.row_color',
-            'bills.id'
+            'bills.id',
+            'medical_certificates.emission_date' // Ajouter la date d'expiration
         )
             ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
             ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
             ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-            ->join('bills_status', 'bills.status', '=', 'bills_status.id')  // This is the new join to get the row_color
+            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
+            ->leftJoin('medical_certificates', 'medical_certificates.user_id', '=', 'users.user_id') // Ajouter la jointure pour les certificats médicaux
             ->where('shop_article.saison', $saison_actu)
             ->where('bills.status', '>', 9)
             ->distinct('users.user_id')
             ->orderBy('users.name', 'ASC')
-            ->get(); 
-        
-    
+            ->get();
+
+
+        $currentDate = Carbon::now();
+
+        // Fonction pour obtenir la couleur de l'icone d'oeil en fonction de la validité du certificat
+        $users_saison_active->map(function ($user) {
+            $emissionDate = $user->emission_date; // Date d'émission du certificat
+
+            if ($emissionDate) {
+                $expirationDate = Carbon::parse($emissionDate)->addYears(3); // Calcul de la date d'expiration
+                $diffInYears = now()->diffInYears($expirationDate, false); // Différence en jours (peut être négative si expiré)
+
+                if ($diffInYears >= 2) {
+                    $user->medical_certificate_color = '#146314';
+                } elseif ($diffInYears >= 1) {
+                    $user->medical_certificate_color = '#eb7c05';
+                } elseif ($diffInYears < 1) {
+                    $user->medical_certificate_color = '#e35f5f';
+                }
+            } else {
+                $user->medical_certificate_color = 'black'; // Pas de certificat
+            }
+
+            return $user;
+        });
+
         /* ------------------------------------------requetes pour l'admin------------------------------*/
-        
-        if(auth()->user()->roles->estAutoriserDeVoirArticle0_2) {
+
+        if (auth()->user()->roles->estAutoriserDeVoirArticle0_2) {
             // Admin users can see all types of articles (0, 1, 2)
             $shop_article_first = Shop_article::where('saison', $saison_actu)
                 ->orderBy('title', 'ASC')
                 ->get();
-        } else{
+        } else {
             // Teachers can only see their own type 1 courses
             $shop_article_first = Shop_article::select('shop_article.*')
                 ->leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
@@ -70,89 +100,90 @@ class Controller_club extends Controller
                 ->orderBy('saison', 'desc')
                 ->orderBy('shop_article.title', 'asc')
                 ->get();
-
         }
 
         $saison_list = Shop_article::select('saison')->distinct('saison')->orderBy('saison', 'ASC')->get();
-    
-        return view('club/cours_index',compact('saison_list','shop_article_first','users_saison_active','saison_actu'))->with('user', auth()->user());
+
+        return view('club/cours_index', compact('saison_list', 'shop_article_first', 'users_saison_active', 'saison_actu'))->with('user', auth()->user());
     }
 
-    public function generateCombinedPdf() {
+    public function generateCombinedPdf()
+    {
         ini_set('memory_limit', '2048M');
         set_time_limit(0);
-        
+
         $saison_actu = saison_active();
         $shop_articles = Shop_article::where('saison', $saison_actu)
-                        ->orderBy('title', 'ASC')
-                        ->get();
-    
-        $filePaths = []; 
-    
+            ->orderBy('title', 'ASC')
+            ->get();
+
+        $filePaths = [];
+
         foreach ($shop_articles as $article) {
-            
+
             $pdfContent = $this->generatePdfContentForArticle($article->id_shop_article);
             $pdf = PDF::loadHTML($pdfContent);
-            $pdf->setPaper('a4', 'landscape'); 
-            
+            $pdf->setPaper('a4', 'landscape');
+
             $filePath = public_path('PDFTemporaire/' . $article->id_shop_article . '.pdf');
             $pdf->save($filePath);
-            
-            $filePaths[] = $filePath; 
+
+            $filePaths[] = $filePath;
         }
-    
-    // Initialiser FPDI
-    $pdfMerger = new Fpdi();
 
-    foreach($filePaths as $file) {
-        $pageCount = $pdfMerger->setSourceFile($file);  
-        for ($pageNo=1; $pageNo<=$pageCount; $pageNo++) {
-            $templateId = $pdfMerger->importPage($pageNo);
+        // Initialiser FPDI
+        $pdfMerger = new Fpdi();
 
-            // Récupérer la taille de la page importée
-            $size = $pdfMerger->getTemplateSize($templateId);
+        foreach ($filePaths as $file) {
+            $pageCount = $pdfMerger->setSourceFile($file);
+            for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                $templateId = $pdfMerger->importPage($pageNo);
 
-            if ($size['width'] > $size['height']) {
-                // Si la largeur est plus grande que la hauteur, c'est du paysage
-                $pdfMerger->addPage('L', [$size['width'], $size['height']]);
-            } else {
-                // Sinon, c'est du portrait, alors convertissez en paysage
-                $pdfMerger->addPage('L', [$size['height'], $size['width']]);
+                // Récupérer la taille de la page importée
+                $size = $pdfMerger->getTemplateSize($templateId);
+
+                if ($size['width'] > $size['height']) {
+                    // Si la largeur est plus grande que la hauteur, c'est du paysage
+                    $pdfMerger->addPage('L', [$size['width'], $size['height']]);
+                } else {
+                    // Sinon, c'est du portrait, alors convertissez en paysage
+                    $pdfMerger->addPage('L', [$size['height'], $size['width']]);
+                }
+
+                $pdfMerger->useTemplate($templateId);
             }
-            
-            $pdfMerger->useTemplate($templateId);
         }
-    }
-    
-    // Définir le chemin du PDF fusionné
-    $mergedPath = public_path('PDFTemporaire/combined.pdf');
-    $pdfMerger->Output($mergedPath, 'F');
-    
-    // Nettoyer: Supprimer les fichiers PDF temporaires
-    foreach($filePaths as $file) {
-        unlink($file); 
-    }
-    
-    // Retourner le PDF fusionné et le supprimer après le téléchargement
-    return response()->download($mergedPath)->deleteFileAfterSend(true);
-    }
-    
-    
 
-    public function generatePdfContentForArticle($id) {
+        // Définir le chemin du PDF fusionné
+        $mergedPath = public_path('PDFTemporaire/combined.pdf');
+        $pdfMerger->Output($mergedPath, 'F');
+
+        // Nettoyer: Supprimer les fichiers PDF temporaires
+        foreach ($filePaths as $file) {
+            unlink($file);
+        }
+
+        // Retourner le PDF fusionné et le supprimer après le téléchargement
+        return response()->download($mergedPath)->deleteFileAfterSend(true);
+    }
+
+
+
+    public function generatePdfContentForArticle($id)
+    {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
-    
+
         $course = Shop_article::find($id);
         $courseName = $course->title;
-    
+
         Carbon::setLocale('fr');
         $currentDate = Carbon::now()->isoFormat('D MMMM YYYY');
-        
+
         $saison = $course->saison;
         $nextSaison = $saison + 1;
-    
+
         $personnes = User::select(
             'users.user_id',
             'users.name',
@@ -168,9 +199,9 @@ class Controller_club extends Controller
             ->where('shop_article.id_shop_article', $id)
             ->distinct('users.user_id')
             ->orderBy('users.name', 'ASC')
-            ->get(); 
-            
-            $pdfContent = "
+            ->get();
+
+        $pdfContent = "
             
 
             <style>
@@ -223,30 +254,30 @@ class Controller_club extends Controller
                     <th>ID</th>
                     <th>Nom Prénom</th>
                     <th>Date Naiss</th>";
-        
-        for ($i = 1; $i <= 30; $i++) { 
+
+        for ($i = 1; $i <= 30; $i++) {
             $pdfContent .= "<th></th>";
         }
-        
+
         $pdfContent .= "</tr>
             </thead>
                     <tbody>";
-                    
-            
-                $counter = 0;
-                if ($personnes->isEmpty()):
-                    $pdfContent .= "
+
+
+        $counter = 0;
+        if ($personnes->isEmpty()):
+            $pdfContent .= "
                     <tr>
                         <td colspan='33'>Aucun élève inscrit</td>
                     </tr>";
-                endif;
+        endif;
 
-                foreach ($personnes as $person) {
-                    if ($person->status != 1) {
-                        $counter++;
-                    }
-                    $formattedDate = date('d/m/Y', strtotime($person->birthdate));
-                    $pdfContent .= "
+        foreach ($personnes as $person) {
+            if ($person->status != 1) {
+                $counter++;
+            }
+            $formattedDate = date('d/m/Y', strtotime($person->birthdate));
+            $pdfContent .= "
                     <tr " . ($person->status == 1 ? "style='text-decoration: line-through;'" : "") . ">
                         <td>" . ($person->status != 1 ? $counter : "") . "</td>
                         <td>{$person->name} {$person->lastname}</td>
@@ -282,31 +313,32 @@ class Controller_club extends Controller
                         <td></td>
                         <td></td>
                     </tr>";
-                }
-            
-                $pdfContent .= "
+        }
+
+        $pdfContent .= "
                     </tbody>
                 </table>";
-                
-                
+
+
         return $pdfContent;
     }
-    
-    public function generatePdf($id) {
+
+    public function generatePdf($id)
+    {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
-        ob_end_clean(); 
+        ob_end_clean();
         ob_start();
         $course = Shop_article::find($id);
         $courseName = $course->title;
-    
+
         Carbon::setLocale('fr');
         $currentDate = Carbon::now()->isoFormat('D MMMM YYYY');
-        
+
         $saison = $course->saison;
         $nextSaison = $saison + 1;
-    
+
         $personnes = User::select(
             'users.user_id',
             'users.name',
@@ -322,9 +354,9 @@ class Controller_club extends Controller
             ->where('shop_article.id_shop_article', $id)
             ->distinct('users.user_id')
             ->orderBy('users.name', 'ASC')
-            ->get(); 
-    
-            $pdfContent = "
+            ->get();
+
+        $pdfContent = "
             
 
     <style>
@@ -392,14 +424,14 @@ class Controller_club extends Controller
             <th>Nom Prénom</th>
             <th>Date Naiss</th>";
 
-for ($i = 1; $i <= 30; $i++) { 
-    $pdfContent .= "<th></th>";
-}
+        for ($i = 1; $i <= 30; $i++) {
+            $pdfContent .= "<th></th>";
+        }
 
-$pdfContent .= "</tr>
+        $pdfContent .= "</tr>
     </thead>
             <tbody>";
-    
+
         $counter = 0;
         foreach ($personnes as $person) {
             if ($person->status != 1) {
@@ -443,157 +475,154 @@ $pdfContent .= "</tr>
                 <td></td>
             </tr>";
         }
-    
+
         $pdfContent .= "
             </tbody>
         </table>";
-    
+
         $pdf = PDF::loadHTML($pdfContent);
-        $pdf->setPaper('a4', 'landscape'); 
+        $pdf->setPaper('a4', 'landscape');
         header('Content-Type: application/pdf');
         return $pdf->stream();
     }
-    
-    
-
-    public function get_data_table(Request $request, $article_id){
 
 
-        return $article_id ;
+
+    public function get_data_table(Request $request, $article_id)
+    {
 
 
-        
+        return $article_id;
     }
 
 
 
 
-    function index_include(Request $request){
-        
+    function index_include(Request $request)
+    {
+
         $saison = $_POST['saison'];
         $s_saison = $request->input('saison');
 
 
-        $users = User::select('users.user_id', 'users.name', 'users.email','liaison_shop_articles_bills.id_shop_article')
-        ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-        ->join('shop_article','shop_article.id_shop_article','=','liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)->get();
+        $users = User::select('users.user_id', 'users.name', 'users.email', 'liaison_shop_articles_bills.id_shop_article')
+            ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)->get();
 
-    
+
 
         return redirect()->route('index_cours', ['saison' => $saison])->with('submitted', true);
 
-      //  return view('club/include-page',compact('users','saison'))->with('user', auth()->user());
+        //  return view('club/include-page',compact('users','saison'))->with('user', auth()->user());
 
-    
+
     }
 
-   
+
 
     public function display_form_cours($id)
-      {
-    // Retrieve the data for the specified ID from the database
-    $shop_article = Shop_Article::find($id);
-    $buyers = Donne_User_article_Paye($id);
+    {
+        // Retrieve the data for the specified ID from the database
+        $shop_article = Shop_Article::find($id);
+        $buyers = Donne_User_article_Paye($id);
 
-    $user = User::get() ;
-    $requete_articles = Shop_article::get() ;
+        $user = User::get();
+        $requete_articles = Shop_article::get();
 
-   //dd($user) ;
-  //  return view('/shop_article_cours_ajax', compact('user','buyers','requete_articles'))->with('user', auth()->user());
-
-
-  } 
-
-public function form_appel_method($id){
-
-    $shop_article = Shop_Article::find($id);
-    $buyers = Donne_User_article_Paye($id);
-  
-  
-    $users = User::select("*")->whereIn('user_id', $buyers)->get();
-
-    $the_id = $id ;
-
-   // dd($users);            
-      
-    return view('/formulaire_appel', compact('users','buyers','the_id'))->with('user', auth()->user());
-    
+        //dd($user) ;
+        //  return view('/shop_article_cours_ajax', compact('user','buyers','requete_articles'))->with('user', auth()->user());
 
 
-}
+    }
 
-public function display_info_user($id){
+    public function form_appel_method($id)
+    {
 
-    $the_id = $id ;
-    $info_user = User::where('user_id',$id)->get() ;
-    
-    $requete_user_family_id = User::where('user_id',$id)->value('family_id');
-    $tab =  User::where('family_id', $requete_user_family_id) ->where('family_level','parent')->get();
+        $shop_article = Shop_Article::find($id);
+        $buyers = Donne_User_article_Paye($id);
 
+
+        $users = User::select("*")->whereIn('user_id', $buyers)->get();
+
+        $the_id = $id;
+
+        // dd($users);            
+
+        return view('/formulaire_appel', compact('users', 'buyers', 'the_id'))->with('user', auth()->user());
+    }
+
+    public function display_info_user($id)
+    {
+
+        $the_id = $id;
+        $info_user = User::where('user_id', $id)->get();
+
+        $requete_user_family_id = User::where('user_id', $id)->value('family_id');
+        $tab =  User::where('family_id', $requete_user_family_id)->where('family_level', 'parent')->get();
 
 
 
-    return view('club/modal_info', compact('info_user','tab','the_id'))->with('user', auth()->user());
+
+        return view('club/modal_info', compact('info_user', 'tab', 'the_id'))->with('user', auth()->user());
+    }
 
 
-}
+    public function modif_user($id, Request $request)
+    {
+
+        $user = User::find($id);
+
+        $validatedData = $request->validate([
+            'username' => 'nullable|string|max:255',
+            'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+            'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')],
+            'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
+            'profession' => 'string|max:191',
+            'birthdate' => 'required|date|before:today',
+            'address' => 'required',
+            'zip' => 'required|numeric',
+            'city' => 'required',
+            'nationality' => 'required',
+            'licenceFFGYM' => ['nullable', 'regex:/^\d{5}\.\d{3}\.\d{5}$/'],
+
+        ], $messages = [
+            'username.required' => "Le champ nom d'utilisateur est requis.",
+            'username.max' => "Le nom d'utilisateur ne doit pas dépasser 255 caractères.",
+            'name.required' => "Le champ nom est requis.",
+            'name.alpha' => "Le nom doit être une chaîne de caractères.",
+            'lastname.required' => "Le champ prénom est requis.",
+            'lastname.alpha' => "Le prénom doit être une chaîne de caractères.",
+            'email.required' => 'Le champ :attribute est requis.',
+            'email' => "Le format de l'adresse e-mail est invalide.",
+            'email.unique' => "L'adresse e-mail est déjà utilisée.",
+            'password.required' => "Le champ mot de passe est requis.",
+            'password.min' => "Le mot de passe doit contenir au moins 8 caractères.",
+            'password.confirmed' => "La confirmation du mot de passe ne correspond pas.",
+            'phone.required' => "Le champ numéro de téléphone  est requis.",
+            'phone.regex' => "Le format du numéro de téléphone est invalide.",
+            'gender.required' => "Le champ sexe est requis.",
+            'birthdate.required' => 'La date de naissance est requise',
+            'birthdate.date' => 'Format de date non valide',
+            'birthdate.before' => 'La date de naissance doit être antérieure à aujourd\'hui',
+            'profession.alpha' => "La profession doit être une chaîne de caractères.",
+            'address.required' => "Le champ address est requis.",
+            'zip.required' => "Le champ code postal est requis.",
+            'zip.regex' => "Le code postal doit être au format 12345 ou 12345-1234.",
+            'city.required' => "Le champ ville est requis.",
+            'city.alpha' => "La ville doit être une chaîne de caractères.",
+            'country.required' => "Le champ pays est requis.",
+            'licenceFFGYM.required' => "Le champ licence FFGYM est requis.",
+            'licenceFFGYM.regex' => "Le format de la licence FFGYM est invalide.",
+        ]);
 
 
-public function modif_user($id,Request $request){
-
-    $user = User::find($id);
-
-    $validatedData = $request->validate( [
-        'username' => 'nullable|string|max:255',
-        'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
-        'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
-        'email' => [ 'nullable','string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')],
-        'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
-        'profession' => 'string|max:191',
-        'birthdate' => 'required|date|before:today',
-        'address' => 'required',
-        'zip' => 'required|numeric',
-        'city' => 'required',
-        'nationality' => 'required',
-        'licenceFFGYM' => ['nullable','regex:/^\d{5}\.\d{3}\.\d{5}$/'],
-
-    ], $messages = [
-        'username.required' => "Le champ nom d'utilisateur est requis.",
-        'username.max' => "Le nom d'utilisateur ne doit pas dépasser 255 caractères.",
-        'name.required' => "Le champ nom est requis.",
-        'name.alpha' => "Le nom doit être une chaîne de caractères.",
-        'lastname.required' => "Le champ prénom est requis.",
-        'lastname.alpha' => "Le prénom doit être une chaîne de caractères.",
-        'email.required' => 'Le champ :attribute est requis.',
-        'email' => "Le format de l'adresse e-mail est invalide.",
-        'email.unique' => "L'adresse e-mail est déjà utilisée.",
-        'password.required' => "Le champ mot de passe est requis.",
-        'password.min' => "Le mot de passe doit contenir au moins 8 caractères.",
-        'password.confirmed' => "La confirmation du mot de passe ne correspond pas.",
-        'phone.required' => "Le champ numéro de téléphone  est requis.",
-        'phone.regex' => "Le format du numéro de téléphone est invalide.",
-        'gender.required' => "Le champ sexe est requis.",
-        'birthdate.required' => 'La date de naissance est requise',
-        'birthdate.date' => 'Format de date non valide',
-        'birthdate.before' => 'La date de naissance doit être antérieure à aujourd\'hui',
-        'profession.alpha' => "La profession doit être une chaîne de caractères.",
-        'address.required' => "Le champ address est requis.",
-        'zip.required' => "Le champ code postal est requis.",
-        'zip.regex' => "Le code postal doit être au format 12345 ou 12345-1234.",
-        'city.required' => "Le champ ville est requis.",
-        'city.alpha' => "La ville doit être une chaîne de caractères.",
-        'country.required' => "Le champ pays est requis.",
-        'licenceFFGYM.required' => "Le champ licence FFGYM est requis.",
-        'licenceFFGYM.regex' => "Le format de la licence FFGYM est invalide.",
-    ]);
-
-  
         $user->update($request->all());
 
         return redirect()->route('index_cours')->with('success', ' mise à jour effectuée avec succès');
-}
+    }
 
-/*
+    /*
 
 public function enregister_appel_method_test($id , Request $request){
 
@@ -647,86 +676,78 @@ public function enregister_appel_method_test($id , Request $request){
 */
 
 
-public function enregister_appel_method($id , Request $request){
+    public function enregister_appel_method($id, Request $request)
+    {
 
-   
-    $tab_presence2 = [] ;
-    $tab_presence_final = [] ;
-    $tab_presence3 = [] ;
-    $appels           = new appels ;
 
-    $appels->id_cours = $id ;
-     
-    $thedate  = $request->input('date_appel');
-    $appels->date = $thedate ;
+        $tab_presence2 = [];
+        $tab_presence_final = [];
+        $tab_presence3 = [];
+        $appels           = new appels;
 
-    $tab_user = (array)$request->input('user_id');
-    $tab_presence =  (array)$request->input('marque_presence'); // informations venant des checkboxes
-   
-    
-    // Use array_keys() to extract only the keys of the array (on recupere les indices qui sont en fait les ID des users)
+        $appels->id_cours = $id;
+
+        $thedate  = $request->input('date_appel');
+        $appels->date = $thedate;
+
+        $tab_user = (array)$request->input('user_id');
+        $tab_presence =  (array)$request->input('marque_presence'); // informations venant des checkboxes
+
+
+        // Use array_keys() to extract only the keys of the array (on recupere les indices qui sont en fait les ID des users)
         $keys = array_keys($tab_presence);
 
-    
-                foreach($tab_user as $user){
 
-                            if (in_array($user,$keys)){          
+        foreach ($tab_user as $user) {
 
-                               // $tab_presence2[$user]  = 1 ;
-                                $tab_presence2 = array(
-                                    $user => 1 
-                                );
-                        
-                            }else{
+            if (in_array($user, $keys)) {
 
-                              //  $tab_presence2[$user]  = 0 ;
-                                $tab_presence2 = array(
-                                    $user => 0 
-                                );
-                                  
-                                }
+                // $tab_presence2[$user]  = 1 ;
+                $tab_presence2 = array(
+                    $user => 1
+                );
+            } else {
 
-                                $tab_presence3[] =  $tab_presence2  ;
-                                $tab_presence2 = []  ;
-                   
-                   
-                }
-                           
-                $my_json  = json_encode($tab_presence3,JSON_NUMERIC_CHECK);
+                //  $tab_presence2[$user]  = 0 ;
+                $tab_presence2 = array(
+                    $user => 0
+                );
+            }
 
-                $new_data = [];
+            $tab_presence3[] =  $tab_presence2;
+            $tab_presence2 = [];
+        }
 
-                foreach ($tab_presence3 as $d) {
-                    foreach ($d as $key => $value) {
-                        $new_data[$key] = $value;
-                    }
-                }
+        $my_json  = json_encode($tab_presence3, JSON_NUMERIC_CHECK);
 
-                // Output the new data as a JSON string
-                $my_json = json_encode($new_data);
-              
-                $appel_verif = appels::where('id_cours', $id)->where('date',$thedate)->get();
-               // dd($appel_verif);
-               
-                if ($appel_verif->count() > 0) {
-                   appels::where('id_cours', $id)->where('date', $thedate)->update(['presents' => $my_json]);
-                   return redirect()->route('index_cours')->with('success', " l'appel a été modifié  avec succès");
+        $new_data = [];
 
-                  
+        foreach ($tab_presence3 as $d) {
+            foreach ($d as $key => $value) {
+                $new_data[$key] = $value;
+            }
+        }
 
-                }else{
+        // Output the new data as a JSON string
+        $my_json = json_encode($new_data);
 
-                   $appels->presents = $my_json ;
-     
-                   $appels->save() ;
-                   return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+        $appel_verif = appels::where('id_cours', $id)->where('date', $thedate)->get();
+        // dd($appel_verif);
 
-                  
-                }
-               
-               
+        if ($appel_verif->count() > 0) {
+            appels::where('id_cours', $id)->where('date', $thedate)->update(['presents' => $my_json]);
+            return redirect()->route('index_cours')->with('success', " l'appel a été modifié  avec succès");
+        } else {
 
-                /*$appel_verif = appels::where('id_cours', $id)->where('date',$thedate)->get();
+            $appels->presents = $my_json;
+
+            $appels->save();
+            return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
+        }
+
+
+
+        /*$appel_verif = appels::where('id_cours', $id)->where('date',$thedate)->get();
 
                 if ($appel_verif){
 
@@ -745,64 +766,81 @@ public function enregister_appel_method($id , Request $request){
                    // $appels->save() ;
                 }
                 */
-                                                            
 
 
 
 
 
-             
-
-  return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
-
-
-}
 
 
 
-function display_historique_method($id){
-    $id_cours = $id ;
-    $tab = [] ;
-    $attendance = [];
-
-    $appel = appels::where('id_cours', $id)->get();
-
-    foreach ($appel as $data) {
-        foreach (json_decode($data->presents, true) as $userId => $presenceStatus) {
-            $attendance[$userId][$data->date] = $presenceStatus;
-        }
+        return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
     }
 
-    $users = User::select("*")
-                 ->whereIn('user_id', array_keys($attendance))
-                 ->orderBy('name', 'ASC')
-                 ->get();
 
-    return view('club/historique_view', compact('id_cours', 'appel', 'users', 'attendance'))->with('user', auth()->user());
-}
 
- 
-function StatsExports (){
-    $saison_list = Shop_article::select('saison')->distinct('name')->orderBy('saison', 'DESC')->get();
-    return view('club/stats_export',compact('saison_list'));
-}
- 
-public function exportCSV(Request $request)
-{
-    $saison = $request->input('saison');
-    $members = DB::table('liaison_shop_articles_bills')
-        ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-        ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-        ->where('shop_article.type_article', 0)
-        ->where('bills.status', '>', 9)
-        ->where ('shop_article.saison', $saison)
-        ->select(DB::raw('DISTINCT liaison_shop_articles_bills.id_user'))
-        ->get();
+    function display_historique_method($id)
+    {
+        $id_cours = $id;
+        $tab = [];
+        $attendance = [];
 
-        $callback = function() use ($members, $saison) {
+        $appel = appels::where('id_cours', $id)->get();
+
+        foreach ($appel as $data) {
+            foreach (json_decode($data->presents, true) as $userId => $presenceStatus) {
+                $attendance[$userId][$data->date] = $presenceStatus;
+            }
+        }
+
+        $users = User::select("*")
+            ->whereIn('user_id', array_keys($attendance))
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return view('club/historique_view', compact('id_cours', 'appel', 'users', 'attendance'))->with('user', auth()->user());
+    }
+
+
+    function StatsExports()
+    {
+        $saison_list = Shop_article::select('saison')->distinct('name')->orderBy('saison', 'DESC')->get();
+
+        $columns = [
+            'shop_article.title' => 'Produit',
+            'users.name' => 'Prénom',
+            'users.lastname' => 'Nom',
+            'users.gender' => 'Sexe',
+            'users.birthdate' => 'Date de naissance',
+            'users.address' => 'Adresse',
+            'users.zip' => 'Code postal',
+            'users.city' => 'Ville',
+            'users.phone' => 'Téléphone',
+            'users.email' => 'Email',
+            'users.nationality' => 'Nationalité',
+            'users.family_id' => 'ID Famille',
+            'users.role' => 'Rôle'
+        ];
+
+        return view('club/stats_export', compact('saison_list', 'columns'));
+    }
+
+    public function exportCSV(Request $request)
+    {
+        $saison = $request->input('saison');
+        $members = DB::table('liaison_shop_articles_bills')
+            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+            ->where('shop_article.type_article', 0)
+            ->where('bills.status', '>', 9)
+            ->where('shop_article.saison', $saison)
+            ->select(DB::raw('DISTINCT liaison_shop_articles_bills.id_user'))
+            ->get();
+
+        $callback = function () use ($members, $saison) {
             $file = fopen('php://output', 'w');
             fputcsv($file, ['Id', 'Prenom', 'Nom', 'Sexe', 'Date de Naissance', 'Pays de Naissance', 'Adresse', 'Code Postal', 'Ville', 'Pays', 'Certificat Médical', 'Email', 'Téléphone', 'Groupe']);
-        
+
             foreach ($members as $member) {
                 $memberFromDb = DB::table('users')
                     ->where('users.user_id', $member->id_user)
@@ -810,7 +848,7 @@ public function exportCSV(Request $request)
                 if ($memberFromDb) {
                     $today = now();
                     $medicalCertificateDate = $today->startOfMonth()->toDateString();
-        
+
                     $articles = DB::table('liaison_shop_articles_bills')
                         ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
                         ->where('shop_article.type_article', 1)
@@ -818,12 +856,12 @@ public function exportCSV(Request $request)
                         ->where('liaison_shop_articles_bills.id_user', $member->id_user)
                         ->select('shop_article.title')
                         ->get();
-                        
+
                     $group = $articles->isEmpty() ? ['Sans'] : $articles->pluck('title')->toArray();
-        
+
                     $row = [
                         $member->id_user,
-                        $memberFromDb->lastname, 
+                        $memberFromDb->lastname,
                         $memberFromDb->name,
                         $memberFromDb->gender,
                         $memberFromDb->birthdate,
@@ -835,92 +873,153 @@ public function exportCSV(Request $request)
                         $medicalCertificateDate,
                         $memberFromDb->email,
                         $memberFromDb->phone,
-                        implode(",", $group) 
+                        implode(",", $group)
                     ];
                     fputcsv($file, $row);
                 }
             }
             fclose($file);
         };
-        
+
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="export.csv"',
         ];
-        
+
         return new StreamedResponse($callback, 200, $headers);
-        
+    }
+    public function exportCSVproduit(Request $request)
+    {
+        $saison = $request->input('saison');
+        $selectedColumns = $request->input('columns', []);
 
-}
+        // Décodage de chaque colonne JSON
+        $columns = array_map(function ($column) {
+            return json_decode($column, true); // Décodage du JSON pour récupérer un tableau ['name' => ..., 'label' => ...]
+        }, $selectedColumns);
 
-public function exportCSVproduit(Request $request)
-{
-    $saison = $request->input('saison');
-    $delimiter = ';';
+        $delimiter = ';';
 
-    $users_saison_active = User::select(
-        'shop_article.title as produit',
-        'users.name',
-        'users.lastname',
-        'users.gender',
-        'users.birthdate',
-        'users.address',
-        'users.zip as postal_code',
-        'users.city',
-        DB::raw('CAST(users.phone AS CHAR) as phone'),  
-        'users.email',
-        'users.nationality',
-        'users.family_id',
-        'users.role'
-    )
-    ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-    ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-    ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-    ->where('shop_article.saison', $saison)
-    ->where('bills.status', '>', 9)
-    ->distinct('users.user_id')
-    ->orderBy('shop_article.title', 'ASC')
-    ->orderBy('users.name', 'ASC')
-    ->get();
-    
-    $response = new StreamedResponse(function() use ($users_saison_active, $delimiter) {
-        $handle = fopen('php://output', 'w');
-        fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
-        fputcsv($handle, ['Produit', 'Nom', 'Prénom', 'Sexe', 'Date de naissance', 'Age', 'Nationalité', 'Adresse', 'Code postal', 'Ville', 'Téléphone', 'Email', 'ID Family', 'Role'], $delimiter);
+        // Initialisation des colonnes sélectionnées et des noms pour l'en-tête CSV
+        $selectedColumns = [];
+        $columnNames = [];
 
-        foreach ($users_saison_active as $user) {
-            $birthdate = new \DateTime($user->birthdate);
-            $now = new \DateTime();
-            $age = $now->diff($birthdate)->y;
-            $data = [
-                mb_convert_encoding($user->produit, 'UTF-8', 'auto'),
-                mb_convert_encoding($user->name, 'UTF-8', 'auto'),
-                mb_convert_encoding($user->lastname, 'UTF-8', 'auto'),
-                $user->gender == 'male' ? 'Homme' : 'Femme',
-                $birthdate->format('d/m/Y'),
-                $age,
-                mb_convert_encoding($user->nationality, 'UTF-8', 'auto'),
-                mb_convert_encoding($user->address, 'UTF-8', 'auto'),
-                mb_convert_encoding($user->postal_code, 'UTF-8', 'auto'),
-                mb_convert_encoding($user->city, 'UTF-8', 'auto'),
-                $user->phone,
-                mb_convert_encoding($user->email, 'UTF-8', 'auto'),
-                $user->family_id,
-                $user->role
-            ];
-            fputcsv($handle, $data, $delimiter);
+        // Stocker les colonnes cochées, séparément
+        foreach ($columns as $key => $array) {
+            $selectedColumns[] = $array['sql']; // Colonne SQL
+            $columnNames[] = $array['label']; // Nom en français
         }
-        fclose($handle);
-        
-    });
 
-    $response->headers->set('Content-Type', 'text/csv');
-    $response->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
-    return $response;
-}
+        // Si la colonne "birthdate" est sélectionnée, ajouter l'âge
+        $birthdateColumn = array_filter($columns, function ($column) {
+            return $column['sql'] === 'users.birthdate';
+        });
 
+        if (!empty($birthdateColumn)) {
+            $selectedColumns[] = DB::raw('TIMESTAMPDIFF(YEAR, users.birthdate, CURDATE()) as age');
+            $columnNames[] = 'Âge';
+        }
 
-public function deleteMethod($id)
+        // Récupération des utilisateurs avec les colonnes sélectionnées
+        $users_saison_active = User::select($selectedColumns)
+            ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
+            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
+            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
+            ->where('shop_article.saison', $saison)
+            ->where('bills.status', '>', 9)
+            ->distinct();
+
+        // Appliquer 'orderBy' pour shop_article.title si cette colonne est sélectionnée
+        if (in_array('shop_article.title', array_column($columns, 'sql'))) {
+            $users_saison_active = $users_saison_active->orderBy('shop_article.title', 'ASC');
+        }
+
+        // Appliquer 'orderBy' pour users.name si cette colonne est sélectionnée
+        if (in_array('users.name', array_column($columns, 'sql'))) {
+            $users_saison_active = $users_saison_active->orderBy('users.name', 'ASC');
+        }
+
+        $users_saison_active = $users_saison_active->get();
+
+        // Génération du fichier CSV en réponse
+        $response = new StreamedResponse(function () use ($users_saison_active, $columnNames, $delimiter) {
+            $handle = fopen('php://output', 'w');
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF)); // Ajout du BOM pour Excel
+            fputcsv($handle, $columnNames, $delimiter); // En-tête des colonnes
+
+            // Remplissage des lignes avec les données des utilisateurs
+            foreach ($users_saison_active as $user) {
+                $birthdate = new \DateTime($user->birthdate);
+                $now = new \DateTime();
+                $age = $now->diff($birthdate)->y;
+
+                $data = [];
+
+                // Générer les données en fonction des colonnes sélectionnées
+                foreach ($columnNames as $columnAlias) {
+                    switch (mb_strtolower($columnAlias)) {
+                        case 'produit':
+                            $data[] = mb_convert_encoding($user->title, 'UTF-8', 'auto');
+                            break;
+                        case 'prénom':
+                            $data[] = mb_convert_encoding($user->name, 'UTF-8', 'auto');
+                            break;
+                        case 'nom':
+                            $data[] = mb_convert_encoding($user->lastname, 'UTF-8', 'auto');
+                            break;
+                        case 'sexe':
+                            $data[] = $user->gender == 'male' ? 'Homme' : 'Femme';
+                            break;
+                        case 'date de naissance':
+                            $data[] = $birthdate->format('d/m/Y');
+                            break;
+                        case 'âge':
+                            $data[] = $age;
+                            break;
+                        case 'nationalité':
+                            $data[] = mb_convert_encoding($user->nationality, 'UTF-8', 'auto');
+                            break;
+                        case 'adresse':
+                            $data[] = mb_convert_encoding($user->address, 'UTF-8', 'auto');
+                            break;
+                        case 'code postal':
+                            $data[] = mb_convert_encoding($user->zip, 'UTF-8', 'auto');
+                            break;
+                        case 'ville':
+                            $data[] = mb_convert_encoding($user->city, 'UTF-8', 'auto');
+                            break;
+                        case 'téléphone':
+                            $data[] = "\t" . $user->phone; // Ajouter une apostrophe pour forcer le texte
+                            break;
+                        case 'email':
+                            $data[] = mb_convert_encoding($user->email, 'UTF-8', 'auto');
+                            break;
+                        case 'id famille':
+                            $data[] = $user->family_id;
+                            break;
+                        case 'rôle':
+                            $data[] = $user->role;
+                            break;
+                        default:
+                            $data[] = ''; // Valeur par défaut si la colonne n'est pas reconnue
+                            break;
+                    }
+                }
+
+                // Ecriture de la ligne dans le CSV
+                fputcsv($handle, $data, $delimiter);
+            }
+
+            fclose($handle); // Fermeture du flux
+        });
+
+        // Paramètres de la réponse HTTP pour forcer le téléchargement
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
+        return $response;
+    }
+
+    public function deleteMethod($id)
     {
         $declinaison = Declinaison::find($id);
         $article = Shop_article::find($declinaison->shop_article_id);
@@ -931,29 +1030,36 @@ public function deleteMethod($id)
                 'success' => true,
             ]);
         }
-        
+
 
         return redirect()->back()->with('error', 'Declinaison non trouvé');
     }
 
     public function addMethod(Request $request)
-{
-    $declinaison = new Declinaison();
-    $declinaison->shop_article_id = $request->shop_article_id;
-    $declinaison->libelle = $request->libelle;
-    $declinaison->stock_ini_d = $request->stock_ini_d;
-    $declinaison->stock_actuel_d = $request->stock_ini_d;
-    $declinaison->save();
+    {
+        $declinaison = new Declinaison();
+        $declinaison->shop_article_id = $request->shop_article_id;
+        $declinaison->libelle = $request->libelle;
+        $declinaison->stock_ini_d = $request->stock_ini_d;
+        $declinaison->stock_actuel_d = $request->stock_ini_d;
+        $declinaison->save();
 
-    $shopArticle = Shop_article::find($request->shop_article_id);
-    $shopArticle->updateInitialStock();
+        $shopArticle = Shop_article::find($request->shop_article_id);
+        $shopArticle->updateInitialStock();
 
 
-    return response()->json([
-        'success' => true,
-        'libelle' => $declinaison->libelle,
-        'Id' => $declinaison->id,
-        'deleteRoute' => route('delete.declinaison', $declinaison->id)
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'libelle' => $declinaison->libelle,
+            'Id' => $declinaison->id,
+            'deleteRoute' => route('delete.declinaison', $declinaison->id)
+        ]);
+    }
+
+    public function validationCertificats()
+    {
+        $certificatesToValidate = MedicalCertificates::where('validated', 0)->get();
+
+        return view('club/certificatesValidation', compact('certificatesToValidate'));
+    }
 }

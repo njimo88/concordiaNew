@@ -47,15 +47,14 @@ class Role extends Model
         'edit_ajout_professionnel',
         'declarer_heure_professionnel',
         'voir_declaration_professionnel',
+        'estAutoriserDeVoirFichiers',
+        'estAutoriserDeVoirMessageMaintenance',
+        'estAutoriserDeVoirModeStrict',
+        'estAutoriserDeVoirParametrage'
     ];
 
     public function users()
     {
-        return $this->hasMany(User::class,'role');
+        return $this->hasMany(User::class, 'role');
     }
-    
- 
-
-   
 }
-
