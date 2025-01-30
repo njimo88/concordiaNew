@@ -252,7 +252,7 @@
                   
                   if(button.classList.contains('reservedpending')){ //if seat is reserved by the current user 
                       const confirmAction = confirm("Voulez-vous vraiment laisser ce siège?");
-                      timeRefreching();
+                     
                       if (!confirmAction) {
                       //block the event if the user click No 
                       event.preventDefault();
@@ -286,7 +286,7 @@ const closeButton = document.getElementById('closeAlert');
 
 // Function to hide the overlay
 function hideOverlay() {
-    timeRefreching();
+    
   const overlay = document.getElementById('overlay');
   overlay.style.display = 'none';
 }

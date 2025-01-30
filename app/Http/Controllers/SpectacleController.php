@@ -48,7 +48,13 @@ class SpectacleController  extends Controller
             'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $imagePath = $request->file('image')->store('spectacles', 'public');
+        //$imagePath = $request->file('image')->store('spectacles', 'public');
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension(); // Rename file
+            $image->move(public_path('uploads/spectacles'), $imageName); // Move to public/uploads/spectacles
+            $imagePath = 'uploads/spectacles/' . $imageName; // Save relative path in DB
+        }
 
         $Spectacle =Spectacle::create([
             'name' => $request->name,
@@ -90,9 +96,19 @@ class SpectacleController  extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            Storage::disk('public')->delete($spectacle->image);
-            $imagePath = $request->file('image')->store('spectacles', 'public');
-            $spectacle->image = $imagePath;
+        // Delete old image if it exists
+            $oldImagePath = public_path($spectacle->image);
+            if (file_exists($oldImagePath) && is_file($oldImagePath)) {
+                unlink($oldImagePath);
+            }
+
+            // Upload new image
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/spectacles'), $imageName);
+
+            // Save new image path
+            $spectacle->image = 'uploads/spectacles/' . $imageName;
         }
 
         $spectacle->update($request->only('name', 'description', 'date', 'total_seats', 'state'));
@@ -102,7 +118,10 @@ class SpectacleController  extends Controller
 
     public function destroy(Spectacle $spectacle)
     {
-        Storage::disk('public')->delete($spectacle->image);
+        $imagePath = public_path($spectacle->image);
+        if (file_exists($imagePath) && is_file($imagePath)) {
+            unlink($imagePath);
+        }
         $spectacle->delete();
         Seat::where('id_spectacle', $spectacle->id_spectacle)->delete();
 

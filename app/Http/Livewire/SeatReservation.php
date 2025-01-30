@@ -25,7 +25,7 @@ class SeatReservation extends Component
  
     public function freeReservedAfter10Min() {
 
-        $currentTimestamp = now()->timestamp - 1 * 60 ; // Current time in seconds 1 * 60 sec mean after 60 second will disapear 
+        $currentTimestamp = now()->timestamp - 2 * 60 ; // Current time in seconds 2 * 60 sec mean after 60 second will disapear 
         $currentTimestamp = date('Y-m-d H:i:s', $currentTimestamp);
         $this->Myresevation=null;
         
