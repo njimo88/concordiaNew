@@ -14,7 +14,7 @@
             <div class="col-lg-3 col-md-5 col-sm-10">
                 <a href="{{ route('spectacles.seats', $spectacle->id_spectacle) }}" target="_blank" class="card-link">
                     <div class="card">
-                        <img src="{{ asset('storage/' . $spectacle->image) }}" class="card-img-top" alt="{{ $spectacle->name }}">
+                        <img src="{{ asset($spectacle->image) }}" class="card-img-top" alt="{{ $spectacle->name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $spectacle->name }}</h5>
                             <p class="card-text">{{ $spectacle->description }}</p>
