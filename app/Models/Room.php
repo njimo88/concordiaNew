@@ -26,5 +26,6 @@ class Room extends Model
         'map',
         'url_room',
         'room_active',
+        'room_active_animations'
     ];
 }

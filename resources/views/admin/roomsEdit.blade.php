@@ -36,6 +36,26 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <label for="url_room" class="form-label">Salle visible pour les cours</label>
+                            <input type="hidden" name="room_active" value="0">
+                            <input type="checkbox" class="form-check-input" id="room_active" value="1" name="room_active" @if($room->room_active) checked @endif>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <label for="url_room" class="form-label">Salle visible pour les animations</label>
+                            <input type="hidden" name="room_active_animations" value="0">
+                            <input type="checkbox" class="form-check-input" id="room_active_animations" value="1" name="room_active_animations" @if($room->room_active_animations) checked @endif>
+                        </div>
+                    </div>
+                </div>                
             </div>
 
             
