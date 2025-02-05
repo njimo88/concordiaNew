@@ -178,8 +178,11 @@
                                         <h5 class="user-name">{{ $article->title }}
                                             {{ optional($liaison->declinaison_link)->libelle ? '[' . optional($liaison->declinaison_link)->libelle . ']' : '' }}
                                         </h5>
-                                        <p class="user-quantity">Quantité : {{ $liaison->quantity }}</p>
-                                        <p class="user-location">Destinataire : {{ $liaison->addressee }}</p>
+                                        <p class="user-quantity">Quantité : {{ $liaison->quantity }}</p> 
+                                        <p class="user-location">Destinataire : {{ $liaison->addressee }}  <button type="button" class="btn btn-view-liaisons view-liaisons mx-2" data-user-id="{{ $liaison->id_user }}" data-toggle="modal" data-target="#liaisonsModal"> 
+                                            <i class="fa-solid fa-info"></i>
+                                        </button>    
+                                        </p>
                                         <p class="user-status">Préparé par : {{ $liaison->prepared_by_name }} le {{ $liaison->prepared_at }}</p>
                                     </div>
                                     <div class="user-action m-3">
@@ -246,6 +249,22 @@
             <div class="modal-footer">
                 <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>-->
                 <button type="button" class="btn btn-primary" id="confirmDistribution">Confirmer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="liaisonsModal" tabindex="-1" role="dialog" aria-labelledby="liaisonsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="liaisonsModalLabel">Détails des liaisons</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Les détails des liaisons seront chargés ici -->
             </div>
         </div>
     </div>
