@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnimationsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\A_ControllerBlog;
 use App\Http\Controllers\Controller_club;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Controller_Communication;
 use App\Http\Controllers\Prendre_Contact_Controller;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\A_Controller;
+use App\Http\Controllers\AnimationsPlacesController;
 use App\Http\Controllers\Auth\ForgotUsernameController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ParametreController;
@@ -225,6 +227,17 @@ Route::middleware(['auth', 'role:20'])->group(function () {
 
     Route::get('/admin/validationCertificats', [Controller_club::class, 'validationCertificats'])->name('validationCertificats');
     Route::post('/admin/validationCertificats', [Controller_club::class, 'validationCertificats'])->name('validationCertificats');
+
+    #-------------------------------- Animations Admin ------------------------------
+    Route::get('/admin/gestionAnimations', [AnimationsController::class, 'gestionAnimations'])->name('gestion.animations');
+    Route::post('/admin/gestionAnimations/create', [AnimationsController::class, 'createAnimationBackend'])->name('gestion.animations.create');
+    Route::post('/admin/gestionAnimations/edit/{id}', [AnimationsController::class, 'editAnimationBackend'])->name('gestion.animations.edit');
+    Route::post('/admin/gestionAnimations/delete/{id}', [AnimationsController::class, 'deleteAnimationBackend'])->name('gestion.animations.delete');
+
+    Route::get('/admin/gestionCategoriesAnimations', [AnimationsController::class, 'gestionCategoriesAnimations'])->name('gestion.categories.animations');
+    Route::post('/admin/gestionCategory/create', [AnimationsController::class, 'createCategoryBackend'])->name('gestion.category.create');
+    Route::post('/admin/gestionCategory/edit/{id}', [AnimationsController::class, 'editCategoryBackend'])->name('gestion.category.edit');
+    Route::post('/admin/gestionCategory/delete/{id}', [AnimationsController::class, 'deleteCategoryBackend'])->name('gestion.category.delete');
 });
 
 
@@ -237,6 +250,13 @@ Route::get('/', [TraitementSupp::class, 'carouselblog'])->name('A_blog')->middle
 Route::get('/fetch-posts', [A_ControllerBlog::class, 'fetchPosts']);
 
 Route::get('/home', [TraitementSupp::class, 'carouselblog']);
+
+#-------------------------------- Animations Visiteurs ------------------------------
+Route::get('/animations', [AnimationsController::class, 'visiteursAnimation'])->name('visiteurs.animation');
+Route::post('/animations/inscription', [AnimationsController::class, 'visiteursAnimationInscription'])->name('visiteurs.animation.inscription');
+Route::post('/animations/desinscription', [AnimationsController::class, 'visiteursAnimationDesinscription'])->name('visiteurs.animation.desinscription');
+Route::post('/animations/desinscription/{id}', [AnimationsController::class, 'visiteursAnimationDesinscriptionBackend'])->name('visiteurs.animation.desinscription.delete');
+
 
 Route::middleware(['PageCounterMiddleware'])->group(function () {
 
@@ -409,6 +429,9 @@ Route::middleware(['auth'])->group(function () {
 
     /*----------------------- Club - cours ------------------------------ */
     Route::get('/club/cours_index', [Controller_club::class, 'index_cours'])->name('index_cours');
+    // Route::get('/club/produits_index', [Controller_club::class, 'index_produits'])->name('index_produits');
+    // Route::get('/club/adhesions_index', [Controller_club::class, 'index_adhesions'])->name('index_adhesions');
+
     Route::get('/generate-pdf/{id}', [Controller_club::class, 'generatePdf'])->name('generate.pdf');
     Route::get('/generate-combined-pdf', [Controller_club::class, 'generateCombinedPdf'])->name('generate.combined.pdf');
 
@@ -539,13 +562,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/paiement', [TraitementSupp::class, 'paiement'])->name('paiement');
     Route::get('/fichepaiement/{id}/{nombre_cheques}', [TraitementSupp::class, 'fichepaiement'])->name('fichepaiement');
     Route::post('/choisir_place/{id}', [TraitementSupp::class, 'choisir_place'])->name('choisir_place');
-} );
+});
 
 
 /****------------------- spectacles  and seats  ----------*/
 
 Route::middleware(['auth'])->group(function () {
-    
+
     Route::get('/spectacles', [\App\Http\Controllers\SpectacleController::class, 'index'])->name('spectacles.index');
     Route::get('/spectacles/create', [\App\Http\Controllers\SpectacleController::class, 'create'])->name('spectacles.create');
     Route::post('/spectacles/store', [\App\Http\Controllers\SpectacleController::class, 'store'])->name('spectacles.store');
@@ -553,8 +576,5 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/spectacles/{spectacle}/update', [\App\Http\Controllers\SpectacleController::class, 'update'])->name('spectacles.update');
     Route::delete('/spectacles/{spectacle}', [\App\Http\Controllers\SpectacleController::class, 'destroy'])->name('spectacles.destroy');
 
-    Route::get('/spectacles/seats/{id}',[\App\Http\Controllers\SpectacleController::class, 'seats'])->name('spectacles.seats');
-    
+    Route::get('/spectacles/seats/{id}', [\App\Http\Controllers\SpectacleController::class, 'seats'])->name('spectacles.seats');
 });
-
-
