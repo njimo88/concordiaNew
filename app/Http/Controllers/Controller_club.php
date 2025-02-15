@@ -37,21 +37,30 @@ class Controller_club extends Controller
 
         /* ------------------------------------------requetes pour l'admin------------------------------*/
 
-        if (auth()->user()->role > 90 || auth()->user()->role > 100) {
+        if (auth()->user()->role >= 90 || auth()->user()->role > 100) {
             // Admin users can see all types of articles (0, 1, 2)
-            $shop_article_first = Shop_article::where('saison', $saison_actu)->leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')->where('shop_article.saison', $saison_actu)->where('shop_article.type_article', '=', 1)->with('users_cours')->orderBy('title', 'ASC')->get();
+            $shop_article_first = Shop_article::leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
+                ->where('shop_article.saison', $saison_actu)
+                ->where('shop_article.type_article', '=', 1)
+                ->orderBy('title', 'ASC')
+                ->with('users_cours', function ($query) {
+                    $query->orderBy('name', 'asc')->orderBy('lastname', 'asc');
+                })
+                ->get();
         } else {
             // Teachers can only see their own type 1 courses
-            $shop_article_first = Shop_article::select('shop_article.*')
-                ->leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
+            $shop_article_first = Shop_article::leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
                 ->where('shop_article.saison', $saison_actu)
                 ->where('shop_article.type_article', '=', 1)
                 ->whereRaw('JSON_CONTAINS(shop_article_1.teacher, \'[' . auth()->user()->user_id . ']\')')
-                ->with('users_cours')
-                ->orderBy('saison', 'desc')
                 ->orderBy('shop_article.title', 'asc')
+                ->with('users_cours', function ($query) {
+                    $query->orderBy('name', 'asc')->orderBy('lastname', 'asc');
+                })
                 ->get();
         }
+
+        // dd($shop_article_first[3]->users_cours);
 
         $shop_article_first->each(function ($article) {
             $article->users_cours->each(function ($user) {
