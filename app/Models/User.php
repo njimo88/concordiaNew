@@ -89,6 +89,11 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasOne(MedicalCertificates::class, 'user_id');
     }
 
+    public function certifications()
+    {
+        return $this->hasMany(UsersLevels::class, 'user_id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

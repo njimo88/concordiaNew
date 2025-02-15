@@ -262,6 +262,7 @@ Route::middleware(['PageCounterMiddleware'])->group(function () {
 
 
     Route::get('/anniversaire', [A_ControllerBlog::class, 'anniversaire'])->name('anniversaire');
+    Route::post('/sendBirthdayMail', [A_ControllerBlog::class, 'sendAnniversaire'])->name("send.birthday.mail");
     Route::get('/Simple_Post/{id}', [TraitementSupp::class, 'blog'])->name('Simple_Post');
     Route::get('/Affichage_categorie1/{id}', [A_ControllerBlog::class, 'recherche_par_cat1'])->name('A_blog_par_categorie1');
     Route::get('/Affichage_categorie2/{id}', [A_ControllerBlog::class, 'recherche_par_cat2'])->name('A_blog_par_categorie2');
@@ -429,8 +430,11 @@ Route::middleware(['auth'])->group(function () {
 
     /*----------------------- Club - cours ------------------------------ */
     Route::get('/club/cours_index', [Controller_club::class, 'index_cours'])->name('index_cours');
-    // Route::get('/club/produits_index', [Controller_club::class, 'index_produits'])->name('index_produits');
-    // Route::get('/club/adhesions_index', [Controller_club::class, 'index_adhesions'])->name('index_adhesions');
+    Route::get('/club/produits_index', [Controller_club::class, 'index_produits'])->name('index_produits');
+    Route::get('/club/adhesions_index', [Controller_club::class, 'index_adhesions'])->name('index_adhesions');
+
+    Route::get('/club/certifications-niveaux/{id}', [Controller_club::class, 'certifications_niveaux'])->name('certifications_niveaux');
+    Route::post('/club/certifications-niveaux/{id}', [Controller_club::class, 'certifications_niveaux_backend'])->name('certifications_niveaux_backend');
 
     Route::get('/generate-pdf/{id}', [Controller_club::class, 'generatePdf'])->name('generate.pdf');
     Route::get('/generate-combined-pdf', [Controller_club::class, 'generateCombinedPdf'])->name('generate.combined.pdf');
