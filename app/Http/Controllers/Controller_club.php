@@ -37,33 +37,39 @@ class Controller_club extends Controller
 
         /* ------------------------------------------requetes pour l'admin------------------------------*/
 
-        if (auth()->user()->role >= 90 || auth()->user()->role > 100) {
+        if (auth()->user()->role >= 90) {
             // Admin users can see all types of articles (0, 1, 2)
-            $shop_article_first = Shop_article::leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
-                ->where('shop_article.saison', $saison_actu)
+            $shop_article_first = Shop_article::where('shop_article.saison', $saison_actu)
                 ->where('shop_article.type_article', '=', 1)
-                ->orderBy('title', 'ASC')
-                ->with('users_cours', function ($query) {
-                    $query->orderBy('name', 'asc')->orderBy('lastname', 'asc');
-                })
-                ->get();
+                ->orderBy('title',  'ASC')
+                ->with(['users_cours'])
+                ->with(['users_cours.bills'])
+                ->with(['users_cours.liaisonShopArticlesBill.bill']);
+
+            // dd($shop_article_first->toSql());
+            $shop_article_first = $shop_article_first->get();
         } else {
             // Teachers can only see their own type 1 courses
-            $shop_article_first = Shop_article::leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
-                ->where('shop_article.saison', $saison_actu)
+            $shop_article_first = Shop_article::where('shop_article.saison', $saison_actu)
                 ->where('shop_article.type_article', '=', 1)
                 ->whereRaw('JSON_CONTAINS(shop_article_1.teacher, \'[' . auth()->user()->user_id . ']\')')
                 ->orderBy('shop_article.title', 'asc')
-                ->with('users_cours', function ($query) {
-                    $query->orderBy('name', 'asc')->orderBy('lastname', 'asc');
-                })
+                ->with(['users_cours'])
+                ->with(['users_cours.bills'])
+                ->with(['users_cours.liaisonShopArticlesBill.bill'])
                 ->get();
         }
 
-        // dd($shop_article_first[3]->users_cours);
+
 
         $shop_article_first->each(function ($article) {
-            $article->users_cours->each(function ($user) {
+            $article->users_cours->each(function ($user) use ($article) {
+                $liaisons = $user->liaisonShopArticlesBill->where('id_shop_article', $article->id_shop_article);
+
+                $user->bills = $liaisons->map(function ($liaison, $index) {
+                    return $liaison->bill;
+                })->filter();
+
                 $emissionDate = $user->emission_date; // Date d'émission du certificat
 
                 if ($emissionDate) {
@@ -95,10 +101,26 @@ class Controller_club extends Controller
 
         $saison_actu = $request->input('saison') ?? saison_active();
 
-        $produits = Shop_article::select('shop_article.*')->leftJoin('shop_article_2', 'shop_article_2.id_shop_article', '=', 'shop_article.id_shop_article')->where('shop_article.saison', $saison_actu)->where('shop_article.type_article', '=', 2)->with('users_cours')->orderBy('saison', 'desc')->orderBy('shop_article.title', 'asc')->get();
+        $produits = Shop_article::select('shop_article.*')
+            ->where('shop_article.saison', $saison_actu)
+            ->where('shop_article.type_article', '=', 2)
+            ->with(['users_cours'])
+            ->with(['users_cours.bills' => function ($query) use ($saison_actu) {
+                $query->orderBy('bills.date_bill', 'desc');
+            }])
+            ->with(['users_cours.liaisonShopArticlesBill.bill'])
+            ->orderBy('saison', 'desc')
+            ->orderBy('shop_article.title', 'asc')
+            ->get();
 
         $produits->each(function ($article) {
-            $article->users_cours->each(function ($user) {
+            $article->users_cours->each(function ($user) use ($article) {
+                $liaisons = $user->liaisonShopArticlesBill->where('id_shop_article', $article->id_shop_article);
+
+                $user->bills = $liaisons->map(function ($liaison, $index) {
+                    return $liaison->bill;
+                })->filter()->sortBy('date_bill');
+
                 $emissionDate = $user->emission_date; // Date d'émission du certificat
 
                 if ($emissionDate) {
@@ -130,10 +152,25 @@ class Controller_club extends Controller
 
         $saison_actu = $request->input('saison') ?? saison_active();
 
-        $adhesions = Shop_article::select('shop_article.*')->leftJoin('shop_article_0', 'shop_article_0.id_shop_article', '=', 'shop_article.id_shop_article')->where('shop_article.saison', $saison_actu)->where('shop_article.type_article', '=', 0)->with('users_cours')->orderBy('saison', 'desc')->orderBy('shop_article.title', 'asc')->get();
+        $adhesions = Shop_article::select('shop_article.*')->where('shop_article.saison', $saison_actu)
+            ->where('shop_article.type_article', '=', 0)
+            ->with(['users_cours'])
+            ->with(['users_cours.bills' => function ($query) use ($saison_actu) {
+                $query->orderBy('bills.date_bill', 'desc');
+            }])
+            ->with(['users_cours.liaisonShopArticlesBill.bill'])
+            ->orderBy('saison', 'desc')
+            ->orderBy('shop_article.title', 'asc')
+            ->get();
 
         $adhesions->each(function ($article) {
-            $article->users_cours->each(function ($user) {
+            $article->users_cours->each(function ($user) use ($article) {
+                $liaisons = $user->liaisonShopArticlesBill->where('id_shop_article', $article->id_shop_article);
+
+                $user->bills = $liaisons->map(function ($liaison, $index) {
+                    return $liaison->bill;
+                })->filter()->sortBy('date_bill');
+
                 $emissionDate = $user->emission_date; // Date d'émission du certificat
 
                 if ($emissionDate) {

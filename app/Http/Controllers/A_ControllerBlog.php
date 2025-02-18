@@ -71,15 +71,14 @@ class A_ControllerBlog extends Controller
     {
         $user = User::find($request->recipient_id);
         $validatedData = $request->validate([
-            'recipient_email' => 'nullable|email',
             'recipient_name' => 'required|string',
             'sender_name' => 'required|string',
             'sender_email' => 'required|email',
             'message' => 'required|string',
         ]);
 
+        $recipientMail = $user->email;
         $recaptchaToken = $request->input('g-recaptcha-response');
-
 
         $client = new \GuzzleHttp\Client();
         $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
@@ -95,10 +94,10 @@ class A_ControllerBlog extends Controller
             return redirect()->back()->with('error', 'Veuillez cocher la case reCAPTCHA.');
         }
 
-        if ($request->input('recipient_email') == null) {
+        if ($recipientMail == null) {
             $receiverMails = User::where('family_id', '=', $user->family_id)->where('family_level', '=', 'parent')->where('email', '!=', null)->get();
         } else {
-            $receiverMails = [$user->email];
+            $receiverMails = [$recipientMail];
         }
 
         $messageContent = $request->input('message');

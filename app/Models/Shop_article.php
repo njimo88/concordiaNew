@@ -79,9 +79,16 @@ class Shop_article extends Model
                 'bills.id',
                 'medical_certificates.emission_date'
             )
-            ->distinct();
+            ->orderBy('users.name', 'asc')
+            ->orderBy('users.lastname', 'asc');
     }
 
+    public function totalBillsCount()
+    {
+        return $this->users_cours->sum(function ($user) {
+            return $user->bills->count();
+        });
+    }
 
     public function liaisonShopArticlesBill()
     {

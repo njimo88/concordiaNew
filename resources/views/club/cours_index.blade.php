@@ -41,7 +41,7 @@
                         alt="Logo" onclick="generatePDF({{ $data->id_shop_article }})">
                     <input readonly onclick="toggleElement('{{ $data->id_shop_article }}')" class="btn m-0 session_title"
                         style="font-weight: bold; text-align: left;"
-                        value="{{ $data->title }} ({{ $data->usersActiveCount() }} / {{ $data->stock_ini }})">
+                        value="{{ $data->title }} ({{ $data->totalBillsCount() }} / {{ $data->stock_ini }})">
                     <a href="{{ route('certifications_niveaux', ['id' => $data->id_shop_article]) }}" target="_blank"
                         class="btn btn-danger m-2" style="font-size: 14px"><i class="fas fa-graduation-cap"></i></a>
                 </div>
@@ -72,52 +72,55 @@
                         <table class="table table-hover" style="color:black">
                             <tbody>
                                 @foreach ($data->users_cours as $dt)
-                                    <tr
-                                        style="background-color: {{ $dt->row_color == 'none' ? 'lime' : $dt->row_color }};">
-                                        <td>
-                                            <div class="form-check">
-                                                <input name="user_id[]" value="{{ $dt->user_id }}" hidden>
-                                                <input class="form-check-input" type="checkbox"
-                                                    name="marque_presence[{{ $dt->user_id }}]" value="1"
-                                                    id="myCheckbox">
-                                                <label class="form-check-label" for="flexCheckDefault" style="color:black">
-                                                    {{ $dt->name }} {{ $dt->lastname }}
-                                                    @if (\Carbon\Carbon::parse($dt->birthdate)->isBirthday())
-                                                        <i class="fa fa-birthday-cake"></i>
-                                                    @endif
-                                                </label>
-
-                                            </div>
-                                        </td>
-                                        @if (Auth::user()->role >= 90)
+                                    @foreach ($dt->bills as $bill)
+                                        <tr
+                                            style="background-color: {{ $dt->row_color == 'none' ? 'lime' : $dt->row_color }};">
                                             <td>
-                                                <a target="_blank"
-                                                    href="{{ route('facture.showBill', ['id' => $dt->user_id]) }}">
-                                                    <i class="fas fa-file-invoice"
-                                                        style="color: black; cursor: pointer; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); font-size: 1.2rem;"></i>
+                                                <div class="form-check">
+                                                    <input name="user_id[]" value="{{ $dt->user_id }}" hidden>
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="marque_presence[{{ $dt->user_id }}]" value="1"
+                                                        id="myCheckbox">
+                                                    <label class="form-check-label" for="flexCheckDefault"
+                                                        style="color:black">
+                                                        {{ $dt->name }} {{ $dt->lastname }}
+                                                        @if (\Carbon\Carbon::parse($dt->birthdate)->isBirthday())
+                                                            <i class="fa fa-birthday-cake"></i>
+                                                        @endif
+                                                    </label>
+
+                                                </div>
+                                            </td>
+                                            @if (Auth::user()->role >= 90)
+                                                <td>
+                                                    <a target="_blank"
+                                                        href="{{ route('facture.showBill', ['id' => $bill->id]) }}">
+                                                        <i class="fas fa-file-invoice"
+                                                            style="color: black; cursor: pointer; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); font-size: 1.2rem;"></i>
+                                                    </a>
+                                                </td>
+                                            @endif
+                                            <td>
+                                                <i class="fas fa-eye openmodal" style="color:blue; cursor: pointer;"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                    data-user-id="{{ $dt->user_id }}"></i>
+                                            </td>
+                                            <td>
+                                                <a href="/admin/members/user/{{ $dt->user_id }}" target="_blank">
+                                                    <i class="fas fa-id-card"
+                                                        style="color:{{ $dt->medical_certificate_color }}; cursor: pointer; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); font-size: 1.2rem;"></i>
                                                 </a>
                                             </td>
-                                        @endif
-                                        <td>
-                                            <i class="fas fa-eye openmodal" style="color:blue; cursor: pointer;"
-                                                data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                                data-user-id="{{ $dt->user_id }}"></i>
-                                        </td>
-                                        <td>
-                                            <a href="/admin/members/user/{{ $dt->user_id }}" target="_blank">
-                                                <i class="fas fa-id-card"
-                                                    style="color:{{ $dt->medical_certificate_color }}; cursor: pointer; text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); font-size: 1.2rem;"></i>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <div class="col-6 col-md-2">
-                                                <a href="tel:+33" target="_blank">{{ $dt->phone }}</a>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{ $dt->birthdate }}
-                                        </td>
-                                    </tr>
+                                            <td>
+                                                <div class="col-6 col-md-2">
+                                                    <a href="tel:+33" target="_blank">{{ $dt->phone }}</a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {{ $dt->birthdate }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 @endforeach
                             </tbody>
                         </table>
