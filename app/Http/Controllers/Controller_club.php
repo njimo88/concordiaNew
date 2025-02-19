@@ -11,7 +11,10 @@ use App\Models\User;
 use App\Models\Shop_category;
 use App\Models\appels;
 use App\Models\Declinaison;
+use App\Models\Disciplines;
+use App\Models\Levels;
 use App\Models\MedicalCertificates;
+use App\Models\UsersLevels;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Laravel\Ui\Presets\Preset;
@@ -21,11 +24,10 @@ use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Support\Facades\Schema;
 
-require_once(app_path() . '/fonction.php');
+require_once app_path() . '/fonction.php';
 
 class Controller_club extends Controller
 {
-    //
     function index_cours(Request $request)
     {
         /*--------------------------faire l'appel------------------------------ */
@@ -33,78 +35,164 @@ class Controller_club extends Controller
 
         $saison_actu = $request->input('saison') ?? saison_active();
 
-        /*------------------------------------- requetes pour les teachers ------------------------------*/
-
-        $users_saison_active = User::select(
-            'users.user_id',
-            'users.name',
-            'users.lastname',
-            'users.phone',
-            'users.birthdate',
-            'users.email',
-            'liaison_shop_articles_bills.id_shop_article',
-            'bills_status.row_color',
-            'bills.id',
-            'medical_certificates.emission_date' // Ajouter la date d'expiration
-        )
-            ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-            ->join('bills_status', 'bills.status', '=', 'bills_status.id')
-            ->leftJoin('medical_certificates', 'medical_certificates.user_id', '=', 'users.user_id') // Ajouter la jointure pour les certificats médicaux
-            ->where('shop_article.saison', $saison_actu)
-            ->where('bills.status', '>', 9)
-            ->distinct('users.user_id')
-            ->orderBy('users.name', 'ASC')
-            ->get();
-
-
-        $currentDate = Carbon::now();
-
-        // Fonction pour obtenir la couleur de l'icone d'oeil en fonction de la validité du certificat
-        $users_saison_active->map(function ($user) {
-            $emissionDate = $user->emission_date; // Date d'émission du certificat
-
-            if ($emissionDate) {
-                $expirationDate = Carbon::parse($emissionDate)->addYears(3); // Calcul de la date d'expiration
-                $diffInYears = now()->diffInYears($expirationDate, false); // Différence en jours (peut être négative si expiré)
-
-                if ($diffInYears >= 2) {
-                    $user->medical_certificate_color = '#146314';
-                } elseif ($diffInYears >= 1) {
-                    $user->medical_certificate_color = '#eb7c05';
-                } elseif ($diffInYears < 1) {
-                    $user->medical_certificate_color = '#e35f5f';
-                }
-            } else {
-                $user->medical_certificate_color = 'black'; // Pas de certificat
-            }
-
-            return $user;
-        });
-
         /* ------------------------------------------requetes pour l'admin------------------------------*/
 
-        if (auth()->user()->roles->estAutoriserDeVoirArticle0_2) {
+        if (auth()->user()->role >= 90) {
             // Admin users can see all types of articles (0, 1, 2)
-            $shop_article_first = Shop_article::where('saison', $saison_actu)
-                ->orderBy('title', 'ASC')
-                ->get();
+            $shop_article_first = Shop_article::where('shop_article.saison', $saison_actu)
+                ->where('shop_article.type_article', '=', 1)
+                ->orderBy('title',  'ASC')
+                ->with(['users_cours'])
+                ->with(['users_cours.bills'])
+                ->with(['users_cours.liaisonShopArticlesBill.bill']);
+
+            // dd($shop_article_first->toSql());
+            $shop_article_first = $shop_article_first->get();
         } else {
             // Teachers can only see their own type 1 courses
-            $shop_article_first = Shop_article::select('shop_article.*')
-                ->leftJoin('shop_article_1', 'shop_article_1.id_shop_article', '=', 'shop_article.id_shop_article')
-                ->where('shop_article.saison', $saison_actu)
+            $shop_article_first = Shop_article::where('shop_article.saison', $saison_actu)
                 ->where('shop_article.type_article', '=', 1)
                 ->whereRaw('JSON_CONTAINS(shop_article_1.teacher, \'[' . auth()->user()->user_id . ']\')')
-                ->orderBy('saison', 'desc')
                 ->orderBy('shop_article.title', 'asc')
+                ->with(['users_cours'])
+                ->with(['users_cours.bills'])
+                ->with(['users_cours.liaisonShopArticlesBill.bill'])
                 ->get();
         }
 
+
+
+        $shop_article_first->each(function ($article) {
+            $article->users_cours->each(function ($user) use ($article) {
+                $liaisons = $user->liaisonShopArticlesBill->where('id_shop_article', $article->id_shop_article);
+
+                $user->bills = $liaisons->map(function ($liaison, $index) {
+                    return $liaison->bill;
+                })->filter();
+
+                $emissionDate = $user->emission_date; // Date d'émission du certificat
+
+                if ($emissionDate) {
+                    $expirationDate = Carbon::parse($emissionDate)->addYears(3); // Date d'expiration
+                    $diffInYears = now()->diffInYears($expirationDate, false); // Différence en années
+
+                    if ($diffInYears >= 2) {
+                        $user->medical_certificate_color = '#146314'; // Vert (OK)
+                    } elseif ($diffInYears >= 1) {
+                        $user->medical_certificate_color = '#eb7c05'; // Orange (Bientôt expiré)
+                    } else {
+                        $user->medical_certificate_color = '#e35f5f'; // Rouge (Expiré)
+                    }
+                } else {
+                    $user->medical_certificate_color = 'black'; // Pas de certificat
+                }
+            });
+        });
+
         $saison_list = Shop_article::select('saison')->distinct('saison')->orderBy('saison', 'ASC')->get();
 
-        return view('club/cours_index', compact('saison_list', 'shop_article_first', 'users_saison_active', 'saison_actu'))->with('user', auth()->user());
+        return view('club/cours_index', compact('saison_list', 'shop_article_first', 'saison_actu'))->with('user', auth()->user());
+    }
+
+    function index_produits(Request $request)
+    {
+        /*--------------------------faire l'appel------------------------------ */
+        ini_set('memory_limit', '512M');
+
+        $saison_actu = $request->input('saison') ?? saison_active();
+
+        $produits = Shop_article::select('shop_article.*')
+            ->where('shop_article.saison', $saison_actu)
+            ->where('shop_article.type_article', '=', 2)
+            ->with(['users_cours'])
+            ->with(['users_cours.bills' => function ($query) use ($saison_actu) {
+                $query->orderBy('bills.date_bill', 'desc');
+            }])
+            ->with(['users_cours.liaisonShopArticlesBill.bill'])
+            ->orderBy('saison', 'desc')
+            ->orderBy('shop_article.title', 'asc')
+            ->get();
+
+        $produits->each(function ($article) {
+            $article->users_cours->each(function ($user) use ($article) {
+                $liaisons = $user->liaisonShopArticlesBill->where('id_shop_article', $article->id_shop_article);
+
+                $user->bills = $liaisons->map(function ($liaison, $index) {
+                    return $liaison->bill;
+                })->filter()->sortBy('date_bill');
+
+                $emissionDate = $user->emission_date; // Date d'émission du certificat
+
+                if ($emissionDate) {
+                    $expirationDate = Carbon::parse($emissionDate)->addYears(3); // Date d'expiration
+                    $diffInYears = now()->diffInYears($expirationDate, false); // Différence en années
+
+                    if ($diffInYears >= 2) {
+                        $user->medical_certificate_color = '#146314'; // Vert (OK)
+                    } elseif ($diffInYears >= 1) {
+                        $user->medical_certificate_color = '#eb7c05'; // Orange (Bientôt expiré)
+                    } else {
+                        $user->medical_certificate_color = '#e35f5f'; // Rouge (Expiré)
+                    }
+                } else {
+                    $user->medical_certificate_color = 'black'; // Pas de certificat
+                }
+            });
+        });
+
+        $saison_list = Shop_article::select('saison')->distinct('saison')->orderBy('saison', 'ASC')->get();
+
+        return view('club/produits_index', compact('saison_list', 'produits', 'saison_actu'))->with('user', auth()->user());
+    }
+
+    function index_adhesions(Request $request)
+    {
+        /*--------------------------faire l'appel------------------------------ */
+        ini_set('memory_limit', '512M');
+
+        $saison_actu = $request->input('saison') ?? saison_active();
+
+        $adhesions = Shop_article::select('shop_article.*')->where('shop_article.saison', $saison_actu)
+            ->where('shop_article.type_article', '=', 0)
+            ->with(['users_cours'])
+            ->with(['users_cours.bills' => function ($query) use ($saison_actu) {
+                $query->orderBy('bills.date_bill', 'desc');
+            }])
+            ->with(['users_cours.liaisonShopArticlesBill.bill'])
+            ->orderBy('saison', 'desc')
+            ->orderBy('shop_article.title', 'asc')
+            ->get();
+
+        $adhesions->each(function ($article) {
+            $article->users_cours->each(function ($user) use ($article) {
+                $liaisons = $user->liaisonShopArticlesBill->where('id_shop_article', $article->id_shop_article);
+
+                $user->bills = $liaisons->map(function ($liaison, $index) {
+                    return $liaison->bill;
+                })->filter()->sortBy('date_bill');
+
+                $emissionDate = $user->emission_date; // Date d'émission du certificat
+
+                if ($emissionDate) {
+                    $expirationDate = Carbon::parse($emissionDate)->addYears(3); // Date d'expiration
+                    $diffInYears = now()->diffInYears($expirationDate, false); // Différence en années
+
+                    if ($diffInYears >= 2) {
+                        $user->medical_certificate_color = '#146314'; // Vert (OK)
+                    } elseif ($diffInYears >= 1) {
+                        $user->medical_certificate_color = '#eb7c05'; // Orange (Bientôt expiré)
+                    } else {
+                        $user->medical_certificate_color = '#e35f5f'; // Rouge (Expiré)
+                    }
+                } else {
+                    $user->medical_certificate_color = 'black'; // Pas de certificat
+                }
+            });
+        });
+
+        $saison_list = Shop_article::select('saison')->distinct('saison')->orderBy('saison', 'ASC')->get();
+
+        return view('club/adhesions_index', compact('saison_list', 'adhesions', 'saison_actu'))->with('user', auth()->user());
     }
 
     public function generateCombinedPdf()
@@ -113,14 +201,11 @@ class Controller_club extends Controller
         set_time_limit(0);
 
         $saison_actu = saison_active();
-        $shop_articles = Shop_article::where('saison', $saison_actu)
-            ->orderBy('title', 'ASC')
-            ->get();
+        $shop_articles = Shop_article::where('saison', $saison_actu)->orderBy('title', 'ASC')->get();
 
         $filePaths = [];
 
         foreach ($shop_articles as $article) {
-
             $pdfContent = $this->generatePdfContentForArticle($article->id_shop_article);
             $pdf = PDF::loadHTML($pdfContent);
             $pdf->setPaper('a4', 'landscape');
@@ -167,8 +252,6 @@ class Controller_club extends Controller
         return response()->download($mergedPath)->deleteFileAfterSend(true);
     }
 
-
-
     public function generatePdfContentForArticle($id)
     {
         ini_set('display_errors', 1);
@@ -184,22 +267,7 @@ class Controller_club extends Controller
         $saison = $course->saison;
         $nextSaison = $saison + 1;
 
-        $personnes = User::select(
-            'users.user_id',
-            'users.name',
-            'users.lastname',
-            'users.birthdate',
-            'liaison_shop_articles_bills.id_shop_article',
-            'bills.id',
-            'bills.status'
-        )
-            ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-            ->where('shop_article.id_shop_article', $id)
-            ->distinct('users.user_id')
-            ->orderBy('users.name', 'ASC')
-            ->get();
+        $personnes = User::select('users.user_id', 'users.name', 'users.lastname', 'users.birthdate', 'liaison_shop_articles_bills.id_shop_article', 'bills.id', 'bills.status')->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')->where('shop_article.id_shop_article', $id)->distinct('users.user_id')->orderBy('users.name', 'ASC')->get();
 
         $pdfContent = "
             
@@ -213,13 +281,13 @@ class Controller_club extends Controller
                 
                 table {
                     border-collapse: collapse;
-                    width: 100%; 
+                    width: 100%;
                 }
         
                 td, th {
                     min-width: 10px;
-                    border: 1px solid #333; 
-                    padding: 5px; 
+                    border: 1px solid #333;
+                    padding: 5px;
                     white-space: nowrap; // Nom Prénom sur une seule ligne
                 }
         
@@ -256,13 +324,12 @@ class Controller_club extends Controller
                     <th>Date Naiss</th>";
 
         for ($i = 1; $i <= 30; $i++) {
-            $pdfContent .= "<th></th>";
+            $pdfContent .= '<th></th>';
         }
 
         $pdfContent .= "</tr>
             </thead>
                     <tbody>";
-
 
         $counter = 0;
         if ($personnes->isEmpty()):
@@ -277,9 +344,14 @@ class Controller_club extends Controller
                 $counter++;
             }
             $formattedDate = date('d/m/Y', strtotime($person->birthdate));
-            $pdfContent .= "
-                    <tr " . ($person->status == 1 ? "style='text-decoration: line-through;'" : "") . ">
-                        <td>" . ($person->status != 1 ? $counter : "") . "</td>
+            $pdfContent .=
+                "
+                    <tr " .
+                ($person->status == 1 ? "style='text-decoration: line-through;'" : '') .
+                ">
+                        <td>" .
+                ($person->status != 1 ? $counter : '') .
+                "</td>
                         <td>{$person->name} {$person->lastname}</td>
                         <td>{$formattedDate}</td>
                         <td></td>
@@ -319,7 +391,6 @@ class Controller_club extends Controller
                     </tbody>
                 </table>";
 
-
         return $pdfContent;
     }
 
@@ -339,22 +410,7 @@ class Controller_club extends Controller
         $saison = $course->saison;
         $nextSaison = $saison + 1;
 
-        $personnes = User::select(
-            'users.user_id',
-            'users.name',
-            'users.lastname',
-            'users.birthdate',
-            'liaison_shop_articles_bills.id_shop_article',
-            'bills.id',
-            'bills.status'
-        )
-            ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-            ->where('shop_article.id_shop_article', $id)
-            ->distinct('users.user_id')
-            ->orderBy('users.name', 'ASC')
-            ->get();
+        $personnes = User::select('users.user_id', 'users.name', 'users.lastname', 'users.birthdate', 'liaison_shop_articles_bills.id_shop_article', 'bills.id', 'bills.status')->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')->where('shop_article.id_shop_article', $id)->distinct('users.user_id')->orderBy('users.name', 'ASC')->get();
 
         $pdfContent = "
             
@@ -425,7 +481,7 @@ class Controller_club extends Controller
             <th>Date Naiss</th>";
 
         for ($i = 1; $i <= 30; $i++) {
-            $pdfContent .= "<th></th>";
+            $pdfContent .= '<th></th>';
         }
 
         $pdfContent .= "</tr>
@@ -438,9 +494,14 @@ class Controller_club extends Controller
                 $counter++;
             }
             $formattedDate = date('d/m/Y', strtotime($person->birthdate));
-            $pdfContent .= "
-            <tr " . ($person->status == 1 ? "style='text-decoration: line-through;'" : "") . ">
-                <td>" . ($person->status != 1 ? $counter : "") . "</td>
+            $pdfContent .=
+                "
+            <tr " .
+                ($person->status == 1 ? "style='text-decoration: line-through;'" : '') .
+                ">
+                <td>" .
+                ($person->status != 1 ? $counter : '') .
+                "</td>
                 <td>{$person->name} {$person->lastname}</td>
                 <td>{$formattedDate}</td>
                 <td></td>
@@ -486,39 +547,24 @@ class Controller_club extends Controller
         return $pdf->stream();
     }
 
-
-
     public function get_data_table(Request $request, $article_id)
     {
-
-
         return $article_id;
     }
 
-
-
-
     function index_include(Request $request)
     {
-
         $saison = $_POST['saison'];
         $s_saison = $request->input('saison');
 
+        $users = User::select('users.user_id', 'users.name', 'users.email', 'liaison_shop_articles_bills.id_shop_article')->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)->get();
 
-        $users = User::select('users.user_id', 'users.name', 'users.email', 'liaison_shop_articles_bills.id_shop_article')
-            ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')->where('saison', $saison)->get();
-
-
-
-        return redirect()->route('index_cours', ['saison' => $saison])->with('submitted', true);
+        return redirect()
+            ->route('index_cours', ['saison' => $saison])
+            ->with('submitted', true);
 
         //  return view('club/include-page',compact('users','saison'))->with('user', auth()->user());
-
-
     }
-
-
 
     public function display_form_cours($id)
     {
@@ -531,91 +577,82 @@ class Controller_club extends Controller
 
         //dd($user) ;
         //  return view('/shop_article_cours_ajax', compact('user','buyers','requete_articles'))->with('user', auth()->user());
-
-
     }
 
     public function form_appel_method($id)
     {
-
         $shop_article = Shop_Article::find($id);
         $buyers = Donne_User_article_Paye($id);
 
-
-        $users = User::select("*")->whereIn('user_id', $buyers)->get();
+        $users = User::select('*')->whereIn('user_id', $buyers)->get();
 
         $the_id = $id;
 
-        // dd($users);            
+        // dd($users);
 
         return view('/formulaire_appel', compact('users', 'buyers', 'the_id'))->with('user', auth()->user());
     }
 
     public function display_info_user($id)
     {
-
         $the_id = $id;
         $info_user = User::where('user_id', $id)->get();
 
         $requete_user_family_id = User::where('user_id', $id)->value('family_id');
-        $tab =  User::where('family_id', $requete_user_family_id)->where('family_level', 'parent')->get();
-
-
-
+        $tab = User::where('family_id', $requete_user_family_id)->where('family_level', 'parent')->get();
 
         return view('club/modal_info', compact('info_user', 'tab', 'the_id'))->with('user', auth()->user());
     }
 
-
     public function modif_user($id, Request $request)
     {
-
         $user = User::find($id);
 
-        $validatedData = $request->validate([
-            'username' => 'nullable|string|max:255',
-            'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
-            'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')],
-            'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
-            'profession' => 'string|max:191',
-            'birthdate' => 'required|date|before:today',
-            'address' => 'required',
-            'zip' => 'required|numeric',
-            'city' => 'required',
-            'nationality' => 'required',
-            'licenceFFGYM' => ['nullable', 'regex:/^\d{5}\.\d{3}\.\d{5}$/'],
-
-        ], $messages = [
-            'username.required' => "Le champ nom d'utilisateur est requis.",
-            'username.max' => "Le nom d'utilisateur ne doit pas dépasser 255 caractères.",
-            'name.required' => "Le champ nom est requis.",
-            'name.alpha' => "Le nom doit être une chaîne de caractères.",
-            'lastname.required' => "Le champ prénom est requis.",
-            'lastname.alpha' => "Le prénom doit être une chaîne de caractères.",
-            'email.required' => 'Le champ :attribute est requis.',
-            'email' => "Le format de l'adresse e-mail est invalide.",
-            'email.unique' => "L'adresse e-mail est déjà utilisée.",
-            'password.required' => "Le champ mot de passe est requis.",
-            'password.min' => "Le mot de passe doit contenir au moins 8 caractères.",
-            'password.confirmed' => "La confirmation du mot de passe ne correspond pas.",
-            'phone.required' => "Le champ numéro de téléphone  est requis.",
-            'phone.regex' => "Le format du numéro de téléphone est invalide.",
-            'gender.required' => "Le champ sexe est requis.",
-            'birthdate.required' => 'La date de naissance est requise',
-            'birthdate.date' => 'Format de date non valide',
-            'birthdate.before' => 'La date de naissance doit être antérieure à aujourd\'hui',
-            'profession.alpha' => "La profession doit être une chaîne de caractères.",
-            'address.required' => "Le champ address est requis.",
-            'zip.required' => "Le champ code postal est requis.",
-            'zip.regex' => "Le code postal doit être au format 12345 ou 12345-1234.",
-            'city.required' => "Le champ ville est requis.",
-            'city.alpha' => "La ville doit être une chaîne de caractères.",
-            'country.required' => "Le champ pays est requis.",
-            'licenceFFGYM.required' => "Le champ licence FFGYM est requis.",
-            'licenceFFGYM.regex' => "Le format de la licence FFGYM est invalide.",
-        ]);
-
+        $validatedData = $request->validate(
+            [
+                'username' => 'nullable|string|max:255',
+                'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+                'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+                'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->user_id, 'user_id')],
+                'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
+                'profession' => 'string|max:191',
+                'birthdate' => 'required|date|before:today',
+                'address' => 'required',
+                'zip' => 'required|numeric',
+                'city' => 'required',
+                'nationality' => 'required',
+                'licenceFFGYM' => ['nullable', 'regex:/^\d{5}\.\d{3}\.\d{5}$/'],
+            ],
+            $messages = [
+                'username.required' => "Le champ nom d'utilisateur est requis.",
+                'username.max' => "Le nom d'utilisateur ne doit pas dépasser 255 caractères.",
+                'name.required' => 'Le champ nom est requis.',
+                'name.alpha' => 'Le nom doit être une chaîne de caractères.',
+                'lastname.required' => 'Le champ prénom est requis.',
+                'lastname.alpha' => 'Le prénom doit être une chaîne de caractères.',
+                'email.required' => 'Le champ :attribute est requis.',
+                'email' => "Le format de l'adresse e-mail est invalide.",
+                'email.unique' => "L'adresse e-mail est déjà utilisée.",
+                'password.required' => 'Le champ mot de passe est requis.',
+                'password.min' => 'Le mot de passe doit contenir au moins 8 caractères.',
+                'password.confirmed' => 'La confirmation du mot de passe ne correspond pas.',
+                'phone.required' => 'Le champ numéro de téléphone  est requis.',
+                'phone.regex' => 'Le format du numéro de téléphone est invalide.',
+                'gender.required' => 'Le champ sexe est requis.',
+                'birthdate.required' => 'La date de naissance est requise',
+                'birthdate.date' => 'Format de date non valide',
+                'birthdate.before' => 'La date de naissance doit être antérieure à aujourd\'hui',
+                'profession.alpha' => 'La profession doit être une chaîne de caractères.',
+                'address.required' => 'Le champ address est requis.',
+                'zip.required' => 'Le champ code postal est requis.',
+                'zip.regex' => 'Le code postal doit être au format 12345 ou 12345-1234.',
+                'city.required' => 'Le champ ville est requis.',
+                'city.alpha' => 'La ville doit être une chaîne de caractères.',
+                'country.required' => 'Le champ pays est requis.',
+                'licenceFFGYM.required' => 'Le champ licence FFGYM est requis.',
+                'licenceFFGYM.regex' => 'Le format de la licence FFGYM est invalide.',
+            ],
+        );
 
         $user->update($request->all());
 
@@ -631,7 +668,7 @@ public function enregister_appel_method_test($id , Request $request){
             $appels->id_cours = $id ;
             $appels->date     = $request->input('date_appel');
 
-            $thedate = $appels->date ;  
+            $thedate = $appels->date ;
 
     
            
@@ -675,50 +712,42 @@ public function enregister_appel_method_test($id , Request $request){
 
 */
 
-
     public function enregister_appel_method($id, Request $request)
     {
-
-
         $tab_presence2 = [];
         $tab_presence_final = [];
         $tab_presence3 = [];
-        $appels           = new appels;
+        $appels = new appels();
 
         $appels->id_cours = $id;
 
-        $thedate  = $request->input('date_appel');
+        $thedate = $request->input('date_appel');
         $appels->date = $thedate;
 
-        $tab_user = (array)$request->input('user_id');
-        $tab_presence =  (array)$request->input('marque_presence'); // informations venant des checkboxes
-
+        $tab_user = (array) $request->input('user_id');
+        $tab_presence = (array) $request->input('marque_presence'); // informations venant des checkboxes
 
         // Use array_keys() to extract only the keys of the array (on recupere les indices qui sont en fait les ID des users)
         $keys = array_keys($tab_presence);
 
-
         foreach ($tab_user as $user) {
-
             if (in_array($user, $keys)) {
-
                 // $tab_presence2[$user]  = 1 ;
-                $tab_presence2 = array(
-                    $user => 1
-                );
+                $tab_presence2 = [
+                    $user => 1,
+                ];
             } else {
-
                 //  $tab_presence2[$user]  = 0 ;
-                $tab_presence2 = array(
-                    $user => 0
-                );
+                $tab_presence2 = [
+                    $user => 0,
+                ];
             }
 
-            $tab_presence3[] =  $tab_presence2;
+            $tab_presence3[] = $tab_presence2;
             $tab_presence2 = [];
         }
 
-        $my_json  = json_encode($tab_presence3, JSON_NUMERIC_CHECK);
+        $my_json = json_encode($tab_presence3, JSON_NUMERIC_CHECK);
 
         $new_data = [];
 
@@ -735,17 +764,16 @@ public function enregister_appel_method_test($id , Request $request){
         // dd($appel_verif);
 
         if ($appel_verif->count() > 0) {
-            appels::where('id_cours', $id)->where('date', $thedate)->update(['presents' => $my_json]);
+            appels::where('id_cours', $id)
+                ->where('date', $thedate)
+                ->update(['presents' => $my_json]);
             return redirect()->route('index_cours')->with('success', " l'appel a été modifié  avec succès");
         } else {
-
             $appels->presents = $my_json;
 
             $appels->save();
             return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
         }
-
-
 
         /*$appel_verif = appels::where('id_cours', $id)->where('date',$thedate)->get();
 
@@ -760,24 +788,15 @@ public function enregister_appel_method_test($id , Request $request){
 
                 }else{
 
-                   // 
+                   //
                     return 0 ;
                    
                    // $appels->save() ;
                 }
                 */
 
-
-
-
-
-
-
-
         return redirect()->route('index_cours')->with('success', " l'appel a été effectué avec succès");
     }
-
-
 
     function display_historique_method($id)
     {
@@ -793,14 +812,10 @@ public function enregister_appel_method_test($id , Request $request){
             }
         }
 
-        $users = User::select("*")
-            ->whereIn('user_id', array_keys($attendance))
-            ->orderBy('name', 'ASC')
-            ->get();
+        $users = User::select('*')->whereIn('user_id', array_keys($attendance))->orderBy('name', 'ASC')->get();
 
         return view('club/historique_view', compact('id_cours', 'appel', 'users', 'attendance'))->with('user', auth()->user());
     }
-
 
     function StatsExports()
     {
@@ -819,7 +834,7 @@ public function enregister_appel_method_test($id , Request $request){
             'users.email' => 'Email',
             'users.nationality' => 'Nationalité',
             'users.family_id' => 'ID Famille',
-            'users.role' => 'Rôle'
+            'users.role' => 'Rôle',
         ];
 
         return view('club/stats_export', compact('saison_list', 'columns'));
@@ -828,14 +843,7 @@ public function enregister_appel_method_test($id , Request $request){
     public function exportCSV(Request $request)
     {
         $saison = $request->input('saison');
-        $members = DB::table('liaison_shop_articles_bills')
-            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-            ->where('shop_article.type_article', 0)
-            ->where('bills.status', '>', 9)
-            ->where('shop_article.saison', $saison)
-            ->select(DB::raw('DISTINCT liaison_shop_articles_bills.id_user'))
-            ->get();
+        $members = DB::table('liaison_shop_articles_bills')->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')->where('shop_article.type_article', 0)->where('bills.status', '>', 9)->where('shop_article.saison', $saison)->select(DB::raw('DISTINCT liaison_shop_articles_bills.id_user'))->get();
 
         $callback = function () use ($members, $saison) {
             $file = fopen('php://output', 'w');
@@ -859,22 +867,7 @@ public function enregister_appel_method_test($id , Request $request){
 
                     $group = $articles->isEmpty() ? ['Sans'] : $articles->pluck('title')->toArray();
 
-                    $row = [
-                        $member->id_user,
-                        $memberFromDb->lastname,
-                        $memberFromDb->name,
-                        $memberFromDb->gender,
-                        $memberFromDb->birthdate,
-                        $memberFromDb->nationality,
-                        $memberFromDb->address,
-                        $memberFromDb->zip,
-                        $memberFromDb->city,
-                        $memberFromDb->country,
-                        $medicalCertificateDate,
-                        $memberFromDb->email,
-                        $memberFromDb->phone,
-                        implode(",", $group)
-                    ];
+                    $row = [$member->id_user, $memberFromDb->lastname, $memberFromDb->name, $memberFromDb->gender, $memberFromDb->birthdate, $memberFromDb->nationality, $memberFromDb->address, $memberFromDb->zip, $memberFromDb->city, $memberFromDb->country, $medicalCertificateDate, $memberFromDb->email, $memberFromDb->phone, implode(',', $group)];
                     fputcsv($file, $row);
                 }
             }
@@ -921,13 +914,7 @@ public function enregister_appel_method_test($id , Request $request){
         }
 
         // Récupération des utilisateurs avec les colonnes sélectionnées
-        $users_saison_active = User::select($selectedColumns)
-            ->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')
-            ->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')
-            ->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')
-            ->where('shop_article.saison', $saison)
-            ->where('bills.status', '>', 9)
-            ->distinct();
+        $users_saison_active = User::select($selectedColumns)->join('liaison_shop_articles_bills', 'liaison_shop_articles_bills.id_user', '=', 'users.user_id')->join('shop_article', 'shop_article.id_shop_article', '=', 'liaison_shop_articles_bills.id_shop_article')->join('bills', 'bills.id', '=', 'liaison_shop_articles_bills.bill_id')->where('shop_article.saison', $saison)->where('bills.status', '>', 9)->distinct();
 
         // Appliquer 'orderBy' pour shop_article.title si cette colonne est sélectionnée
         if (in_array('shop_article.title', array_column($columns, 'sql'))) {
@@ -944,7 +931,7 @@ public function enregister_appel_method_test($id , Request $request){
         // Génération du fichier CSV en réponse
         $response = new StreamedResponse(function () use ($users_saison_active, $columnNames, $delimiter) {
             $handle = fopen('php://output', 'w');
-            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF)); // Ajout du BOM pour Excel
+            fprintf($handle, chr(0xef) . chr(0xbb) . chr(0xbf)); // Ajout du BOM pour Excel
             fputcsv($handle, $columnNames, $delimiter); // En-tête des colonnes
 
             // Remplissage des lignes avec les données des utilisateurs
@@ -1031,7 +1018,6 @@ public function enregister_appel_method_test($id , Request $request){
             ]);
         }
 
-
         return redirect()->back()->with('error', 'Declinaison non trouvé');
     }
 
@@ -1047,12 +1033,11 @@ public function enregister_appel_method_test($id , Request $request){
         $shopArticle = Shop_article::find($request->shop_article_id);
         $shopArticle->updateInitialStock();
 
-
         return response()->json([
             'success' => true,
             'libelle' => $declinaison->libelle,
             'Id' => $declinaison->id,
-            'deleteRoute' => route('delete.declinaison', $declinaison->id)
+            'deleteRoute' => route('delete.declinaison', $declinaison->id),
         ]);
     }
 
@@ -1061,5 +1046,61 @@ public function enregister_appel_method_test($id , Request $request){
         $certificatesToValidate = MedicalCertificates::where('validated', 0)->get();
 
         return view('club/certificatesValidation', compact('certificatesToValidate'));
+    }
+
+    public function certifications_niveaux($id)
+    {
+        $cours = Shop_article::with('users_cours')->find($id);
+        $niveaux = Levels::orderBy('id')->get();
+        $disciplines = Disciplines::orderBy('id')->get();
+
+        return view('club/certificationsNiveaux', compact('cours', 'niveaux', 'disciplines'));
+    }
+
+    public function certifications_niveaux_backend(Request $request, $id)
+    {
+        $niveau = $request->input('niveau');
+        $disciplines = $request->input('disciplines');
+        $utilisateurs = $request->input('users');
+        $points = $request->input('points');
+        $delete = $request->input('delete');
+
+        if (empty($utilisateurs)) {
+            $utilisateurs = $delete;
+        }
+
+        foreach ($utilisateurs as $index => $userId) {
+            foreach ($disciplines as $disciplineIndex => $disciplineId) {
+                // Vérifie si l'enregistrement existe déjà
+                $existingRecord = UsersLevels::where('user_id', $userId)
+                    ->where('discipline_id', $disciplineId)
+                    ->where('level_id', $niveau)
+                    ->first();
+
+                if ($existingRecord) {
+                    if (isset($delete[$index]) && $delete[$index]) {
+                        $existingRecord->delete();
+                        continue;
+                    }
+
+                    // Mise à jour de l'enregistrement existant
+                    $existingRecord->update([
+                        'points' => $points[$index],
+                        'updated_by' => auth()->id(),
+                    ]);
+                } else {
+                    // Création d'un nouvel enregistrement
+                    UsersLevels::create([
+                        'user_id' => $userId,
+                        'discipline_id' => $disciplineId,
+                        'level_id' => $niveau,
+                        'points' => $points[$index],
+                        'created_by' => auth()->id(),
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('certifications_niveaux', ['id' => $id])->with('success', 'Les niveaux ont été mis à jour avec succès.');
     }
 }

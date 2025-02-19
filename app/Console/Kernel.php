@@ -5,6 +5,8 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use App\Jobs\ClickAsso;
+use App\Jobs\SyncWithClickAssoJob;
+use App\Jobs\GenerateBirthdaysImageJob;
 
 class Kernel extends ConsoleKernel
 {
@@ -19,11 +21,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('process:email-queue')->everyMinute();
         $schedule->job(new ClickAsso)->dailyAt('00:00');
         $schedule->command('bills:transfer')->dailyAt('00:00');
-        $schedule->job(new \App\Jobs\SyncWithClickAssoJob)->dailyAt('00:00');
+        $schedule->job(new SyncWithClickAssoJob)->dailyAt('00:00');
         $schedule->command('baskets:delete-daily')->dailyAt('00:00');
         $schedule->command('bills:delete-old-unpaid')->everyFiveMinutes();
+        $schedule->job(new GenerateBirthdaysImageJob)->dailyAt('00:00');;
     }
-    
+
 
     /**
      * Register the commands for the application.
@@ -32,9 +35,8 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
-    
 }

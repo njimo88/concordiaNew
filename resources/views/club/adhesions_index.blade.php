@@ -35,40 +35,17 @@
         </div>
 
         <div class="d-grid gap-4">
-            @foreach ($shop_article_first as $data)
+            @foreach ($adhesions as $data)
                 <div class="input-container">
                     <img class="px-2" style="height: 30px;" src="{{ asset('assets/images/logo-admin-list.png') }}"
                         alt="Logo" onclick="generatePDF({{ $data->id_shop_article }})">
-                    <input readonly onclick="toggleElement('{{ $data->id_shop_article }}')" class="btn m-0 session_title"
+                    <input readonly onclick="toggleElement('{{ $data->id_shop_article }}')" class="btn m-0"
                         style="font-weight: bold; text-align: left;"
                         value="{{ $data->title }} ({{ $data->totalBillsCount() }} / {{ $data->stock_ini }})">
-                    <a href="{{ route('certifications_niveaux', ['id' => $data->id_shop_article]) }}" target="_blank"
-                        class="btn btn-danger m-2" style="font-size: 14px"><i class="fas fa-graduation-cap"></i></a>
                 </div>
 
                 <div id="my-element-{{ $data->id_shop_article }}" style="display: none;">
                     <div id="content">
-                        <div class="row">
-                            <div class="col-4">
-                                <form action="{{ route('enregistrer_appel', ['id' => $data->id_shop_article]) }}"
-                                    method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-success">Valider l'appel</button>
-                                </form>
-                            </div>
-                            <div class="col-4">
-                                <input type="date" class="form-control m-0" name="date_appel"
-                                    value="{{ date('Y-m-d') }}">
-                            </div>
-                            <div class="col-4 d-flex justify-content-center">
-                                <button type="button" class="btn btn-secondary">
-                                    <a href="{{ route('historique_appel', $data->id_shop_article) }}">Historique des
-                                        appels</a>
-                                </button>
-                            </div>
-                        </div>
-                        <br>
-
                         <table class="table table-hover" style="color:black">
                             <tbody>
                                 @foreach ($data->users_cours as $dt)
@@ -76,20 +53,9 @@
                                         <tr
                                             style="background-color: {{ $dt->row_color == 'none' ? 'lime' : $dt->row_color }};">
                                             <td>
-                                                <div class="form-check">
-                                                    <input name="user_id[]" value="{{ $dt->user_id }}" hidden>
-                                                    <input class="form-check-input" type="checkbox"
-                                                        name="marque_presence[{{ $dt->user_id }}]" value="1"
-                                                        id="myCheckbox">
-                                                    <label class="form-check-label" for="flexCheckDefault"
-                                                        style="color:black">
-                                                        {{ $dt->name }} {{ $dt->lastname }}
-                                                        @if (\Carbon\Carbon::parse($dt->birthdate)->isBirthday())
-                                                            <i class="fa fa-birthday-cake"></i>
-                                                        @endif
-                                                    </label>
-
-                                                </div>
+                                                <label class="form-check-label" style="color:black">
+                                                    {{ $dt->name }} {{ $dt->lastname }}
+                                                </label>
                                             </td>
                                             @if (Auth::user()->role >= 90)
                                                 <td>

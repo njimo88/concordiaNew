@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,12 +31,20 @@ class old_bills extends Model
     // Relationships
     public function getImageAttribute()
     {
-        return $this->paymentMethod->icon; 
+        if ($this->paymentMethod && $this->paymentMethod->icon) {
+            return $this->paymentMethod->icon;
+        }
+
+        return BillPaymentMethod::where('id', 1)->value('image');
     }
 
     public function getImageStatusAttribute()
     {
-        return $this->Billstat->image_status;
+        if ($this->Billstat && $this->Billstat->image_status) {
+            return $this->Billstat->image_status;
+        }
+
+        return BillStatus::where('id', 100)->value('image_status');
     }
 
     public function Billstat()

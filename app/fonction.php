@@ -17,6 +17,7 @@ use App\Models\UserReductionUsage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Config;
+use Intervention\Image\ImageManagerStatic as Image;
 use App\Mail\SendMail;
 use App\Models\ShopReduction;
 use App\Models\LiaisonShopArticlesShopReductions;
@@ -703,6 +704,8 @@ function getUsersBirthdayToday()
         ->whereIn('shop_article.saison', [$saison, $saison - 1]) // saison courante ou précédente
         ->where('shop_article.type_article', '=', 0) // Type article 0 = article de saison
         ->select('users.*')->orderBy('users.birthdate', 'desc')
+        ->orderBy('users.name')
+        ->orderBy('users.lastname')
         ->distinct()
         ->get();
 
@@ -721,130 +724,120 @@ function getUsersBirthdayToday()
 }
 
 
-use Intervention\Image\ImageManagerStatic as Image;
-
-
 function printUsersBirthdayOnImage()
 {
     $users = getUsersBirthdayToday();
-    $image = Image::make(public_path('assets/images/birthday.jpg'));
+    $image = Image::make(public_path('assets/images/birthdays-template.png'));
 
-    setlocale(LC_TIME, 'fr_FR.utf8');
+    // Définition des jours et mois en français
+    $daysOfWeek = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+    $months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
 
-    // Ajout du texte souhaité au centre de l'image
-    $daysOfWeek = array('dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi');
-    $months = array('janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre');
+    // Récupération de la date actuelle
+    $now = Carbon::today();
+    $currentDayOfWeek = $daysOfWeek[$now->dayOfWeek];
+    $currentMonth = $months[$now->month - 1];
 
-    $currentDayOfWeek = $daysOfWeek[strftime('%u') % 7];
-    $currentMonth = $months[strftime('%m') - 1 % 12];
-    $message = "MERCREPi 19 PECEMBRE 2023";
+    // Construction du message avec la date correcte
+    $message = mb_strtoupper($currentDayOfWeek) . " " . $now->day . " " . mb_strtoupper($currentMonth) . " " . $now->year;
 
-    // Ajout du deuxième message
-    $message = $currentDayOfWeek . " " . strftime("%e") . " " . $currentMonth . " " . strftime("%Y");
+    // Message d'anniversaire
+    $annivMessage = "Nous souhaitons un joyeux anniversaire à :";
 
-    // Ajout du deuxième message
-    $annivMessage = "Nous Souhaitons un joyeux anniversaire";
+    $startX = 50;
+    $endX = 2350;
 
-
-    $startX = 380;
-    $endX = 623;
-
-    // Calculate the width of the message
-    $bbox = imagettfbbox(13, 0, public_path('fonts/Kraash Black.ttf'), $message);
+    // Calcul de la largeur du message
+    $bbox = imagettfbbox(53, 0, public_path('fonts/Grilcbto.ttf'), $message);
     $messageWidth = abs($bbox[4] - $bbox[0]);
 
-    // Calculate the x-position to center the text
+    // Position centrée du texte
     $textX = ($startX + $endX - $messageWidth) / 2;
 
-    // Add the text to the image
-    $image->text($message, $textX, 86, function ($font) {
-        $font->file(public_path('fonts/Kraash Black.ttf'));
-        $font->size(13);
+    // Ajout du message sur l'image
+    $image->text($message, $textX, 155, function ($font) {
+        $font->file(public_path('fonts/Grilcbto.ttf'));
+        $font->size(53);
         $font->color('#000000');
         $font->align('left');
-        $font->valign('top');
+        $font->valign('center');
     });
-    $startX = 350;
-    // Calculez la largeur du message d'anniversaire
-    $annivBbox = imagettfbbox(7.5, 0, public_path('fonts/Kraash Black.ttf'), $annivMessage);
+
+    $startX = 115;
+
+    // Calcul de la largeur du message d'anniversaire
+    $annivBbox = imagettfbbox(40, 0, public_path('fonts/Grilcbto.ttf'), $annivMessage);
     $annivMessageWidth = abs($annivBbox[4] - $annivBbox[0]);
 
-    // Calculez la position x pour centrer le texte d'anniversaire
+    // Position centrée du texte d'anniversaire
     $annivTextX = ($startX + $endX - $annivMessageWidth) / 2;
 
-    // Ajoutez le texte d'anniversaire à l'image
-    $image->text($annivMessage, $annivTextX, 110, function ($font) {
-        $font->file(public_path('fonts/Kraash Black.ttf'));
-        $font->size(7);
+    // Ajout du texte d'anniversaire sur l'image
+    $image->text($annivMessage, $annivTextX, 300, function ($font) {
+        $font->file(public_path('fonts/Grilcbto.ttf'));
+        $font->size(40);
         $font->color('#000000');
         $font->align('left');
         $font->valign('top');
     });
 
+    // Initialisation des variables
+    $y = 500; // Position Y de départ
+    $column_count = 0; // Nombre de colonnes
+    $line_count = 0; // Nombre de lignes dans une colonne
 
+    // Largeur totale de l'image
+    $imageWidth = $image->width();
 
+    // Largeur d'une colonne (diviser l'image en 3 parties pour gérer plusieurs colonnes)
+    $columnWidth = $imageWidth / 3;
 
+    // Position X de départ (première colonne à gauche)
+    $startX = $columnWidth / 5;
 
-    $y = 150;
-    $line_count = 0;
-    $user_index = 0;
+    // Début du texte dans la première colonne
+    $x = $startX;
 
     foreach ($users as $index => $user) {
+        $firstname = mb_strtoupper($user->name);
+        $lastname = ucfirst(mb_strtolower($user->lastname));
+
+        // Calcul de l'âge
         $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
-        $text = $user->lastname . ' ' . $user->name . ' (' . $age . ' ans)';
+        $text = $lastname . ' ' . $firstname . ' (' . $age . ' ans)';
 
-        if ($user_index == 0) {
-            $x = $image->width() / 2.7;
-        } else {
-            $x = ($line_count % 2 == 0) ? $image->width() / 6.8 : $image->width() / 1.7;
-        }
-
+        // Ajouter le texte à l'image
         $image->text($text, $x, $y, function ($font) {
             $font->file(public_path('fonts/Grilcbto.ttf'));
-            $font->size(17);
+            $font->size(30);
             $font->color('#000000');
             $font->align('left');
             $font->valign('top');
         });
-        if ($user_index == 0) {
-            $y += 22;
-        }
-        if ($user_index > 0) {
-            $line_count++;
-        }
 
-        if ($line_count % 2 == 0 && $user_index > 0) {
-            if ($user_index == 1) {
-                $y += 40; // Increase the gap after the first user
-            } else {
-                $y += 22;
-            }
-        }
+        // Incrémenter la position en Y pour la prochaine ligne
+        $y += 40;
+        $line_count++;
 
-        $user_index++;
+        // Vérifier si on a atteint 5 lignes dans une colonne
+        if ($line_count == 4) {
+            $line_count = 0; // Réinitialiser le compteur de lignes
+            $column_count++; // Passer à la colonne suivante
+
+            // Mettre à jour X pour la nouvelle colonne
+            $x = $startX + ($column_count * $columnWidth);
+
+            // Réinitialiser Y pour commencer en haut dans la nouvelle colonne
+            $y = 500;
+        }
     }
 
-
-    // Récupérer la date d'hier
-    $date = new DateTime();
-    $date->modify('-1 day');
-    $dateString = $date->format('Y-m-d');
-
-    // Supprimer l'image de la journée précédente si elle existe
-    $previousFilename = $dateString . '-birthday.jpg';
-    if (file_exists(public_path('assets/images/' . $previousFilename))) {
-        unlink(public_path('assets/images/' . $previousFilename));
-    }
-
-
-    // Sauvegarde de l'image modifiée
-    $date = new DateTime();
-    $dateString = $date->format('Y-m-d');
-    $filename = $dateString . "-birthday.jpg";
+    // Sauvegarde de la nouvelle image
+    $filename = "birthdays.jpg";
     $image->encode('png', 100);
-
-    $image->save(public_path('assets/images/' . $filename));
+    $image->save(public_path('uploads/slider/' . $filename));
 }
+
 
 
 function updateTotalCharges($bill_id)

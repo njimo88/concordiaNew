@@ -26,12 +26,20 @@ class bills extends Model
     ];
     public function getImageAttribute()
     {
-        return  $this->paymentMethod->icon; 
+        if ($this->paymentMethod && $this->paymentMethod->icon) {
+            return $this->paymentMethod->icon;
+        }
+
+        return BillPaymentMethod::where('id', 1)->value('image');
     }
 
     public function getImageStatusAttribute()
     {
-        return $this->Billstat->image_status;
+        if ($this->Billstat && $this->Billstat->image_status) {
+            return $this->Billstat->image_status;
+        }
+
+        return BillStatus::where('id', 100)->value('image_status');
     }
 
 
@@ -56,6 +64,8 @@ class bills extends Model
         return $this->hasMany(AdditionalCharge::class, 'bill_id');
     }
 
-    
+    public function liaisonShopArticle()
+    {
+        return $this->hasMany(LiaisonShopArticlesBill::class, 'bill_id');
+    }
 }
- 

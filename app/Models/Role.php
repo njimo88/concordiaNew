@@ -50,7 +50,9 @@ class Role extends Model
         'estAutoriserDeVoirFichiers',
         'estAutoriserDeVoirMessageMaintenance',
         'estAutoriserDeVoirModeStrict',
-        'estAutoriserDeVoirParametrage'
+        'estAutoriserDeVoirParametrage',
+        'estAutoriserDeVoirProduitsClub',
+        'estAutoriserDeVoirAdhesionsClub'
     ];
 
     public function users()

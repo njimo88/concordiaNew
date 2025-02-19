@@ -377,7 +377,6 @@ class n_AdminController extends Controller
             'licenceFFGYM' => ['nullable', 'regex:/^\d{5}\.\d{3}\.\d{5}$/'],
 
         ], $messages = [
-            'username.required' => "Le champ nom d'utilisateur est requis.",
             'username.max' => "Le nom d'utilisateur ne doit pas dépasser 255 caractères.",
             'name.required' => "Le champ nom est requis.",
             'name.alpha' => "Le nom doit être une chaîne de caractères.",
