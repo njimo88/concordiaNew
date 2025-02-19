@@ -434,6 +434,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/club/adhesions_index', [Controller_club::class, 'index_adhesions'])->name('index_adhesions');
 
     Route::get('/club/certifications-niveaux/{id}', [Controller_club::class, 'certifications_niveaux'])->name('certifications_niveaux');
+    Route::post('/club/getUserCertifications', [Controller_club::class, 'get_user_certifications'])->name('getUserCertifications');
     Route::post('/club/certifications-niveaux/{id}', [Controller_club::class, 'certifications_niveaux_backend'])->name('certifications_niveaux_backend');
 
     Route::get('/generate-pdf/{id}', [Controller_club::class, 'generatePdf'])->name('generate.pdf');

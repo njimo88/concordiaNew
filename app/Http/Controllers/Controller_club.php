@@ -1057,10 +1057,26 @@ public function enregister_appel_method_test($id , Request $request){
         return view('club/certificationsNiveaux', compact('cours', 'niveaux', 'disciplines'));
     }
 
+    public function get_user_certifications(Request $request)
+    {
+        $user = User::with('certifications')
+            ->with('certifications.creator')
+            ->with('certifications.updater')
+            ->with('certifications.discipline')
+            ->with('certifications.level')
+            ->find($request->input('user_id'));
+
+        $html = view('club.modalContentCertificationsUser', compact('user'))->render();
+
+        return response()->json(['html' => $html, 'title' => "Certifications - " . $user->lastname . " " . $user->name]);
+    }
+
+
     public function certifications_niveaux_backend(Request $request, $id)
     {
         $niveau = $request->input('niveau');
         $disciplines = $request->input('disciplines');
+        $date = $request->input('date');
         $utilisateurs = $request->input('users');
         $points = $request->input('points');
         $delete = $request->input('delete');
@@ -1085,6 +1101,7 @@ public function enregister_appel_method_test($id , Request $request){
 
                     // Mise à jour de l'enregistrement existant
                     $existingRecord->update([
+                        'exam_date' => $date,
                         'points' => $points[$index],
                         'updated_by' => auth()->id(),
                     ]);
@@ -1094,6 +1111,7 @@ public function enregister_appel_method_test($id , Request $request){
                         'user_id' => $userId,
                         'discipline_id' => $disciplineId,
                         'level_id' => $niveau,
+                        'exam_date' => $date,
                         'points' => $points[$index],
                         'created_by' => auth()->id(),
                     ]);
