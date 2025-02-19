@@ -7,7 +7,7 @@
         
 
         <!-- Button to Open the Modal -->
-<button   onclick="timeRefreching()" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+<button  onclick="timeRefreching()"  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
   <i class="fas fa-calendar-check"></i> Mes Reservations 
   </button>
 
@@ -35,8 +35,8 @@
                       data-reservation-time="{{$item->reservation_date}}" 
                       data-seat-number="{{ $item->id_seat }}">
                       <h5>
-                          <span class="text-secondary">Siege io: {{ $item->seat->seat_number }} </span>
-                          <span class="text-danger timer"></span>
+                          <span class="text-secondary">Siege : {{ $item->seat->seat_number }} </span>
+                          <span class="text-danger timer"> </span>
                       </h5>
                       
                   </div>
@@ -211,10 +211,11 @@ function timeRefreching() {
     //error
     
     const seatTimers = document.querySelectorAll('.seat-timer');
-    const countdownDuration = 10 * 60 * 1000; // 10 minutes in milliseconds
+    const countdownDuration = 2 * 60 * 1000; // 10 minutes in milliseconds
 
     seatTimers.forEach(timerDiv => {
         const reservationTime = new Date(timerDiv.getAttribute('data-reservation-time'));
+        console.log(reservationTime);
         const seatNumber = timerDiv.getAttribute('data-seat-number');
         const timerSpan = timerDiv.querySelector('.timer');
         var div = document.getElementById("dom-target");
@@ -225,6 +226,7 @@ function timeRefreching() {
             var div = document.getElementById("dom-target");
             var myData = div.textContent;
             const now = new Date();
+            //console.log(now);
             
             const elapsedTime = now - reservationTime; // Time elapsed since reservation
             const remainingTime = countdownDuration - elapsedTime;
@@ -241,7 +243,8 @@ function timeRefreching() {
 
         // Adjust for timezone difference (if needed)
         const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000; // Local offset in milliseconds
-        reservationTime.setTime(reservationTime.getTime() - timezoneOffset);
+        //reservationTime.setTime(reservationTime.getTime() - timezoneOffset); this for avoiding timezone gap so add -timezoneOffset
+        reservationTime.setTime(reservationTime.getTime() );
 
         // Start the countdown
         updateTimer();
@@ -272,7 +275,7 @@ sessionStorage.clear(); // Clears session-based storage
                 
                 if(button.classList.contains('reservedpending')){ //if seat is reserved by the current user 
                     const confirmAction = confirm("Voulez-vous vraiment laisser ce siège?");
-                    timeRefreching();
+                   
                     if (!confirmAction) {
                     //block the event if the user click No 
                     event.preventDefault();
@@ -306,7 +309,7 @@ const closeButton = document.getElementById('closeAlert');
 
 // Function to hide the overlay
 function hideOverlay() {
-  timeRefreching();
+ 
 const overlay = document.getElementById('overlay');
 overlay.style.display = 'none';
 }
