@@ -44,10 +44,16 @@
     
             
         </div>
-  
+        @php
+            $payer =$Myresevation->count();
+        @endphp
         <!-- Modal footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          @if ($payer>0)
+          <a href="{{ route('spectacles.showFormSpect', ['nombre_virment' => 1, 'total' => $payer ]) }}" target="_blank" class="card-link"> <button type="button" class="btn btn-success" > payer {{$payer}}.00 €</button> </a>
+              
+          @endif
         </div>
   
       </div>
@@ -184,6 +190,11 @@
         
 
     </div>
+    <div id="dom-target" style="">
+        <?php
+           now();
+        ?>
+    </div>
     
 <br>
 
@@ -206,9 +217,15 @@ function timeRefreching() {
         const reservationTime = new Date(timerDiv.getAttribute('data-reservation-time'));
         const seatNumber = timerDiv.getAttribute('data-seat-number');
         const timerSpan = timerDiv.querySelector('.timer');
+        var div = document.getElementById("dom-target");
+        var myData = div.textContent;
+        //alert(myData);
 
         function updateTimer() {
+            var div = document.getElementById("dom-target");
+            var myData = div.textContent;
             const now = new Date();
+            
             const elapsedTime = now - reservationTime; // Time elapsed since reservation
             const remainingTime = countdownDuration - elapsedTime;
 

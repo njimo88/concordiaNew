@@ -580,6 +580,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/spectacles/{spectacle}/edit', [\App\Http\Controllers\SpectacleController::class, 'edit'])->name('spectacles.edit');
     Route::put('/spectacles/{spectacle}/update', [\App\Http\Controllers\SpectacleController::class, 'update'])->name('spectacles.update');
     Route::delete('/spectacles/{spectacle}', [\App\Http\Controllers\SpectacleController::class, 'destroy'])->name('spectacles.destroy');
+    Route::get('/spectacles/payment', [\App\Http\Controllers\SpectacleController::class, 'showFormSpect'])->name('spectacles.showFormSpect');
+    Route::get('/spectacles/detail_paiement/{id}', [App\Http\Controllers\SpectacleController::class, 'detail_paiement'])->name('spectacle.detail_paiement');
 
     Route::get('/spectacles/seats/{id}', [\App\Http\Controllers\SpectacleController::class, 'seats'])->name('spectacles.seats');
 });
