@@ -786,7 +786,14 @@ class TraitementSupp extends Controller
             ->where('status', '=', 'Publié')
             ->paginate(5);
 
-        $n_users = User::where('family_id', Auth::user()->family_id)->orderBy('family_level', 'desc')->get();
+        $n_users = User::with(['adhesions' => function ($query) {
+            $query->orderBy('saison', 'desc')->orderBy('shop_article.title', 'asc');
+        }])
+            ->with(relations: ['familyParents'])
+            ->where('family_id', Auth::user()->family_id)
+            ->orderBy('family_level', 'desc')
+            ->get();
+
         if (is_null($n_users)) {
             return view('mafamille', compact('posts'))->with('user', auth()->user());
         } else {
