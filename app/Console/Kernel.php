@@ -24,7 +24,9 @@ class Kernel extends ConsoleKernel
         $schedule->job(new SyncWithClickAssoJob)->dailyAt('00:00');
         $schedule->command('baskets:delete-daily')->dailyAt('00:00');
         $schedule->command('bills:delete-old-unpaid')->everyFiveMinutes();
-        $schedule->job(new GenerateBirthdaysImageJob)->dailyAt('00:00');;
+        $schedule->call(function () {
+            (new GenerateBirthdaysImageJob())->handle();
+        })->dailyAt('00:00');
     }
 
 

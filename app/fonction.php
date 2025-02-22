@@ -835,7 +835,9 @@ function printUsersBirthdayOnImage()
     // Sauvegarde de la nouvelle image
     $filename = "birthdays.jpg";
     $image->encode('png', 100);
-    $image->save(public_path('uploads/slider/' . $filename));
+    $image->save(public_path('uploads/Slider/' . $filename));
+
+    chmod(public_path('uploads/Slider/' . $filename), 0755);
 }
 
 

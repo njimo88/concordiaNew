@@ -54,7 +54,6 @@
                                     method="POST">
                                     @csrf
                                     <button type="submit" class="btn btn-success">Valider l'appel</button>
-                                </form>
                             </div>
                             <div class="col-4">
                                 <input type="date" class="form-control m-0" name="date_appel"
@@ -122,6 +121,7 @@
                                         </tr>
                                     @endforeach
                                 @endforeach
+                                </form>
                             </tbody>
                         </table>
                     </div>
