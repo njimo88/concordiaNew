@@ -243,8 +243,8 @@ function timeRefreching() {
 
         // Adjust for timezone difference (if needed)
         const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000; // Local offset in milliseconds
-        //reservationTime.setTime(reservationTime.getTime() - timezoneOffset); this for avoiding timezone gap so add -timezoneOffset
-        reservationTime.setTime(reservationTime.getTime() );
+        //reservationTime.setTime(reservationTime.getTime() - timezoneOffset); this for avoiding timezone offset so add -timezoneOffset
+        reservationTime.setTime(reservationTime.getTime() - timezoneOffset);
 
         // Start the countdown
         updateTimer();

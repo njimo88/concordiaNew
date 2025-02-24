@@ -26,10 +26,10 @@ use App\Models\bills;
 use Illuminate\Support\Facades\Mail;
 use App\Models\liaison_shop_articles_bills;
 use App\Models\Reservation;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\PaymentReceipt;
 
 require_once(app_path() . '/fonction.php');
-
-
 
 class SpectacleController  extends Controller
 {
@@ -146,21 +146,27 @@ class SpectacleController  extends Controller
     public function detail_paiement($id)
     {
         $bill = bills::where('id', $id)->first();
+
         if ($bill) {
             $bill->status = 100;
             $bill->save();
+            // Send the email
+
+
+            Mail::to(auth()->user()->email)->send(new PaymentReceipt($bill));
+
+        }else {
+            return redirect()->back()->with('error', 'Bill not found');
         }
+
         $payment = DB::table('bills_payment_method')->where('id', '=', 1)->first()->payment_method;
-
         $total = $bill->payment_total_amount;
-
         $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
-
         $nombre_cheques = $bill->number;
-
-        $nb_paiment=$nb_paiment = [$total];
+        $nb_paiment = [$total];
 
         return view('users.detail_paiement', compact('total', 'payment', 'nb_paiment', 'bill', 'text'))->with('user', auth()->user());
+        
     }
 
     public function showFormSpect()
