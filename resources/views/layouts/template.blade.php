@@ -883,7 +883,8 @@
             @if (auth()->user()->roles->estAutoriserDeVoirGestionDesDroits ||
                     auth()->user()->roles->estAutoriserDeVoirParametresGeneraux ||
                     auth()->user()->roles->estAutoriserDeVoirSalles ||
-                    auth()->user()->roles->estAutoriserDeVoirMessageGeneral)
+                    auth()->user()->roles->estAutoriserDeVoirMessageGeneral ||
+                    auth()->user()->roles->estAutoriserDeditCarroussel)
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#para-nav" data-bs-toggle="collapse"
                         href="#"><span style="color: #f5f503; margin-right:10px"
@@ -916,6 +917,12 @@
                         @if (auth()->user()->roles->estAutoriserDeVoirMessageMaintenance)
                             <li> <a href="{{ route('message.maintenance.see') }}"><i style="color: #f5f503;"
                                         class="fa-regular fa-message"></i></span><span>Message de maintenance</span>
+                                </a></li>
+                        @endif
+                        @if (auth()->user()->roles->estAutoriserDeditCarroussel)
+                            <li> <a href="{{ route('carroussel.edit') }}">
+                                    <i style="color: #f5f503;" class="fa-regular fa-edit"></i>
+                                    <span>Modifier carroussel</span>
                                 </a></li>
                         @endif
                     </ul>

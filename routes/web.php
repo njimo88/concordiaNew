@@ -217,6 +217,10 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/admin/message-maintenance', [n_AdminController::class, 'seeMessageMaintenance'])->name('message.maintenance.see');
     Route::post('/admin/message-maintenance', [n_AdminController::class, 'editMessageMaintenance'])->name(name: 'message.maintenance.edit');
     Route::get('/admin/modifier-carroussel', [n_AdminController::class, 'editCarroussel'])->name('carroussel.edit');
+    Route::post('/admin/update-carousel', [n_AdminController::class, 'updateCarroussel'])->name('carroussel.update');
+    Route::post('/admin/add-carousel', [n_AdminController::class, 'addCarroussel'])->name('carroussel.add');
+    Route::post('/admin/delete-carousel/{id}', [n_AdminController::class, 'deleteCarroussel'])->name('carroussel.delete');
+    Route::get('/admin/edit-image', [n_AdminController::class, 'editImage'])->name('edit.image');
 
     /*---------------------- Sécuriser le browsing du serveur */
     Route::get('/admin/server-browser', [ServerBrowserController::class, 'index'])->name('server.browser');

@@ -18,7 +18,8 @@ class CreateCarouselsTable extends Migration
             $table->string('image_link'); // Lien de l'image
             $table->string('click_link')->nullable(); // Lien de redirection (nullable)
             $table->boolean('active')->default(1); // Statut actif ou non
-            $table->int('order')->default(0); // Position de l'image dans le carousel
+            $table->boolean('locked')->default(0); // Désactiver l'édition
+            $table->int('image_order')->default(0); // Position de l'image dans le carousel
             $table->timestamps(); // Created_at et updated_at
         });
     }

@@ -17,7 +17,8 @@ class Carousel extends Model
         'image_link',
         'click_link',
         'active',
-        'order',
+        'locked',
+        'image_order',
     ];
 
     // Optionnel : si tu veux gérer la création automatique des champs `created_at` et `updated_at`, tu n'as pas besoin de le spécifier.

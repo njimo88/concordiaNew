@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\A_Blog_Post;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\SystemSetting;
@@ -891,9 +892,177 @@ class n_AdminController extends Controller
 
     public function editCarroussel()
     {
-        $carouselImages = Carousel::where('active', '=', '1')
+        $carouselImages = Carousel::where('locked', '=', '0')
+            ->orderBy("image_order", "ASC")
             ->get();
 
-        return view('admin.edit-carroussel', compact('carouselImages'));
+        $blogArticles = A_Blog_Post::orderBy('date_post', 'DESC')->get();
+
+        return view('admin.edit-carroussel', compact('carouselImages', 'blogArticles'));
+    }
+
+    public function updateCarroussel(Request $request)
+    {
+        $request->merge([
+            'ordered_ids' => is_string($request->input('ordered_ids'))
+                ? json_decode($request->input('ordered_ids'), true)
+                : $request->input('ordered_ids'),
+        ]);
+
+        // Validation des données
+        $validatedData = $request->validate([
+            'ordered_ids' => 'nullable|array',
+            'ordered_ids.*' => 'nullable|exists:carousel,id',
+            'images' => 'nullable|array',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'links' => 'nullable|array',
+            'links.*' => 'nullable|string',
+            'actives' => 'nullable|array',
+            'actives.*' => 'nullable|integer',
+        ]);
+
+
+        // Mise à jour de l'ordre des images
+        if (!empty($request->ordered_ids)) {
+            foreach ($request->ordered_ids as $index => $id) {
+                $image = Carousel::find($id);
+                if ($image) {
+                    $position = $index + 1;
+                    if (Carousel::where('image_order', '=', $position)) {
+                        $position += 1;
+                    }
+
+                    $image->image_order = $position;
+                    $image->save();
+                }
+            }
+        }
+
+        // Mise à jour des images
+        if (!empty($request->images)) {
+            foreach ($request->images as $id => $imageFile) {
+                $image = Carousel::find($id);
+                if ($image && $imageFile) {
+                    // Vérifie si le dossier existe, sinon crée-le
+                    $directory = public_path('uploads/Slider');
+                    if (!file_exists($directory)) {
+                        mkdir($directory, 0775, true); // Crée le dossier si nécessaire
+                    }
+
+                    // Utilise l'ID comme nom de fichier et déplace l'image dans le dossier public/uploads/Slider
+                    $fileName = $id . '.' . $imageFile->getClientOriginalExtension();
+                    $path = $directory . '/' . $fileName;
+
+                    // Déplace le fichier
+                    $imageFile->move($directory, $fileName);
+
+                    // Met à jour le lien de l'image dans la base de données
+                    $image->image_link = 'uploads/Slider/' . $fileName;
+                    $image->save();
+                }
+            }
+        }
+
+        // Mise à jour des liens
+        if (!empty($request->links)) {
+            foreach ($request->links as $id => $link) {
+                $image = Carousel::find($id);
+                if ($image) {
+                    $image->click_link = $link ? parse_url(route('blog', ['id' => $link]), PHP_URL_PATH) : '#';
+                    $image->save();
+                }
+            }
+        }
+
+        // Mise à jour des status "active"
+        if (!empty($request->actives)) {
+            foreach ($request->actives as $id => $active) {
+                $image = Carousel::find($id);
+                if ($image) {
+                    $image->active = $active;
+                    $image->save();
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', 'Le carrousel a été mis à jour avec succès.');
+    }
+
+
+    public function addCarroussel(Request $request)
+    {
+        // Validation des données
+        $validatedData = $request->validate([
+            'new_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'new_click_link' => 'string',
+        ]);
+
+        // Récupérer le fichier de l'image
+        $imageFile = $request->file('new_image');
+
+        // Dossier de destination pour les images
+        $directory = public_path('uploads/Slider');
+        if (!file_exists($directory)) {
+            mkdir($directory, 0775, true); // Crée le dossier si nécessaire
+        }
+
+        $clickLink = $request->new_click_link;
+
+        // Créer un nouvel enregistrement pour l'image dans la base de données
+        $image = new Carousel();
+        $image->image_link = 'temp';
+        $image->click_link = $clickLink ? parse_url(route('blog', ['id' => $clickLink]), PHP_URL_PATH) : '#';
+        $image->image_order = Carousel::count() + 1;
+        $image->save(); // Sauvegarder pour obtenir l'ID généré
+
+        // Utiliser l'ID de l'image comme nom de fichier
+        $fileName = $image->id . '.' . $imageFile->getClientOriginalExtension();
+        $path = $directory . '/' . $fileName;
+
+        // Déplacer l'image dans le dossier public/uploads/Slider
+        $imageFile->move($directory, $fileName);
+
+        // Mettre à jour le lien de l'image dans la base de données
+        $image->image_link = 'uploads/Slider/' . $fileName;
+        $image->save();
+
+        return redirect()->back()->with('success', 'Le carrousel a été mis à jour avec succès.');
+    }
+
+
+    public function deleteCarroussel($id)
+    {
+        // Trouver l'élément du carrousel par ID
+        $carouselItem = Carousel::find($id);
+
+        if ($carouselItem) {
+            $itemsWithSuperiorOrder = Carousel::where('image_order', '>', $carouselItem->image_order)->get();
+
+            foreach ($itemsWithSuperiorOrder as $item) {
+                $itemToUpdate = Carousel::find($item->id);
+                $itemToUpdate->image_order -= 1;
+                $itemToUpdate->save();
+            }
+            // Récupérer le chemin du fichier image à supprimer
+            $imagePath = public_path($carouselItem->image_link);
+
+            // Vérifier si le fichier existe et le supprimer
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            // Supprimer l'enregistrement du carrousel de la base de données
+            $carouselItem->delete();
+
+            return redirect()->back()->with('success', 'L\'image du carrousel a été supprimée avec succès.');
+        }
+
+        return redirect()->back()->with('error', 'L\'élément du carrousel n\'a pas été trouvé.');
+    }
+
+
+    public function editImage()
+    {
+        return view('admin.edit-image');
     }
 }

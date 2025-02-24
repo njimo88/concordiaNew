@@ -178,7 +178,8 @@
 
         .img-carousel {
             max-height: 420px;
-            /* object-fit: cover; */
+            object-fit: cover;
+            height: auto;
             width: 100%;
         }
     </style>
@@ -197,59 +198,22 @@
             <script>
                 alert(
                     '{{ $errors->first('
-                                                                                                                                                                                                                                                                            captcha ') }}'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                captcha ') }}'
                 );
             </script>
         @endif
 
-        <!-- <section style="background-image: url('{{ $imageUrls[0] }}');"
-                                                            class="bg-light position-relative bg-cover top-banner carousel-image-container">
-                                                            <img loading="lazy" src="{{ asset('/assets/images/gymm.jpg') }}" alt="Blog" title="Blog" class="d-none">
-                                                            <div class="dark-overlay"></div>
-                                                            <div class="position-absolute top-50 start-50 translate-middle container-xl z-100">
-                                                                <div class="d-flex flex-column justify-content-center align-items-center mb-3">
-                                                                    <img src="{{ asset('assets/images/Logo - Concordia.png') }}" alt="Logo" class="mb-3" width="500">
-                                                                    <div class="d-flex gap-3">
-                                                                        <a href="/shop_categories" class="btn-rouge">Boutique</a>
-                                                                        <a href="/tousLesArticles" class="btn-rouge">Blog en ligne</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </section> -->
-
-        <img src="{{ $imageUrl }}" alt="">
+        <a href="{{ $imageUrls[0]->click_link }}" target="_blank">
+            <img src="{{ $imageUrls[0]->image_link }}" alt="" class="d-block img-carousel">
+        </a>
     @elseif(count($imageUrls) > 1)
         <div class="carousel slide" data-bs-ride="carousel" id="concordiaCarousel">
-            <!-- Indicateurs pour le carrousel -->
-            <!-- <ol class="carousel-indicators">
-                                                                @foreach ($imageUrls as $index => $imageUrl)
-    <li data-target="#concordiaCarousel" data-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}">
-                                                                </li>
-    @endforeach
-                                                            </ol> -->
-
             <!-- Contenu du carrousel -->
             <div class="carousel-inner">
                 @foreach ($imageUrls as $index => $imageUrl)
-                    <div class="carousel-item {{ Str::contains($imageUrl, 'birthdays') ? 'active' : '' }}"
-                        data-bs-interval="3000">
-                        <!-- <section style="background-image: url('{{ $imageUrl }}');"
-                                                                        class="bg-cover top-banner position-relative carousel-image-container">
-                                                                        <div class="dark-overlay"></div>
-                                                                        <div class="position-absolute top-50 start-50 translate-middle container-xl z-100">
-                                                                            <div class="d-flex flex-column justify-content-center align-items-center mb-3">
-                                                                                <img src="{{ asset('assets/images/Logo - Concordia.png') }}" alt="Logo" class="mb-3"
-                                                                                    width="500">
-                                                                                <div class="d-flex gap-3">
-                                                                                    <a href="/shop_categories" class="btn-rouge">Boutique</a>
-                                                                                    <a href="/tousLesArticles" class="btn-rouge">Blog en ligne</a>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </section> -->
-                        <a href="{{ Str::contains($imageUrl, 'birthdays') ? '/anniversaire' : '#' }}"
-                            {!! Str::contains($imageUrl, 'birthdays') ? 'target="_blank"' : '' !!}>
-                            <img src="{{ $imageUrl }}" alt="" class="d-block img-carousel">
+                    <div class="carousel-item {{ $imageUrl->image_order == 1 ? 'active' : '' }}" data-bs-interval="3000">
+                        <a href="{{ $imageUrl->click_link }}" {{ $imageUrl->click_link !== '#' ? 'target="_blank"' : '' }}>
+                            <img src="{{ $imageUrl->image_link }}" alt="" class="d-block img-carousel">
                         </a>
                     </div>
                 @endforeach
