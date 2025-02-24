@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use App\Http\Requests\AddUserform;
+use App\Models\Carousel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -131,7 +132,11 @@ class n_AdminController extends Controller
 
     public function search(Request $request)
     {
-        $query = User::query();
+        $query = User::query()
+            ->with(['adhesions' => function ($query) {
+                $query->orderBy('saison', 'desc')->orderBy('shop_article.title', 'asc');
+            }])
+            ->with(relations: ['familyParents']);
 
         if ($request->has('search') && $request->search !== '') {
             $query->where('username', 'like', '%' . $request->search . '%')
@@ -173,7 +178,12 @@ class n_AdminController extends Controller
 
     public function editUsermodal($user_id)
     {
-        $n_users = User::find($user_id);
+        $n_users = User::with(['adhesions' => function ($query) {
+            $query->orderBy('saison', 'desc')->orderBy('shop_article.title', 'asc');
+        }])
+            ->with(relations: ['familyParents'])
+            ->find($user_id);
+
         $roles = Role::all();
         return view('admin.modals.editUser', compact('n_users', 'roles'))->with('user', auth()->user());
     }
@@ -558,47 +568,52 @@ class n_AdminController extends Controller
 
     public function editSpecificUser(Request $request, $userId)
     {
-        // dd($request->birthdate);
-        $request->validate([
-            'role' => 'required|int',
-            'name' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'username' => 'nullable|string',
-            'gender' => 'required|string',
-            'email' => 'required|email|max:255',
-            'profession' => 'nullable|string|max:191',
-            'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
-            'birthdate' => 'required|date|date_format:Y-m-d|before:today',
-            'nationality' => 'required',
-            'address' => 'required',
-            'city' => 'required',
-            'zip' => 'required|numeric',
-            'country' => 'required',
-            'created_at' => 'required|date|date_format:Y-m-d|before_or_equal:today',
-            'licenceFFGYM' => ['nullable', 'regex:/^\d{5}\.\d{3}\.\d{5}$/'],
-        ], $messages = [
-            'role.required' => 'Le rôle est requis.',
-            'name.required' => "Le champ nom est requis.",
-            'lastname.required' => "Le champ prénom est requis.",
-            'username.string' => "Le nom d'utilisateur doit être une chaîne de caractères.",
-            'gender.required' => "Le sexe est requis.",
-            'email.required' => 'Le champ email est requis.',
-            'email.email' => 'L\'adresse email doit être valide.',
-            'profession.string' => "La profession doit être une chaîne de caractères.",
-            'phone.required' => "Le champ numéro de téléphone est requis.",
-            'phone.regex' => "Le format du numéro de téléphone est invalide. Exemple : 0123456789.",
-            'birthdate.required' => 'La date de naissance est requise.',
-            'birthdate.date' => 'Le format de la date de naissance est invalide.',
-            'birthdate.before' => 'La date de naissance doit être antérieure à aujourd\'hui.',
-            'nationality.required' => "Le champ nationalité est requis.",
-            'address.required' => "Le champ adresse est requis.",
-            'city.required' => "Le champ ville est requis.",
-            'zip.required' => "Le champ code postal est requis.",
-            'zip.numeric' => "Le code postal doit être un nombre.",
-            'country.required' => "Le pays est requis.",
-            'created_at.required' => "La date d'inscription est requise.",
-            'licenceFFGYM.regex' => "Le format de la licence FFGYM est invalide. Exemple : 12345.678.12345.",
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'role' => 'required|int',
+                'name' => 'required|string|max:255',
+                'lastname' => 'required|string|max:255',
+                'username' => 'nullable|string',
+                'gender' => 'required|string',
+                'email' => 'required|email|max:255',
+                'profession' => 'nullable|string|max:191',
+                'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
+                'birthdate' => 'required|date|date_format:Y-m-d|before:today',
+                'nationality' => 'required',
+                'address' => 'required',
+                'city' => 'required',
+                'zip' => 'required|numeric',
+                'country' => 'required',
+                'created_at' => 'required|date|date_format:Y-m-d|before_or_equal:today',
+                'licenceFFGYM' => ['nullable', 'regex:/^\d{5}\.\d{3}\.\d{5}$/'],
+            ], $messages = [
+                'role.required' => 'Le rôle est requis.',
+                'name.required' => "Le champ nom est requis.",
+                'lastname.required' => "Le champ prénom est requis.",
+                'username.string' => "Le nom d'utilisateur doit être une chaîne de caractères.",
+                'gender.required' => "Le sexe est requis.",
+                'email.required' => 'Le champ email est requis.',
+                'email.email' => 'L\'adresse email doit être valide.',
+                'profession.string' => "La profession doit être une chaîne de caractères.",
+                'phone.required' => "Le champ numéro de téléphone est requis.",
+                'phone.regex' => "Le format du numéro de téléphone est invalide. Exemple : 0123456789.",
+                'birthdate.required' => 'La date de naissance est requise.',
+                'birthdate.date' => 'Le format de la date de naissance est invalide.',
+                'birthdate.before' => 'La date de naissance doit être antérieure à aujourd\'hui.',
+                'nationality.required' => "Le champ nationalité est requis.",
+                'address.required' => "Le champ adresse est requis.",
+                'city.required' => "Le champ ville est requis.",
+                'zip.required' => "Le champ code postal est requis.",
+                'zip.numeric' => "Le code postal doit être un nombre.",
+                'country.required' => "Le pays est requis.",
+                'created_at.required' => "La date d'inscription est requise.",
+                'licenceFFGYM.regex' => "Le format de la licence FFGYM est invalide. Exemple : 12345.678.12345.",
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors()) // On garde les erreurs détaillées
+                ->with('error', 'Un problème dans la saisie des données est survenu, vérifier les erreurs en dessous des champs.'); // On ajoute un message global
+        }
 
         // Récupérer l'utilisateur
         $user = User::findOrFail($userId);
@@ -611,37 +626,55 @@ class n_AdminController extends Controller
             $emissionDate = $request->input('crt_emission');
 
             // Valider la date d'expiration : elle doit être après ou égale à aujourd'hui
-            $request->validate([
-                'crt_emission' => 'required|date|date_format:Y-m-d',
-            ], [
-                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
-                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
-            ]);
+            try {
+                $validatedData = $request->validate([
+                    'crt_emission' => 'required|date|date_format:Y-m-d',
+                ], [
+                    'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                    'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                return redirect()->back()
+                    ->withErrors($e->errors()) // On garde les erreurs détaillées
+                    ->with('error', 'Un problème dans la saisie des données est survenu, vérifier les erreurs en dessous des champs.'); // On ajoute un message global
+            }
 
             // Si une date d'expiration est saisie mais aucun certificat médical n'est téléchargé,
             // on vérifie si l'utilisateur a déjà un certificat existant. Si ce n'est pas le cas,
             // on exige un nouveau certificat.
             if (!$request->hasFile('crt') && (!$user->medicalCertificate || !$user->medicalCertificate->file_path)) {
-                $request->validate([
-                    'crt' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-                ], [
-                    'crt.required' => 'Le certificat médical est requis quand une date d\'expiration est saisie.',
-                    'crt.image' => "Le certificat médical doit être une image.",
-                    'crt.mimes' => "Le certificat médical doit être un fichier de type jpeg, png, jpg ou gif.",
-                    'crt.max' => "Le certificat médical ne doit pas dépasser 2 Mo.",
-                ]);
+                try {
+                    $validatedData = $request->validate([
+                        'crt' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                    ], [
+                        'crt.required' => 'Le certificat médical est requis quand une date d\'expiration est saisie.',
+                        'crt.image' => "Le certificat médical doit être une image.",
+                        'crt.mimes' => "Le certificat médical doit être un fichier de type jpeg, png, jpg ou gif.",
+                        'crt.max' => "Le certificat médical ne doit pas dépasser 2 Mo.",
+                    ]);
+                } catch (\Illuminate\Validation\ValidationException $e) {
+                    return redirect()->back()
+                        ->withErrors($e->errors()) // On garde les erreurs détaillées
+                        ->with('error', 'Un problème dans la saisie des données est survenu, vérifier les erreurs en dessous des champs.'); // On ajoute un message global
+                }
             }
         }
 
         // Si un certificat est téléchargé ou existe déjà, la date d'expiration est obligatoire
         if ($request->hasFile('crt') || ($user->medicalCertificate && $user->medicalCertificate->file_path !== "")) {
             // Vérifier que la date d'expiration est bien après aujourd'hui
-            $request->validate([
-                'crt_emission' => 'required|date|date_format:Y-m-d',
-            ], [
-                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
-                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
-            ]);
+            try {
+                $validatedData = $request->validate([
+                    'crt_emission' => 'required|date|date_format:Y-m-d',
+                ], [
+                    'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                    'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                return redirect()->back()
+                    ->withErrors($e->errors()) // On garde les erreurs détaillées
+                    ->with('error', 'Un problème dans la saisie des données est survenu, vérifier les erreurs en dessous des champs.'); // On ajoute un message global
+            }
         }
 
         // Si un certificat médical est téléchargé
@@ -804,8 +837,13 @@ class n_AdminController extends Controller
 
     public function specificUser($id)
     {
-        $user = User::find($id);
+        $user = User::with(['adhesions' => function ($query) {
+            $query->orderBy('saison', 'desc')->orderBy('shop_article.title', 'asc');
+        }])
+            ->with(relations: ['familyParents'])
+            ->find($id);
         $roles = Role::all();
+
         return view('admin.specificUser', compact('user', 'roles'));
     }
 
@@ -849,5 +887,13 @@ class n_AdminController extends Controller
 
         SystemSetting::where('name', '=', 'maintenance')->first()->update(['Message' => $message]);
         return redirect()->route('message.maintenance.see')->with('success', 'Message général mis à jour avec succès');
+    }
+
+    public function editCarroussel()
+    {
+        $carouselImages = Carousel::where('active', '=', '1')
+            ->get();
+
+        return view('admin.edit-carroussel', compact('carouselImages'));
     }
 }

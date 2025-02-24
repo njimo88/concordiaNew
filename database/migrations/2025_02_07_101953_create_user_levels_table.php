@@ -18,6 +18,7 @@ return new class extends Migration {
 
             $table->foreignId('discipline_id')->constrained('disciplines')->onDelete('cascade');
             $table->foreignId('level_id')->constrained('levels')->onDelete('cascade');
+            $table->date('exam_date');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('points')->nullable();

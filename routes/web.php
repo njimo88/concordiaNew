@@ -215,7 +215,8 @@ Route::middleware(['auth', 'role:20'])->group(function () {
     Route::get('/admin/message-general', [n_AdminController::class, 'messageGeneral'])->name('message.general');
     Route::post('/admin/message-general', [n_AdminController::class, 'editMessageGeneral'])->name('message.general.edit');
     Route::get('/admin/message-maintenance', [n_AdminController::class, 'seeMessageMaintenance'])->name('message.maintenance.see');
-    Route::post('/admin/message-maintenance', [n_AdminController::class, 'editMessageMaintenance'])->name('message.maintenance.edit');
+    Route::post('/admin/message-maintenance', [n_AdminController::class, 'editMessageMaintenance'])->name(name: 'message.maintenance.edit');
+    Route::get('/admin/modifier-carroussel', [n_AdminController::class, 'editCarroussel'])->name('carroussel.edit');
 
     /*---------------------- Sécuriser le browsing du serveur */
     Route::get('/admin/server-browser', [ServerBrowserController::class, 'index'])->name('server.browser');
@@ -434,6 +435,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/club/adhesions_index', [Controller_club::class, 'index_adhesions'])->name('index_adhesions');
 
     Route::get('/club/certifications-niveaux/{id}', [Controller_club::class, 'certifications_niveaux'])->name('certifications_niveaux');
+    Route::post('/club/getUserCertifications', [Controller_club::class, 'get_user_certifications'])->name('getUserCertifications');
     Route::post('/club/certifications-niveaux/{id}', [Controller_club::class, 'certifications_niveaux_backend'])->name('certifications_niveaux_backend');
 
     Route::get('/generate-pdf/{id}', [Controller_club::class, 'generatePdf'])->name('generate.pdf');

@@ -11,6 +11,7 @@ use Spatie\Permission\Traits\HasPermissions;
 use App\Models\Role;
 use App\Models\Basket;
 use App\Models\bills;
+use App\Models\Shop_article;
 use App\Models\LiaisonShopArticlesBill;
 use Illuminate\Contracts\Auth\CanResetPassword;
 
@@ -92,6 +93,28 @@ class User extends Authenticatable implements CanResetPassword
     public function certifications()
     {
         return $this->hasMany(UsersLevels::class, 'user_id');
+    }
+
+    public function adhesions()
+    {
+        return $this->hasManyThrough(
+            Shop_article::class,
+            LiaisonShopArticlesBill::class,
+            'id_user',
+            'id_shop_article',
+            'user_id',
+            'id_shop_article'
+        )
+            ->leftJoin('bills', 'liaison_shop_articles_bills.bill_id', '=', 'bills.id')
+            ->leftJoin('old_bills', 'liaison_shop_articles_bills.bill_id', '=', 'old_bills.id')
+            ->whereIn('shop_article.type_article', ['0', '1'])
+            ->select('shop_article.*', 'bills.status as bill_status', 'old_bills.status as old_bill_status');
+    }
+
+    public function familyParents()
+    {
+        return $this->hasMany(User::class, 'family_id', 'family_id')
+            ->where('family_level', '=', 'parent');
     }
 
     /**

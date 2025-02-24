@@ -616,27 +616,33 @@ class UsersController extends Controller
     public function editFamille(Request $request, $user_id)
     {
         $user = User::find($user_id);
-        $validatedData = $request->validate([
-            'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
-            'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
-            'email' => ['nullable', 'string', 'email', 'max:255'],
-            'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
-            'profession' => 'string|max:191',
-            'birthdate' => 'required|date|before:today',
-            'address' => 'required',
-            'zip' => 'required|numeric',
-            'city' => 'required',
-            'nationality' => 'required',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ], $messages = [
-            'name.required' => "Le champ nom est requis.",
-            'lastname.required' => "Le champ prénom est requis.",
-            'phone.required' => "Le champ numéro de téléphone  est requis.",
-            'phone.regex' => "Le format du numéro de téléphone est invalide.",
-            'profile_image.image' => "L'image de profil doit être une image.",
-            'profile_image.mimes' => "L'image de profil doit être un fichier de type jpeg, png ou jpg.",
-            'profile_image.max' => "L'image de profil ne doit pas dépasser 2 Mo.",
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+                'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
+                'email' => ['nullable', 'string', 'email', 'max:255'],
+                'phone' => ['required', 'regex:/^0[0-9]{9}$/'],
+                'profession' => 'string|max:191',
+                'birthdate' => 'required|date|before:today',
+                'address' => 'required',
+                'zip' => 'required|numeric',
+                'city' => 'required',
+                'nationality' => 'required',
+                'profile_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            ], $messages = [
+                'name.required' => "Le champ nom est requis.",
+                'lastname.required' => "Le champ prénom est requis.",
+                'phone.required' => "Le champ numéro de téléphone  est requis.",
+                'phone.regex' => "Le format du numéro de téléphone est invalide.",
+                'profile_image.image' => "L'image de profil doit être une image.",
+                'profile_image.mimes' => "L'image de profil doit être un fichier de type jpeg, png ou jpg.",
+                'profile_image.max' => "L'image de profil ne doit pas dépasser 2 Mo.",
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors()) // On garde les erreurs détaillées
+                ->with('error', 'Un problème dans la saisie des données est survenu, vérifier les erreurs en dessous des champs.'); // On ajoute un message global
+        }
 
         if (!empty($request->password)) {
             $request->merge(['password' => Hash::make($request->password)]);
@@ -651,37 +657,55 @@ class UsersController extends Controller
             $emissionDate = $request->input('crt_emission');
 
             // Valider la date d'expiration
-            $request->validate([
-                'crt_emission' => 'required|date|date_format:Y-m-d',
-            ], [
-                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
-                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
-            ]);
+            try {
+                $validatedData = $request->validate([
+                    'crt_emission' => 'required|date|date_format:Y-m-d',
+                ], [
+                    'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                    'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                return redirect()->back()
+                    ->withErrors($e->errors()) // On garde les erreurs détaillées
+                    ->with('error', 'Un problème dans la saisie des données est survenu, vérifier les erreurs en dessous des champs.'); // On ajoute un message global
+            }
 
             // Si une date d'expiration est saisie mais aucun certificat médical n'est téléchargé,
             // on vérifie si l'utilisateur a déjà un certificat existant. Si ce n'est pas le cas,
             // on exige un nouveau certificat.
             if (!$request->hasFile('crt') && (!$user->medicalCertificate || !$user->medicalCertificate->file_path)) {
-                $request->validate([
-                    'crt' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-                ], [
-                    'crt.required' => 'Le certificat médical est requis quand une date d\'expiration est saisie.',
-                    'crt.image' => "Le certificat médical doit être une image.",
-                    'crt.mimes' => "Le certificat médical doit être un fichier de type jpeg, png, jpg ou gif.",
-                    'crt.max' => "Le certificat médical ne doit pas dépasser 2 Mo.",
-                ]);
+                try {
+                    $validatedData = $request->validate([
+                        'crt' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                    ], [
+                        'crt.required' => 'Le certificat médical est requis quand une date d\'expiration est saisie.',
+                        'crt.image' => "Le certificat médical doit être une image.",
+                        'crt.mimes' => "Le certificat médical doit être un fichier de type jpeg, png, jpg ou gif.",
+                        'crt.max' => "Le certificat médical ne doit pas dépasser 2 Mo.",
+                    ]);
+                } catch (\Illuminate\Validation\ValidationException $e) {
+                    return redirect()->back()
+                        ->withErrors($e->errors()) // On garde les erreurs détaillées
+                        ->with('error', 'Un problème dans la saisie des données est survenu, vérifier les erreurs en dessous des champs.'); // On ajoute un message global
+                }
             }
         }
 
         // Si un certificat est téléchargé ou existe déjà, la date d'expiration est obligatoire
         if ($request->hasFile('crt') || ($user->medicalCertificate && $user->medicalCertificate->file_path !== "")) {
             // Vérifier que la date d'expiration est bien après aujourd'hui
-            $request->validate([
-                'crt_emission' => 'required|date|date_format:Y-m-d',
-            ], [
-                'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
-                'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
-            ]);
+            try {
+                $validatedData = $request->validate([
+                    'crt_emission' => 'required|date|date_format:Y-m-d',
+                ], [
+                    'crt_emission.required' => 'La date d\'expiration du certificat médical est requise quand un certificat est saisi.',
+                    'crt_emission.date' => 'La date d\'expiration du certificat médical doit être une date valide.',
+                ]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                return redirect()->back()
+                    ->withErrors($e->errors()) // On garde les erreurs détaillées
+                    ->with('error', 'Un problème dans la saisie des données est survenu, vérifier les erreurs en dessous des champs.'); // On ajoute un message global
+            }
         }
 
         // Si un certificat médical est téléchargé

@@ -11,7 +11,7 @@ class UsersLevels extends Model
 
     protected $table = 'users_levels';
 
-    protected $fillable = ['user_id', 'discipline_id', 'level_id', 'points', 'created_by', 'updated_by'];
+    protected $fillable = ['user_id', 'discipline_id', 'level_id', 'exam_date', 'points', 'created_by', 'updated_by'];
 
     public $timestamps = true;
 
