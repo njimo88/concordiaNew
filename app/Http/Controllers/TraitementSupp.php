@@ -24,6 +24,7 @@ use App\Models\LiaisonShopArticlesBill;
 use App\Models\PaiementImmediat;
 use App\Models\Declinaison;
 use App\Models\AdditionalCharge;
+use App\Models\Carousel;
 use PDF;
 
 
@@ -146,17 +147,18 @@ class TraitementSupp extends Controller
 
         $shop_articles = $filtered_articles->shuffle()->take(7);
 
+        // $images = File::files(public_path('uploads/Slider'));
+        // $imageUrls = [];
 
+        // foreach ($images as $image) {
+        //     if (in_array($image->getExtension(), ['jpg', 'jpeg', 'png', 'gif'])) {
+        //         $imageUrls[] = asset('uploads/Slider/' . $image->getFilename());
+        //     }
+        // }
 
-
-        $images = File::files(public_path('uploads/Slider'));
-        $imageUrls = [];
-
-        foreach ($images as $image) {
-            if (in_array($image->getExtension(), ['jpg', 'jpeg', 'png', 'gif'])) {
-                $imageUrls[] = asset('uploads/Slider/' . $image->getFilename());
-            }
-        }
+        $imageUrls = Carousel::where('active', '=', '1')
+            ->orderBy('image_order', direction: 'ASC')
+            ->get();
 
         $directory = public_path('uploads/Partenaires');
         $files = File::files($directory);
