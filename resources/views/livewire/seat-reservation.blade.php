@@ -12,7 +12,7 @@
   </button>
 
   <button  wire:click="doubleRefrech()"  id="refreshButton" class="btn btn-secondary" >
-    <i class="fas fa-sync-alt"></i> Refresh
+    <i class="fas fa-sync-alt"></i> Refresher
   </button>
   <!-- The Modal -->
   <div class="modal" id="myModal">
@@ -51,7 +51,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
           @if ($payer>0)
-          <a href="{{ route('spectacles.showFormSpect', ['nombre_virment' => 1, 'total' => $payer ]) }}" target="_blank" class="card-link"> <button type="button" class="btn btn-success" > payer {{$payer}}.00 €</button> </a>
+          <a href="{{ route('spectacles.showFormSpect', ['nombre_virment' => 1, 'total' => $payer ]) }}" target="_blank" class="card-link"> <button type="button" class="btn btn-success" > payer : {{$payer}}.00 €</button> </a>
               
           @endif
         </div>
@@ -241,7 +241,7 @@ function timeRefreching() {
             timerSpan.textContent = `Rest : ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }
 
-        // Adjust for timezone difference (if needed)
+        // Adjust for timezone difference (if needed) 
         const timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000; // Local offset in milliseconds
         //reservationTime.setTime(reservationTime.getTime() - timezoneOffset); this for avoiding timezone offset so add -timezoneOffset
         reservationTime.setTime(reservationTime.getTime() - timezoneOffset);

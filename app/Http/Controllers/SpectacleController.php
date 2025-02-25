@@ -151,8 +151,6 @@ class SpectacleController  extends Controller
             $bill->status = 100;
             $bill->save();
             // Send the email
-
-
             Mail::to(auth()->user()->email)->send(new PaymentReceipt($bill));
 
         }else {
