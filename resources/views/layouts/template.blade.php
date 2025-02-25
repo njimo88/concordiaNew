@@ -611,7 +611,8 @@
             @endif
             @if (auth()->user()->roles->estAutoriserDeVoirArticles ||
                     auth()->user()->roles->estAutoriserDeRedigerArticle ||
-                    auth()->user()->roles->estAutoriserDeVoirCategories)
+                    auth()->user()->roles->estAutoriserDeVoirCategories ||
+                    auth()->user()->roles->estAutoriserDeditCarroussel)
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse"
                         href="#"> <i style="color: #0ef9de" class="bi bi-journal-text"></i><span>Blog</span><i
@@ -634,6 +635,12 @@
                         @if (auth()->user()->roles->estAutoriserDeVoirCategories)
                             <li> <a href="{{ route('index_article_category') }}"> <i style="color: #0ef9de"
                                         class="fa-solid fa-list-ol"></i><span>Catégories</span> </a></li>
+                        @endif
+                        @if (auth()->user()->roles->estAutoriserDeditCarroussel)
+                            <li> <a href="{{ route('carroussel.edit') }}">
+                                    <i style="color: #0ef9de" class="fa-regular fa-edit"></i>
+                                    <span>Modifier carroussel</span>
+                                </a></li>
                         @endif
                     </ul>
                 </li>
@@ -883,8 +890,7 @@
             @if (auth()->user()->roles->estAutoriserDeVoirGestionDesDroits ||
                     auth()->user()->roles->estAutoriserDeVoirParametresGeneraux ||
                     auth()->user()->roles->estAutoriserDeVoirSalles ||
-                    auth()->user()->roles->estAutoriserDeVoirMessageGeneral ||
-                    auth()->user()->roles->estAutoriserDeditCarroussel)
+                    auth()->user()->roles->estAutoriserDeVoirMessageGeneral)
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#para-nav" data-bs-toggle="collapse"
                         href="#"><span style="color: #f5f503; margin-right:10px"
@@ -917,12 +923,6 @@
                         @if (auth()->user()->roles->estAutoriserDeVoirMessageMaintenance)
                             <li> <a href="{{ route('message.maintenance.see') }}"><i style="color: #f5f503;"
                                         class="fa-regular fa-message"></i></span><span>Message de maintenance</span>
-                                </a></li>
-                        @endif
-                        @if (auth()->user()->roles->estAutoriserDeditCarroussel)
-                            <li> <a href="{{ route('carroussel.edit') }}">
-                                    <i style="color: #f5f503;" class="fa-regular fa-edit"></i>
-                                    <span>Modifier carroussel</span>
                                 </a></li>
                         @endif
                     </ul>

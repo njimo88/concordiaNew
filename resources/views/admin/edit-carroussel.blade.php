@@ -15,7 +15,7 @@
         @endif
 
         <h5 class="card-title text-primary">Modifier l'organisation des images du carrousel</h5>
-        <a href="{{ route('edit.image') }}" target="_blank">Importer une image</a>
+        <a href="{{ route('edit.image') }}" class="btn btn-primary" target="_blank">Importer une image</a>
 
         <!-- Formulaire d'ajout d'image -->
         <div class="container py-3">
@@ -29,7 +29,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="new_click_link" class="form-label">Lien de page</label>
-                            <select id="new_click_link" name="new_click_link" class="selectpicker" data-live-search="true">
+                            <select id="new_click_link" name="new_click_link" class="form-control form-select w-100">
                                 <option value="" disabled selected>Choisir ou le blog associé sinon vide...</option>
                                 @foreach ($blogArticles as $blogArticle)
                                     <option value="{{ $blogArticle->id_blog_post_primaire }}">{{ $blogArticle->titre }}
@@ -110,7 +110,8 @@
                                         data-bs-target="#editImageModal{{ $image->id }}">
 
                                     <!-- Modal Edit Image -->
-                                    <div class="modal fade" id="editImageModal{{ $image->id }}" tabindex="-1"
+                                    <div class="modal fade" id="editImageModal{{ $image->id }}"
+                                        data-id="{{ $image->id }}" tabindex="-1"
                                         aria-labelledby="editImageModalLabel{{ $image->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -134,8 +135,8 @@
                                                     <div class="mb-3">
                                                         <label for="links" class="form-label">Lien associé à
                                                             l'image</label>
-                                                        <select name="links[{{ $image->id }}]" class="selectpicker"
-                                                            data-live-search="true">
+                                                        <select name="links[{{ $image->id }}]"
+                                                            class="form-control form-select-modal w-100">
                                                             <option value="">Aucun blog</option>
                                                             @foreach ($blogArticles as $blogArticle)
                                                                 <option value="{{ $blogArticle->id_blog_post_primaire }}"
@@ -211,9 +212,24 @@
 
     </main>
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            $('.form-select').select2({
+                width: '100%',
+            });
+
+            $('.form-select-modal').each(function() {
+                var modalId = $(this).closest('.modal').attr('id');
+
+                $(this).select2({
+                    dropdownParent: $('#' + modalId),
+                    width: '100%',
+                });
+            });
+
             let carouselContainer = document.getElementById('items');
 
             new Sortable(carouselContainer, {
