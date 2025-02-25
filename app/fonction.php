@@ -838,9 +838,52 @@ function printUsersBirthdayOnImage()
     $image->save(public_path('uploads/Slider/' . $filename));
 
     chmod(public_path('uploads/Slider/' . $filename), 0755);
+
+    sendBirthdayMail($users); // Appel de la fonction pour envoyer un message aux personnes qui ont anniversaire
 }
 
 
+function sendBirthdayMail($usersBirthday)
+{
+    foreach ($usersBirthday as $user) {
+        $recipientMail = $user->email;
+        if ($recipientMail == null) {
+            $receiverMails = User::where('family_id', '=', $user->family_id)->where('family_level', '=', 'parent')->where('email', '!=', null)->get();
+        } else {
+            $receiverMails = [$recipientMail];
+        }
+
+        $senderEmail = 'anniversaire@gym-concordia.com';
+        $senderName = 'Gym Concordia';
+        $recipientName = $user->lastname . ' ' . $user->name;
+
+        foreach ($receiverMails as $receiverMail) {
+            Mail::send([], [], function ($message) use ($recipientName, $receiverMail, $senderEmail, $senderName) {
+                $message->from($senderEmail, $senderName)
+                    ->to($receiverMail)
+                    ->subject(sprintf("%s , la Concordia te souhaite un joyeux anniversaire", $recipientName))
+                    ->html(
+                        "<html>
+                            <body>
+                                <p>Bonjour $recipientName,</p>
+                                <p>Nous vous souhaitons un joyeux anniversaire de la part de toute l'équipe Concordia.</p>
+                                <p style=\"text-align: center;\">
+                                    <img src='" . $message->embed(public_path('assets/images/Anniv-Mail-resize.jpg')) . "' alt='Image_anniversare' />
+                                </p>
+                                <p style=\"text-align: center;\">
+                                    Si ce mail ne devait pas charger correctement, veuillez cliquer sur le lien ci-dessous :
+                                </p>
+                                <p style=\"text-align: center;\">
+                                    <a href='" . route('anniversaire') . "'>Page Anniversaire</a>
+                                </p>
+                                <p>Cordialement,<br>Gym Concordia</p>
+                            </body>
+                        </html>"
+                    );
+            });
+        }
+    }
+}
 
 function updateTotalCharges($bill_id)
 {
