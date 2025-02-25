@@ -151,7 +151,27 @@ class SpectacleController  extends Controller
             $bill->status = 100;
             $bill->save();
             // Send the email
-            Mail::to(auth()->user()->email)->send(new PaymentReceipt($bill));
+           
+            //Mail::to(auth()->user()->email)->send(new PaymentReceipt($bill));
+            //Mail::to("rabeh.vovi@gmail.com")->send(new PaymentReceipt($bill));
+            // Mail::raw('Test Email', function ($message) {
+            //     $message->to('rabeh.vovi@gmail.com')
+            //             ->subject('Test Email')
+            //             ->from('webmaster@gym-concordia.com');
+            // });
+
+            $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $bill]);
+            $pdfContent = $pdf->output(); // Get PDF content
+
+            // Send email with raw text and attached PDF
+            Mail::raw('Thank you for your payment. Please find your receipt attached.', function ($message) use ($pdfContent) {
+                $message->to(auth()->user()->email)
+                        ->from('webmaster@gym-concordia.com')
+                        ->subject('Payment Receipt')
+                        ->attachData($pdfContent, 'receipt.pdf', [
+                            'mime' => 'application/pdf',
+                        ]);
+            });
 
         }else {
             return redirect()->back()->with('error', 'Bill not found');
