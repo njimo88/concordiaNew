@@ -19,22 +19,23 @@ class PaymentReceipt extends Mailable
     public function __construct($bill)
     {
         $this->bill = $bill;
-        $this->user = auth()->user();
+       
     }
 
     public function build()
-{
-    // Generate PDF
-    $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $this->bill]);
+    {
+        $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $this->bill]);
+        $pdfPath = storage_path('app/public/receipt.pdf');
+        $pdf->save($pdfPath);
 
-    return $this->from('webmaster@gym-concordia.com') // Set the sender email
-                ->replyTo($this->user->email) // Reply to the user's email
-                ->subject('Payment Receipt')
-                ->view('emails.payment_receipt')
-                ->attachData($pdf->output(), 'receipt.pdf', [
-                    'mime' => 'application/pdf',
-                ]);
-}
+        $email = $this->from('webmaster@gym-concordia.com')
+                  ->subject('Payment Receipt')
+                  ->view('emails.payment_receipt')
+                  ->attach($pdfPath, [
+                      'mime' => 'application/pdf',
+                  ]);
+        return $email;
+    }
 
     /**
      * Get the message envelope.
