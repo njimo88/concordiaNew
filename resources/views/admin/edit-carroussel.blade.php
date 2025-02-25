@@ -70,6 +70,12 @@
 
         <div class="container py-3">
             <div class="row justify-content-center">
+                <!-- Validation Button -->
+                <div class="text-center mb-3">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" data-bs-toggle="modal"
+                        data-bs-target="#editImageModal">Valider les changements</button>
+                </div>
+
                 <!-- Liste des images du carrousel en grille -->
                 <div class="col-md-10">
                     <form id="carouselForm" action="{{ route('carroussel.update') }}" method="POST"
@@ -203,13 +209,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Validation Button -->
-        <div class="text-center mt-3">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" data-bs-toggle="modal"
-                data-bs-target="#editImageModal">Valider</button>
-        </div>
-
     </main>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
