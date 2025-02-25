@@ -50,7 +50,8 @@ class Controller_club extends Controller
             $shop_article_first = $shop_article_first->get();
         } else {
             // Teachers can only see their own type 1 courses
-            $shop_article_first = Shop_article::where('shop_article.saison', $saison_actu)
+            $shop_article_first = Shop_article::leftJoin('shop_article_1', 'shop_article.id_shop_article', '=', 'shop_article_1.id_shop_article')
+                ->where('shop_article.saison', $saison_actu)
                 ->where('shop_article.type_article', '=', 1)
                 ->whereRaw('JSON_CONTAINS(shop_article_1.teacher, \'[' . auth()->user()->user_id . ']\')')
                 ->orderBy('shop_article.title', 'asc')
