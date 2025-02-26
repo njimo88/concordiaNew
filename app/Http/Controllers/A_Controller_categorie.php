@@ -20,11 +20,7 @@ use PhpParser\Node\Stmt\TryCatch;
 use App\Models\Basket;
 use App\Models\shop_article_2;
 use App\Models\BankAccount;
-
-
-
-
-
+use App\Models\Declinaison;
 
 require_once(app_path() . '/fonction.php');
 
@@ -72,6 +68,21 @@ class A_Controller_categorie extends Controller
     public function Passer_au_paiement($id, Request $request)
     {
         $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
+
+        if ($shop->type_article == 2) {
+            $quantite = $request->qte;
+
+            $declinaisonArticle  = Declinaison::where('shop_article_id', '=', $id)
+                ->where('id', '=', $request->declinaison)->first();
+
+            if ($quantite > $declinaisonArticle->stock_actuel_d) {
+                return redirect()->back()->with('error', "Le stock pour cette taille est insuffisant, il reste {$declinaisonArticle->stock_actuel_d} exemplaires");
+            }
+        }
+
+        if ($request->qte <= 0) {
+            return redirect()->back()->with('error', "Vous ne pouvez pas commander 0 ou moins d'articles");
+        }
 
         //step 1 : Mise à jour de stock de l'article
         MiseAjourArticle($shop);
@@ -298,6 +309,21 @@ class A_Controller_categorie extends Controller
     public function commander_article($id, Request $request)
     {
         $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
+
+        if ($shop->type_article == 2) {
+            $quantite = $request->qte;
+
+            $declinaisonArticle  = Declinaison::where('shop_article_id', '=', $id)
+                ->where('id', '=', $request->declinaison)->first();
+
+            if ($quantite > $declinaisonArticle->stock_actuel_d) {
+                return redirect()->back()->with('error', "Le stock pour cette taille est insuffisant, il reste {$declinaisonArticle->stock_actuel_d} exemplaires");
+            }
+        }
+
+        if ($request->qte <= 0) {
+            return redirect()->back()->with('error', "Vous ne pouvez pas commander 0 ou moins d'articles");
+        }
 
         //step 1 : Mise à jour de stock de l'article
         MiseAjourArticle($shop);
