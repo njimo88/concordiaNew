@@ -709,7 +709,6 @@ function getUsersBirthdayToday()
         ->distinct()
         ->get();
 
-    // Filtrage des utilisateurs dont c'est l'anniversaire aujourd'hui
     // Filtrage des utilisateurs dont c'est l'anniversaire aujourd'hui et qui ont une date de naissance définie
     $usersWithBirthday = $users->filter(function ($user) use ($birthday) {
         if ($user->birthdate !== null) {
@@ -773,7 +772,7 @@ function printUsersBirthdayOnImage()
     $annivTextX = ($startX + $endX - $annivMessageWidth) / 2;
 
     // Ajout du texte d'anniversaire sur l'image
-    $image->text($annivMessage, $annivTextX, 300, function ($font) {
+    $image->text($annivMessage, $annivTextX, 250, function ($font) {
         $font->file(public_path('fonts/Grilcbto.ttf'));
         $font->size(40);
         $font->color('#000000');
@@ -782,21 +781,27 @@ function printUsersBirthdayOnImage()
     });
 
     // Initialisation des variables
-    $y = 500; // Position Y de départ
+    $globalY = 350; // Y global
+    $y = $globalY; // Position Y de départ
     $column_count = 0; // Nombre de colonnes
     $line_count = 0; // Nombre de lignes dans une colonne
 
     // Largeur totale de l'image
     $imageWidth = $image->width();
 
-    // Largeur d'une colonne (diviser l'image en 3 parties pour gérer plusieurs colonnes)
+    // Largeur d'une colonne (diviser l'image en 4.5 parties pour gérer plusieurs colonnes)
     $columnWidth = $imageWidth / 3;
 
     // Position X de départ (première colonne à gauche)
-    $startX = $columnWidth / 5;
+    $startX = 350;
 
     // Début du texte dans la première colonne
     $x = $startX;
+
+    $etc = False;
+    $maxLinesPerColumn = 5;
+    $maxColumns = 2;
+    $counter = 0;
 
     foreach ($users as $index => $user) {
         $firstname = mb_strtoupper($user->name);
@@ -804,32 +809,55 @@ function printUsersBirthdayOnImage()
 
         // Calcul de l'âge
         $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
-        $text = $lastname . ' ' . $firstname . ' (' . $age . ' ans)';
+        $text = $lastname . ' ' . $firstname;
+        $text = substr($text, 0, 21);
+        $text = $text . ' (' . $age . ' ans)';
+
+        if ($counter % 2 == 0) {
+            $x = $startX;
+
+            if ($counter !== 0) {
+                $y += 60;
+            }
+        } else {
+            $x = $startX + ($columnWidth * 1.15);
+        }
+
+        // Vérifier si on a atteint le nombre max de membres
+        if ($counter >= ($maxColumns * $maxLinesPerColumn)) {
+            $etc = True;
+            break;
+        }
 
         // Ajouter le texte à l'image
         $image->text($text, $x, $y, function ($font) {
             $font->file(public_path('fonts/Grilcbto.ttf'));
-            $font->size(30);
+            $font->size(60);
             $font->color('#000000');
             $font->align('left');
             $font->valign('top');
         });
 
-        // Incrémenter la position en Y pour la prochaine ligne
-        $y += 40;
-        $line_count++;
+        $counter++;
+    }
 
-        // Vérifier si on a atteint 5 lignes dans une colonne
-        if ($line_count == 4) {
-            $line_count = 0; // Réinitialiser le compteur de lignes
-            $column_count++; // Passer à la colonne suivante
 
-            // Mettre à jour X pour la nouvelle colonne
-            $x = $startX + ($column_count * $columnWidth);
+    $image->text("Voir plus +", 1950, 680, function ($font) {
+        $font->file(public_path('fonts/Grilcbto.ttf'));
+        $font->size(45);
+        $font->color('#FF0000');
+        $font->align('left');
+        $font->valign('top');
+    });
 
-            // Réinitialiser Y pour commencer en haut dans la nouvelle colonne
-            $y = 500;
-        }
+    if ($etc) {
+        $image->text("Etc...", $startX + ($columnWidth * 1.15), 680, function ($font) {
+            $font->file(public_path('fonts/Grilcbto.ttf'));
+            $font->size(45);
+            $font->color('#000000');
+            $font->align('left');
+            $font->valign('top');
+        });
     }
 
     // Sauvegarde de la nouvelle image
@@ -847,8 +875,8 @@ function sendBirthdayMail($usersBirthday)
 {
     foreach ($usersBirthday as $user) {
         $recipientMail = $user->email;
-        if ($recipientMail == null) {
-            $receiverMails = User::where('family_id', '=', $user->family_id)->where('family_level', '=', 'parent')->where('email', '!=', null)->get();
+        if ($recipientMail == null || $recipientMail == "") {
+            $receiverMails = User::where('family_id', '=', $user->family_id)->where('family_level', '=', 'parent')->where('email', '!=', null)->pluck('email')->toArray();
         } else {
             $receiverMails = [$recipientMail];
         }

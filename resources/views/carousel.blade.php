@@ -177,11 +177,11 @@
         }
 
         /* .img-carousel {
-                max-height: 420px;
-                height: 100%;
-                width: 100%;
-                object-fit: cover;
-            } */
+                    max-height: 420px;
+                    height: 100%;
+                    width: 100%;
+                    object-fit: cover;
+                } */
 
         .img-carousel {
             max-height: 420px;
@@ -191,7 +191,6 @@
             display: block;
             margin: 0 auto;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
         }
 
         .carousel {
@@ -224,7 +223,7 @@
             <script>
                 alert(
                     '{{ $errors->first('
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            captcha ') }}'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                captcha ') }}'
                 );
             </script>
         @endif
