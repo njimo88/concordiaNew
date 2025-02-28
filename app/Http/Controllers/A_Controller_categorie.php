@@ -69,7 +69,7 @@ class A_Controller_categorie extends Controller
     {
         $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
 
-        if ($shop->type_article == 2) {
+        if (($shop->type_article == 2) && ($shop->declinaisons->isNotEmpty())) {
             $quantite = $request->qte;
 
             $declinaisonArticle  = Declinaison::where('shop_article_id', '=', $id)
@@ -82,6 +82,10 @@ class A_Controller_categorie extends Controller
 
         if ($request->qte <= 0) {
             return redirect()->back()->with('error', "Vous ne pouvez pas commander 0 ou moins d'articles");
+        }
+
+        if ($request->qte > $shop->max_per_user) {
+            return redirect()->back()->with('error', "Vous ne pouvez pas commander plus d'une fois cet article");
         }
 
         //step 1 : Mise à jour de stock de l'article
@@ -310,7 +314,7 @@ class A_Controller_categorie extends Controller
     {
         $shop = Shop_article::where('id_shop_article', $id)->firstOrFail();
 
-        if ($shop->type_article == 2) {
+        if (($shop->type_article == 2) && ($shop->declinaisons->isNotEmpty())) {
             $quantite = $request->qte;
 
             $declinaisonArticle  = Declinaison::where('shop_article_id', '=', $id)
@@ -323,6 +327,10 @@ class A_Controller_categorie extends Controller
 
         if ($request->qte <= 0) {
             return redirect()->back()->with('error', "Vous ne pouvez pas commander 0 ou moins d'articles");
+        }
+
+        if ($request->qte > $shop->max_per_user) {
+            return redirect()->back()->with('error', "Vous ne pouvez pas commander plus d'une fois cet article");
         }
 
         //step 1 : Mise à jour de stock de l'article
