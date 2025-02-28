@@ -781,10 +781,8 @@ function printUsersBirthdayOnImage()
     });
 
     // Initialisation des variables
-    $globalY = 350; // Y global
+    $globalY = 400; // Y global
     $y = $globalY; // Position Y de départ
-    $column_count = 0; // Nombre de colonnes
-    $line_count = 0; // Nombre de lignes dans une colonne
 
     // Largeur totale de l'image
     $imageWidth = $image->width();
@@ -793,7 +791,7 @@ function printUsersBirthdayOnImage()
     $columnWidth = $imageWidth / 3;
 
     // Position X de départ (première colonne à gauche)
-    $startX = 350;
+    $startX = 365;
 
     // Début du texte dans la première colonne
     $x = $startX;
@@ -809,8 +807,12 @@ function printUsersBirthdayOnImage()
 
         // Calcul de l'âge
         $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
+
+        // Concaténation pour bon texte
         $text = $lastname . ' ' . $firstname;
-        $text = substr($text, 0, 21);
+        $text = trim($text);
+        $text = preg_replace('/\s+/', ' ', $text);
+        $text = mb_substr($text, 0, 21);
         $text = $text . ' (' . $age . ' ans)';
 
         if ($counter % 2 == 0) {
@@ -835,7 +837,7 @@ function printUsersBirthdayOnImage()
             $font->size(60);
             $font->color('#000000');
             $font->align('left');
-            $font->valign('top');
+            $font->valign('baseline');
         });
 
         $counter++;
