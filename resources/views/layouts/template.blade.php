@@ -740,6 +740,7 @@
             @if (auth()->user()->roles->estAutoriserDeVoirCours ||
                     auth()->user()->roles->estAutoriserDeVoirProduitsClub ||
                     auth()->user()->roles->estAutoriserDeVoirAdhesionsClub ||
+                    auth()->user()->roles->estAutoriserDeVoirDiplomesClub ||
                     auth()->user()->roles->estAutoriserDeVoirStatsExports ||
                     auth()->user()->roles->estAutoriserDeVoirValiderCertificats)
                 <li class="nav-item">
@@ -769,6 +770,11 @@
                             <li> <a href="{{ route('index_adhesions') }}"><span
                                         style="color: #f59f00; margin-right:10px"
                                         class="fa fa-users fa-fw mr-1"></span><span>Adhésions</span> </a></li>
+                        @endif
+                        @if (auth()->user()->roles->estAutoriserDeVoirDiplomesClub)
+                            <li> <a href="{{ route('certifications_niveaux_global') }}"><span
+                                        style="color: #f59f00; margin-right:10px"
+                                        class="fa fa-file-pdf fa-fw mr-1"></span><span>Diplômes</span> </a></li>
                         @endif
                         @if (auth()->user()->roles->estAutoriserDeVoirStatsExports)
                             <li> <a href="{{ route('StatsExports') }}"><span

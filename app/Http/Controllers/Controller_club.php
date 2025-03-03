@@ -1058,6 +1058,40 @@ public function enregister_appel_method_test($id , Request $request){
         return view('club/certificationsNiveaux', compact('cours', 'niveaux', 'disciplines'));
     }
 
+    public function certifications_niveaux_global()
+    {
+        $users = User::query()
+            ->has('certifications')
+            ->with(['certifications' => function ($query) {
+                $query->orderBy('discipline_id', 'ASC')
+                    ->orderBy('level_id', 'ASC');
+            }])
+            ->orderBy('name', 'ASC')
+            ->orderBy('lastname', 'ASC')
+            ->get();
+
+        $users = $users->map(function ($user) {
+            $user->certifications = $user->certifications->groupBy('discipline');
+            return $user;
+        });
+
+        $disciplines = Disciplines::all();
+        $levels = Levels::all();
+
+        return  view('club/allCertificationsNiveaux', compact('users', 'disciplines', 'levels'));
+    }
+
+    public function certifications_niveaux_global_pdf(Request $request)
+    {
+        $users = $request->input('users');
+
+        $pdf = Pdf::loadView('club.certificationsNiveauxPdf', compact('users'));
+
+        return response($pdf->output(), 200)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="Diplomes.pdf"');
+    }
+
     public function get_user_certifications(Request $request)
     {
         $user = User::with('certifications')

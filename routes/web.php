@@ -438,9 +438,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/club/produits_index', [Controller_club::class, 'index_produits'])->name('index_produits');
     Route::get('/club/adhesions_index', [Controller_club::class, 'index_adhesions'])->name('index_adhesions');
 
+    Route::get('/club/certifications-niveaux', [Controller_club::class, 'certifications_niveaux_global'])->name('certifications_niveaux_global');
+    Route::post('/club/certifications-niveaux/export-pdf', [Controller_club::class, 'certifications_niveaux_global_pdf'])->name('certifications_niveaux_global_pdf');
     Route::get('/club/certifications-niveaux/{id}', [Controller_club::class, 'certifications_niveaux'])->name('certifications_niveaux');
     Route::post('/club/getUserCertifications', [Controller_club::class, 'get_user_certifications'])->name('getUserCertifications');
     Route::post('/club/certifications-niveaux/{id}', [Controller_club::class, 'certifications_niveaux_backend'])->name('certifications_niveaux_backend');
+
+
 
     Route::get('/generate-pdf/{id}', [Controller_club::class, 'generatePdf'])->name('generate.pdf');
     Route::get('/generate-combined-pdf', [Controller_club::class, 'generateCombinedPdf'])->name('generate.combined.pdf');
@@ -587,7 +591,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/spectacles/{spectacle}', [\App\Http\Controllers\SpectacleController::class, 'destroy'])->name('spectacles.destroy');
     Route::get('/spectacles/payment', [\App\Http\Controllers\SpectacleController::class, 'showFormSpect'])->name('spectacles.showFormSpect');
     Route::get('/spectacles/detail_paiement/{id}', [App\Http\Controllers\SpectacleController::class, 'detail_paiement'])->name('spectacle.detail_paiement');
-    
+
 
     Route::get('/spectacles/seats/{id}', [\App\Http\Controllers\SpectacleController::class, 'seats'])->name('spectacles.seats');
 });
