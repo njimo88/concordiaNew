@@ -143,6 +143,30 @@ class SpectacleController  extends Controller
         return redirect()->route('spectacles.index')->with('success', 'Spectacle deleted successfully.');
     }
 
+    public function validateTicket(Request $request)
+    {
+        $scannedCode = $request->input('qr_code');
+        
+        // $seat = Seat::where('qr_secret', $scannedCode)->first();
+
+        // if (!$seat) {
+        //     return response()->json(['message' => 'Invalid ticket'], 400);
+        // }
+
+        // if ($seat->is_used) {
+        //     return response()->json(['message' => 'This ticket has already been used!'], 400);
+        // }
+
+        // // Mark the seat as used
+        // $seat->is_used = true;
+        // $seat->save();
+        return response()->json(['message' => $scannedCode], 400);
+        return response()->json(['message' => 'This ticket has already been used!'], 300);
+        return response()->json(['message' => 'Invalid ticket'], 400);
+        
+        return response()->json(['message' => 'Access granted!'], 200);
+    }
+
     public function detail_paiement($id)
     {
         $bill = bills::where('id', $id)->first();
@@ -162,6 +186,7 @@ class SpectacleController  extends Controller
             
             
             //this lines to test QR code
+            
             $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $bill]);
             $pdfPath = public_path('uploads/spectacles/receipt.pdf');  
             $pdf->save($pdfPath);  
@@ -193,7 +218,7 @@ class SpectacleController  extends Controller
             
             $reservation->seat->update([
                 'available' => 0,
-                'state' => -1
+                'state' => -1 // payed 
             ]);
             $reservation->update(['status' => 'payed']);           
         }

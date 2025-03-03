@@ -3,6 +3,9 @@
 @section('content')
 
 <div class="container">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/instascan/1.0.0/instascan.min.js"></script>
+
     <h1 class="mb-4">Spectacles</h1>
     <a target="_blank" href="{{ route('spectacles.create') }}" class="btn btn-primary mb-3">Create Spectacle</a>
     @if (session('success'))
@@ -32,8 +35,77 @@
             @endforeach
         </div>
     </div>
+
+
+    {{-- scaner  --}}
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <div id="reader" style="width: 300px;"></div>
+    
+    <script>
+        function onScanSuccess(qrMessage) {
+            alert("QR Code Scanned: " + qrMessage);
+            
+            fetch('/spectacles/validation_Teckit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ qr_code: qrMessage })
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(({ status, body }) => {
+                if (status === 200) {
+                    alert("✅ " + body.message); // Access granted
+                    // You can redirect or do something else:
+                    //window.location.href = "/success-page"; 
+                } else {
+                    if (status === 400) {
+                        alert("❌ " + body.message);
+                    }if (status === 300) {
+                        alert("❌ " + body.message);
+                    }
+                    //alert("❌ " + body.message); // Invalid ticket or already used
+                }
+            })
+            .catch(error => console.error('Fetch Error:', error));
+        }
+    
+        function onScanError(errorMessage) {
+            console.log(errorMessage);
+        }
+    
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: 250 }
+        );
+        html5QrcodeScanner.render(onScanSuccess, onScanError);
+    </script>
+
+
+
+
+    {{-- <script src="https://unpkg.com/html5-qrcode"></script>
+
+<div id="reader" style="width: 300px;"></div>
+
+<script>
+    function onScanSuccess(qrMessage) {
+        alert("QR Code Scanned: " + qrMessage);
+        window.location.href = '/spectacles/validation_Teckit=' + encodeURIComponent(qrMessage);
+    }
+
+    function onScanError(errorMessage) {
+        console.log(errorMessage);
+    }
+
+    let html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", { fps: 10, qrbox: 250 }
+    );
+    html5QrcodeScanner.render(onScanSuccess, onScanError);
+</script> --}}
         
-    </div>
+</div>
 
     
     
