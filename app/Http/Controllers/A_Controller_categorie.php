@@ -80,11 +80,11 @@ class A_Controller_categorie extends Controller
             }
         }
 
-        if ($request->qte <= 0) {
+        if ($request->qte && ($request->qte <= 0)) {
             return redirect()->back()->with('error', "Vous ne pouvez pas commander 0 ou moins d'articles");
         }
 
-        if ($request->qte > $shop->max_per_user) {
+        if ($request->qte && ($request->qte > $shop->max_per_user)) {
             return redirect()->back()->with('error', "Vous ne pouvez pas commander plus d'une fois cet article");
         }
 
@@ -325,11 +325,11 @@ class A_Controller_categorie extends Controller
             }
         }
 
-        if ($request->qte <= 0) {
+        if ($request->qte && ($request->qte <= 0)) {
             return redirect()->back()->with('error', "Vous ne pouvez pas commander 0 ou moins d'articles");
         }
 
-        if ($request->qte > $shop->max_per_user) {
+        if ($request->qte && ($request->qte > $shop->max_per_user)) {
             return redirect()->back()->with('error', "Vous ne pouvez pas commander plus d'une fois cet article");
         }
 
