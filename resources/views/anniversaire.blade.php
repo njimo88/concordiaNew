@@ -22,89 +22,53 @@
         @endif
 
         <div class="container">
-            <div class="row shadow bg-white rounded-3">
-                <div style="border: solid !important; border-width: 1px !important; border-color: grey !important; box-shadow: 3px 3px 3px #5c5c5c !important;"
-                    class="p-0 rounded-3">
-                    {{-- style="background-color: #A9BCF5 !important; --bs-border-radius: 0.5rem;" --}}
-                    <div class="text-center py-2 d-flex justify-content-center rounded-top bg-primary bg-gradient">
-                        <div class="col-9 d-flex align-items-center justify-content-center">
-                            <?php
-                            setlocale(LC_TIME, 'fr_FR', 'fra');
-                            
-                            // Tableau pour les jours de la semaine
-                            $jours = [
-                                'Monday' => 'Lundi',
-                                'Tuesday' => 'Mardi',
-                                'Wednesday' => 'Mercredi',
-                                'Thursday' => 'Jeudi',
-                                'Friday' => 'Vendredi',
-                                'Saturday' => 'Samedi',
-                                'Sunday' => 'Dimanche',
-                            ];
-                            
-                            // Tableau pour les mois
-                            $mois = [
-                                'January' => 'Janvier',
-                                'February' => 'Février',
-                                'March' => 'Mars',
-                                'April' => 'Avril',
-                                'May' => 'Mai',
-                                'June' => 'Juin',
-                                'July' => 'Juillet',
-                                'August' => 'Août',
-                                'September' => 'Septembre',
-                                'October' => 'Octobre',
-                                'November' => 'Novembre',
-                                'December' => 'Décembre',
-                            ];
-                            
-                            $date = new DateTime(); // obtenir la date d'aujourd'hui
-                            
-                            $jour = $date->format('l'); // obtenir le jour de la semaine
-                            $mois_num = $date->format('n'); // obtenir le mois
-                            $jour_num = $date->format('j'); // obtenir le jour du mois
-                            $annee = $date->format('Y'); // obtenir l'année
-                            
-                            // Convertir le jour de la semaine et le mois en français
-                            $jour_fr = $jours[$jour];
-                            $mois_fr = $mois[date('F', mktime(0, 0, 0, $mois_num, 10))];
-                            
-                            ?>
-
-                            <h4 class="m-0 text-white font-weight-bold">
-                                Joyeux anniversaire ! - <?php echo "$jour_fr $jour_num $mois_fr $annee"; ?>
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card shadow-sm border border-secondary rounded-3">
+                        <div class="card-header bg-primary text-white text-center py-3 rounded-top">
+                            <h4 class="m-0 font-weight-bold">
+                                Joyeux anniversaire ! -
+                                <?php
+                                setlocale(LC_TIME, 'fr_FR', 'fra');
+                                $jours = ['Monday' => 'Lundi', 'Tuesday' => 'Mardi', 'Wednesday' => 'Mercredi', 'Thursday' => 'Jeudi', 'Friday' => 'Vendredi', 'Saturday' => 'Samedi', 'Sunday' => 'Dimanche'];
+                                $mois = ['January' => 'Janvier', 'February' => 'Février', 'March' => 'Mars', 'April' => 'Avril', 'May' => 'Mai', 'June' => 'Juin', 'July' => 'Juillet', 'August' => 'Août', 'September' => 'Septembre', 'October' => 'Octobre', 'November' => 'Novembre', 'December' => 'Décembre'];
+                                
+                                $date = new DateTime();
+                                $jour_fr = $jours[$date->format('l')];
+                                $mois_fr = $mois[$date->format('F')];
+                                echo "$jour_fr " . $date->format('j') . " $mois_fr " . $date->format('Y');
+                                ?>
                             </h4>
+                        </div>
 
+                        <div class="card-body">
+                            <p class="text-center">
+                                Vous pouvez envoyer un petit message à nos membres qui fêtent leurs anniversaires
+                                aujourd’hui en cliquant sur leurs noms. À vous de jouer :
+                            </p>
+                            <ul class="list-unstyled">
+                                @foreach ($usersbirth as $user)
+                                    @php
+                                        $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
+                                    @endphp
+                                    <li class="mb-2">
+                                        <button class="btn btn-outline-primary w-100 text-start rounded"
+                                            data-bs-toggle="modal" data-bs-target="#emailModal"
+                                            data-user-name="{{ $user->lastname }} {{ $user->name }}"
+                                            data-user-id="{{ $user->user_id }}">
+                                            Écrivez à : {{ $user->name }} {{ $user->lastname }} qui vient d'avoir ses
+                                            <b>{{ $age }} ans</b>
+                                        </button>
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <p class="text-center mt-3">🎉 La Gym Concordia vous souhaite un joyeux anniversaire ! 🎉</p>
                         </div>
                     </div>
-                    <div style="align-items: start !important; background-color : #FFFFFF !important"
-                        class="card-body post-content rounded-3">
-                        <p class="m-2">Vous pouvez envoyer un petit message à nos membres qui fêtent leurs
-                            anniversaires
-                            aujourd’hui en cliquant sur leurs noms. À vous de jouer :</p>
-                        <ul class="mb-0">
-                            @foreach ($usersbirth as $user)
-                                @php
-                                    $age = Carbon::parse($user->birthdate)->diffInYears(Carbon::now());
-                                @endphp
-                                <li>
-                                    <button data-bs-toggle="modal" data-bs-target="#emailModal"
-                                        data-user-name="{{ $user->lastname }} {{ $user->name }}"
-                                        data-user-id="{{ $user->user_id }}">
-                                        Écrivez à : {{ $user->name }} {{ $user->lastname }} qui vient d'avoir ses
-                                        <b>{{ $age }} ans</b>
-                                    </button>
-                                </li>
-                            @endforeach
-                        </ul>
-
-                        <p class="m-3">La Gym Concordia vous souhaite un joyeux anniversaire!</p>
-                    </div>
-
                 </div>
             </div>
         </div>
-        </div>
+
 
         <!-- Modal -->
         <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
@@ -147,7 +111,7 @@
                             </div>
 
                             <div class='form-row mt-3'>
-                                <div class='form-group col-md-12' style="text-align:-webkit-center">
+                                <div class='d-flex justify-content-center align-items-center'>
                                     <div class='g-recaptcha' name="captchaTest"
                                         data-sitekey='6Lf8zLIoAAAAAJtjcI7Xi6Lo5v07zwS6bnmCXS1g'></div>
                                 </div>
@@ -243,6 +207,12 @@
 
         main section#birthday-container {
             height: 250px;
+        }
+    }
+
+    @media only screen and (max-width: 500px) {
+        .g-recaptcha {
+            transform: scale(0.85);
         }
     }
 </style>

@@ -79,7 +79,8 @@
                                             </td>
                                             <td>
                                                 <div class="col-6 col-md-2">
-                                                    <a href="tel:+33" target="_blank">{{ $dt->phone }}</a>
+                                                    <a href="tel: {{ $dt->phone }}"
+                                                        target="_blank">{{ $dt->phone }}</a>
                                                 </div>
                                             </td>
                                             <td>

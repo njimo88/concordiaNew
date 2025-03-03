@@ -58,8 +58,6 @@ class A_ControllerBlog extends Controller
         return view('questionnaire', compact('param', 'quad', 'adQgen', 'adQgenmax', 'idmax', 'adcat', 'scoreQ1', 'scoreQ2', 'scoreQ3', 'scoreQ4', 'scoreQ5', 'scoreQ6', 'scoreQ7', 'scoreQ8', 'scoreQ9', 'scoreQ10', 'quadall', 'quad', 'data', 'idq', 'ididid', 'basename'))->with('user', auth()->user());
     }
 
-
-
     public function anniversaire()
     {
         $usersbirth = getUsersBirthdayToday();
@@ -94,8 +92,8 @@ class A_ControllerBlog extends Controller
             return redirect()->back()->with('error', 'Veuillez cocher la case reCAPTCHA.');
         }
 
-        if ($recipientMail == null) {
-            $receiverMails = User::where('family_id', '=', $user->family_id)->where('family_level', '=', 'parent')->where('email', '!=', null)->get();
+        if ($recipientMail == null || $recipientMail == "") {
+            $receiverMails = User::where('family_id', '=', $user->family_id)->where('family_level', '=', 'parent')->where('email', '!=', null)->pluck('email')->toArray();
         } else {
             $receiverMails = [$recipientMail];
         }

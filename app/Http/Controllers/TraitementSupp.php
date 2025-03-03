@@ -358,7 +358,7 @@ class TraitementSupp extends Controller
         if (Auth::check()) {
             $selectedUsers = getArticleUsers($articl);
         }
-        $declinaisons = Declinaison::where('shop_article_id', $articl->id_shop_article)->get();
+        $declinaisons = Declinaison::where('shop_article_id', $articl->id_shop_article)->where('stock_actuel_d', '>', '0')->get();
         $message_general = SystemSetting::where('name', 'Message general')->where('value', 1)->value('Message');
 
         if ($articl->type_article == 1) {

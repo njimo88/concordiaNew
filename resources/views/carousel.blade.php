@@ -176,11 +176,36 @@
             box-shadow: none;
         }
 
+        /* .img-carousel {
+                    max-height: 420px;
+                    height: 100%;
+                    width: 100%;
+                    object-fit: cover;
+                } */
+
         .img-carousel {
             max-height: 420px;
-            object-fit: cover;
-            height: auto;
-            width: 100%;
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel {
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+
+        /* Ajustement pour les écrans plus petits */
+        @media (max-width: 1250px) {
+            .img-carousel {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
         }
     </style>
 
@@ -198,7 +223,7 @@
             <script>
                 alert(
                     '{{ $errors->first('
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                captcha ') }}'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                captcha ') }}'
                 );
             </script>
         @endif
@@ -211,7 +236,8 @@
             <!-- Contenu du carrousel -->
             <div class="carousel-inner">
                 @foreach ($imageUrls as $index => $imageUrl)
-                    <div class="carousel-item {{ $imageUrl->image_order == 1 ? 'active' : '' }}" data-bs-interval="3000">
+                    <div class="carousel-item {{ $imageUrl->image_order == 1 ? 'active' : '' }}"
+                        style="background-color: #63c3d1 !important" data-bs-interval="3000">
                         <a href="{{ $imageUrl->click_link }}" {{ $imageUrl->click_link !== '#' ? 'target="_blank"' : '' }}>
                             <img src="{{ $imageUrl->image_link }}" alt="" class="d-block img-carousel">
                         </a>
