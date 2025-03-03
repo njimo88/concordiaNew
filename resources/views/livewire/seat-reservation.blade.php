@@ -35,8 +35,16 @@
                       data-reservation-time="{{$item->reservation_date}}" 
                       data-seat-number="{{ $item->id_seat }}">
                       <h5>
-                          <span class="text-secondary">Siege : {{ $item->seat->seat_number }} </span>
-                          <span class="text-danger timer"> </span>
+                          <span class="text-secondary">Siege   : {{ $item->seat->seat_number }} </span>
+                          
+                          @if($item->status=='payed')
+                          <span hidden class="text-danger timer"> </span>
+                          <span class="text-success">{{$item->status}} </span> 
+                              
+                          @else
+                          <span  class="text-danger timer"> </span>
+                          @endif
+                          
                       </h5>
                       
                   </div>
@@ -45,7 +53,9 @@
             
         </div>
         @php
-            $payer =$Myresevation->count();
+            use App\Models\Reservation;
+            $user_id=Auth::id();
+            $payer  = Reservation::where('id_user', $user_id)->where('status', 'pending')->with('seat')->get()->count();
         @endphp
         <!-- Modal footer -->
         <div class="modal-footer">
@@ -80,6 +90,7 @@
         @php
         use Illuminate\Support\Str;
         
+        
         @endphp
 
         <!-- Seating Area -->
@@ -91,7 +102,7 @@
                     @if (Str::startsWith($seat->seat_number, $row))
                         @php
                             $color="reserved";
-                            if($seat->state==Auth::id())
+                            if($seat->state==$user_id)
                             {
                                 $color="reservedpending";
                             }else {
@@ -126,7 +137,7 @@
                     @if (Str::startsWith($seat->seat_number, $row))
                         @php
                         $color="reserved";
-                        if($seat->state==Auth::id())
+                        if($seat->state==$user_id)
                         {
                             $color="reservedpending";
                         }else {
@@ -158,7 +169,7 @@
                     @if (Str::startsWith($seat->seat_number, $row))
                         @php
                         $color="reserved";
-                        if($seat->state==Auth::id())
+                        if($seat->state==$user_id)
                         {
                             $color="reservedpending";
                         }else {
@@ -167,6 +178,7 @@
                             }
                         }
                         @endphp
+
                        <button 
                         onclick="confirmReservation({{ $seat->id_seat }}, this)"
                         class="seat {{ !$seat->available ? $color : '' }} {{ str_ends_with($seat->seat_number, 'X') ? 'reservedEmpty' : '' }}" 
