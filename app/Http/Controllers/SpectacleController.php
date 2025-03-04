@@ -160,11 +160,13 @@ class SpectacleController  extends Controller
         // // Mark the seat as used
         // $seat->is_used = true;
         // $seat->save();
-        return response()->json(['message' => $scannedCode], 400);
-        return response()->json(['message' => 'This ticket has already been used!'], 300);
-        return response()->json(['message' => 'Invalid ticket'], 400);
+
+
+        //return response()->json(['message' => $scannedCode], 400);
+        return response()->json(['message' => 'Ce ticket a déjà été utilisé !'], 300);
+        return response()->json(['message' => 'Billet invalide'], 400);
         
-        return response()->json(['message' => 'Access granted!'], 200);
+        return response()->json(['message' => 'Accès accordé !'], 200);
     }
 
     public function detail_paiement($id)
@@ -174,6 +176,47 @@ class SpectacleController  extends Controller
         if ($bill) {
             $bill->status = 100;
             $bill->save();
+
+            //get all pending seats from reservation  
+            $user_id= Auth::id();
+            
+            $myreservation = Reservation::where('status', 'pending')
+            ->where('id_user', '=', $user_id)
+            ->get();
+
+            // Clone the data before making any changes
+            $myreservationCopy = clone $myreservation;
+            
+            // $pdf = Pdf::loadView('pdf.payment_receipt', [
+            //     'bill' => $bill,
+            //     'myreservationCopy' => $myreservationCopy
+            // ]);
+            // $pdfPath = public_path('uploads/spectacles/receipt.pdf');  
+            // $pdf->save($pdfPath);  
+
+
+             //sent the pdf in the mail box 
+             $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $bill ,'myreservationCopy' => $myreservationCopy]);
+             $pdfContent = $pdf->output(); // Get PDF content
+ 
+             // Send email with raw text and attached PDF
+             Mail::raw('Merci pour votre paiement. Veuillez trouver ci-joint votre reçu.', function ($message) use ($pdfContent) {
+                 $message->to('rabahkhiari07@gmail.com') //put auth()->user()->email instead of my mail 
+                         ->from('webmaster@gym-concordia.com')
+                         ->subject('Payment Receipt')
+                         ->attachData($pdfContent, 'receipt.pdf', [
+                             'mime' => 'application/pdf',
+                         ]);
+             });
+
+            foreach ($myreservation as $reservation) {
+                
+                $reservation->seat->update([
+                    'available' => 0,
+                    'state' => -1 // payed 
+                ]);
+                $reservation->update(['status' => 'payed']);           
+            }
             // Send the email
            
             //Mail::to(auth()->user()->email)->send(new PaymentReceipt($bill));
@@ -186,50 +229,18 @@ class SpectacleController  extends Controller
             
             
             //this lines to test QR code
-            
-            $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $bill]);
-            $pdfPath = public_path('uploads/spectacles/receipt.pdf');  
-            $pdf->save($pdfPath);  
-
-            //this is work perfectly 
-            // $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $bill]);
-            // $pdfContent = $pdf->output(); // Get PDF content
-
-            // // Send email with raw text and attached PDF
-            // Mail::raw('Thank you for your payment. Please find your receipt attached.', function ($message) use ($pdfContent) {
-            //     $message->to(auth()->user()->email)
-            //             ->from('webmaster@gym-concordia.com')
-            //             ->subject('Payment Receipt')
-            //             ->attachData($pdfContent, 'receipt.pdf', [
-            //                 'mime' => 'application/pdf',
-            //             ]);
-            // });
 
         }else {
             return redirect()->back()->with('error', 'Bill not found');
         }
-        //get all pending seats from reservation  
-        $user_id= Auth::id();
-        $myReservation = Reservation::where('status', 'pending')
-        ->where('id_user', '=', $user_id) 
-        ->get();
         
-        foreach ($myReservation as $reservation) {
-            
-            $reservation->seat->update([
-                'available' => 0,
-                'state' => -1 // payed 
-            ]);
-            $reservation->update(['status' => 'payed']);           
-        }
-       
-
+    
         $payment = DB::table('bills_payment_method')->where('id', '=', 1)->first()->payment_method;
         $total = $bill->payment_total_amount;
         $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
         $nombre_cheques = $bill->number;
         $nb_paiment = [$total];
-
+        sleep(1);
         return view('users.detail_paiement', compact('total', 'payment', 'nb_paiment', 'bill', 'text'))->with('user', auth()->user());
         
     }
@@ -318,7 +329,7 @@ class SpectacleController  extends Controller
         ];
 
         $signature = generateSignature($data, $key, "HMAC-SHA-256");
-
+        
         return view('spectacles.payment_formspect')->with(compact('vads_site_id', 'signature', 'utcDate', 'orderId', 'vads_trans_id', 'total', 'user', 'payment_config', 'bill'));
     }
         
