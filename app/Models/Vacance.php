@@ -9,6 +9,7 @@ class Vacance extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $table = 'vacances';
     protected $fillable = [
         'annee',
