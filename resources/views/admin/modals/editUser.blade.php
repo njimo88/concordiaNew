@@ -119,6 +119,19 @@
         enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        <!-- Role -->
+        <div class="row">
+            <div class="col-md-4">
+                <label for="role" class="form-label">Rôle</label>
+                <select id="role" name="role" class="form-select" {{ $isNotAuthorized ? 'disabled' : '' }}>
+                    @foreach ($roles as $role)
+                        <option value="{{ $role->id }}" {{ $n_users->role == $role->id ? 'selected' : '' }}>
+                            {{ $role->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
 
         <div class="row g-4">
             <!-- Identité -->
