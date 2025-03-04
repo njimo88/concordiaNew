@@ -187,13 +187,27 @@ class SpectacleController  extends Controller
             // Clone the data before making any changes
             $myreservationCopy = clone $myreservation;
             
-            $pdf = Pdf::loadView('pdf.payment_receipt', [
-                'bill' => $bill,
-                'myreservationCopy' => $myreservationCopy
-            ]);
-            $pdfPath = public_path('uploads/spectacles/receipt.pdf');  
-            $pdf->save($pdfPath);  
-            
+            // $pdf = Pdf::loadView('pdf.payment_receipt', [
+            //     'bill' => $bill,
+            //     'myreservationCopy' => $myreservationCopy
+            // ]);
+            // $pdfPath = public_path('uploads/spectacles/receipt.pdf');  
+            // $pdf->save($pdfPath);  
+
+
+             //sent the pdf in the mail box 
+             $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $bill ,'myreservationCopy' => $myreservationCopy]);
+             $pdfContent = $pdf->output(); // Get PDF content
+ 
+             // Send email with raw text and attached PDF
+             Mail::raw('Merci pour votre paiement. Veuillez trouver ci-joint votre reçu.', function ($message) use ($pdfContent) {
+                 $message->to('rabahkhiari07@gmail.com') //put auth()->user()->email instead of my mail 
+                         ->from('webmaster@gym-concordia.com')
+                         ->subject('Payment Receipt')
+                         ->attachData($pdfContent, 'receipt.pdf', [
+                             'mime' => 'application/pdf',
+                         ]);
+             });
 
             foreach ($myreservation as $reservation) {
                 
@@ -215,35 +229,18 @@ class SpectacleController  extends Controller
             
             
             //this lines to test QR code
-            
-            
-
-            //this is work perfectly 
-            // $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $bill]);
-            // $pdfContent = $pdf->output(); // Get PDF content
-
-            // // Send email with raw text and attached PDF
-            // Mail::raw('Thank you for your payment. Please find your receipt attached.', function ($message) use ($pdfContent) {
-            //     $message->to(auth()->user()->email)
-            //             ->from('webmaster@gym-concordia.com')
-            //             ->subject('Payment Receipt')
-            //             ->attachData($pdfContent, 'receipt.pdf', [
-            //                 'mime' => 'application/pdf',
-            //             ]);
-            // });
 
         }else {
             return redirect()->back()->with('error', 'Bill not found');
         }
         
-       
-
+    
         $payment = DB::table('bills_payment_method')->where('id', '=', 1)->first()->payment_method;
         $total = $bill->payment_total_amount;
         $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
         $nombre_cheques = $bill->number;
         $nb_paiment = [$total];
-        sleep(5);
+        sleep(1);
         return view('users.detail_paiement', compact('total', 'payment', 'nb_paiment', 'bill', 'text'))->with('user', auth()->user());
         
     }
