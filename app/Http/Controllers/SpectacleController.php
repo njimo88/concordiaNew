@@ -143,6 +143,30 @@ class SpectacleController  extends Controller
         return redirect()->route('spectacles.index')->with('success', 'Spectacle deleted successfully.');
     }
 
+    public function validateTicket(Request $request)
+    {
+        $scannedCode = $request->input('qr_code');
+        
+        // $seat = Seat::where('qr_secret', $scannedCode)->first();
+
+        // if (!$seat) {
+        //     return response()->json(['message' => 'Invalid ticket'], 400);
+        // }
+
+        // if ($seat->is_used) {
+        //     return response()->json(['message' => 'This ticket has already been used!'], 400);
+        // }
+
+        // // Mark the seat as used
+        // $seat->is_used = true;
+        // $seat->save();
+        return response()->json(['message' => $scannedCode], 400);
+        return response()->json(['message' => 'This ticket has already been used!'], 300);
+        return response()->json(['message' => 'Invalid ticket'], 400);
+        
+        return response()->json(['message' => 'Access granted!'], 200);
+    }
+
     public function detail_paiement($id)
     {
         $bill = bills::where('id', $id)->first();
@@ -159,23 +183,46 @@ class SpectacleController  extends Controller
             //             ->subject('Test Email')
             //             ->from('webmaster@gym-concordia.com');
             // });
-
+            
+            
+            //this lines to test QR code
+            
             $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $bill]);
-            $pdfContent = $pdf->output(); // Get PDF content
+            $pdfPath = public_path('uploads/spectacles/receipt.pdf');  
+            $pdf->save($pdfPath);  
 
-            // Send email with raw text and attached PDF
-            Mail::raw('Thank you for your payment. Please find your receipt attached.', function ($message) use ($pdfContent) {
-                $message->to(auth()->user()->email)
-                        ->from('webmaster@gym-concordia.com')
-                        ->subject('Payment Receipt')
-                        ->attachData($pdfContent, 'receipt.pdf', [
-                            'mime' => 'application/pdf',
-                        ]);
-            });
+            //this is work perfectly 
+            // $pdf = Pdf::loadView('pdf.payment_receipt', ['bill' => $bill]);
+            // $pdfContent = $pdf->output(); // Get PDF content
+
+            // // Send email with raw text and attached PDF
+            // Mail::raw('Thank you for your payment. Please find your receipt attached.', function ($message) use ($pdfContent) {
+            //     $message->to(auth()->user()->email)
+            //             ->from('webmaster@gym-concordia.com')
+            //             ->subject('Payment Receipt')
+            //             ->attachData($pdfContent, 'receipt.pdf', [
+            //                 'mime' => 'application/pdf',
+            //             ]);
+            // });
 
         }else {
             return redirect()->back()->with('error', 'Bill not found');
         }
+        //get all pending seats from reservation  
+        $user_id= Auth::id();
+        $myReservation = Reservation::where('status', 'pending')
+        ->where('id_user', '=', $user_id) 
+        ->get();
+        
+        foreach ($myReservation as $reservation) {
+            
+            $reservation->seat->update([
+                'available' => 0,
+                'state' => -1 // payed 
+            ]);
+            $reservation->update(['status' => 'payed']);           
+        }
+       
 
         $payment = DB::table('bills_payment_method')->where('id', '=', 1)->first()->payment_method;
         $total = $bill->payment_total_amount;
@@ -198,7 +245,7 @@ class SpectacleController  extends Controller
 
 
         $user_id= Auth::id();
-        $total = Reservation::where('id_user', $user_id)->with('seat')->get()->count();
+        $total = Reservation::where('id_user', $user_id)->where('status', 'pending')->with('seat')->get()->count();
         if ($total==0)
         {
             return redirect()->route('spectacles.index')->with('success', 'you dont have any reservation ');

@@ -21,6 +21,7 @@
         "livewire/livewire": "^2.11",
         "nesbot/carbon": "^2.66",
         "setasign/fpdi": "^2.6",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "snapappointments/bootstrap-select": "^1.13",
         "umpirsky/country-list": "^2.0",
         "webklex/laravel-pdfmerger": "^1.3",
