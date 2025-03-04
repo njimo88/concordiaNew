@@ -15,6 +15,7 @@ class Reservation extends Model
     {
         return $this->belongsTo(Seat::class, 'id_seat', 'id_seat');
     }
+    
 
     public function user()
     {
