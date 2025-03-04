@@ -374,6 +374,7 @@ class n_AdminController extends Controller
     {
         $user = User::find($user_id);
         $validatedData = $request->validate([
+            'role' => 'required|int',
             'username' => 'nullable|string|max:255',
             'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
             'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
@@ -388,6 +389,7 @@ class n_AdminController extends Controller
             'licenceFFGYM' => ['nullable', 'regex:/^\d{5}\.\d{3}\.\d{5}$/'],
 
         ], $messages = [
+            'role.required' => 'Le rôle est requis.',
             'username.max' => "Le nom d'utilisateur ne doit pas dépasser 255 caractères.",
             'name.required' => "Le champ nom est requis.",
             'name.alpha' => "Le nom doit être une chaîne de caractères.",

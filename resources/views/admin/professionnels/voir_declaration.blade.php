@@ -184,18 +184,15 @@
                                             </td>
                                             <td>
                                                 <input type="text" style="text-align:center;" id="JoursCongesPris"
-                                                    name="JoursCongesPris"
-                                                    value="{{ isset($declaration) ? $declaration->jours_conges : $TotalCongespris }}"
-                                                    size="2" readonly>
+                                                    name="JoursCongesPris" value="0" size="2" readonly>
                                             </td>
                                             <td>
                                                 <p> jours (soit </p>
                                             </td>
                                             <td>
                                                 <input type="text" style="text-align:center;" id="JoursCongesRestant"
-                                                    name="JoursCongesRestant"
-                                                    value="{{ isset($declaration) ? $TotalConges - $declaration->jours_conges : $TotalConges }}"
-                                                    size="2" readonly>
+                                                    name="JoursCongesRestant" value="{{ $TotalConges }}" size="2"
+                                                    readonly>
                                             </td>
                                             <td>
                                                 <p> jours restant)</p>
@@ -207,9 +204,7 @@
                                             </td>
                                             <td>
                                                 <input type="text" style="text-align:center;" id="JoursMaladiePris"
-                                                    name="JoursMaladiePris"
-                                                    value="{{ isset($declaration) ? $declaration->jours_maladie : $TotalMaladiepris }}"
-                                                    size="2" readonly>
+                                                    name="JoursMaladiePris" value="0" size="2" readonly>
                                             </td>
                                             <td>
                                                 <p> jours (soit </p>
@@ -217,8 +212,7 @@
                                             <td>
                                                 <input type="text" style="text-align:center;"
                                                     id="TotalHeuresMaladiePrises" name="TotalHeuresMaladiePrises"
-                                                    value="{{ isset($declaration) ? $TotalHeuresMaladieprises : $TotalHeuresMaladieprises }}"
-                                                    size="2" readonly>
+                                                    value="{{ $TotalHeuresMaladieprises }}" size="2" readonly>
                                             </td>
                                             <td>
                                                 <p> heures)</p>
@@ -315,13 +309,15 @@
     </main>
     <script language="javascript">
         function calculTotal(pNum) {
-            var nbLignes = document.getElementById("tab").rows.length;
+            const table = document.querySelector('.table');
+            const nbLignes = table.querySelectorAll('tbody tr').length;
             document.getElementById('HeuresTotal').value = 0;
-            for (i = 1; i < nbLignes; i++) {
-                var ChaineReplace = document.getElementById('Heures[' + i + ']').value;
+
+            for (let i = 1; i < nbLignes; i++) {
+                const ChaineReplace = document.getElementById(`Heures[${i}]`).value;
                 document.getElementById('HeuresTotal').value = parseFloat(document.getElementById('HeuresTotal').value) +
                     parseFloat(ChaineReplace.replace(',', '.'));
-            };
+            }
         }
 
         function modifyTotal(pNum) {
@@ -371,33 +367,42 @@
 
 
         function bloqueHeuresMaladie(pNum, pValue) {
-            if (document.getElementById('Maladie[' + pNum + ']').checked == true) {
-                if (document.getElementById('Conges[' + pNum + ']').checked == true) {
+            let totalHeures = parseFloat(document.getElementById('TotalHeuresMaladiePrises').value) || 0;
+
+            if (document.getElementById('Maladie[' + pNum + ']').checked) {
+                if (document.getElementById('Conges[' + pNum + ']').checked) {
                     document.getElementById('Conges[' + pNum + ']').checked = false;
-                    document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant')
-                        .value - (-1);
-                    document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - 1;
-                };
-                document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - (-
-                    1);
+                    document.getElementById('JoursCongesRestant').value = parseInt(document.getElementById(
+                        'JoursCongesRestant').value) + 1;
+                    document.getElementById('JoursCongesPris').value = parseInt(document.getElementById('JoursCongesPris')
+                        .value) - 1;
+                }
+
+                document.getElementById('JoursMaladiePris').value = parseInt(document.getElementById('JoursMaladiePris')
+                    .value) + 1;
+
                 document.getElementById('Heures[' + pNum + ']').value = pValue;
-                document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById(
-                    'TotalHeuresMaladiePrises').value - (-document.getElementById('Heures[' + pNum + ']').value);
+                totalHeures += parseFloat(pValue);
+
                 document.getElementById('Heures[' + pNum + ']').setAttribute('readonly', 'true');
                 document.getElementById('Heures[' + pNum + ']').setAttribute('style',
                     'text-align:center; background-color:#FD6C9E !important;');
-                calculTotal(pNum);
-            };
-            if (document.getElementById('Maladie[' + pNum + ']').checked == false) {
-                document.getElementById('Heures[' + pNum + ']').value = pValue;
-                document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById(
-                    'TotalHeuresMaladiePrises').value - document.getElementById('Heures[' + pNum + ']').value;
-                document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - 1;
+            } else {
+                totalHeures -= parseFloat(document.getElementById('Heures[' + pNum + ']').value);
+
+                document.getElementById('JoursMaladiePris').value = parseInt(document.getElementById('JoursMaladiePris')
+                    .value) - 1;
                 document.getElementById('Heures[' + pNum + ']').removeAttribute('readonly');
                 document.getElementById('Heures[' + pNum + ']').setAttribute('style',
                     'text-align:center; background-color:#FFFFFF !important;');
-                calculTotal(pNum);
-            };
+            }
+
+            // 🔹 Correction des erreurs d'arrondi
+            totalHeures = Math.round(totalHeures * 100) / 100;
+
+            document.getElementById('TotalHeuresMaladiePrises').value = totalHeures.toFixed(2);
+
+            calculTotal(pNum);
         }
 
         document.getElementById('enregistrer-btn').addEventListener('click', engistrerDeclaration);
@@ -464,7 +469,6 @@
         let launchOnStartElement = document.querySelectorAll(".launchOnStart:checked");
 
         launchOnStartElement.forEach(element => {
-            console.log(element);
             element.dispatchEvent(new Event("change", {
                 bubbles: true
             }));

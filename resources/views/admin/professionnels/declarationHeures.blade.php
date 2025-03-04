@@ -1168,8 +1168,7 @@ function newSeason($mois)
                                             </td>
                                             <td>
                                                 <input class="m-0" type="text" style="text-align:center;"
-                                                    id="JoursCongesPris" name="JoursCongesPris"
-                                                    value="{{ isset($declaration) ? $declaration->jours_conges : $TotalCongespris }}"
+                                                    id="JoursCongesPris" name="JoursCongesPris" value="0"
                                                     size="2" readonly>
                                             </td>
                                             <td>
@@ -1178,8 +1177,7 @@ function newSeason($mois)
                                             <td>
                                                 <input class="m-0" type="text" style="text-align:center;"
                                                     id="JoursCongesRestant" name="JoursCongesRestant"
-                                                    value="{{ isset($declaration) ? $TotalConges - $declaration->jours_conges : $TotalConges }}"
-                                                    size="2" readonly>
+                                                    value="{{ $TotalConges }}" size="2" readonly>
                                             </td>
                                             <td>
                                                 <p class="m-0"> jours restant)</p>
@@ -1191,8 +1189,7 @@ function newSeason($mois)
                                             </td>
                                             <td>
                                                 <input class="m-0" type="text" style="text-align:center;"
-                                                    id="JoursMaladiePris" name="JoursMaladiePris"
-                                                    value="{{ isset($declaration) ? $declaration->jours_maladie : $TotalMaladiepris }}"
+                                                    id="JoursMaladiePris" name="JoursMaladiePris" value="0"
                                                     size="2" readonly>
                                             </td>
                                             <td>
@@ -1201,8 +1198,7 @@ function newSeason($mois)
                                             <td>
                                                 <input class="m-0" type="text" style="text-align:center;"
                                                     id="TotalHeuresMaladiePrises" name="TotalHeuresMaladiePrises"
-                                                    value="{{ isset($declaration) ? $TotalHeuresMaladieprises : $TotalHeuresMaladieprises }}"
-                                                    size="2" readonly>
+                                                    value="{{ $TotalHeuresMaladieprises }}" size="2" readonly>
                                             </td>
                                             <td>
                                                 <p class="m-0"> heures)</p>
@@ -1422,17 +1418,17 @@ function newSeason($mois)
             const details = [];
             const daysInMonth = new Date(annee, mois, 0).getDate();
             const totalHeures = document.getElementById('HeuresTotal').value;
-            const totalConges = document.getElementById('JoursCongesPris').value;
-            const totalMaladie = document.getElementById('JoursMaladiePris').value;
-
+            var totalConges = 0;
+            var totalMaladie = 0;
 
             for (let day = 1; day <= daysInMonth; day++) {
-                console.log(day);
-
                 const heures = document.getElementById(`Heures[${day}]`).value;
                 const conges = document.getElementById(`Conges[${day}]`).checked;
                 const maladie = document.getElementById(`Maladie[${day}]`).checked;
                 const remarque = document.querySelector(`[name="Remarque[${day}]"]`).value;
+
+                if (conges) totalConges += 1;
+                if (maladie) totalMaladie += 1
 
                 details.push({
                     day,
@@ -1463,18 +1459,6 @@ function newSeason($mois)
                 alert('Declaration saved successfully!');
             } else {
                 alert('An error occurred while saving the declaration.');
-            }
-        }
-
-        function calculTotal(pNum) {
-            const table = document.querySelector('.table');
-            const nbLignes = table.querySelectorAll('tbody tr').length;
-            document.getElementById('HeuresTotal').value = 0;
-
-            for (let i = 1; i < nbLignes; i++) {
-                const ChaineReplace = document.getElementById(`Heures[${i}]`).value;
-                document.getElementById('HeuresTotal').value = parseFloat(document.getElementById('HeuresTotal').value) +
-                    parseFloat(ChaineReplace.replace(',', '.'));
             }
         }
 
@@ -1515,6 +1499,7 @@ function newSeason($mois)
             };
         }
 
+
         function modifyTotal(pNum) {
             var nbLignes = document.getElementById("tab").rows.length;
 
@@ -1545,11 +1530,11 @@ function newSeason($mois)
                 };
                 document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant').value -
                     1;
-                document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - (-1);
+                document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - (-
+                    1);
                 document.getElementById('Heures[' + pNum + ']').setAttribute('readonly', 'true');
                 document.getElementById('Heures[' + pNum + ']').setAttribute('style',
                     'text-align:center; background-color:#77B5FE !important');
-                calculTotal(pNum);
             };
             if (document.getElementById('Conges[' + pNum + ']').checked == false) {
                 document.getElementById('Heures[' + pNum + ']').value = pValue;
@@ -1561,48 +1546,54 @@ function newSeason($mois)
                 document.getElementById('Heures[' + pNum + ']').removeAttribute('readonly');
                 document.getElementById('Heures[' + pNum + ']').setAttribute('style',
                     'text-align:center; background-color:#FFFFFF !important;');
-                calculTotal(pNum);
             };
+            calculTotal(pNum);
         }
 
 
         function bloqueHeuresMaladie(pNum, pValue) {
+            let totalHeures = parseFloat(document.getElementById('TotalHeuresMaladiePrises').value) || 0;
 
-
-            if (document.getElementById('Maladie[' + pNum + ']').checked == true) {
-                if (document.getElementById('Conges[' + pNum + ']').checked == true) {
+            if (document.getElementById('Maladie[' + pNum + ']').checked) {
+                if (document.getElementById('Conges[' + pNum + ']').checked) {
                     document.getElementById('Conges[' + pNum + ']').checked = false;
-                    document.getElementById('JoursCongesRestant').value = document.getElementById('JoursCongesRestant')
-                        .value - (-1);
-                    document.getElementById('JoursCongesPris').value = document.getElementById('JoursCongesPris').value - 1;
-                };
-                document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - (-
-                    1);
+                    document.getElementById('JoursCongesRestant').value = parseInt(document.getElementById(
+                        'JoursCongesRestant').value) + 1;
+                    document.getElementById('JoursCongesPris').value = parseInt(document.getElementById('JoursCongesPris')
+                        .value) - 1;
+                }
+
+                document.getElementById('JoursMaladiePris').value = parseInt(document.getElementById('JoursMaladiePris')
+                    .value) + 1;
+
                 document.getElementById('Heures[' + pNum + ']').value = pValue;
-                document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById(
-                    'TotalHeuresMaladiePrises').value - (-document.getElementById('Heures[' + pNum + ']').value);
+                totalHeures += parseFloat(pValue);
+
                 document.getElementById('Heures[' + pNum + ']').setAttribute('readonly', 'true');
                 document.getElementById('Heures[' + pNum + ']').setAttribute('style',
                     'text-align:center; background-color:#FD6C9E !important;');
-                calculTotal(pNum);
-                console.log(document.getElementById('TotalHeuresMaladiePrises').value);
-            };
-            if (document.getElementById('Maladie[' + pNum + ']').checked == false) {
-                document.getElementById('Heures[' + pNum + ']').value = pValue;
-                document.getElementById('TotalHeuresMaladiePrises').value = document.getElementById(
-                    'TotalHeuresMaladiePrises').value - document.getElementById('Heures[' + pNum + ']').value;
-                document.getElementById('JoursMaladiePris').value = document.getElementById('JoursMaladiePris').value - 1;
+            } else {
+                totalHeures -= parseFloat(document.getElementById('Heures[' + pNum + ']').value);
+
+                document.getElementById('JoursMaladiePris').value = parseInt(document.getElementById('JoursMaladiePris')
+                    .value) - 1;
                 document.getElementById('Heures[' + pNum + ']').removeAttribute('readonly');
                 document.getElementById('Heures[' + pNum + ']').setAttribute('style',
                     'text-align:center; background-color:#FFFFFF !important;');
-                calculTotal(pNum);
-            };
+            }
+
+            // 🔹 Correction des erreurs d'arrondi
+            totalHeures = Math.round(totalHeures * 100) / 100;
+
+            document.getElementById('TotalHeuresMaladiePrises').value = totalHeures.toFixed(2);
+
+            calculTotal(pNum);
         }
+
 
         let launchOnStartElement = document.querySelectorAll(".launchOnStart:checked");
 
         launchOnStartElement.forEach(element => {
-            console.log(element);
             element.dispatchEvent(new Event("change", {
                 bubbles: true
             }));
