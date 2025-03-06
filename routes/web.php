@@ -587,8 +587,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/spectacles/{spectacle}', [\App\Http\Controllers\SpectacleController::class, 'destroy'])->name('spectacles.destroy');
     Route::get('/spectacles/payment', [\App\Http\Controllers\SpectacleController::class, 'showFormSpect'])->name('spectacles.showFormSpect');
     Route::get('/spectacles/detail_paiement/{id}', [App\Http\Controllers\SpectacleController::class, 'detail_paiement'])->name('spectacle.detail_paiement');
-    //Route::get('/spectacles/validation_Teckit', [App\Http\Controllers\SpectacleController::class, 'validateTicket'])->name('spectacle.validateTicket');    
     Route::match(['get', 'post'], '/spectacles/validation_Teckit', [App\Http\Controllers\SpectacleController::class, 'validateTicket'])->name('spectacle.validateTicket');
+
 
     Route::get('/spectacles/seats/{id}', [\App\Http\Controllers\SpectacleController::class, 'seats'])->name('spectacles.seats');
 });

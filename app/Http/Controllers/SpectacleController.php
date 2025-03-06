@@ -145,28 +145,43 @@ class SpectacleController  extends Controller
 
     public function validateTicket(Request $request)
     {
+        
+        
         $scannedCode = $request->input('qr_code');
         
-        // $seat = Seat::where('qr_secret', $scannedCode)->first();
 
-        // if (!$seat) {
-        //     return response()->json(['message' => 'Invalid ticket'], 400);
-        // }
+        $values = explode(',', $scannedCode);
 
-        // if ($seat->is_used) {
-        //     return response()->json(['message' => 'This ticket has already been used!'], 400);
-        // }
+        // // Ensure we have enough values
+        if (count($values) < 3) {
+            //return response()->json(['message' => 'Billet invalide'], 400);
+        }
 
-        // // Mark the seat as used
-        // $seat->is_used = true;
-        // $seat->save();
+        // Extract relevant data
+        $id_spectacle = trim($values[0]); // Example: 10
+        $seat_number = trim($values[1]);  // Example: A20
 
-
-        //return response()->json(['message' => $scannedCode], 400);
-        return response()->json(['message' => 'Ce ticket a déjà été utilisé !'], 300);
-        return response()->json(['message' => 'Billet invalide'], 400);
+        $seat = Seat::where('seat_number', $seat_number)->where('id_spectacle', $id_spectacle)->first();
+       
         
-        return response()->json(['message' => 'Accès accordé !'], 200);
+
+        //return response()->json(['message' => 'kjhkjh'. $seat->state], 400);
+        if(!$seat)
+        {
+            return response()->json(['message' => 'Billet invalide'], 400);
+        }
+
+        if($seat->state==-1) // -1 means that the seats is payed and not used 
+        {
+            $seat->update(['state' => -2]); //-2 means that the seat/or ticket is used 
+            return response()->json(['message' => 'Accès accordé !'], 200); // access aproved
+        }
+
+        if($seat->state==-2) // -2 means that the seat/or ticket is used 
+        {
+            return response()->json(['message' => 'Ce ticket a déjà été utilisé ! '], 300);
+        }
+
     }
 
     public function detail_paiement($id)
@@ -240,7 +255,7 @@ class SpectacleController  extends Controller
         $text = DB::table('bills_payment_method')->where('payment_method', 'Carte Bancaire')->first();
         $nombre_cheques = $bill->number;
         $nb_paiment = [$total];
-        sleep(1);
+        sleep(4);
         return view('users.detail_paiement', compact('total', 'payment', 'nb_paiment', 'bill', 'text'))->with('user', auth()->user());
         
     }

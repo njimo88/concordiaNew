@@ -27,14 +27,15 @@
             <strong>spectacle ID :</strong> {{ $reservation->seat->id_spectacle }}
         </p>
         @php
-            $secretKey = env('QR_SECRET_KEY', 'default_secret'); // Store this in .env
+            $secretKey = env('ApsXG5I63R8Ow', 'default_secret'); // Store this in .env
             $qrCodeData = $reservation->seat->id_spectacle. ', ' .$reservation->seat->seat_number. ', ' . $bill->user->name;
             $hashedCode = hash_hmac('sha256', $qrCodeData, $secretKey);
         @endphp
         <div class="qr-section row">
             <div class="col qr-box">
-                <p><strong>Seat No: {{$reservation->seat->seat_number}}</strong></p>
-                <img src="data:image/png;base64,{{ base64_encode(QrCode::format('png')->size(100)->generate($qrCodeData. ', ' . $hashedCode)) }}">
+                <p><strong>Seat : {{$reservation->seat->seat_number}}  </strong></p>
+                <img src="data:image/png;base64,{{ base64_encode(QrCode::format('png')->size(100)->generate($qrCodeData.','.$hashedCode)) }}">
+                
             </div>
         </div>
         @endforeach
