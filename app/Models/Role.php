@@ -53,7 +53,8 @@ class Role extends Model
         'estAutoriserDeVoirParametrage',
         'estAutoriserDeVoirProduitsClub',
         'estAutoriserDeVoirAdhesionsClub',
-        'estAutoriserDeVoirDiplomesClub'
+        'estAutoriserDeVoirDiplomesClub',
+        'estAutoriserDeModifLevelWarning'
     ];
 
     public function users()

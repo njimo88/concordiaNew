@@ -21,6 +21,10 @@
         width: 100%;
     }
 
+    main .parametres-card {
+        background-color: rgba(216, 205, 0, 0.8)
+    }
+
     .modal .identity-card {
         background-color: rgba(0, 94, 216, 0.8)
     }
@@ -113,23 +117,68 @@
 @php
     $isNotAuthorized =
         auth()->user()->roles->id < $n_users->role || auth()->user()->roles->supprimer_edit_ajout_user == 0;
+    $canSeeWarningLevel = auth()->user()->roles->estAutoriserDeModifLevelWarning;
 @endphp
 <div style="max-width: 80vw !important;" class="container rounded bg-white m-0">
     <form class="row" action="{{ route('admin.editUser', $n_users->user_id) }}" method="post"
         enctype="multipart/form-data">
         @csrf
         @method('PUT')
-        <!-- Role -->
-        <div class="row">
-            <div class="col-md-4">
-                <label for="role" class="form-label">Rôle</label>
-                <select id="role" name="role" class="form-select" {{ $isNotAuthorized ? 'disabled' : '' }}>
-                    @foreach ($roles as $role)
-                        <option value="{{ $role->id }}" {{ $n_users->role == $role->id ? 'selected' : '' }}>
-                            {{ $role->name }}
-                        </option>
-                    @endforeach
-                </select>
+
+        <div class="row g-4">
+            <!-- Identité -->
+            <div class="col-md-12">
+                <div class="card text-white parametres-card mb-3 rounded-3">
+                    <div class="card-header fw-bold">Paramètres</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Role -->
+                            <div class="col-md-4">
+                                <label for="role" class="form-label">Rôle</label>
+                                <select id="role" name="role" class="form-select"
+                                    {{ $isNotAuthorized ? 'disabled' : '' }}>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->id }}"
+                                            {{ $n_users->role == $role->id ? 'selected' : '' }}>
+                                            {{ $role->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            @if ($canSeeWarningLevel)
+                                <!-- Niveau Warning -->
+                                <div class="col-md-4">
+                                    <label for="warning-level" class="form-label">Niveau de warning</label>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <select id="warning-level" class="form-select" name="warning-level"
+                                            {{ $isNotAuthorized ? 'disabled' : '' }}
+                                            value={{ $n_users->warning?->level }}>
+                                            <option value="0">Aucun warning</option>
+                                            <option value="1" @if ($n_users->warning?->level == 1) selected @endif>1
+                                            </option>
+                                            <option value="2" @if ($n_users->warning?->level == 2) selected @endif>2
+                                            </option>
+                                        </select>
+                                        <span id="warning-icon" data-warning-level={{ $n_users->warning?->level }}>
+                                        </span>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Bouton -->
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (!$isNotAuthorized)
+                                        <div class="col-md-10 text-center mt-4">
+                                            <button type="submit" class="btn btn-success">Sauver Profil</button>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -669,13 +718,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        @endif
-
-
-        @if (!$isNotAuthorized)
-            <div class="text-center">
-                <button type="submit" class="btn-save">Sauver Profil</button>
             </div>
         @endif
     </form>

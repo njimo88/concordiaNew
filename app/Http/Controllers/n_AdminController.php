@@ -20,6 +20,7 @@ use Illuminate\Mail\Message;
 use App\Models\statistiques_visites;
 use App\Models\MedicalCertificates;
 use App\Models\Shop_article;
+use App\Models\Warning;
 use Intervention\Image\Facades\Image;
 
 require_once(app_path() . '/fonction.php');
@@ -375,6 +376,7 @@ class n_AdminController extends Controller
         $user = User::find($user_id);
         $validatedData = $request->validate([
             'role' => 'required|int',
+            'warning-level' => 'int',
             'username' => 'nullable|string|max:255',
             'name' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
             'lastname' => ['required', 'regex:/^[\pL\s\-]+$/u', 'max:255'],
@@ -564,7 +566,25 @@ class n_AdminController extends Controller
             $user->update(['image' => null]);
         }
 
-        $user->update($request->all());
+        $user->update($request->except('warning-level'));
+
+        if ($request->input('warning-level')) {
+            if ($request->input('warning-level') == 0) {
+                Warning::where('family_id', '=', $user->family_id)->delete();
+            } else {
+                Warning::updateOrCreate(
+                    [
+                        'family_id' => $user->family_id
+                    ],
+                    [
+                        'family_id' => $user->family_id,
+                        'level' => $request->input('warning-level'),
+                        'created_by' => Auth::user()->user_id,
+                        'updated_by' => Auth::user()->user_id,
+                    ]
+                );
+            }
+        }
 
         return redirect()->back()->with('success', 'Le profil a été modifié avec succès');
     }
@@ -574,6 +594,7 @@ class n_AdminController extends Controller
         try {
             $validatedData = $request->validate([
                 'role' => 'required|int',
+                'warning-level' => 'int',
                 'name' => 'required|string|max:255',
                 'lastname' => 'required|string|max:255',
                 'username' => 'nullable|string',
@@ -799,6 +820,24 @@ class n_AdminController extends Controller
             'created_at' => $request->input('created_at'),
         ]);
 
+        if ($request->input('warning-level')) {
+            if ($request->input('warning-level') == 0) {
+                Warning::where('family_id', '=', $user->family_id)->delete();
+            } else {
+                Warning::updateOrCreate(
+                    [
+                        'family_id' => $user->family_id
+                    ],
+                    [
+                        'family_id' => $user->family_id,
+                        'level' => $request->input('warning-level'),
+                        'created_by' => Auth::user()->user_id,
+                        'updated_by' => Auth::user()->user_id,
+                    ]
+                );
+            }
+        }
+
         return redirect()->route('admin.showSpecificUser', $user->user_id)->with('success', 'Profil mis à jour avec succès');
     }
 
@@ -843,7 +882,8 @@ class n_AdminController extends Controller
         $user = User::with(['adhesions' => function ($query) {
             $query->orderBy('saison', 'desc')->orderBy('shop_article.title', 'asc');
         }])
-            ->with(relations: ['familyParents'])
+            ->with('warning')
+            ->with('familyParents')
             ->find($id);
         $roles = Role::all();
 

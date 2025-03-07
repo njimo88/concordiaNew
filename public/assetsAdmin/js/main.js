@@ -1,4 +1,4 @@
-;(function () {
+(function () {
     'use strict'
 
     /**
@@ -338,6 +338,41 @@
     }
 })()
 
+function getWarningLevelColor(level) {
+    switch (level) {
+        case 1:
+            return "#ffde0a";
+        case 2:
+            return "#d72d2d";
+        default:
+            return null;
+    }
+}
+
+function getWarningSvg(level) {
+    let color = getWarningLevelColor(level);
+    var svg = '';
+    if (color) {
+        svg = `
+        <span>
+            <svg fill="#000000" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35px" height="35px" viewBox="-47.81 -47.81 573.75 573.75" xml:space="preserve">
+                <g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(40.640625,40.640625), scale(0.83)">
+                    <rect x="-47.81" y="-47.81" width="573.75" height="573.75" rx="286.875" fill="${color}" stroke-width="0"></rect>
+                </g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.95625"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <circle cx="239.904" cy="314.721" r="35.878"></circle>
+                    <path d="M256.657,127.525h-31.9c-10.557,0-19.125,8.645-19.125,19.125v101.975c0,10.48,8.645,19.125,19.125,19.125h31.9 c10.48,0,19.125-8.645,19.125-19.125V146.65C275.782,136.17,267.138,127.525,256.657,127.525z"></path>
+                    <path d="M239.062,0C106.947,0,0,106.947,0,239.062s106.947,239.062,239.062,239.062c132.115,0,239.062-106.947,239.062-239.062 S371.178,0,239.062,0z M239.292,409.734c-94.171,0-170.595-76.348-170.595-170.596c0-94.248,76.347-170.595,170.595-170.595 s170.595,76.347,170.595,170.595C409.887,333.387,333.464,409.734,239.292,409.734z"></path>
+                </g>
+            </svg>
+        </span>
+        `;
+    }
+
+    return svg;
+}
+
 $(function () {
     var table = $('#myTable').DataTable({
         processing: true,
@@ -393,7 +428,14 @@ $(function () {
                 name: 'full_name',
                 orderable: true,
                 render: function (data, type, row) {
-                    return '<b>' + data + '</b>'
+                    let level = row.level ?? null;
+                    var svg = ''
+
+                    if ($('#estAutoriserDeModifLevelWarning').val() == 1) {
+                        svg = getWarningSvg(level);
+                    }
+
+                    return '<b>' + data + '</b>' + ' ' + svg;
                 },
             },
             {
@@ -523,7 +565,7 @@ $(function () {
             .url('/admin/paiement/facture/data?statusOldBills=true')
             .load()
     })
-        //this is for using double button , one for large device and second for small device with same id and id2
+    //this is for using double button , one for large device and second for small device with same id and id2
     $('#oldBills2').click(function (e) {
         e.preventDefault()
         table.ajax
@@ -914,9 +956,9 @@ $.fn.dataTable.ext.type.order['datetime-dd-mm-yyyy-pre'] = function (d) {
 
 $(document).ready(function () {
     /*----------------------- members------------------------------*/
-    
+
     //when the user click the search button 
-    document.getElementById("searchButton").addEventListener("click", function() {
+    document.getElementById("searchButton").addEventListener("click", function () {
         var search = document.getElementById("search").value
         $('#enter-message').hide();  // Hide if search input is empty
 
@@ -943,7 +985,7 @@ $(document).ready(function () {
         if (event.keyCode === 13 || event.which === 13) {
             var search = $(this).val()
 
-           //when press ENTER hide the message that say " Appuyez sur Entrée pour voir tous les résultats"
+            //when press ENTER hide the message that say " Appuyez sur Entrée pour voir tous les résultats"
             $('#enter-message').hide();  // Hide if search input is empty
 
             $.ajax({
@@ -960,10 +1002,10 @@ $(document).ready(function () {
                     initDataTable()
                 },
             })
-        }else{
+        } else {
             var search = $(this).val()
 
-             //show the message that say "  Appuyez sur Entrée pour voir tous les résultats "
+            //show the message that say "  Appuyez sur Entrée pour voir tous les résultats "
             if (search.length > 0) {
                 $('#enter-message').show();
             } else {
@@ -1057,6 +1099,8 @@ $(document).ready(function () {
                 $('#editusermodalContainer').html(data)
                 $('.countrypicker').countrypicker()
                 $('.selectpicker').selectpicker()
+                let warningSpan = $('#warning-icon');
+                warningSpan.append(getWarningSvg(warningSpan.data("warningLevel")));
             },
         })
     })
@@ -1242,8 +1286,8 @@ $(document).ready(function () {
                     x++
                     $(wrapper).append(
                         '<br><br><div class="small-12" id="mysession">Début <input type="datetime-local" name="startdate[]"/>Fin <input type="datetime-local" name="enddate[]"/>Salle' +
-                            msg +
-                            '<a href="#" class="remove_field">Supprimer</a></div>',
+                        msg +
+                        '<a href="#" class="remove_field">Supprimer</a></div>',
                     )
                 }
             },
@@ -1304,11 +1348,9 @@ function build_inputs(e, configs = false) {
         }
     }
     let ind = $('.adp-slides').length > 0 ? $('.adp-slides').length + 1 : 1
-    let str = `<div id="${
-        configs.title + '' + ind
-    }" class="row adp-slides"><div class="col-md-10"><div class="form-group"><label><b>${
-        configs.title
-    } ${ind}</b></label>`
+    let str = `<div id="${configs.title + '' + ind
+        }" class="row adp-slides"><div class="col-md-10"><div class="form-group"><label><b>${configs.title
+        } ${ind}</b></label>`
     configs.forms.forEach((config) => {
         str += `<input type="${config.type}" name="${config.name}" id="adpElem${randId}" class="adpInputs ${config.class}" data-rel="${configs.title + '' + ind}" placeholder="${config.placeholder}">`
         let currentVal = e.parent().siblings().val()
@@ -1318,9 +1360,8 @@ function build_inputs(e, configs = false) {
         e.parent().siblings().val('')
         randId++
     })
-    str += `</div></div><div class="col-md-2"><span class="badge badge-danger removeSlide" data-target="${
-        configs.title + '' + ind
-    }"><i class="fas fa-trash-alt"></i></span></div></div>`
+    str += `</div></div><div class="col-md-2"><span class="badge badge-danger removeSlide" data-target="${configs.title + '' + ind
+        }"><i class="fas fa-trash-alt"></i></span></div></div>`
     $('.inputWrapper').append(str)
     $('.removeSlide').click(function () {
         $('#' + $(this).attr('data-target')).remove()
@@ -1428,14 +1469,14 @@ $(document).ready(function () {
                         $.each(data, function (key, value) {
                             userSelect.append(
                                 '<option value="' +
-                                    value.user_id +
-                                    '" data-family-id="' +
-                                    value.family_id +
-                                    '">' +
-                                    value.lastname +
-                                    ' ' +
-                                    value.name +
-                                    '</option>',
+                                value.user_id +
+                                '" data-family-id="' +
+                                value.family_id +
+                                '">' +
+                                value.lastname +
+                                ' ' +
+                                value.name +
+                                '</option>',
                             )
                         })
                     } else {
@@ -1491,7 +1532,7 @@ $('#save-button').on('click', function () {
         error: function (xhr, status, error) {
             alert(
                 "Une erreur s'est produite lors de la création de la facture: " +
-                    error,
+                error,
             )
         },
     })
@@ -1549,12 +1590,12 @@ $(document).ready(function () {
                     data.forEach((user) => {
                         $('#linked-users-list').append(
                             '<li class="list-group-item me-2" data-user-id="' +
-                                user.user_id +
-                                '">' +
-                                user.name +
-                                ' ' +
-                                user.lastname +
-                                ' <button class="btn btn-danger btn-sm float-right remove-user">Supprimer</button></li>',
+                            user.user_id +
+                            '">' +
+                            user.name +
+                            ' ' +
+                            user.lastname +
+                            ' <button class="btn btn-danger btn-sm float-right remove-user">Supprimer</button></li>',
                         )
                     })
                 }
@@ -1578,12 +1619,12 @@ $(document).ready(function () {
             if ($(this).is(':checked')) {
                 $('#linked-users-list').append(
                     '<li class="list-group-item me-2" data-user-id="' +
-                        userId +
-                        '">' +
-                        userName +
-                        ' ' +
-                        userLastname +
-                        ' <button class="btn btn-danger btn-sm float-right remove-user">Supprimer</button></li>',
+                    userId +
+                    '">' +
+                    userName +
+                    ' ' +
+                    userLastname +
+                    ' <button class="btn btn-danger btn-sm float-right remove-user">Supprimer</button></li>',
                 )
             } else {
                 $(
@@ -1615,16 +1656,16 @@ $(document).ready(function () {
                         data.forEach((user) => {
                             $('#user-search-results').append(
                                 '<div ><input style="width: auto !important; margin: 15px 10px !important;" type="checkbox" data-user-id="' +
-                                    user.user_id +
-                                    '" data-user-name="' +
-                                    user.name +
-                                    '" data-user-lastname="' +
-                                    user.lastname +
-                                    '">' +
-                                    user.name +
-                                    ' ' +
-                                    user.lastname +
-                                    '</div>',
+                                user.user_id +
+                                '" data-user-name="' +
+                                user.name +
+                                '" data-user-lastname="' +
+                                user.lastname +
+                                '">' +
+                                user.name +
+                                ' ' +
+                                user.lastname +
+                                '</div>',
                             )
                         })
                     }

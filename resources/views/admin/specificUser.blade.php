@@ -4,6 +4,7 @@
     @php
         $isNotAuthorized =
             auth()->user()->roles->id < $user->role || auth()->user()->roles->supprimer_edit_ajout_user == 0;
+        $canSeeWarningLevel = auth()->user()->roles->estAutoriserDeModifLevelWarning;
         $widthOfDiv = 6;
     @endphp
 
@@ -24,17 +25,65 @@
             enctype="multipart/form-data">
             @csrf
             <h2>Fiche de membre</h2>
-            <!-- Role -->
-            <div class="row">
-                <div class="col-md-4">
-                    <label for="role" class="form-label">Rôle</label>
-                    <select id="role" name="role" class="form-select" {{ $isNotAuthorized ? 'disabled' : '' }}>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->id }}" {{ $user->role == $role->id ? 'selected' : '' }}>
-                                {{ $role->name }}
-                            </option>
-                        @endforeach
-                    </select>
+
+            <div class="row g-4">
+                <div class="col-md-11">
+                    <div class="card text-white parametres-card mb-3 rounded-3">
+                        <div class="card-header fw-bold">Paramètres</div>
+                        <div class="card-body">
+                            <div>
+                                <div class="row">
+                                    <!-- Role -->
+                                    <div class="col-md-4">
+                                        <label for="role" class="form-label">Rôle</label>
+                                        <select id="role" name="role" class="form-select"
+                                            {{ $isNotAuthorized ? 'disabled' : '' }}>
+                                            @foreach ($roles as $role)
+                                                <option value="{{ $role->id }}"
+                                                    {{ $user->role == $role->id ? 'selected' : '' }}>
+                                                    {{ $role->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    @if ($canSeeWarningLevel)
+                                        <!-- Niveau Warning -->
+                                        <div class="col-md-4">
+                                            <label for="warning-level" class="form-label">Niveau de warning</label>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <select id="warning-level" class="form-select" name="warning-level"
+                                                    {{ $isNotAuthorized ? 'disabled' : '' }}
+                                                    value={{ $user->warning?->level }}>
+                                                    <option value="0">Aucun warning</option>
+                                                    <option value="1"
+                                                        @if ($user->warning?->level == 1) selected @endif>1
+                                                    </option>
+                                                    <option value="2"
+                                                        @if ($user->warning?->level == 2) selected @endif>2
+                                                    </option>
+                                                </select>
+                                                <span id="warning-icon" data-warning-level={{ $user->warning?->level }}>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <!-- Bouton -->
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if (!$isNotAuthorized)
+                                                <div class="col-md-10 text-center mt-4">
+                                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                                        data-bs-target="#confirmModal">Enregistrer</button>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -117,9 +166,11 @@
                                     <label for="gender" class="w-100">Genre</label>
                                     <select class="form-select w-100" id="gender" name="gender"
                                         {{ auth()->user()->role < $user->role && auth()->user()->user_id != $user->user_id ? 'disabled' : '' }}>
-                                        <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>Homme
+                                        <option value="male" {{ $user->gender == 'male' ? 'selected' : '' }}>
+                                            Homme
                                         </option>
-                                        <option value="female" {{ $user->gender == 'female' ? 'selected' : '' }}>Femme
+                                        <option value="female" {{ $user->gender == 'female' ? 'selected' : '' }}>
+                                            Femme
                                         </option>
                                     </select>
                                     @error('gender')
@@ -128,8 +179,8 @@
                                 </div>
                                 <div class="w-50 ps-2">
                                     <label for="nationality" class="w-100">Nationalité</label>
-                                    <select data-style="btn-light" data-default="{{ $user->nationality }}" id="nationality"
-                                        name="nationality"
+                                    <select data-style="btn-light" data-default="{{ $user->nationality }}"
+                                        id="nationality" name="nationality"
                                         class="w-100 selectpicker countrypicker @error('nationality') is-invalid @enderror"
                                         data-flag="true"
                                         {{ auth()->user()->role < $user->role && auth()->user()->user_id != $user->user_id ? 'disabled' : '' }}>
@@ -218,7 +269,8 @@
 
                             <div class="form-group d-flex align-items-center mb-2 gap-2">
                                 <div class="w-50 pe-2">
-                                    <label class="me-2 w-100" for="phone">Date d'inscription</label>
+                                    <label class="me-2 w-100" for="phone">Date
+                                        d'inscription</label>
                                     <input type="date" id="created_at" placeholder=" " name="created_at"
                                         class="form-control w-100 @error('created_at') is-invalid @enderror"
                                         value="{{ $user->created_at->format('Y-m-d') }}"
@@ -254,7 +306,8 @@
                                     @enderror
                                 </div>
                                 <div class="w-50 pe-2">
-                                    <label class="me-2 w-100" for="password_confirmation">Confirmer MDP</label>
+                                    <label class="me-2 w-100" for="password_confirmation">Confirmer
+                                        MDP</label>
                                     <input class="form-control w-100 @error('password_confirmation') is-invalid @enderror"
                                         type="password" id="password_confirmation" name="password_confirmation"
                                         {{ auth()->user()->role < $user->role && auth()->user()->user_id != $user->user_id ? 'readonly' : '' }} />
@@ -293,7 +346,8 @@
                                                 <polygon points="12,2 15,10 24,10 17,15 19,24 12,19 5,24 7,15 0,10 9,10" />
                                             </svg>
                                             <span class="ms-2">
-                                                {{ $certification->discipline->name }} {{ $certification->level->name }}
+                                                {{ $certification->discipline->name }}
+                                                {{ $certification->level->name }}
                                                 @if ($certification->points)
                                                     ({{ $certification->points }}pts)
                                                 @endif
@@ -303,13 +357,15 @@
                                         <!-- Historique Certifs -->
                                         <div class="col-md-6">
                                             @if ($certification->updated_by)
-                                                <p class="mb-0">Validé par {{ $certification->updater->lastname }}
+                                                <p class="mb-0">Validé par
+                                                    {{ $certification->updater->lastname }}
                                                     {{ $certification->updater->name }}
                                                     le
                                                     {{ Carbon\Carbon::parse($certification->exam_date)->format('d/m/Y') }}
                                                 </p>
                                             @else
-                                                <p class="mb-0">Validé par {{ $certification->creator->lastname }}
+                                                <p class="mb-0">Validé par
+                                                    {{ $certification->creator->lastname }}
                                                     {{ $certification->creator->name }}
                                                     le
                                                     {{ Carbon\Carbon::parse($certification->exam_date)->format('d/m/Y') }}
@@ -357,7 +413,8 @@
                                                         {{ $parent->phone }}
                                                     </a>
                                                 </p>
-                                                <p class="mb-1"><strong>Email :</strong> {{ $parent->email }}
+                                                <p class="mb-1"><strong>Email :</strong>
+                                                    {{ $parent->email }}
                                                 </p>
                                             </div>
                                             <div>
@@ -439,7 +496,8 @@
                                                             fn($adhesion) => $adhesion->type_article === 0,
                                                         );
                                                     @endphp
-                                                    <h5 class="mt-3">Saison {{ $saison }}-{{ $saison + 1 }}
+                                                    <h5 class="mt-3">Saison
+                                                        {{ $saison }}-{{ $saison + 1 }}
                                                         @if ($hasAdhesion)
                                                             <img src="{{ asset('img/badge-membre.png') }}" alt=""
                                                                 style="width: 55px; height: 45px;">
@@ -459,7 +517,8 @@
                                                             <img src="{{ $adhesion->image }}"
                                                                 style="width: 50px; height: 50px;" alt="adhesion-image">
 
-                                                            <p class="m-0">{{ $adhesion->title }}</p>
+                                                            <p class="m-0">{{ $adhesion->title }}
+                                                            </p>
                                                         </div>
                                                     @endforeach
                                                 @endforeach
@@ -535,7 +594,8 @@
                                                         fn($adhesion) => $adhesion->type_article === 0,
                                                     );
                                                 @endphp
-                                                <h5 class="mt-3">Saison {{ $saison }}-{{ $saison + 1 }}
+                                                <h5 class="mt-3">Saison
+                                                    {{ $saison }}-{{ $saison + 1 }}
                                                     @if ($hasAdhesion)
                                                         <img src="{{ asset('img/badge-membre.png') }}" alt=""
                                                             style="width: 55px; height: 45px;">
@@ -568,25 +628,20 @@
                 </div>
             @endif
 
-            @if (!$isNotAuthorized)
-                <div class="col-md-10 text-center mt-4">
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                        data-bs-target="#confirmModal">Enregistrer</button>
-                </div>
-            @endif
-
             <!-- Modal de confirmation -->
             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="confirmModalLabel">Confirmer les modifications</h5>
+                            <h5 class="modal-title" id="confirmModalLabel">Confirmer les modifications
+                            </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>Êtes-vous sûr de vouloir enregistrer les modifications apportées au profil de
+                            <p>Êtes-vous sûr de vouloir enregistrer les modifications apportées au
+                                profil de
                                 l'utilisateur ?</p>
                         </div>
                         <div class="modal-footer">
@@ -625,6 +680,10 @@
 <style>
     body {
         overflow-x: hidden;
+    }
+
+    main .parametres-card {
+        background-color: rgba(216, 205, 0, 0.8)
     }
 
     main .identity-card {
@@ -716,3 +775,9 @@
         z-index: 11;
     }
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let warningSpan = $("#warning-icon");
+        warningSpan.append(getWarningSvg(warningSpan.data("warningLevel")));
+    })
+</script>

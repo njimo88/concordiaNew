@@ -95,6 +95,12 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasMany(UsersLevels::class, 'user_id');
     }
 
+    public function warning()
+    {
+        return $this->hasOne(Warning::class, 'family_id', 'family_id');
+    }
+
+
     public function adhesions()
     {
         return $this->hasManyThrough(
